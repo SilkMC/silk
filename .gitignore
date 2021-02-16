@@ -1,0 +1,11 @@
+# Gradle
+.gradle/
+build/
+*/.gradle/
+*/build/
+
+# IntelliJ IDEA
+.idea/
+
+# Secret
+gradle.properties
