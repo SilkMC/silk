@@ -1,6 +1,6 @@
 package net.axay.fabrik.igui
 
-import net.axay.kspigot.runnables.task
+import net.axay.fabrik.core.task.coroutineTask
 
 abstract class GUIPageChangeCalculator {
 
@@ -128,7 +128,7 @@ private inline fun changePageEffect(
     val ifInverted = fromPage >= toPage
 
     var currentOffset = 1
-    task(
+    coroutineTask(
         sync = true,
         period = 1,
         howOften = doFor.toLong()
