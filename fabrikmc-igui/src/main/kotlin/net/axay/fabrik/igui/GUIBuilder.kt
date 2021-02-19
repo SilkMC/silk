@@ -6,7 +6,7 @@ import net.axay.fabrik.igui.elements.*
 import net.minecraft.item.ItemStack
 import kotlin.math.absoluteValue
 
-fun kSpigotGUI(
+fun igui(
     type: GUIType,
     guiCreator: GUICreator = IndividualGUICreator(),
     builder: GUIBuilder.() -> Unit,
