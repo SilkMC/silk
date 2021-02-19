@@ -36,10 +36,10 @@ enum class InventoryChangeEffect(
     INSTANT(PageChangeEffect.INSTANT)
 }
 
-internal fun GUIInstance<*>.changePage(
+internal fun GUIInstance.changePage(
     effect: PageChangeEffect,
-    fromPage: GUIPage<*>,
-    toPage: GUIPage<*>
+    fromPage: GUIPage,
+    toPage: GUIPage,
 ) {
 
     val fromPageInt = fromPage.number
@@ -112,10 +112,10 @@ internal fun GUIInstance<*>.changePage(
     }
 }
 
-internal fun GUIInstance<*>.changeGUI(
+internal fun GUIInstance.changeGUI(
     effect: InventoryChangeEffect,
-    fromPage: GUIPage<*>,
-    toPage: GUIPage<*>
+    fromPage: GUIPage,
+    toPage: GUIPage
 ) = changePage(effect.effect, fromPage, toPage)
 
 private inline fun changePageEffect(
