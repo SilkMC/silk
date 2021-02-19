@@ -1,6 +1,6 @@
 package net.axay.fabrik.igui.elements
 
-import net.axay.kspigot.runnables.task
+import net.axay.fabrik.core.task.coroutineTask
 import net.minecraft.item.ItemStack
 
 class GUISpaceCompoundScrollButton(
@@ -15,12 +15,12 @@ class GUISpaceCompoundScrollButton(
 ) : GUIButton(icon, {
 
     if (scrollTimes > 1) {
-        task(
+        coroutineTask(
             period = 1,
             howOften = scrollTimes.toLong()
         ) {
             val ifScrolled = if (reverse) compound.scroll(-scrollDistance) else compound.scroll(scrollDistance)
-            if (!ifScrolled) it.cancel()
+            if (!ifScrolled) it.isCancelled = true
         }
     } else if (scrollTimes == 1)
         if (reverse) compound.scroll(-scrollDistance) else compound.scroll(scrollDistance)
