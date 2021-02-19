@@ -10,4 +10,5 @@ pluginManagement {
 }
 
 
+include("$projectName-core")
 include("$projectName-igui")
