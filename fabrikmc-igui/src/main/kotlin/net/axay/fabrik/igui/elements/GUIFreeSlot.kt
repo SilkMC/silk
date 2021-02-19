@@ -4,7 +4,6 @@ import net.axay.fabrik.igui.GUIClickEvent
 import net.axay.fabrik.igui.GUISlot
 
 class GUIFreeSlot : GUISlot() {
-    override fun onClick(clickEvent: GUIClickEvent) {
-        /* do nothing */
-    }
+    override fun onClick(clickEvent: GUIClickEvent) { }
+    override fun shouldCancel(clickEvent: GUIClickEvent) = false
 }

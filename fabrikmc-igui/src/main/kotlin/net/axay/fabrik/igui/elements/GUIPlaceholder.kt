@@ -10,8 +10,8 @@ class GUIPlaceholder(
 
     override fun getItemStack(slot: Int) = icon
 
-    override fun onClickElement(clickEvent: GUIClickEvent) {
-        clickEvent.isCancelled = true
-    }
+    override fun shouldCancel(clickEvent: GUIClickEvent) = true
+
+    override fun onClickElement(clickEvent: GUIClickEvent) { }
 
 }

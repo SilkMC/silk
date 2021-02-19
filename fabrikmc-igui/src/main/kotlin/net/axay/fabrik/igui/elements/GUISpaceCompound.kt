@@ -12,6 +12,8 @@ class GUISpaceCompoundElement<E> internal constructor(
 
     override fun getItemStack(slot: Int) = compound.getItemStack(slot)
 
+    override fun shouldCancel(clickEvent: GUIClickEvent) = true // TODO
+
     override fun onClickElement(clickEvent: GUIClickEvent) {
         compound.onClickElement(clickEvent)
     }
@@ -114,8 +116,7 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
     }
 
     internal fun onClickElement(clickEvent: GUIClickEvent) {
-        val element = contentAtSlot(clickEvent.bukkitEvent.slot) ?: kotlin.run {
-            clickEvent.isCancelled = true
+        val element = contentAtSlot(clickEvent.slot) ?: kotlin.run {
             return
         }
         onClick?.invoke(clickEvent, element)

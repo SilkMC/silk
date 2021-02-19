@@ -11,8 +11,9 @@ open class GUIButton(
 
     final override fun getItemStack(slot: Int) = icon
 
+    override fun shouldCancel(clickEvent: GUIClickEvent) = true
+
     override fun onClickElement(clickEvent: GUIClickEvent) {
-        clickEvent.isCancelled = true
         action(clickEvent)
     }
 
