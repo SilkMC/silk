@@ -5,9 +5,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * A CoroutineScope using the current MinecraftServer
+ * as the Dispatcher.
+ */
 lateinit var mcCoroutineScope: CoroutineScope
     internal set
 
+/**
+ * A CoroutineScope using the IO Dispatcher
+ * of kotlinx.coroutines.
+ */
 val fabrikCoroutineScope = CoroutineScope(Dispatchers.IO)
 
 /**
@@ -50,6 +58,12 @@ inline fun coroutineTask(
 }
 
 class CoroutineTask(
+    /**
+     * The current round.
+     */
     var round: Long = 0,
+    /**
+     * Set this to true, if you wish to cancel the repeating execution of the task.
+     */
     var isCancelled: Boolean = false
 )
