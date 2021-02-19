@@ -1,14 +1,16 @@
 package net.axay.fabrik.igui.elements
 
-import net.axay.fabrik.igui.*
+import net.axay.fabrik.igui.GUIClickEvent
+import net.axay.fabrik.igui.GUIPageChangeCalculator
+import net.axay.fabrik.igui.PageChangeEffect
 import net.axay.fabrik.igui.changePage
 import net.minecraft.item.ItemStack
 
-class GUIButtonPageChange<T : ForInventory>(
+class GUIButtonPageChange(
     icon: ItemStack,
     calculator: GUIPageChangeCalculator,
-    onChange: ((GUIClickEvent<T>) -> Unit)?
-) : GUIButton<T>(icon, {
+    onChange: ((GUIClickEvent) -> Unit)?
+) : GUIButton(icon, {
 
     val currentPage = it.guiInstance.currentPage
     val newPage = it.guiInstance.getPage(
