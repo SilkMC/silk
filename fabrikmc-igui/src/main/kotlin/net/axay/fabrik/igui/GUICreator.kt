@@ -1,16 +1,16 @@
 package net.axay.fabrik.igui
 
-abstract class GUICreator<T : ForInventory> {
-    abstract fun createInstance(guiData: GUIData<T>): GUI<T>
+abstract class GUICreator {
+    abstract fun createInstance(guiData: GUIData): GUI
 }
 
-class SharedGUICreator<T : ForInventory> : GUICreator<T>() {
-    override fun createInstance(guiData: GUIData<T>) = GUIShared(guiData)
+class SharedGUICreator : GUICreator() {
+    override fun createInstance(guiData: GUIData) = GUIShared(guiData)
 }
 
-class IndividualGUICreator<T : ForInventory>(
+class IndividualGUICreator(
     private val resetOnClose: Boolean = true,
     private val resetOnQuit: Boolean = true
-) : GUICreator<T>() {
-    override fun createInstance(guiData: GUIData<T>) = GUIIndividual(guiData, resetOnClose, resetOnQuit)
+) : GUICreator() {
+    override fun createInstance(guiData: GUIData) = GUIIndividual(guiData, resetOnClose, resetOnQuit)
 }
