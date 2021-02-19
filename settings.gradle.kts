@@ -12,3 +12,4 @@ pluginManagement {
 
 include("$projectName-core")
 include("$projectName-igui")
+include("$projectName-testmod")
