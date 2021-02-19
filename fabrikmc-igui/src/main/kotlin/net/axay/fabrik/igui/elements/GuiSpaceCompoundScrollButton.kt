@@ -3,16 +3,16 @@ package net.axay.fabrik.igui.elements
 import net.axay.fabrik.core.task.coroutineTask
 import net.minecraft.item.ItemStack
 
-class GUISpaceCompoundScrollButton(
+class GuiSpaceCompoundScrollButton(
 
     icon: ItemStack,
 
-    private val compound: AbstractGUISpaceCompound<*>,
+    private val compound: AbstractGuiSpaceCompound<*>,
     private val scrollDistance: Int,
     private val scrollTimes: Int,
     private val reverse: Boolean = false
 
-) : GUIButton(icon, {
+) : GuiButton(icon, {
 
     if (scrollTimes > 1) {
         coroutineTask(
@@ -29,7 +29,7 @@ class GUISpaceCompoundScrollButton(
 
     constructor(
         icon: ItemStack,
-        compound: GUIRectSpaceCompound<*>,
+        compound: GuiRectSpaceCompound<*>,
         scrollTimes: Int = 1,
         reverse: Boolean = false
     ) : this(icon, compound, compound.compoundWidth, scrollTimes, reverse)

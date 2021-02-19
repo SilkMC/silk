@@ -1,8 +1,8 @@
 package net.axay.fabrik.igui
 
-class GUIPage(
+class GuiPage(
     val number: Int,
-    internal val slots: Map<Int, GUISlot>,
+    internal val slots: Map<Int, GuiSlot>,
     val transitionTo: PageChangeEffect?,
     val transitionFrom: PageChangeEffect?
 )

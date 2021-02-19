@@ -6,15 +6,15 @@ import net.axay.fabrik.igui.*
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 
-class GUISpaceCompoundElement<E> internal constructor(
-    private val compound: AbstractGUISpaceCompound<E>
-) : GUIElement() {
+class GuiSpaceCompoundElement<E> internal constructor(
+    private val compound: AbstractGuiSpaceCompound<E>
+) : GuiElement() {
 
     override fun getItemStack(slot: Int) = compound.getItemStack(slot)
 
-    override fun shouldCancel(clickEvent: GUIClickEvent) = true // TODO
+    override fun shouldCancel(clickEvent: GuiClickEvent) = true // TODO
 
-    override fun onClickElement(clickEvent: GUIClickEvent) {
+    override fun onClickElement(clickEvent: GuiClickEvent) {
         compound.onClickElement(clickEvent)
     }
 
@@ -24,38 +24,38 @@ class GUISpaceCompoundElement<E> internal constructor(
      * added / removed to / from a HashSet
      */
 
-    override fun startUsing(gui: GUIInstance) = compound.registerGUI(gui)
+    override fun startUsing(gui: GuiInstance) = compound.registerGui(gui)
 
-    override fun stopUsing(gui: GUIInstance) = compound.unregisterGUI(gui)
+    override fun stopUsing(gui: GuiInstance) = compound.unregisterGui(gui)
 
 }
 
-class GUIRectSpaceCompound<E>(
-    invType: GUIType,
+class GuiRectSpaceCompound<E>(
+    invType: GuiType,
     iconGenerator: (E) -> ItemStack,
-    onClick: ((GUIClickEvent, E) -> Unit)?,
+    onClick: ((GuiClickEvent, E) -> Unit)?,
     internal val compoundWidth: Int
-) : AbstractGUISpaceCompound<E>(invType, iconGenerator, onClick) {
+) : AbstractGuiSpaceCompound<E>(invType, iconGenerator, onClick) {
 
     override fun handleScrollEndReached(newProgress: Int, internalSlotsSize: Int, contentSize: Int) =
         (internalSlotsSize + newProgress <= contentSize + (compoundWidth - (contentSize % compoundWidth)))
 
 }
 
-class GUISpaceCompound<E>(
-    invType: GUIType,
+class GuiSpaceCompound<E>(
+    invType: GuiType,
     iconGenerator: (E) -> ItemStack,
-    onClick: ((GUIClickEvent, E) -> Unit)?
-) : AbstractGUISpaceCompound<E>(invType, iconGenerator, onClick) {
+    onClick: ((GuiClickEvent, E) -> Unit)?
+) : AbstractGuiSpaceCompound<E>(invType, iconGenerator, onClick) {
 
     override fun handleScrollEndReached(newProgress: Int, internalSlotsSize: Int, contentSize: Int) = false
 
 }
 
-abstract class AbstractGUISpaceCompound<E> internal constructor(
-    val guiType: GUIType,
+abstract class AbstractGuiSpaceCompound<E> internal constructor(
+    val guiType: GuiType,
     private val iconGenerator: (E) -> ItemStack,
-    private val onClick: ((GUIClickEvent, E) -> Unit)?
+    private val onClick: ((GuiClickEvent, E) -> Unit)?
 ) {
 
     private val content = ArrayList<E>()
@@ -67,7 +67,7 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
 
     private var contentSort: () -> Unit = { }
 
-    private val registeredGUIs = HashSet<GUIInstance>()
+    private val registeredGuis = HashSet<GuiInstance>()
 
     private fun contentAtSlot(slot: Int) = currentContent.getOrNull(internalSlots.indexOf(slot))
 
@@ -85,8 +85,8 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
 
     }
 
-    private fun updateOpenGUIs() {
-        registeredGUIs.forEach { it.reloadCurrentPage() }
+    private fun updateOpenGuis() {
+        registeredGuis.forEach { it.reloadCurrentPage() }
     }
 
     internal fun scroll(distance: Int): Boolean {
@@ -101,7 +101,7 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
             if (ifScroll) {
                 scrollProgress = value
                 recalculateCurrentContent()
-                updateOpenGUIs()
+                updateOpenGuis()
                 true
             } else false
 
@@ -115,7 +115,7 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
             ?: ItemStack(Items.AIR)
     }
 
-    internal fun onClickElement(clickEvent: GUIClickEvent) {
+    internal fun onClickElement(clickEvent: GuiClickEvent) {
         val element = contentAtSlot(clickEvent.slotIndex) ?: kotlin.run {
             return
         }
@@ -130,12 +130,12 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
         internalSlots.sort()
     }
 
-    internal fun registerGUI(gui: GUIInstance) {
-        registeredGUIs += gui
+    internal fun registerGui(gui: GuiInstance) {
+        registeredGuis += gui
     }
 
-    internal fun unregisterGUI(gui: GUIInstance) {
-        registeredGUIs -= gui
+    internal fun unregisterGui(gui: GuiInstance) {
+        registeredGuis -= gui
     }
 
     /**
@@ -192,7 +192,7 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
     private fun refreshAfterContentChange() {
         contentSort.invoke()
         recalculateCurrentContent()
-        updateOpenGUIs()
+        updateOpenGuis()
     }
 
 }
@@ -201,10 +201,10 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
  * A simple compound element, covering the most common
  * compound use cases.
  *
- * @see GUIPageBuilder.createSimpleCompound
- * @see GUIPageBuilder.createSimpleRectCompound
+ * @see GuiPageBuilder.createSimpleCompound
+ * @see GuiPageBuilder.createSimpleRectCompound
  */
-open class GUICompoundElement(
+open class GuiCompoundElement(
     internal val icon: ItemStack,
-    internal val onClick: ((GUIClickEvent) -> Unit)? = null
+    internal val onClick: ((GuiClickEvent) -> Unit)? = null
 )

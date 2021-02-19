@@ -2,7 +2,7 @@ package net.axay.fabrik.igui
 
 import net.minecraft.screen.slot.SlotActionType
 
-enum class GUIActionType {
+enum class GuiActionType {
     /**
      * A normal slot click.
      */

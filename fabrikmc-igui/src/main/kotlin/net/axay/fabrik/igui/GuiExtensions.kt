@@ -2,11 +2,11 @@ package net.axay.fabrik.igui
 
 import net.minecraft.entity.player.PlayerEntity
 
-fun PlayerEntity.openGUI(gui: GUI, page: Int? = null) {
-    return openGUIInstance(gui.getInstance(this), page)
+fun PlayerEntity.openGui(gui: Gui, page: Int? = null) {
+    return openGuiInstance(gui.getInstance(this), page)
 }
 
-internal fun PlayerEntity.openGUIInstance(guiInstance: GUIInstance, page: Int? = null) {
+internal fun PlayerEntity.openGuiInstance(guiInstance: GuiInstance, page: Int? = null) {
     if (page != null)
         guiInstance.loadPageUnsafe(page)
 

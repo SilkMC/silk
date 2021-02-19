@@ -2,21 +2,21 @@ package net.axay.fabrik.igui
 
 import net.axay.fabrik.core.task.coroutineTask
 
-abstract class GUIPageChangeCalculator {
+abstract class GuiPageChangeCalculator {
 
     abstract fun calculateNewPage(currentPage: Int, pages: Collection<Int>): Int?
 
-    object GUIPreviousPageCalculator : GUIPageChangeCalculator() {
+    object GuiPreviousPageCalculator : GuiPageChangeCalculator() {
         override fun calculateNewPage(currentPage: Int, pages: Collection<Int>) =
             pages.sortedDescending().find { it < currentPage }
     }
 
-    object GUINextPageCalculator : GUIPageChangeCalculator() {
+    object GuiNextPageCalculator : GuiPageChangeCalculator() {
         override fun calculateNewPage(currentPage: Int, pages: Collection<Int>) =
             pages.sorted().find { it > currentPage }
     }
 
-    class GUIConsistentPageCalculator(private val toPage: Int) : GUIPageChangeCalculator() {
+    class GuiConsistentPageCalculator(private val toPage: Int) : GuiPageChangeCalculator() {
         override fun calculateNewPage(currentPage: Int, pages: Collection<Int>) = toPage
     }
 
@@ -36,10 +36,10 @@ enum class InventoryChangeEffect(
     INSTANT(PageChangeEffect.INSTANT)
 }
 
-internal fun GUIInstance.changePage(
+internal fun GuiInstance.changePage(
     effect: PageChangeEffect,
-    fromPage: GUIPage,
-    toPage: GUIPage,
+    fromPage: GuiPage,
+    toPage: GuiPage,
 ) {
 
     val fromPageInt = fromPage.number
@@ -112,10 +112,10 @@ internal fun GUIInstance.changePage(
     }
 }
 
-internal fun GUIInstance.changeGUI(
+internal fun GuiInstance.changeGui(
     effect: InventoryChangeEffect,
-    fromPage: GUIPage,
-    toPage: GUIPage
+    fromPage: GuiPage,
+    toPage: GuiPage
 ) = changePage(effect.effect, fromPage, toPage)
 
 private inline fun changePageEffect(

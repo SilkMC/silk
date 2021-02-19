@@ -6,7 +6,7 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.screen.ScreenHandlerType
 
-enum class GUIType(
+enum class GuiType(
     val screenHandlerType: ScreenHandlerType<*>,
     val dimensions: InventoryDimensions,
 ) {
@@ -20,6 +20,6 @@ enum class GUIType(
     THREE_BY_SIX(ScreenHandlerType.GENERIC_3X3, InventoryDimensions(3, 3)),
     ;
 
-    fun createScreenHandler(guiInstance: GUIInstance, syncId: Int, playerInv: PlayerInventory, inv: Inventory) =
-        GUIScreenHandler(guiInstance, syncId, playerInv, inv)
+    fun createScreenHandler(guiInstance: GuiInstance, syncId: Int, playerInv: PlayerInventory, inv: Inventory) =
+        GuiScreenHandler(guiInstance, syncId, playerInv, inv)
 }

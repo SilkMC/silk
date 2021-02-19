@@ -8,8 +8,8 @@ import net.minecraft.screen.GenericContainerScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.screen.slot.SlotActionType
 
-class GUIScreenHandler(
-    val guiInstance: GUIInstance,
+class GuiScreenHandler(
+    val guiInstance: GuiInstance,
     syncId: Int,
     private val playerInv: PlayerInventory,
     inv: Inventory
@@ -25,8 +25,8 @@ class GUIScreenHandler(
 
         val shouldCancel = (startIndex..endIndex).any {
             guiInstance.currentPage.slots[it]?.shouldCancel(
-                GUIClickEvent(
-                    guiInstance, playerInv.player, GUIActionType.INSERT,
+                GuiClickEvent(
+                    guiInstance, playerInv.player, GuiActionType.INSERT,
                     if (fromLast) endIndex else startIndex
                 )
             ) == true
@@ -47,7 +47,7 @@ class GUIScreenHandler(
 
         val slot = guiInstance.currentPage.slots[slotIndex]
         val event =
-            GUIClickEvent(guiInstance, player, GUIActionType.fromSlotActionType(actionType, clickData), slotIndex)
+            GuiClickEvent(guiInstance, player, GuiActionType.fromSlotActionType(actionType, clickData), slotIndex)
 
         slot?.onClick(event)
 
@@ -57,14 +57,14 @@ class GUIScreenHandler(
     }
 
     override fun close(player: PlayerEntity) {
-        if (guiInstance.gui is GUIIndividual)
+        if (guiInstance.gui is GuiIndividual)
             guiInstance.gui.deleteInstance(player)
     }
 
     /*    override fun transferSlot(player: PlayerEntity, index: Int): ItemStack {
         if (guiInstance.isInMove) return ItemStack.EMPTY
 
-        val event = GUIClickEvent(guiInstance, player)
+        val event = GuiClickEvent(guiInstance, player)
         guiInstance.currentPage.slots[index]?.onClick(event)
 
         return if (!event.isCancelled)
@@ -78,7 +78,7 @@ class GUIScreenHandler(
         val slotIndex = slot.posIndex
 
         return guiInstance.currentPage.slots[slotIndex]?.shouldCancel(
-            GUIClickEvent(guiInstance, playerInv.player, GUIActionType.INSERT, slotIndex)
+            GuiClickEvent(guiInstance, playerInv.player, GuiActionType.INSERT, slotIndex)
         ) == false
     }
 

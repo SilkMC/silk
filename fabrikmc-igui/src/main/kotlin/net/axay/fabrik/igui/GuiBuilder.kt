@@ -7,82 +7,82 @@ import net.minecraft.item.ItemStack
 import kotlin.math.absoluteValue
 
 fun igui(
-    type: GUIType,
-    guiCreator: GUICreator = IndividualGUICreator(),
-    builder: GUIBuilder.() -> Unit,
-) = GUIBuilder(type, guiCreator).apply(builder).build()
+    type: GuiType,
+    guiCreator: GuiCreator = IndividualGuiCreator(),
+    builder: GuiBuilder.() -> Unit,
+) = GuiBuilder(type, guiCreator).apply(builder).build()
 
-class GUIBuilder(
-    val type: GUIType,
-    private val guiCreator: GUICreator
+class GuiBuilder(
+    val type: GuiType,
+    private val guiCreator: GuiCreator
 ) {
 
     /**
-     * The title of this GUI.
+     * The title of this Gui.
      * This title will be visible for every page of
-     * this GUI.
+     * this Gui.
      */
     var title: String = ""
 
     /**
-     * The transition applied, if another GUI redirects to
-     * this GUI.
+     * The transition applied, if another Gui redirects to
+     * this Gui.
      */
     var transitionTo: InventoryChangeEffect? = null
 
     /**
-     * The transition applied, if this GUI redirects to
-     * another GUI and the other GUI has no transitionTo
+     * The transition applied, if this Gui redirects to
+     * another Gui and the other Gui has no transitionTo
      * value defined.
      */
     var transitionFrom: InventoryChangeEffect? = null
 
     /**
      * The default page will be loaded first for every
-     * GUI instance.
+     * Gui instance.
      */
     var defaultPage = 1
 
-    private val guiSlots = HashMap<Int, GUIPage>()
+    private val guiSlots = HashMap<Int, GuiPage>()
 
-    private var onClickElement: ((GUIClickEvent) -> Unit)? = null
+    private var onClickElement: ((GuiClickEvent) -> Unit)? = null
 
     /**
      * Opens the builder for a new page and adds
-     * the new page to the GUI.
+     * the new page to the Gui.
      * @param page The index of the page.
      */
-    fun page(page: Int, builder: GUIPageBuilder.() -> Unit) {
-        guiSlots[page] = GUIPageBuilder(type, page).apply(builder).build()
+    fun page(page: Int, builder: GuiPageBuilder.() -> Unit) {
+        guiSlots[page] = GuiPageBuilder(type, page).apply(builder).build()
     }
 
     /**
      * A callback executed when the user clicks on
-     * any GUI elements on any page in this GUI.
+     * any Gui elements on any page in this Gui.
      */
-    fun onClickElement(onClick: (GUIClickEvent) -> Unit) {
+    fun onClickElement(onClick: (GuiClickEvent) -> Unit) {
         onClickElement = onClick
     }
 
     internal fun build() = guiCreator.createInstance(
-        GUIData(type, title, guiSlots, defaultPage, transitionTo, transitionFrom, onClickElement)
+        GuiData(type, title, guiSlots, defaultPage, transitionTo, transitionFrom, onClickElement)
     )
 
 }
 
-class GUIPageBuilder(
-    private val type: GUIType,
+class GuiPageBuilder(
+    private val type: GuiType,
     val page: Int
 ) {
 
-    private val guiSlots = HashMap<Int, GUISlot>()
+    private val guiSlots = HashMap<Int, GuiSlot>()
 
     var transitionTo: PageChangeEffect? = null
     var transitionFrom: PageChangeEffect? = null
 
-    internal fun build() = GUIPage(page, guiSlots, transitionTo, transitionFrom)
+    internal fun build() = GuiPage(page, guiSlots, transitionTo, transitionFrom)
 
-    private fun defineSlots(slots: InventorySlotCompound, element: GUISlot) =
+    private fun defineSlots(slots: InventorySlotCompound, element: GuiSlot) =
         slots.withInvType(type).forEach { curSlot ->
             curSlot.realSlotIn(type.dimensions)?.let { guiSlots[it] = element }
         }
@@ -92,22 +92,22 @@ class GUIPageBuilder(
      * actions. If clicked, the specified [onClick]
      * function is invoked.
      */
-    fun button(slots: InventorySlotCompound, itemStack: ItemStack, onClick: (GUIClickEvent) -> Unit) =
-        defineSlots(slots, GUIButton(itemStack, onClick))
+    fun button(slots: InventorySlotCompound, itemStack: ItemStack, onClick: (GuiClickEvent) -> Unit) =
+        defineSlots(slots, GuiButton(itemStack, onClick))
 
     /**
      * An item protected from any player actions.
      * This is not a button.
      */
     fun placeholder(slots: InventorySlotCompound, itemStack: ItemStack) =
-        defineSlots(slots, GUIPlaceholder(itemStack))
+        defineSlots(slots, GuiPlaceholder(itemStack))
 
     /**
      * A free slot does not block any player actions.
      * The player can put items in this slot or take
      * items out of it.
      */
-    fun freeSlot(slots: InventorySlotCompound) = defineSlots(slots, GUIFreeSlot())
+    fun freeSlot(slots: InventorySlotCompound) = defineSlots(slots, GuiFreeSlot())
 
     /**
      * This is a button which loads the specified
@@ -117,11 +117,11 @@ class GUIPageBuilder(
         slots: InventorySlotCompound,
         icon: ItemStack,
         toPage: Int,
-        onChange: ((GUIClickEvent) -> Unit)? = null
+        onChange: ((GuiClickEvent) -> Unit)? = null
     ) = defineSlots(
-        slots, GUIButtonPageChange(
+        slots, GuiButtonPageChange(
             icon,
-            GUIPageChangeCalculator.GUIConsistentPageCalculator(toPage),
+            GuiPageChangeCalculator.GuiConsistentPageCalculator(toPage),
             onChange
         )
     )
@@ -134,11 +134,11 @@ class GUIPageBuilder(
     fun previousPage(
         slots: InventorySlotCompound,
         icon: ItemStack,
-        onChange: ((GUIClickEvent) -> Unit)? = null
+        onChange: ((GuiClickEvent) -> Unit)? = null
     ) = defineSlots(
-        slots, GUIButtonPageChange(
+        slots, GuiButtonPageChange(
             icon,
-            GUIPageChangeCalculator.GUIPreviousPageCalculator,
+            GuiPageChangeCalculator.GuiPreviousPageCalculator,
             onChange
         )
     )
@@ -151,29 +151,29 @@ class GUIPageBuilder(
     fun nextPage(
         slots: InventorySlotCompound,
         icon: ItemStack,
-        onChange: ((GUIClickEvent) -> Unit)? = null
+        onChange: ((GuiClickEvent) -> Unit)? = null
     ) = defineSlots(
-        slots, GUIButtonPageChange(
+        slots, GuiButtonPageChange(
             icon,
-            GUIPageChangeCalculator.GUINextPageCalculator,
+            GuiPageChangeCalculator.GuiNextPageCalculator,
             onChange
         )
     )
 
     /**
      * By pressing this button, the player switches to another
-     * GUI. The transition effect is applied.
+     * Gui. The transition effect is applied.
      */
-    fun changeGUI(
+    fun changeGui(
         slots: InventorySlotCompound,
         icon: ItemStack,
-        newGUI: () -> GUI,
+        newGui: () -> Gui,
         newPage: Int? = null,
-        onChange: ((GUIClickEvent) -> Unit)? = null
+        onChange: ((GuiClickEvent) -> Unit)? = null
     ) = defineSlots(
-        slots, GUIButtonInventoryChange(
+        slots, GuiButtonInventoryChange(
             icon,
-            newGUI,
+            newGui,
             newPage,
             onChange
         )
@@ -182,7 +182,7 @@ class GUIPageBuilder(
     /**
      * Creates a new compound, holding simple compound elements.
      */
-    fun createSimpleCompound() = createCompound<GUICompoundElement>(
+    fun createSimpleCompound() = createCompound<GuiCompoundElement>(
         iconGenerator = { it.icon },
         onClick = { clickEvent, element -> element.onClick?.invoke(clickEvent) }
     )
@@ -193,8 +193,8 @@ class GUIPageBuilder(
      */
     fun <E> createCompound(
         iconGenerator: (E) -> ItemStack,
-        onClick: ((clickEvent: GUIClickEvent, element: E) -> Unit)? = null
-    ) = GUISpaceCompound(type, iconGenerator, onClick)
+        onClick: ((clickEvent: GuiClickEvent, element: E) -> Unit)? = null
+    ) = GuiSpaceCompound(type, iconGenerator, onClick)
 
     /**
      * Defines an area where the content of the given compound
@@ -202,12 +202,12 @@ class GUIPageBuilder(
      */
     fun <E> compoundSpace(
         slots: InventorySlotCompound,
-        compound: GUISpaceCompound<E>
+        compound: GuiSpaceCompound<E>
     ) {
         compound.addSlots(slots)
         defineSlots(
             slots,
-            GUISpaceCompoundElement(compound)
+            GuiSpaceCompoundElement(compound)
         )
     }
 
@@ -217,13 +217,13 @@ class GUIPageBuilder(
      * The space is automatically defined.
      *
      * This method sets the element type to
-     * [GUICompoundElement]. The iconGenerator and onClick callback
+     * [GuiCompoundElement]. The iconGenerator and onClick callback
      * are automatically defined.
      */
     fun createSimpleRectCompound(
         fromSlot: SingleInventorySlot,
         toSlot: SingleInventorySlot
-    ) = createRectCompound<GUICompoundElement>(
+    ) = createRectCompound<GuiCompoundElement>(
 
         fromSlot, toSlot,
 
@@ -241,10 +241,10 @@ class GUIPageBuilder(
         fromSlot: SingleInventorySlot,
         toSlot: SingleInventorySlot,
         iconGenerator: (E) -> ItemStack,
-        onClick: ((clickEvent: GUIClickEvent, element: E) -> Unit)? = null
-    ): GUIRectSpaceCompound<E> {
+        onClick: ((clickEvent: GuiClickEvent, element: E) -> Unit)? = null
+    ): GuiRectSpaceCompound<E> {
         val rectSlotCompound = fromSlot rectTo toSlot
-        return GUIRectSpaceCompound(
+        return GuiRectSpaceCompound(
             type,
             iconGenerator,
             onClick,
@@ -253,7 +253,7 @@ class GUIPageBuilder(
             addSlots(rectSlotCompound)
             defineSlots(
                 rectSlotCompound,
-                GUISpaceCompoundElement(this)
+                GuiSpaceCompoundElement(this)
             )
         }
     }
@@ -265,13 +265,13 @@ class GUIPageBuilder(
     fun compoundScroll(
         slots: InventorySlotCompound,
         icon: ItemStack,
-        compound: GUISpaceCompound<*>,
+        compound: GuiSpaceCompound<*>,
         scrollDistance: Int = 1,
         scrollTimes: Int = 1,
         reverse: Boolean = false
     ) = defineSlots(
         slots,
-        GUISpaceCompoundScrollButton(icon, compound, scrollDistance.absoluteValue, scrollTimes, reverse)
+        GuiSpaceCompoundScrollButton(icon, compound, scrollDistance.absoluteValue, scrollTimes, reverse)
     )
 
     /**
@@ -281,12 +281,12 @@ class GUIPageBuilder(
     fun compoundScroll(
         slots: InventorySlotCompound,
         icon: ItemStack,
-        compound: GUIRectSpaceCompound<*>,
+        compound: GuiRectSpaceCompound<*>,
         scrollTimes: Int = 1,
         reverse: Boolean = false
     ) = defineSlots(
         slots,
-        GUISpaceCompoundScrollButton(icon, compound, scrollTimes, reverse)
+        GuiSpaceCompoundScrollButton(icon, compound, scrollTimes, reverse)
     )
 
 }

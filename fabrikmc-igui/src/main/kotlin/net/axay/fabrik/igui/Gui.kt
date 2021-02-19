@@ -8,36 +8,36 @@ import net.minecraft.item.Items
 import java.util.*
 import kotlin.collections.HashSet
 
-class GUIData(
-    val guiType: GUIType,
+class GuiData(
+    val guiType: GuiType,
     val title: String?,
-    internal val pages: Map<Int, GUIPage>,
+    internal val pages: Map<Int, GuiPage>,
     val defaultPage: Int,
     val transitionTo: InventoryChangeEffect?,
     val transitionFrom: InventoryChangeEffect?,
-    internal val generalOnClick: ((GUIClickEvent) -> Unit)?
+    internal val generalOnClick: ((GuiClickEvent) -> Unit)?
 )
 
-abstract class GUI(
-    val data: GUIData
+abstract class Gui(
+    val data: GuiData
 ) {
 
     /**
      * Returns the instance beloning to the given player.
      * If not existing, a new instance will be created.
      */
-    abstract fun getInstance(player: PlayerEntity): GUIInstance
+    abstract fun getInstance(player: PlayerEntity): GuiInstance
 
     /**
-     * Returns all active instances of this GUI.
+     * Returns all active instances of this gui.
      */
-    abstract fun getAllInstances(): Collection<GUIInstance>
+    abstract fun getAllInstances(): Collection<GuiInstance>
 
     /**
-     * Closes this GUI for all viewers and unregisters
+     * Closes this Gui for all viewers and unregisters
      * all instances.
      */
-    abstract fun closeGUI()
+    abstract fun closeGui()
 
     protected fun unregisterAndClose() {
         getAllInstances().forEach {
@@ -48,13 +48,13 @@ abstract class GUI(
 
 }
 
-class GUIShared(
-    guiData: GUIData
-) : GUI(guiData) {
+class GuiShared(
+    guiData: GuiData
+) : Gui(guiData) {
 
-    private var _singleInstance: GUIInstance? = null
+    private var _singleInstance: GuiInstance? = null
     val singleInstance
-        get() = _singleInstance ?: GUIInstance(this, null).apply {
+        get() = _singleInstance ?: GuiInstance(this, null).apply {
             _singleInstance = this
         }
 
@@ -62,18 +62,18 @@ class GUIShared(
 
     override fun getAllInstances() = _singleInstance?.let { listOf(it) } ?: emptyList()
 
-    override fun closeGUI() {
+    override fun closeGui() {
         unregisterAndClose()
         _singleInstance = null
     }
 
 }
 
-class GUIIndividual(
-    guiData: GUIData
-) : GUI(guiData) {
+class GuiIndividual(
+    guiData: GuiData
+) : Gui(guiData) {
 
-    private val playerInstances = HashMap<PlayerEntity, GUIInstance>()
+    private val playerInstances = HashMap<PlayerEntity, GuiInstance>()
 
     override fun getInstance(player: PlayerEntity) =
         playerInstances[player] ?: createInstance(player)
@@ -81,27 +81,27 @@ class GUIIndividual(
     override fun getAllInstances() = playerInstances.values
 
     private fun createInstance(player: PlayerEntity) =
-        GUIInstance(this, player).apply {
+        GuiInstance(this, player).apply {
             playerInstances[player] = this
         }
 
     fun deleteInstance(player: PlayerEntity) = playerInstances.remove(player)?.unregister()
 
-    override fun closeGUI() {
+    override fun closeGui() {
         unregisterAndClose()
         playerInstances.clear()
     }
 
 }
 
-class GUIInstance(
-    val gui: GUI,
+class GuiInstance(
+    val gui: Gui,
     holder: PlayerEntity?
 ) {
 
-    internal val inventory = GUIInventory(this)
+    internal val inventory = GuiInventory(this)
 
-    private val currentElements = HashSet<GUIElement>()
+    private val currentElements = HashSet<GuiElement>()
 
     internal var isInMove: Boolean = false
 
@@ -118,7 +118,7 @@ class GUIInstance(
         gui.data.pages[page]?.let { loadPageUnsafe(it, offsetHorizontally, offsetVertically) }
     }
 
-    internal fun loadPageUnsafe(page: GUIPage, offsetHorizontally: Int = 0, offsetVertically: Int = 0) {
+    internal fun loadPageUnsafe(page: GuiPage, offsetHorizontally: Int = 0, offsetVertically: Int = 0) {
 
         val ifOffset = offsetHorizontally != 0 || offsetVertically != 0
 
@@ -130,7 +130,7 @@ class GUIInstance(
 
             // register this inv for all new elements
             HashSet(page.slots.values).forEach {
-                if (it is GUIElement) {
+                if (it is GuiElement) {
                     currentElements += it
                     it.startUsing(this)
                 }
@@ -145,7 +145,7 @@ class GUIInstance(
     }
 
     internal fun loadContent(
-        content: Map<Int, GUISlot>,
+        content: Map<Int, GuiSlot>,
         offsetHorizontally: Int = 0,
         offsetVertically: Int = 0
     ) {
@@ -166,7 +166,7 @@ class GUIInstance(
         content.forEach {
 
             val slot = it.value
-            if (slot is GUIElement) {
+            if (slot is GuiElement) {
 
                 if (ifOffset) {
                     val invSlot = InventorySlot.fromRealSlot(it.key, dimensions)
@@ -184,7 +184,7 @@ class GUIInstance(
 
     /**
      * Stops KSpigot from listening to actions in this
-     * GUI anymore.
+     * Gui anymore.
      */
     fun unregister() {
         // unregister this inv from all elements
@@ -193,14 +193,14 @@ class GUIInstance(
     }
 
     /**
-     * @return True, if the [inventory] belongs to this GUI.
+     * @return True, if the [inventory] belongs to this Gui.
      */
-    fun isThisInv(inventory: GUIInventory) = inventory == this.inventory
+    fun isThisInv(inventory: GuiInventory) = inventory == this.inventory
 
     /**
-     * Loads the specified page in order to display it in the GUI.
+     * Loads the specified page in order to display it in the Gui.
      */
-    fun loadPage(page: GUIPage) = loadPageUnsafe(page)
+    fun loadPage(page: GuiPage) = loadPageUnsafe(page)
 
     /**
      * Temporarily sets the given item at the given slots.

@@ -10,8 +10,8 @@ import net.minecraft.screen.GenericContainerScreenHandler
 import net.minecraft.screen.NamedScreenHandlerFactory
 import net.minecraft.screen.ScreenHandler
 
-class GUIInventory(
-    val guiInstance: GUIInstance
+class GuiInventory(
+    val guiInstance: GuiInstance
 ) : SimpleInventory(guiInstance.gui.data.guiType.dimensions.slotAmount - 1), NamedScreenHandlerFactory {
     val views = HashMap<PlayerEntity, GenericContainerScreenHandler>()
 
