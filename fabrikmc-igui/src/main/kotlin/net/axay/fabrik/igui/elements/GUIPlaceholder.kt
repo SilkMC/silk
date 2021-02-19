@@ -1,18 +1,17 @@
 package net.axay.fabrik.igui.elements
 
-import net.axay.fabrik.igui.ForInventory
 import net.axay.fabrik.igui.GUIClickEvent
 import net.axay.fabrik.igui.GUIElement
 import net.minecraft.item.ItemStack
 
-class GUIPlaceholder<T : ForInventory>(
+class GUIPlaceholder(
     private val icon: ItemStack
-) : GUIElement<T>() {
+) : GUIElement() {
 
     override fun getItemStack(slot: Int) = icon
 
-    override fun onClickElement(clickEvent: GUIClickEvent<T>) {
-        clickEvent.bukkitEvent.isCancelled = true
+    override fun onClickElement(clickEvent: GUIClickEvent) {
+        clickEvent.isCancelled = true
     }
 
 }
