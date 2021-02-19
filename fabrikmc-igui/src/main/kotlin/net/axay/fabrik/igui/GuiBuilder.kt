@@ -8,7 +8,7 @@ import kotlin.math.absoluteValue
 
 fun igui(
     type: GuiType,
-    guiCreator: GuiCreator = IndividualGuiCreator(),
+    guiCreator: GuiCreator = IndividualGuiCreator,
     builder: GuiBuilder.() -> Unit,
 ) = GuiBuilder(type, guiCreator).apply(builder).build()
 
