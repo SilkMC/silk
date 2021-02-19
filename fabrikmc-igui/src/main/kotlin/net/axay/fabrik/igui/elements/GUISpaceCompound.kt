@@ -116,7 +116,7 @@ abstract class AbstractGUISpaceCompound<E> internal constructor(
     }
 
     internal fun onClickElement(clickEvent: GUIClickEvent) {
-        val element = contentAtSlot(clickEvent.slot) ?: kotlin.run {
+        val element = contentAtSlot(clickEvent.slotIndex) ?: kotlin.run {
             return
         }
         onClick?.invoke(clickEvent, element)

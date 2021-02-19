@@ -23,7 +23,7 @@ class GUIScreenHandler(
     override fun insertItem(stack: ItemStack, startIndex: Int, endIndex: Int, fromLast: Boolean): Boolean {
         if (guiInstance.isInMove) return false
 
-        val shouldCancel = (startIndex .. endIndex).any {
+        val shouldCancel = (startIndex..endIndex).any {
             guiInstance.currentPage.slots[it]?.shouldCancel(
                 GUIClickEvent(
                     guiInstance, playerInv.player, GUIActionType.INSERT,
@@ -46,7 +46,8 @@ class GUIScreenHandler(
         if (guiInstance.isInMove) return ItemStack.EMPTY
 
         val slot = guiInstance.currentPage.slots[slotIndex]
-        val event = GUIClickEvent(guiInstance, player, GUIActionType.fromSlotActionType(actionType, clickData))
+        val event =
+            GUIClickEvent(guiInstance, player, GUIActionType.fromSlotActionType(actionType, clickData), slotIndex)
 
         slot?.onClick(event)
 
