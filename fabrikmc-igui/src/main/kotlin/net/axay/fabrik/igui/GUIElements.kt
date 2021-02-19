@@ -4,7 +4,6 @@ import net.minecraft.item.ItemStack
 
 abstract class GUISlot {
     abstract fun shouldCancel(clickEvent: GUIClickEvent): Boolean
-
     abstract fun onClick(clickEvent: GUIClickEvent)
 }
 
