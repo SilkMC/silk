@@ -56,7 +56,6 @@ class GUIShared(
     val singleInstance
         get() = _singleInstance ?: GUIInstance(this, null).apply {
             _singleInstance = this
-            register()
         }
 
     override fun getInstance(player: PlayerEntity) = singleInstance
@@ -71,9 +70,7 @@ class GUIShared(
 }
 
 class GUIIndividual(
-    guiData: GUIData,
-    resetOnClose: Boolean,
-    resetOnQuit: Boolean
+    guiData: GUIData
 ) : GUI(guiData) {
 
     private val playerInstances = HashMap<PlayerEntity, GUIInstance>()
@@ -86,7 +83,6 @@ class GUIIndividual(
     private fun createInstance(player: PlayerEntity) =
         GUIInstance(this, player).apply {
             playerInstances[player] = this
-            register()
         }
 
     fun deleteInstance(player: PlayerEntity) = playerInstances.remove(player)?.unregister()
@@ -94,22 +90,6 @@ class GUIIndividual(
     override fun closeGUI() {
         unregisterAndClose()
         playerInstances.clear()
-    }
-
-    init {
-
-        if (resetOnClose) {
-            listen<InventoryCloseEvent> {
-                deleteInstance(it.player as? Player ?: return@listen)
-            }
-        }
-
-        if (resetOnQuit) {
-            listen<PlayerQuitEvent> {
-                deleteInstance(it.player)
-            }
-        }
-
     }
 
 }
@@ -203,25 +183,13 @@ class GUIInstance(
     }
 
     /**
-     * Registers this GUI.
-     * (KSpigot will listen for actions in the inventory.)
-     */
-    @Suppress("UNCHECKED_CAST")
-    fun register() = GUIHolder.register(this)
-
-    /**
      * Stops KSpigot from listening to actions in this
      * GUI anymore.
      */
     fun unregister() {
-
-        @Suppress("UNCHECKED_CAST")
-        (GUIHolder.unregister(this))
-
         // unregister this inv from all elements
         currentElements.forEach { it.stopUsing(this) }
         currentElements.clear()
-
     }
 
     /**
