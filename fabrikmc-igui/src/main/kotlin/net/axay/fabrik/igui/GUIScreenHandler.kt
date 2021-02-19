@@ -18,6 +18,8 @@ class GUIScreenHandler(
     playerInv, inv,
     guiInstance.gui.data.guiType.dimensions.height
 ) {
+    val Slot.posIndex get() = slots.indexOf(this)
+
     override fun insertItem(stack: ItemStack, startIndex: Int, endIndex: Int, fromLast: Boolean): Boolean {
         if (guiInstance.isInMove) return false
 
@@ -50,7 +52,12 @@ class GUIScreenHandler(
         else ItemStack.EMPTY
     }
 
-/*    override fun transferSlot(player: PlayerEntity, index: Int): ItemStack {
+    override fun close(player: PlayerEntity) {
+        if (guiInstance.gui is GUIIndividual)
+            guiInstance.gui.deleteInstance(player)
+    }
+
+    /*    override fun transferSlot(player: PlayerEntity, index: Int): ItemStack {
         if (guiInstance.isInMove) return ItemStack.EMPTY
 
         val event = GUIClickEvent(guiInstance, player)
@@ -64,8 +71,10 @@ class GUIScreenHandler(
     override fun canInsertIntoSlot(slot: Slot): Boolean {
         if (guiInstance.isInMove) return false
 
-        return guiInstance.currentPage.slots[slots.indexOf(slot)]?.shouldCancel(
-            GUIClickEvent(guiInstance, playerInv.player, GUIActionType.INSERT)
+        val slotIndex = slot.posIndex
+
+        return guiInstance.currentPage.slots[slotIndex]?.shouldCancel(
+            GUIClickEvent(guiInstance, playerInv.player, GUIActionType.INSERT, slotIndex)
         ) == false
     }
 
