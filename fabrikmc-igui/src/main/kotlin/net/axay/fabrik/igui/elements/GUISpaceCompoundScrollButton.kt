@@ -1,19 +1,18 @@
 package net.axay.fabrik.igui.elements
 
-import net.axay.fabrik.igui.ForInventory
 import net.axay.kspigot.runnables.task
 import net.minecraft.item.ItemStack
 
-class GUISpaceCompoundScrollButton<T : ForInventory>(
+class GUISpaceCompoundScrollButton(
 
     icon: ItemStack,
 
-    private val compound: AbstractGUISpaceCompound<T, *>,
+    private val compound: AbstractGUISpaceCompound<*>,
     private val scrollDistance: Int,
     private val scrollTimes: Int,
     private val reverse: Boolean = false
 
-) : GUIButton<T>(icon, {
+) : GUIButton(icon, {
 
     if (scrollTimes > 1) {
         task(
@@ -30,7 +29,7 @@ class GUISpaceCompoundScrollButton<T : ForInventory>(
 
     constructor(
         icon: ItemStack,
-        compound: GUIRectSpaceCompound<T, *>,
+        compound: GUIRectSpaceCompound<*>,
         scrollTimes: Int = 1,
         reverse: Boolean = false
     ) : this(icon, compound, compound.compoundWidth, scrollTimes, reverse)
