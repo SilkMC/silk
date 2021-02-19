@@ -12,7 +12,7 @@ import net.minecraft.screen.ScreenHandler
 
 class GuiInventory(
     val guiInstance: GuiInstance
-) : SimpleInventory(guiInstance.gui.data.guiType.dimensions.slotAmount - 1), NamedScreenHandlerFactory {
+) : SimpleInventory(guiInstance.gui.data.guiType.dimensions.slotAmount), NamedScreenHandlerFactory {
     val views = HashMap<PlayerEntity, GenericContainerScreenHandler>()
 
     override fun createMenu(syncId: Int, playerInv: PlayerInventory, player: PlayerEntity): ScreenHandler {
