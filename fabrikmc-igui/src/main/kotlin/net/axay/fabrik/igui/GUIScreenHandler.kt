@@ -25,7 +25,10 @@ class GUIScreenHandler(
 
         val shouldCancel = (startIndex .. endIndex).any {
             guiInstance.currentPage.slots[it]?.shouldCancel(
-                GUIClickEvent(guiInstance, playerInv.player, GUIActionType.INSERT)
+                GUIClickEvent(
+                    guiInstance, playerInv.player, GUIActionType.INSERT,
+                    if (fromLast) endIndex else startIndex
+                )
             ) == true
         }
 
