@@ -1,20 +1,15 @@
 package net.axay.fabrik.igui
 
-import net.axay.fabrik.igui.GUI
-import net.axay.fabrik.igui.GUIInstance
-import org.bukkit.entity.Player
-import org.bukkit.inventory.InventoryView
+import net.minecraft.entity.player.PlayerEntity
 
-fun Player.openGUI(gui: GUI<*>, page: Int? = null): InventoryView? {
-    closeInventory()
+fun PlayerEntity.openGUI(gui: GUI, page: Int? = null) {
     return openGUIInstance(gui.getInstance(this), page)
 }
 
-internal fun Player.openGUIInstance(guiInstance: GUIInstance<*>, page: Int? = null): InventoryView? {
-
+internal fun PlayerEntity.openGUIInstance(guiInstance: GUIInstance, page: Int? = null) {
     if (page != null)
         guiInstance.loadPageUnsafe(page)
 
-    return openInventory(guiInstance.bukkitInventory)
-
+    openHandledScreen(guiInstance.inventory)
+    return
 }
