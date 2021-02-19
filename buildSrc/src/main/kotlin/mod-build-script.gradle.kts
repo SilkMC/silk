@@ -1,7 +1,4 @@
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseUploadTask
-import com.matthewprenger.cursegradle.Options
-import net.fabricmc.loom.task.RemapJarTask
+import BuildConstants.minecraftVersion
 import org.gradle.kotlin.dsl.*
 
 /*
@@ -9,7 +6,6 @@ import org.gradle.kotlin.dsl.*
  */
 
 // check these on https://modmuss50.me/fabric.html
-val minecraftVersion = "1.16.5"
 val fabricVersion = "0.30.0+1.16"
 val yarnMappings = "1.16.5+build.4"
 val loaderVersion = "0.11.1"
@@ -66,25 +62,4 @@ tasks.processResources {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-}
-
-/**
- * PUBLISH
- */
-
-tasks.withType<CurseUploadTask> {
-    dependsOn(tasks.withType<RemapJarTask>())
-}
-
-curseforge {
-    apiKey = property("curseforge.token") ?: ""
-    project(closureOf<CurseProject> {
-        id = "447425"
-
-        releaseType = status
-        addGameVersion(minecraftVersion)
-    })
-    options(closureOf<Options> {
-        forgeGradleIntegration = false
-    })
 }
