@@ -1,16 +1,14 @@
 package net.axay.fabrik.igui.elements
 
 import net.axay.fabrik.igui.*
-import net.axay.fabrik.igui.changeGUI
-import net.axay.kspigot.gui.*
 import net.minecraft.item.ItemStack
 
-class GUIButtonInventoryChange<T : ForInventory>(
+class GUIButtonInventoryChange(
     icon: ItemStack,
-    changeToGUICallback: () -> GUI<*>,
+    changeToGUICallback: () -> GUI,
     changeToPageInt: Int?,
-    onChange: ((GUIClickEvent<T>) -> Unit)?
-) : GUIButton<T>(icon, {
+    onChange: ((GUIClickEvent) -> Unit)?
+) : GUIButton(icon, {
 
     val changeToGUI = changeToGUICallback.invoke().getInstance(it.player)
 
