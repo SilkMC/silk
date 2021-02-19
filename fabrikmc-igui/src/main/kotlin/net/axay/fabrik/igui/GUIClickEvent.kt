@@ -1,10 +1,9 @@
 package net.axay.fabrik.igui
 
-import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryClickEvent
+import net.minecraft.entity.player.PlayerEntity
 
-class GUIClickEvent<T : ForInventory>(
-    val bukkitEvent: InventoryClickEvent,
-    val guiInstance: GUIInstance<T>,
-    val player: Player
+class GUIClickEvent(
+    val guiInstance: GUIInstance,
+    val player: PlayerEntity,
+    val type: GUIActionType
 )
