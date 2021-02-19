@@ -2,41 +2,36 @@
 
 package net.axay.fabrik.igui
 
-import net.axay.kspigot.event.listen
-import net.axay.kspigot.extensions.bukkit.closeForViewers
-import net.axay.kspigot.gui.*
-import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.inventory.Inventory
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import java.util.*
 import kotlin.collections.HashSet
 
-class GUIData<T : ForInventory>(
-    val guiType: IGUIType<T>,
+class GUIData(
+    val guiType: GUIType,
     val title: String?,
-    internal val pages: Map<Int, GUIPage<T>>,
+    internal val pages: Map<Int, GUIPage>,
     val defaultPage: Int,
     val transitionTo: InventoryChangeEffect?,
     val transitionFrom: InventoryChangeEffect?,
-    internal val generalOnClick: ((GUIClickEvent<T>) -> Unit)?
+    internal val generalOnClick: ((GUIClickEvent) -> Unit)?
 )
 
-abstract class GUI<T : ForInventory>(
-    val data: GUIData<T>
+abstract class GUI(
+    val data: GUIData
 ) {
 
     /**
      * Returns the instance beloning to the given player.
      * If not existing, a new instance will be created.
      */
-    abstract fun getInstance(player: Player): GUIInstance<T>
+    abstract fun getInstance(player: PlayerEntity): GUIInstance
 
     /**
      * Returns all active instances of this GUI.
      */
-    abstract fun getAllInstances(): Collection<GUIInstance<T>>
+    abstract fun getAllInstances(): Collection<GUIInstance>
 
     /**
      * Closes this GUI for all viewers and unregisters
@@ -46,25 +41,25 @@ abstract class GUI<T : ForInventory>(
 
     protected fun unregisterAndClose() {
         getAllInstances().forEach {
-            it.bukkitInventory.closeForViewers()
+            it.inventory.closeForViewers()
             it.unregister()
         }
     }
 
 }
 
-class GUIShared<T : ForInventory>(
-    guiData: GUIData<T>
-) : GUI<T>(guiData) {
+class GUIShared(
+    guiData: GUIData
+) : GUI(guiData) {
 
-    private var _singleInstance: GUIInstance<T>? = null
+    private var _singleInstance: GUIInstance? = null
     val singleInstance
         get() = _singleInstance ?: GUIInstance(this, null).apply {
             _singleInstance = this
             register()
         }
 
-    override fun getInstance(player: Player) = singleInstance
+    override fun getInstance(player: PlayerEntity) = singleInstance
 
     override fun getAllInstances() = _singleInstance?.let { listOf(it) } ?: emptyList()
 
@@ -75,26 +70,26 @@ class GUIShared<T : ForInventory>(
 
 }
 
-class GUIIndividual<T : ForInventory>(
-    guiData: GUIData<T>,
+class GUIIndividual(
+    guiData: GUIData,
     resetOnClose: Boolean,
     resetOnQuit: Boolean
-) : GUI<T>(guiData) {
+) : GUI(guiData) {
 
-    private val playerInstances = HashMap<Player, GUIInstance<T>>()
+    private val playerInstances = HashMap<PlayerEntity, GUIInstance>()
 
-    override fun getInstance(player: Player) =
+    override fun getInstance(player: PlayerEntity) =
         playerInstances[player] ?: createInstance(player)
 
     override fun getAllInstances() = playerInstances.values
 
-    private fun createInstance(player: Player) =
+    private fun createInstance(player: PlayerEntity) =
         GUIInstance(this, player).apply {
             playerInstances[player] = this
             register()
         }
 
-    fun deleteInstance(player: Player) = playerInstances.remove(player)?.unregister()
+    fun deleteInstance(player: PlayerEntity) = playerInstances.remove(player)?.unregister()
 
     override fun closeGUI() {
         unregisterAndClose()
@@ -119,14 +114,14 @@ class GUIIndividual<T : ForInventory>(
 
 }
 
-class GUIInstance<T : ForInventory>(
-    val gui: GUI<T>,
-    holder: Player?
+class GUIInstance(
+    val gui: GUI,
+    holder: PlayerEntity?
 ) {
 
-    internal val bukkitInventory = gui.data.guiType.createBukkitInv(holder, gui.data.title)
+    internal val inventory = GUIInventory(this)
 
-    private val currentElements = HashSet<GUIElement<*>>()
+    private val currentElements = HashSet<GUIElement>()
 
     internal var isInMove: Boolean = false
 
@@ -143,7 +138,7 @@ class GUIInstance<T : ForInventory>(
         gui.data.pages[page]?.let { loadPageUnsafe(it, offsetHorizontally, offsetVertically) }
     }
 
-    internal fun loadPageUnsafe(page: GUIPage<*>, offsetHorizontally: Int = 0, offsetVertically: Int = 0) {
+    internal fun loadPageUnsafe(page: GUIPage, offsetHorizontally: Int = 0, offsetVertically: Int = 0) {
 
         val ifOffset = offsetHorizontally != 0 || offsetVertically != 0
 
@@ -170,7 +165,7 @@ class GUIInstance<T : ForInventory>(
     }
 
     internal fun loadContent(
-        content: Map<Int, GUISlot<*>>,
+        content: Map<Int, GUISlot>,
         offsetHorizontally: Int = 0,
         offsetVertically: Int = 0
     ) {
@@ -183,9 +178,9 @@ class GUIInstance<T : ForInventory>(
         if (ifOffset) {
             dimensions.invSlots.forEach {
                 val slotToClear = dimensions.invSlotsWithRealSlots[it.add(offsetHorizontally, offsetVertically)]
-                if (slotToClear != null) bukkitInventory.clear(slotToClear)
+                if (slotToClear != null) inventory.setStack(slotToClear, ItemStack(Items.AIR))
             }
-        } else bukkitInventory.clear()
+        } else inventory.clear()
 
         // render the given content
         content.forEach {
@@ -197,9 +192,9 @@ class GUIInstance<T : ForInventory>(
                     val invSlot = InventorySlot.fromRealSlot(it.key, dimensions)
                     if (invSlot != null) {
                         val offsetSlot = invSlot.add(offsetHorizontally, offsetVertically).realSlotIn(dimensions)
-                        if (offsetSlot != null) bukkitInventory.setItem(offsetSlot, slot.getItemStack(offsetSlot))
+                        if (offsetSlot != null) inventory.setStack(offsetSlot, slot.getItemStack(offsetSlot))
                     }
-                } else bukkitInventory.setItem(it.key, slot.getItemStack(it.key))
+                } else inventory.setStack(it.key, slot.getItemStack(it.key))
 
             }
 
@@ -212,7 +207,7 @@ class GUIInstance<T : ForInventory>(
      * (KSpigot will listen for actions in the inventory.)
      */
     @Suppress("UNCHECKED_CAST")
-    fun register() = GUIHolder.register(this as GUIInstance<ForInventory>)
+    fun register() = GUIHolder.register(this)
 
     /**
      * Stops KSpigot from listening to actions in this
@@ -221,7 +216,7 @@ class GUIInstance<T : ForInventory>(
     fun unregister() {
 
         @Suppress("UNCHECKED_CAST")
-        (GUIHolder.unregister(this as GUIInstance<ForInventory>))
+        (GUIHolder.unregister(this))
 
         // unregister this inv from all elements
         currentElements.forEach { it.stopUsing(this) }
@@ -232,19 +227,19 @@ class GUIInstance<T : ForInventory>(
     /**
      * @return True, if the [inventory] belongs to this GUI.
      */
-    fun isThisInv(inventory: Inventory) = inventory == bukkitInventory
+    fun isThisInv(inventory: GUIInventory) = inventory == this.inventory
 
     /**
      * Loads the specified page in order to display it in the GUI.
      */
-    fun loadPage(page: GUIPage<T>) = loadPageUnsafe(page)
+    fun loadPage(page: GUIPage) = loadPageUnsafe(page)
 
     /**
      * Temporarily sets the given item at the given slots.
      */
-    operator fun set(slot: InventorySlotCompound<T>, value: ItemStack) {
+    operator fun set(slot: InventorySlotCompound, value: ItemStack) {
         slot.realSlotsWithInvType(gui.data.guiType).forEach {
-            bukkitInventory.setItem(it, value)
+            inventory.setStack(it, value)
         }
     }
 
