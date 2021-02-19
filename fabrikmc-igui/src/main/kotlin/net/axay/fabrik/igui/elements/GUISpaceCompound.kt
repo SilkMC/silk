@@ -3,17 +3,16 @@
 package net.axay.fabrik.igui.elements
 
 import net.axay.fabrik.igui.*
-import net.axay.kspigot.gui.*
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 
-class GUISpaceCompoundElement<T : ForInventory, E> internal constructor(
-    private val compound: AbstractGUISpaceCompound<T, E>
-) : GUIElement<T>() {
+class GUISpaceCompoundElement<E> internal constructor(
+    private val compound: AbstractGUISpaceCompound<E>
+) : GUIElement() {
 
     override fun getItemStack(slot: Int) = compound.getItemStack(slot)
 
-    override fun onClickElement(clickEvent: GUIClickEvent<T>) {
+    override fun onClickElement(clickEvent: GUIClickEvent) {
         compound.onClickElement(clickEvent)
     }
 
@@ -23,38 +22,38 @@ class GUISpaceCompoundElement<T : ForInventory, E> internal constructor(
      * added / removed to / from a HashSet
      */
 
-    override fun startUsing(gui: GUIInstance<*>) = compound.registerGUI(gui)
+    override fun startUsing(gui: GUIInstance) = compound.registerGUI(gui)
 
-    override fun stopUsing(gui: GUIInstance<*>) = compound.unregisterGUI(gui)
+    override fun stopUsing(gui: GUIInstance) = compound.unregisterGUI(gui)
 
 }
 
-class GUIRectSpaceCompound<T : ForInventory, E>(
-    invType: IGUIType<T>,
+class GUIRectSpaceCompound<E>(
+    invType: GUIType,
     iconGenerator: (E) -> ItemStack,
-    onClick: ((GUIClickEvent<T>, E) -> Unit)?,
+    onClick: ((GUIClickEvent, E) -> Unit)?,
     internal val compoundWidth: Int
-) : AbstractGUISpaceCompound<T, E>(invType, iconGenerator, onClick) {
+) : AbstractGUISpaceCompound<E>(invType, iconGenerator, onClick) {
 
     override fun handleScrollEndReached(newProgress: Int, internalSlotsSize: Int, contentSize: Int) =
         (internalSlotsSize + newProgress <= contentSize + (compoundWidth - (contentSize % compoundWidth)))
 
 }
 
-class GUISpaceCompound<T : ForInventory, E>(
-    invType: IGUIType<T>,
+class GUISpaceCompound<E>(
+    invType: GUIType,
     iconGenerator: (E) -> ItemStack,
-    onClick: ((GUIClickEvent<T>, E) -> Unit)?
-) : AbstractGUISpaceCompound<T, E>(invType, iconGenerator, onClick) {
+    onClick: ((GUIClickEvent, E) -> Unit)?
+) : AbstractGUISpaceCompound<E>(invType, iconGenerator, onClick) {
 
     override fun handleScrollEndReached(newProgress: Int, internalSlotsSize: Int, contentSize: Int) = false
 
 }
 
-abstract class AbstractGUISpaceCompound<T : ForInventory, E> internal constructor(
-    val guiType: IGUIType<T>,
+abstract class AbstractGUISpaceCompound<E> internal constructor(
+    val guiType: GUIType,
     private val iconGenerator: (E) -> ItemStack,
-    private val onClick: ((GUIClickEvent<T>, E) -> Unit)?
+    private val onClick: ((GUIClickEvent, E) -> Unit)?
 ) {
 
     private val content = ArrayList<E>()
@@ -66,7 +65,7 @@ abstract class AbstractGUISpaceCompound<T : ForInventory, E> internal constructo
 
     private var contentSort: () -> Unit = { }
 
-    private val registeredGUIs = HashSet<GUIInstance<*>>()
+    private val registeredGUIs = HashSet<GUIInstance>()
 
     private fun contentAtSlot(slot: Int) = currentContent.getOrNull(internalSlots.indexOf(slot))
 
@@ -114,15 +113,15 @@ abstract class AbstractGUISpaceCompound<T : ForInventory, E> internal constructo
             ?: ItemStack(Items.AIR)
     }
 
-    internal fun onClickElement(clickEvent: GUIClickEvent<T>) {
+    internal fun onClickElement(clickEvent: GUIClickEvent) {
         val element = contentAtSlot(clickEvent.bukkitEvent.slot) ?: kotlin.run {
-            clickEvent.bukkitEvent.isCancelled = true
+            clickEvent.isCancelled = true
             return
         }
         onClick?.invoke(clickEvent, element)
     }
 
-    internal fun addSlots(slots: InventorySlotCompound<T>) {
+    internal fun addSlots(slots: InventorySlotCompound) {
         slots.realSlotsWithInvType(guiType).forEach {
             if (!internalSlots.contains(it))
                 internalSlots.add(it)
@@ -130,11 +129,11 @@ abstract class AbstractGUISpaceCompound<T : ForInventory, E> internal constructo
         internalSlots.sort()
     }
 
-    internal fun registerGUI(gui: GUIInstance<*>) {
+    internal fun registerGUI(gui: GUIInstance) {
         registeredGUIs += gui
     }
 
-    internal fun unregisterGUI(gui: GUIInstance<*>) {
+    internal fun unregisterGUI(gui: GUIInstance) {
         registeredGUIs -= gui
     }
 
@@ -204,7 +203,7 @@ abstract class AbstractGUISpaceCompound<T : ForInventory, E> internal constructo
  * @see GUIPageBuilder.createSimpleCompound
  * @see GUIPageBuilder.createSimpleRectCompound
  */
-open class GUICompoundElement<T : ForInventory>(
+open class GUICompoundElement(
     internal val icon: ItemStack,
-    internal val onClick: ((GUIClickEvent<T>) -> Unit)? = null
+    internal val onClick: ((GUIClickEvent) -> Unit)? = null
 )
