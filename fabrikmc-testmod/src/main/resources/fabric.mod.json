@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "fabrikmc-test",
+  "version": "${version}",
+
+  "name": "FabrikMC Test",
+  "description": "Test mod for Fabrik.",
+  "authors": ["bluefireoly"],
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.axay.fabrik.test.ManagerKt::init"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.8.7",
+    "fabric": "*",
+    "fabric-language-kotlin": "*",
+    "minecraft": "1.16.x"
+  },
+
+  "suggests": {
+    "flamingo": "*"
+  }
+}
