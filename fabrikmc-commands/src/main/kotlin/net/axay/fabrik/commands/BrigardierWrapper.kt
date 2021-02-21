@@ -11,13 +11,19 @@ private typealias SCS = ServerCommandSource
 
 /**
  * Create a new command.
+ *
+ * @param name the name of the root command
+ * @param register if true, the command will automatically be registered
  */
 inline fun command(
     name: String,
     register: Boolean = true,
     builder: LiteralArgumentBuilder<SCS>.() -> Unit
 ): LiteralArgumentBuilder<SCS> =
-    CommandManager.literal(name).apply(builder)
+    CommandManager.literal(name).apply(builder).apply {
+        if (register)
+            setupRegistrationCallback()
+    }
 
 /**
  * Add custom execution logic for this command.
@@ -32,15 +38,20 @@ inline fun LiteralArgumentBuilder<SCS>.simpleExecutes(
 
 /**
  * Add a new literal to this command.
+ *
+ * @param name the name of the literal
  */
 inline fun LiteralArgumentBuilder<SCS>.literal(
     name: String,
     builder: LiteralArgumentBuilder<SCS>.() -> Unit
 ): LiteralArgumentBuilder<SCS> =
-    then(command(name, builder))
+    then(command(name, false, builder))
 
 /**
  * Add an argument.
+ *
+ * @param name the name of the argument
+ * @param type the type of the argument - e.g. IntegerArgumentType.integer() or StringArgumentType.string()
  */
 inline fun <T> LiteralArgumentBuilder<SCS>.argument(
     name: String,
