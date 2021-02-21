@@ -5,5 +5,5 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":${rootProject.name}-core"))
+    modImplementation(project(":${rootProject.name}-core"))
 }
