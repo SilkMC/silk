@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.GenericContainerScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.screen.slot.SlotActionType
+import net.minecraft.server.network.ServerPlayerEntity
 
 class GuiScreenHandler(
     val guiInstance: GuiInstance,
@@ -53,24 +54,16 @@ class GuiScreenHandler(
 
         return if (slot?.shouldCancel(event) != true)
             super.onSlotClick(slotIndex, clickData, actionType, player)
-        else ItemStack.EMPTY
+        else {
+            (player as? ServerPlayerEntity)?.refreshScreenHandler(this)
+            ItemStack.EMPTY
+        }
     }
 
     override fun close(player: PlayerEntity) {
         if (guiInstance.gui is GuiIndividual)
             guiInstance.gui.deleteInstance(player)
     }
-
-    /*    override fun transferSlot(player: PlayerEntity, index: Int): ItemStack {
-        if (guiInstance.isInMove) return ItemStack.EMPTY
-
-        val event = GuiClickEvent(guiInstance, player)
-        guiInstance.currentPage.slots[index]?.onClick(event)
-
-        return if (!event.isCancelled)
-            super.transferSlot(player, index)
-        else ItemStack.EMPTY
-    }*/
 
     override fun canInsertIntoSlot(slot: Slot): Boolean {
         if (guiInstance.isInMove) return false
