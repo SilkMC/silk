@@ -16,7 +16,7 @@ class GuiSpaceCompoundScrollButton(
 
     if (scrollTimes > 1) {
         coroutineTask(
-            period = 1,
+            period = 50,
             howOften = scrollTimes.toLong()
         ) {
             val ifScrolled = if (reverse) compound.scroll(-scrollDistance) else compound.scroll(scrollDistance)

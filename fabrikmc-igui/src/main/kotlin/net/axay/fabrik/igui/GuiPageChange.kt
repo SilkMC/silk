@@ -129,8 +129,7 @@ private inline fun changePageEffect(
 
     var currentOffset = 1
     coroutineTask(
-        sync = true,
-        period = 1,
+        period = 50,
         howOften = doFor.toLong()
     ) {
 
