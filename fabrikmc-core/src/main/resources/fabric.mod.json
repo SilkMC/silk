@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "fabrikmc-core",
+  "version": "${version}",
+
+  "name": "FabrikMC Core",
+  "description": "FabrikMC is an API for using FabricMC with Kotlin.",
+  "authors": ["bluefireoly"],
+
+  "depends": {
+    "fabric": "*",
+    "fabric-language-kotlin": "*",
+    "minecraft": "1.16.x"
+  }
+}
