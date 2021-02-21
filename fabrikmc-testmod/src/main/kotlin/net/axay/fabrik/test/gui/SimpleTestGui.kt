@@ -14,6 +14,7 @@ object SimpleTestGui {
 
         page(1) {
             transitionFrom = PageChangeEffect.SLIDE_HORIZONTALLY
+            transitionTo = PageChangeEffect.SLIDE_HORIZONTALLY
 
             placeholder(Slots.All, ItemStack(Items.WHITE_STAINED_GLASS_PANE))
 
@@ -21,7 +22,6 @@ object SimpleTestGui {
         }
 
         page(2) {
-            transitionFrom = PageChangeEffect.SWIPE_VERTICALLY
 
             placeholder(Slots.All, ItemStack(Items.BLACK_STAINED_GLASS_PANE))
 
