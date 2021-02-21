@@ -9,12 +9,18 @@ import net.minecraft.server.command.ServerCommandSource
 
 private typealias SCS = ServerCommandSource
 
+/**
+ * Create a new command.
+ */
 inline fun command(
     name: String,
     builder: LiteralArgumentBuilder<SCS>.() -> Unit
 ): LiteralArgumentBuilder<SCS> =
     CommandManager.literal(name).apply(builder)
 
+/**
+ * Add custom execution logic for this command.
+ */
 inline fun LiteralArgumentBuilder<SCS>.simpleExecutes(
     crossinline executor: (CommandContext<SCS>) -> Unit
 ): LiteralArgumentBuilder<SCS> =
@@ -23,12 +29,18 @@ inline fun LiteralArgumentBuilder<SCS>.simpleExecutes(
         return@wrapped 1
     }
 
+/**
+ * Add a new literal to this command.
+ */
 inline fun LiteralArgumentBuilder<SCS>.literal(
     name: String,
     builder: LiteralArgumentBuilder<SCS>.() -> Unit
 ): LiteralArgumentBuilder<SCS> =
     then(command(name, builder))
 
+/**
+ * Add an argument.
+ */
 inline fun <T> LiteralArgumentBuilder<SCS>.argument(
     name: String,
     type: ArgumentType<T>,
@@ -36,6 +48,9 @@ inline fun <T> LiteralArgumentBuilder<SCS>.argument(
 ): LiteralArgumentBuilder<SCS> =
     then(CommandManager.argument(name, type).apply(builder))
 
+/**
+ * Add custom suggestion logic for an argument.
+ */
 inline fun RequiredArgumentBuilder<SCS, *>.simpleSuggests(
     crossinline suggestionBuilder: CommandContext<SCS>.() -> Iterable<Any?>
 ) {
