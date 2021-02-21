@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "fabrikmc",
+  "id": "fabrikmc-igui",
   "version": "${version}",
 
-  "name": "FabrikMC",
+  "name": "FabrikMC Inventory GUI",
   "description": "FabrikMC is an API for using FabricMC with Kotlin.",
   "authors": ["bluefireoly"],
 
