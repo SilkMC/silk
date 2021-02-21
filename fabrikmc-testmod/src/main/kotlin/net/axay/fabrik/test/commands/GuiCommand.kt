@@ -15,7 +15,7 @@ val guiCommand = command("gui") {
         argument("guiname", StringArgumentType.string()) {
             simpleSuggests { guis.keys }
             simpleExecutes {
-                val gui = guis[it.getArgument("guiname", String::class.java)]
+                val gui = guis[it.getArgument("guiname")]
                 if (gui != null)
                     it.source.player.openGui(gui)
                 else it.source.sendError(LiteralText("Dieses GUI existiert nicht"))

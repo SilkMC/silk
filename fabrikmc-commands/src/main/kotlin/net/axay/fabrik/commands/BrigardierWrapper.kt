@@ -91,3 +91,8 @@ inline fun RequiredArgumentBuilder<SCS, *>.simpleSuggests(
         builder.buildFuture()
     }
 }
+
+/**
+ * Get the value of this argument.
+ */
+inline fun <reified T> CommandContext<SCS>.getArgument(name: String): T = getArgument(name, T::class.java)
