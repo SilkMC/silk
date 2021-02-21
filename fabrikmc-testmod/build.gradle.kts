@@ -4,6 +4,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":${rootProject.name}-core"))
-    implementation(project(":${rootProject.name}-igui"))
+    modImplementation(project(":${rootProject.name}-core"))
+    modImplementation(project(":${rootProject.name}-igui"))
 }
