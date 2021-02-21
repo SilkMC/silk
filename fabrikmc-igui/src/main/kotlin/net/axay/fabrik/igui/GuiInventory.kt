@@ -2,13 +2,13 @@
 
 package net.axay.fabrik.igui
 
-import net.axay.fabrik.core.text.literalText
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.SimpleInventory
 import net.minecraft.screen.GenericContainerScreenHandler
 import net.minecraft.screen.NamedScreenHandlerFactory
 import net.minecraft.screen.ScreenHandler
+import net.minecraft.text.LiteralText
 
 class GuiInventory(
     val guiInstance: GuiInstance
@@ -21,7 +21,7 @@ class GuiInventory(
         return screenHandler
     }
 
-    override fun getDisplayName() = guiInstance.gui.data.title.literalText
+    override fun getDisplayName() = LiteralText(guiInstance.gui.data.title)
 
     override fun onClose(player: PlayerEntity) {
         views -= player
