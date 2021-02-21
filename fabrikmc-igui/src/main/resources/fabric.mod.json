@@ -11,6 +11,6 @@
     "fabric": "*",
     "fabric-language-kotlin": "*",
     "minecraft": "1.16.x",
-    "fabrik-core": "*"
+    "fabrikmc-core": "*"
   }
 }
