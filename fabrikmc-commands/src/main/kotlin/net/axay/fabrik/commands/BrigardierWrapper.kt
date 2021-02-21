@@ -14,6 +14,7 @@ private typealias SCS = ServerCommandSource
  */
 inline fun command(
     name: String,
+    register: Boolean = true,
     builder: LiteralArgumentBuilder<SCS>.() -> Unit
 ): LiteralArgumentBuilder<SCS> =
     CommandManager.literal(name).apply(builder)
