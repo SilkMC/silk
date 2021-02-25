@@ -1,3 +1,5 @@
+import BuildConstants.curseforgeId
+import BuildConstants.githubRepo
 import BuildConstants.minecraftVersion
 import BuildConstants.projectState
 import com.matthewprenger.cursegradle.CurseProject
@@ -10,20 +12,25 @@ plugins {
 
     id("fabric-loom")
     id("com.matthewprenger.cursegradle")
+
+    `maven-publish`
+    signing
 }
 
-/**
- * PUBLISH
- */
-
-tasks.withType<CurseUploadTask> {
+val curseTasks = tasks.withType<CurseUploadTask> {
     dependsOn(tasks.withType<RemapJarTask>())
+}
+
+tasks.create("publishAndUploadMod") {
+    group = "upload"
+    dependsOn(curseTasks)
+    dependsOn(tasks.getByName("publish"))
 }
 
 curseforge {
     apiKey = property("curseforge.token") ?: ""
     project(closureOf<CurseProject> {
-        id = "447425"
+        id = curseforgeId
 
         releaseType = projectState
         addGameVersion(minecraftVersion)
@@ -31,4 +38,56 @@ curseforge {
     options(closureOf<Options> {
         forgeGradleIntegration = false
     })
+}
+
+publishing {
+    repositories {
+        maven("https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+            credentials {
+                username = property("ossrh.username") as String
+                password = property("ossrh.password") as String
+            }
+        }
+    }
+
+    publications {
+        create<MavenPublication>(project.name) {
+            artifact(tasks.getByName("remapJar").outputs.files.first().canonicalPath)
+            artifact(tasks.getByName("sourcesJar"))
+            artifact(tasks.getByName("javadocJar"))
+
+            this.groupId = project.group.toString()
+            this.artifactId = project.name
+            this.version = project.version.toString()
+
+            pom {
+                name.set(project.name)
+                description.set(project.description)
+
+                developers {
+                    developer {
+                        name.set("bluefireoly")
+                    }
+                }
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+
+                url.set("https://github.com/${githubRepo}")
+
+                scm {
+                    connection.set("scm:git:git://github.com/bluefireoly/fabrikmc.git")
+                    url.set("https://github.com/${githubRepo}/tree/main")
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications)
 }
