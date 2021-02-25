@@ -80,7 +80,7 @@ publishing {
                 url.set("https://github.com/${githubRepo}")
 
                 scm {
-                    connection.set("scm:git:git://github.com/bluefireoly/fabrikmc.git")
+                    connection.set("scm:git:git://github.com/${githubRepo}.git")
                     url.set("https://github.com/${githubRepo}/tree/main")
                 }
             }
