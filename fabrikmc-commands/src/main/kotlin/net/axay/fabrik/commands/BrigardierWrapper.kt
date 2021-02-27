@@ -1,6 +1,7 @@
 package net.axay.fabrik.commands
 
 import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
@@ -28,7 +29,7 @@ inline fun command(
 /**
  * Add custom execution logic for this command.
  */
-inline fun LiteralArgumentBuilder<SCS>.simpleExecutes(
+inline fun ArgumentBuilder<SCS, *>.simpleExecutes(
     crossinline executor: (CommandContext<SCS>) -> Unit
 ) {
     executes wrapped@{
@@ -42,7 +43,7 @@ inline fun LiteralArgumentBuilder<SCS>.simpleExecutes(
  *
  * @param name the name of the literal
  */
-inline fun LiteralArgumentBuilder<SCS>.literal(
+inline fun ArgumentBuilder<SCS, *>.literal(
     name: String,
     builder: LiteralArgumentBuilder<SCS>.() -> Unit
 ) {
@@ -55,24 +56,12 @@ inline fun LiteralArgumentBuilder<SCS>.literal(
  * @param name the name of the argument
  * @param type the type of the argument - e.g. IntegerArgumentType.integer() or StringArgumentType.string()
  */
-inline fun <T> LiteralArgumentBuilder<SCS>.argument(
+inline fun <T> ArgumentBuilder<SCS, *>.argument(
     name: String,
     type: ArgumentType<T>,
     builder: RequiredArgumentBuilder<SCS, T>.() -> Unit
 ) {
     then(CommandManager.argument(name, type).apply(builder))
-}
-
-/**
- * Add custom execution logic for this command and argument.
- */
-inline fun RequiredArgumentBuilder<SCS, *>.simpleExecutes(
-    crossinline executor: (CommandContext<SCS>) -> Unit
-) {
-    executes wrapped@{
-        executor.invoke(it)
-        return@wrapped 1
-    }
 }
 
 /**
