@@ -79,7 +79,7 @@ inline fun RequiredArgumentBuilder<SCS, *>.simpleExecutes(
  * Add custom suggestion logic for an argument.
  */
 inline fun RequiredArgumentBuilder<SCS, *>.simpleSuggests(
-    crossinline suggestionBuilder: CommandContext<SCS>.() -> Iterable<Any?>
+    crossinline suggestionBuilder: (CommandContext<SCS>) -> Iterable<Any?>
 ) {
     suggests { context, builder ->
         suggestionBuilder.invoke(context).forEach {
