@@ -1,4 +1,5 @@
 import BuildConstants.curseforgeId
+import BuildConstants.fabrikVersion
 import BuildConstants.githubRepo
 import BuildConstants.minecraftVersion
 import BuildConstants.projectState
@@ -58,7 +59,7 @@ publishing {
 
             this.groupId = project.group.toString()
             this.artifactId = project.name
-            this.version = project.version.toString()
+            this.version = fabrikVersion
 
             pom {
                 name.set(project.name)
