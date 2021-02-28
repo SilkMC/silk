@@ -5,6 +5,12 @@ package net.axay.fabrik.core.text
 import net.minecraft.text.*
 import net.minecraft.util.Formatting
 
+/**
+ * Opens a [LiteralTextBuilder].
+ *
+ * @param baseText the text you want to begin with, it is okay to let this empty
+ * @param builder the builder which can be used to set the style and add child text components
+ */
 inline fun literalText(
     baseText: String = "",
     builder: LiteralTextBuilder.() -> Unit = { }
@@ -20,6 +26,18 @@ class LiteralTextBuilder(
     var underline: Boolean? = null
     var strikethrough: Boolean? = null
 
+    /**
+     * The text color.
+     * As this is an [Int] representing an RGB color, this can be set in the following way:
+     *
+     * e.g. Medium turquoise:
+     *  - `color = 0x4BD6CB`
+     *  - `color = 4970187`
+     *
+     * e.g. Crimson:
+     *  - `color = 0xF21347`
+     *  - `color = 15864647`
+     */
     var color: Int? = null
 
     var clickEvent: ClickEvent? = null
@@ -38,6 +56,13 @@ class LiteralTextBuilder(
 
     val siblingText = LiteralText("")
 
+    /**
+     * Append text to the parent.
+     *
+     * @param text the raw text (without formatting)
+     * @param inheritStyle if true, this text will inherit the style from its parent
+     * @param builder the builder which can be used to set the style and add child text components
+     */
     inline fun text(
         text: String = "",
         inheritStyle: Boolean = true,
@@ -46,6 +71,9 @@ class LiteralTextBuilder(
         siblingText.append(LiteralTextBuilder(text, currentStyle, inheritStyle).apply(builder).build())
     }
 
+    /**
+     * Adds a line break.
+     */
     fun newLine() {
         siblingText.append(LiteralText("\n"))
     }
