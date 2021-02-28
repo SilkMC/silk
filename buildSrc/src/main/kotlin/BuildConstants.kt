@@ -1,6 +1,6 @@
 object BuildConstants {
-    const val fabrikVersion = "0.0.2"
-    const val projectState = "alpha"
+    const val fabrikVersion = "0.1.0"
+    const val projectState = "beta"
 
     const val curseforgeId = "447425"
     const val githubRepo = "bluefireoly/fabrikmc"
