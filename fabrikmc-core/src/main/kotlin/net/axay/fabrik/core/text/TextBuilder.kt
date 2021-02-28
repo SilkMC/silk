@@ -29,7 +29,7 @@ class LiteralTextBuilder(
         get() = Style.EMPTY
             .withBold(bold)
             .withItalic(italic)
-            //.withUnderline(underline)
+            .let { if (underline == true) it.withFormatting(Formatting.UNDERLINE) else it }
             .let { if (strikethrough == true) it.withFormatting(Formatting.STRIKETHROUGH) else it }
             .let { if (color != null) it.withColor(TextColor.fromRgb(color ?: 0xFFFFFF)) else it }
             .withClickEvent(clickEvent)
