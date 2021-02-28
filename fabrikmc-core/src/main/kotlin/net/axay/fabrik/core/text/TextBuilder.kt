@@ -46,6 +46,10 @@ class LiteralTextBuilder(
         siblingText.append(LiteralTextBuilder(text, currentStyle, inheritStyle).apply(builder).build())
     }
 
+    fun newLine() {
+        siblingText.append(LiteralText("\n"))
+    }
+
     fun build() = LiteralText(text).apply {
         style = currentStyle
         if (siblingText.siblings.isNotEmpty())
