@@ -31,6 +31,8 @@ tasks.create("publishAndUploadMod") {
 curseforge {
     apiKey = property("curseforge.token") ?: ""
     project(closureOf<CurseProject> {
+        mainArtifact(tasks.getByName("remapJar").outputs.files.first())
+
         id = curseforgeId
 
         releaseType = projectState
