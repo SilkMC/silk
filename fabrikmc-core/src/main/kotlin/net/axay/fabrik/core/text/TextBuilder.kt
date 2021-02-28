@@ -5,7 +5,7 @@ package net.axay.fabrik.core.text
 import net.minecraft.text.*
 import net.minecraft.util.Formatting
 
-inline fun fabrikText(
+inline fun literalText(
     baseText: String = "",
     builder: LiteralTextBuilder.() -> Unit = { }
 ) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build()
@@ -29,7 +29,7 @@ class LiteralTextBuilder(
         get() = Style.EMPTY
             .withBold(bold)
             .withItalic(italic)
-            .withUnderline(underline)
+            //.withUnderline(underline)
             .let { if (strikethrough == true) it.withFormatting(Formatting.STRIKETHROUGH) else it }
             .let { if (color != null) it.withColor(TextColor.fromRgb(color ?: 0xFFFFFF)) else it }
             .withClickEvent(clickEvent)
@@ -38,7 +38,7 @@ class LiteralTextBuilder(
 
     val siblingText = LiteralText("")
 
-    inline fun literalText(
+    inline fun text(
         text: String = "",
         inheritStyle: Boolean = true,
         builder: LiteralTextBuilder.() -> Unit = { }
@@ -48,6 +48,7 @@ class LiteralTextBuilder(
 
     fun build() = LiteralText(text).apply {
         style = currentStyle
-        append(siblingText)
+        if (siblingText.siblings.isNotEmpty())
+            append(siblingText)
     }
 }
