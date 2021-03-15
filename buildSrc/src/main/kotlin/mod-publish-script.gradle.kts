@@ -55,7 +55,10 @@ publishing {
 
     publications {
         create<MavenPublication>(project.name) {
-            artifact(tasks.getByName("remapJar").outputs.files.first().canonicalPath)
+            val remapJarTask = tasks.named("remapJar").get()
+            artifact(remapJarTask) {
+                builtBy(remapJarTask)
+            }
             artifact(tasks.getByName("sourcesJar"))
             artifact(tasks.getByName("javadocJar"))
 
