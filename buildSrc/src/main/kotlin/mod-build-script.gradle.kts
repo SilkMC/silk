@@ -15,6 +15,8 @@ plugins {
 
     id("fabric-loom")
     id("com.matthewprenger.cursegradle")
+
+    kotlin("plugin.serialization")
 }
 
 /*
