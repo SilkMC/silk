@@ -1,8 +1,10 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
+@file:UseSerializers(IdentifierSerializer::class)
 
 package net.axay.fabrik.core.math
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
 import net.axay.fabrik.core.Fabrik
 import net.axay.fabrik.core.serialization.serializers.IdentifierSerializer
 import net.minecraft.server.network.ServerPlayerEntity
@@ -17,7 +19,7 @@ import kotlin.math.roundToInt
 @Serializable
 class FabrikPosition(
     val x: Double, val y: Double, val z: Double,
-    @Serializable(with = IdentifierSerializer::class) val worldIdentifier: Identifier? = null,
+    val worldIdentifier: Identifier? = null,
     val pitch: Float = 0f, val yaw: Float = 0f,
 ) {
     constructor(
