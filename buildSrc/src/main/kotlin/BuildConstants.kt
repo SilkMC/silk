@@ -1,5 +1,5 @@
 object BuildConstants {
-    const val fabrikVersion = "0.2.0"
+    const val fabrikVersion = "0.2.2"
     const val projectState = "beta"
 
     const val curseforgeId = "447425"
@@ -12,5 +12,5 @@ object BuildConstants {
     const val fabricApiVersion = "0.32.0+1.16"
     const val yarnMappingsVersion = "1.16.5+build.5:v2"
     const val loaderVersion = "0.11.3"
-    const val fabricLanguageKotlinVersion = "1.4.30+build.2"
+    const val fabricLanguageKotlinVersion = "1.5.0+kotlin.1.4.31"
 }
