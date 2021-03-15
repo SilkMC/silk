@@ -2,8 +2,10 @@ package net.axay.fabrik.core
 
 import net.axay.fabrik.core.task.FabrikCoroutineManager
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.minecraft.server.MinecraftServer
 
 object Fabrik {
+    var currentServer: MinecraftServer? = null
 
     /**
      * You should call this function if you intend to
@@ -13,6 +15,7 @@ object Fabrik {
         println("Initializing Fabrik due to init call...")
 
         ServerLifecycleEvents.SERVER_STARTING.register {
+            currentServer = it
             println("Reached SERVER_STARTING state")
         }
 
