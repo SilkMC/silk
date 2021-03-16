@@ -1,4 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
 @file:UseSerializers(IdentifierSerializer::class)
 
 package net.axay.fabrik.core.math
