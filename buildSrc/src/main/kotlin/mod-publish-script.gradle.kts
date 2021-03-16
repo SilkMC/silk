@@ -49,6 +49,10 @@ publishing {
             name = "ossrh"
             credentials(PasswordCredentials::class)
         }
+        maven("https://oss.sonatype.org/content/repositories/snapshots") {
+            name = "ossrhSnapshot"
+            credentials(PasswordCredentials::class)
+        }
     }
 
     publications {
@@ -57,7 +61,9 @@ publishing {
             artifact(remapJarTask) {
                 builtBy(remapJarTask)
             }
-            artifact(tasks.getByName("sourcesJar"))
+            artifact(tasks.named("sourcesJar").get()) {
+                builtBy(tasks.named("remapSourcesJar").get())
+            }
             artifact(tasks.getByName("javadocJar"))
 
             this.groupId = project.group.toString()
