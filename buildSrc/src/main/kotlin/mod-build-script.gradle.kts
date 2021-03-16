@@ -52,14 +52,16 @@ java {
     withJavadocJar()
 }
 
-tasks.processResources {
-    inputs.property("version", project.version)
+tasks {
+    processResources {
+        inputs.property("version", project.version)
 
-    filesMatching("fabric.mod.json") {
-        expand("version" to project.version)
+        filesMatching("fabric.mod.json") {
+            expand("version" to project.version)
+        }
     }
-}
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
 }
