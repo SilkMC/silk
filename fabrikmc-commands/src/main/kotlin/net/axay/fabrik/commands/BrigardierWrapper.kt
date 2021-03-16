@@ -5,6 +5,9 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
+import net.axay.fabrik.core.task.fabrikCoroutineScope
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 
@@ -65,19 +68,21 @@ inline fun <T> ArgumentBuilder<SCS, *>.argument(
 }
 
 /**
- * Add custom suggestion logic for an argument.
+ * Add custom suspending suggestion logic for an argument.
  */
 inline fun RequiredArgumentBuilder<SCS, *>.simpleSuggests(
-    crossinline suggestionBuilder: (CommandContext<SCS>) -> Iterable<Any?>
+    crossinline suggestionBuilder: suspend (CommandContext<SCS>) -> Iterable<Any?>
 ) {
     suggests { context, builder ->
-        suggestionBuilder.invoke(context).forEach {
-            if (it is Int)
-                builder.suggest(it)
-            else
-                builder.suggest(it.toString())
-        }
-        builder.buildFuture()
+        fabrikCoroutineScope.async {
+            suggestionBuilder.invoke(context).forEach {
+                if (it is Int)
+                    builder.suggest(it)
+                else
+                    builder.suggest(it.toString())
+            }
+            builder.build()
+        }.asCompletableFuture()
     }
 }
 
