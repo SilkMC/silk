@@ -3,11 +3,11 @@
 FabrikMC is an API for using FabricMC with Kotlin
 
 It offers:
-- an Inventory GUI API
+- an inventory GUI API
 - a Kotlin wrapper for Brigardier
-- a Kotlin DSL for creating complex Text objects
-- Coroutine Utilities
-- kotlinx.serialization Support
+- a Kotlin DSL for creating complex `Text` objects
+- coroutine utilities
+- kotlinx.serialization support
 - a scoreboard (sideboard) API
 
 This is not Fabric, this is just a Kotlin extension for Fabric - called Fabri<ins>k</ins>.
