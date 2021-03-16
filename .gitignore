@@ -1,14 +1,10 @@
 # Gradle
 .gradle/
 build/
-*/.gradle/
-*/build/
 
-# IntelliJ IDEA
+# Editors (add yours if applicable)
 .idea/
+.vscode/
 
 # Fabric
 run/
-
-# Secret
-gradle.properties
