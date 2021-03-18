@@ -12,4 +12,5 @@ dependencies {
     implementation(kotlin("gradle-plugin", "1.4.31"))
     implementation("net.fabricmc", "fabric-loom", "0.6-SNAPSHOT")
     implementation("gradle.plugin.com.matthewprenger:CurseGradle:1.4.0")
+    implementation("gradle.plugin.com.modrinth.minotaur:Minotaur:1.1.0")
 }

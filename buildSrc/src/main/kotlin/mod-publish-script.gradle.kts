@@ -6,6 +6,7 @@ import BuildConstants.projectState
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseUploadTask
 import com.matthewprenger.cursegradle.Options
+import com.modrinth.minotaur.TaskModrinthUpload
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
@@ -13,19 +14,33 @@ plugins {
 
     id("fabric-loom")
     id("com.matthewprenger.cursegradle")
+    id("com.modrinth.minotaur")
 
     `maven-publish`
     signing
 }
 
-val curseTasks = tasks.withType<CurseUploadTask> {
-    dependsOn(tasks.withType<RemapJarTask>())
-}
+tasks {
+    val curseTasks = withType<CurseUploadTask> {
+        dependsOn(tasks.withType<RemapJarTask>())
+    }
 
-tasks.create("publishAndUploadMod") {
-    group = "upload"
-    dependsOn(curseTasks)
-    dependsOn(tasks.getByName("publish"))
+    val modrinthTask = create<TaskModrinthUpload>("uploadModrinth") {
+        group = "upload"
+        token = findProperty("modrinth.token").toString()
+        projectId = "aTaCgKLW"
+        versionNumber = fabrikVersion
+        uploadFile = tasks.named("remapJar").get()
+        addGameVersion(minecraftVersion)
+        addLoader("fabric")
+    }
+
+    create("publishAndUploadMod") {
+        group = "upload"
+        dependsOn(curseTasks)
+        dependsOn(modrinthTask)
+        dependsOn(tasks.getByName("publish"))
+    }
 }
 
 curseforge {
@@ -34,7 +49,6 @@ curseforge {
         mainArtifact(tasks.getByName("remapJar").outputs.files.first())
 
         id = curseforgeId
-
         releaseType = projectState
         addGameVersion(minecraftVersion)
     })
