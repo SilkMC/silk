@@ -33,6 +33,7 @@ tasks {
         uploadFile = tasks.named("remapJar").get()
         addGameVersion(minecraftVersion)
         addLoader("fabric")
+        releaseType = projectState
     }
 
     create("publishAndUploadMod") {
