@@ -20,12 +20,12 @@ The core module:
 
 Gradle _Kotlin DSL_
 ```kotlin
-implementation("net.axay:fabrikmc-core:version")
+modImplementation("net.axay:fabrikmc-core:version")
 ```
 
 Gradle _Groovy DSL_
 ```groovy
-implementation 'net.axay:fabrikmc-core:version'
+modImplementation 'net.axay:fabrikmc-core:version'
 ```
 
 You can find all **available modules**, and the **current version**, on [Maven Central](https://repo1.maven.org/maven2/net/axay/).
