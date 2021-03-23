@@ -1,14 +1,10 @@
 import BuildConstants.fabricApiVersion
 import BuildConstants.fabricLanguageKotlinVersion
+import BuildConstants.fabricLoaderVersion
 import BuildConstants.fabrikVersion
-import BuildConstants.loaderVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.yarnMappingsVersion
 import org.gradle.kotlin.dsl.*
-
-/*
- * BUILD CONSTANTS
- */
 
 plugins {
     kotlin("jvm")
@@ -17,18 +13,10 @@ plugins {
     id("com.matthewprenger.cursegradle")
 }
 
-/*
- * PROJECT
- */
-
 group = "net.axay"
 version = fabrikVersion
 
 description = "FabrikMC is an API for using FabricMC with Kotlin."
-
-/*
- * DEPENDENCY MANAGEMENT
- */
 
 repositories {
     mavenCentral()
@@ -39,13 +27,9 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings("net.fabricmc:yarn:$yarnMappingsVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
+    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 }
-
-/*
- * BUILD
- */
 
 java {
     withSourcesJar()
