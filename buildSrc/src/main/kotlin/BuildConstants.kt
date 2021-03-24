@@ -1,5 +1,5 @@
 object BuildConstants {
-    const val fabrikVersion = "0.2.3"
+    const val fabrikVersion = "0.2.4"
     const val projectState = "beta"
 
     const val curseforgeId = "447425"

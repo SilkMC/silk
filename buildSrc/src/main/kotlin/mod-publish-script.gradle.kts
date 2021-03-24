@@ -76,6 +76,7 @@ publishing {
                 builtBy(tasks.named("remapSourcesJar").get())
             }
             artifact(tasks.getByName("javadocJar"))
+            artifact(tasks.jar)
 
             this.groupId = project.group.toString()
             this.artifactId = project.name
