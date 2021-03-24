@@ -71,11 +71,11 @@ inline fun <T> ArgumentBuilder<SCS, *>.argument(
  * Add custom suspending suggestion logic for an argument.
  */
 inline fun RequiredArgumentBuilder<SCS, *>.simpleSuggests(
-    crossinline suggestionBuilder: suspend (CommandContext<SCS>) -> Iterable<Any?>
+    crossinline suggestionBuilder: suspend (CommandContext<SCS>) -> Iterable<Any?>?
 ) {
     suggests { context, builder ->
         fabrikCoroutineScope.async {
-            suggestionBuilder.invoke(context).forEach {
+            suggestionBuilder.invoke(context)?.forEach {
                 if (it is Int)
                     builder.suggest(it)
                 else
