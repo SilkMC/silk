@@ -5,9 +5,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.SimpleInventory
 import net.minecraft.item.ItemStack
-import net.minecraft.screen.GenericContainerScreenHandler
 import net.minecraft.screen.NamedScreenHandlerFactory
-import net.minecraft.screen.ScreenHandler
 import net.minecraft.text.LiteralText
 import java.util.*
 
@@ -34,7 +32,7 @@ class Gui(
     val defaultPageKey: String,
     val eventHandler: GuiEventHandler,
 ) : SimpleInventory(guiType.dimensions.slotAmount), NamedScreenHandlerFactory {
-    val views = HashMap<PlayerEntity, GenericContainerScreenHandler>()
+    val views = HashMap<PlayerEntity, GuiScreenHandler>()
 
     var isOffset = false
         private set
@@ -60,8 +58,8 @@ class Gui(
             (offsetVertically < guiType.dimensions.height / 2)
         ) {
             if (currentPage != page) {
-                currentPage.content.values.toHashSet().forEach { it.stopUsing(this) }
-                page.content.values.toHashSet().forEach { it.startUsing(this) }
+                currentPage.stopUsing(this)
+                page.startUsing(this)
 
                 currentPage = page
             }
@@ -104,16 +102,24 @@ class Gui(
             loadPage(currentPage)
     }
 
-    override fun createMenu(syncId: Int, playerInv: PlayerInventory, player: PlayerEntity): ScreenHandler {
-        val screenHandler = guiType.createScreenHandler(this, syncId, playerInv, this)
-        views[player] = screenHandler
-        return screenHandler
-    }
+    override fun createMenu(syncId: Int, playerInv: PlayerInventory, player: PlayerEntity) =
+        guiType.createScreenHandler(this, syncId, playerInv, this)
 
     override fun getDisplayName() = title
 
+    override fun onOpen(player: PlayerEntity) {
+        val screenHandler = player.currentScreenHandler
+        if (screenHandler is GuiScreenHandler) {
+            if (views.isEmpty())
+                currentPage.startUsing(this)
+            views[player] = screenHandler
+        }
+    }
+
     override fun onClose(player: PlayerEntity) {
         views -= player
+        if (views.isEmpty())
+            currentPage.stopUsing(this)
     }
 
     /**

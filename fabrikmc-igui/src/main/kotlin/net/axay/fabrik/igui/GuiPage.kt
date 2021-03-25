@@ -14,4 +14,8 @@ class GuiPage(
         SWIPE_HORIZONTALLY,
         SWIPE_VERTICALLY,
     }
+
+    internal fun startUsing(gui: Gui) = content.values.toHashSet().forEach { it.startUsing(gui) }
+
+    internal fun stopUsing(gui: Gui) = content.values.toHashSet().forEach { it.stopUsing(gui) }
 }
