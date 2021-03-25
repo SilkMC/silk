@@ -19,9 +19,10 @@ interface GuiSlotCompound {
         override val endInclusive: GuiSlot
 
         init {
-            val minMaxPair = startSlot to endSlot
-            start = minMaxPair.min
-            endInclusive = minMaxPair.max
+            val minMaxPairRow = startSlot.row to endSlot.row
+            val minMaxPairSlotInRow = startSlot.slotInRow to endSlot.slotInRow
+            start = GuiSlot(minMaxPairRow.min, minMaxPairSlotInRow.min)
+            endInclusive = GuiSlot(minMaxPairRow.max, minMaxPairSlotInRow.max)
         }
 
         override fun withDimensions(dimensions: GuiDimensions) = ArrayList<GuiSlot>().apply {
