@@ -9,6 +9,16 @@ import net.minecraft.text.LiteralText
 import java.time.Instant
 import kotlin.random.Random
 
+/**
+ * Creates a new gui.
+ *
+ * @param type the type of the gui, which specifies the dimensions
+ * of the gui
+ * @param title the title of the gui, displayed at the top
+ * @param defaultPageKey the default page, which will be loaded
+ * on initialization
+ * @param builder the gui builder
+ */
 inline fun igui(
     type: GuiType,
     title: LiteralText,
