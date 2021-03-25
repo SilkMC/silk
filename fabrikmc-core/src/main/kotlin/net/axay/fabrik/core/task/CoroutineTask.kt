@@ -42,13 +42,13 @@ inline fun coroutineTask(
     val coroutineTask = CoroutineTask()
     (if (sync) mcCoroutineScope else fabrikCoroutineScope).launch {
         delay(delay)
-        for (i in 1 .. howOften) {
+        for (i in 1..howOften) {
             coroutineTask.round = i
+
+            task.invoke(coroutineTask)
 
             if (coroutineTask.isCancelled)
                 break
-
-            task.invoke(coroutineTask)
 
             if (i < howOften)
                 delay(period)

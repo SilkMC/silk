@@ -1,29 +1,25 @@
 package net.axay.fabrik.igui
 
-import net.axay.fabrik.core.text.literalText
-import net.axay.fabrik.core.text.sendText
-import net.axay.fabrik.igui.elements.GuiButton
-import net.axay.fabrik.igui.elements.GuiButtonPageChange
-import net.axay.fabrik.igui.elements.GuiFreeSlot
-import net.axay.fabrik.igui.elements.GuiPlaceholder
+import net.axay.fabrik.igui.elements.*
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.events.GuiCloseEvent
+import net.axay.fabrik.igui.observable.GuiList
 import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
+import net.minecraft.text.LiteralText
 import java.time.Instant
 import kotlin.random.Random
 
 inline fun igui(
     type: GuiType,
-    title: String,
-    defaultPage: String = "0",
+    title: LiteralText,
+    defaultPageKey: Any,
     builder: GuiBuilder.() -> Unit,
-) = GuiBuilder(type, title, defaultPage).apply(builder).internalBuilder.internalBuild()
+) = GuiBuilder(type, title, defaultPageKey).apply(builder).internalBuilder.internalBuild()
 
 class GuiBuilder(
     val type: GuiType,
-    val title: String,
-    val defaultPage: String,
+    val title: LiteralText,
+    val defaultPageKey: Any,
 ) {
     inner class Internal {
         val random by lazy { Random(1) }
@@ -38,7 +34,7 @@ class GuiBuilder(
             title,
             pagesByKey,
             pagesByNumber,
-            defaultPage,
+            defaultPageKey.toString(),
             eventHandler ?: GuiEventHandler(null, null)
         )
     }
@@ -162,6 +158,79 @@ class GuiBuilder(
                 icon, GuiButtonPageChange.Calculator.StaticPageKey(pageKey), shouldChange, onChange
             ))
         }
+
+        /**
+         * Creates a new rectangular compound (startSlot and endSlot define
+         * the corners of the compound).
+         *
+         * @return the compound, which is needed for other elements, like
+         * a compound scroll button
+         */
+        fun <E> compound(
+            startSlot: GuiSlot,
+            endSlot: GuiSlot,
+            content: GuiList<E>,
+            iconGenerator: (E) -> ItemStack,
+            onClick: (event: GuiClickEvent, element: E) -> Unit,
+        ): GuiCompound<E> {
+            val compound = GuiCompound(type, startSlot, endSlot, content, iconGenerator, onClick)
+            element(startSlot rectTo endSlot, GuiCompoundElement(compound))
+            return compound
+        }
+
+        /**
+         * Adds a compound scroll button.
+         *
+         * Used by both [compoundScrollForwards] and [compoundScrollBackwards],
+         * which are easier to use than this function.
+         */
+        fun compoundScroll(
+            slots: GuiSlotCompound,
+            icon: ItemStack,
+            compound: GuiCompound<*>,
+            reverse: Boolean,
+            speed: Int = 50,
+            scrollDistance: Int = compound.compoundWidth,
+            scrollTimes: Int = compound.compoundHeight,
+        ) {
+            element(slots, GuiButtonCompoundScroll(
+                icon, compound, reverse, speed.toLong(), scrollDistance, scrollTimes
+            ))
+        }
+
+        /**
+         * Adds a compound scroll button.
+         *
+         * This one scrolls forwards, line by line.
+         */
+        fun compoundScrollForwards(
+            slots: GuiSlotCompound,
+            icon: ItemStack,
+            compound: GuiCompound<*>,
+            speed: Int = 50,
+            scrollTimes: Int = compound.compoundHeight,
+        ) {
+            element(slots, GuiButtonCompoundScroll(
+                icon, compound, false, speed.toLong(), compound.compoundWidth, scrollTimes
+            ))
+        }
+
+        /**
+         * Adds a compound scroll button.
+         *
+         * This one scrolls backwards, line by line.
+         */
+        fun compoundScrollBackwards(
+            slots: GuiSlotCompound,
+            icon: ItemStack,
+            compound: GuiCompound<*>,
+            speed: Int = 50,
+            scrollTimes: Int = compound.compoundHeight,
+        ) {
+            element(slots, GuiButtonCompoundScroll(
+                icon, compound, true, speed.toLong(), compound.compoundWidth, scrollTimes
+            ))
+        }
     }
 
     /**
@@ -211,36 +280,11 @@ class GuiBuilder(
         fun internalBuild() = GuiEventHandler(onClick, onClose)
     }
 
+    /**
+     * Opens a new [EventHandlerBuilder] to build and set a new
+     * [GuiEventHandler] for the gui.
+     */
     inline fun events(builder: EventHandlerBuilder.() -> Unit) {
         internalBuilder.eventHandler = EventHandlerBuilder().apply(builder).internalBuild()
     }
-}
-
-fun main() {
-
-    println()
-
-    igui(GuiType.NINE_BY_ONE, "Gui") {
-        events {
-            onClick {
-                it.player.sendText(literalText("Geklickt! Slot: ${it.slot}"))
-            }
-            onClose {
-                it.player.sendText(literalText("Geschlossen :(") { color = 0xFF387B })
-            }
-        }
-
-        page("buttonpage") {
-            effectTo = GuiPage.ChangeEffect.SWIPE_HORIZONTALLY
-
-            button(1 sl 3, Items.COBBLESTONE.defaultStack) {
-                it.player.sendText(literalText("Der beste Button!"))
-            }
-
-            freeSlot(1 sl 4) {
-
-            }
-        }
-    }
-
 }

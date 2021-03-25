@@ -5,9 +5,11 @@ import net.axay.fabrik.igui.GuiElement
 import net.minecraft.item.ItemStack
 
 open class GuiButton(
-    override val itemStack: ItemStack,
+    val itemStack: ItemStack,
     private val onClick: (GuiClickEvent) -> Unit,
-) : GuiElement() {
+) : GuiElement {
+    override fun getItemStack(slotIndex: Int) = itemStack
+
     override fun shouldCancel(clickEvent: GuiClickEvent) = true
 
     override fun onClick(clickEvent: GuiClickEvent) {

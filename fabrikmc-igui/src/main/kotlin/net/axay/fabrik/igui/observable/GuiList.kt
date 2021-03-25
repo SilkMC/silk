@@ -1,12 +1,12 @@
 package net.axay.fabrik.igui.observable
 
-class GuiList<T>(val collection: MutableList<T>) {
+class GuiList<T>(val internalCollection: MutableList<T>) {
     val listeners = HashSet<(List<T>) -> Unit>()
 
-    fun invokeListeners() = listeners.forEach { it.invoke(collection) }
+    fun invokeListeners() = listeners.forEach { it.invoke(internalCollection) }
 
     inline fun doUpdating(action: (MutableList<T>) -> Unit) {
-        action.invoke(collection)
+        action.invoke(internalCollection)
         invokeListeners()
     }
 }

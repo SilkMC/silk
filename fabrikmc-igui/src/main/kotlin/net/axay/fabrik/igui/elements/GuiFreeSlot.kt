@@ -6,8 +6,8 @@ import net.minecraft.item.ItemStack
 
 class GuiFreeSlot(
     private val onClick: ((GuiClickEvent) -> Unit)?,
-) : GuiElement() {
-    override val itemStack: ItemStack = ItemStack.EMPTY
+) : GuiElement {
+    override fun getItemStack(slotIndex: Int): ItemStack = ItemStack.EMPTY
 
     override fun shouldCancel(clickEvent: GuiClickEvent) = false
 

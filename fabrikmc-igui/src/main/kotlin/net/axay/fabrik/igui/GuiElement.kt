@@ -3,10 +3,14 @@ package net.axay.fabrik.igui
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.minecraft.item.ItemStack
 
-abstract class GuiElement {
-    abstract val itemStack: ItemStack
+interface GuiElement {
+    fun getItemStack(slotIndex: Int): ItemStack
 
-    abstract fun shouldCancel(clickEvent: GuiClickEvent): Boolean
+    fun shouldCancel(clickEvent: GuiClickEvent): Boolean
 
-    abstract fun onClick(clickEvent: GuiClickEvent)
+    fun onClick(clickEvent: GuiClickEvent)
+
+    fun startUsing(gui: Gui) { }
+
+    fun stopUsing(gui: Gui) { }
 }
