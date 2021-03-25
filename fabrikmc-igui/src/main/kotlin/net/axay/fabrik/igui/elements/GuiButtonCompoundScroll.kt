@@ -2,17 +2,17 @@ package net.axay.fabrik.igui.elements
 
 import net.axay.fabrik.core.task.coroutineTask
 import net.axay.fabrik.igui.GuiCompound
-import net.minecraft.item.ItemStack
+import net.axay.fabrik.igui.GuiIcon
 
 class GuiButtonCompoundScroll(
-    itemStack: ItemStack,
+    icon: GuiIcon,
     val compound: GuiCompound<*>,
     val reverse: Boolean,
     val speed: Long,
     val scrollDistance: Int,
     val scrollTimes: Int,
 ) : GuiButton(
-    itemStack,
+    icon,
     {
         fun scroll() = if (reverse) compound.scroll(-scrollDistance) else compound.scroll(scrollDistance)
 

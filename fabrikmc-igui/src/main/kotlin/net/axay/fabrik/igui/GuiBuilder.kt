@@ -96,13 +96,13 @@ class GuiBuilder(
         /**
          * Adds a button. A button has custom onClick logic.
          */
-        fun button(slots: GuiSlotCompound, icon: ItemStack, onClick: (GuiClickEvent) -> Unit) =
+        fun button(slots: GuiSlotCompound, icon: GuiIcon, onClick: (GuiClickEvent) -> Unit) =
             element(slots, GuiButton(icon, onClick))
 
         /**
          * Adds a placeholder. A placeholder ignores any click actions.
          */
-        fun placeholder(slots: GuiSlotCompound, icon: ItemStack) =
+        fun placeholder(slots: GuiSlotCompound, icon: GuiIcon) =
             element(slots, GuiPlaceholder(icon))
 
         /**
@@ -116,7 +116,7 @@ class GuiBuilder(
          */
         fun previousPage(
             slots: GuiSlotCompound,
-            icon: ItemStack,
+            icon: GuiIcon,
             shouldChange: ((GuiClickEvent) -> Boolean) = { true },
             onChange: ((GuiClickEvent) -> Unit)? = null
         ) {
@@ -130,7 +130,7 @@ class GuiBuilder(
          */
         fun nextPage(
             slots: GuiSlotCompound,
-            icon: ItemStack,
+            icon: GuiIcon,
             shouldChange: ((GuiClickEvent) -> Boolean) = { true },
             onChange: ((GuiClickEvent) -> Unit)? = null
         ) {
@@ -144,7 +144,7 @@ class GuiBuilder(
          */
         fun changePageByNumber(
             slots: GuiSlotCompound,
-            icon: ItemStack,
+            icon: GuiIcon,
             pageNumber: Int,
             shouldChange: ((GuiClickEvent) -> Boolean) = { true },
             onChange: ((GuiClickEvent) -> Unit)? = null
@@ -159,7 +159,7 @@ class GuiBuilder(
          */
         fun changePageByKey(
             slots: GuiSlotCompound,
-            icon: ItemStack,
+            icon: GuiIcon,
             pageKey: Any,
             shouldChange: ((GuiClickEvent) -> Boolean) = { true },
             onChange: ((GuiClickEvent) -> Unit)? = null
@@ -196,7 +196,7 @@ class GuiBuilder(
          */
         fun compoundScroll(
             slots: GuiSlotCompound,
-            icon: ItemStack,
+            icon: GuiIcon,
             compound: GuiCompound<*>,
             reverse: Boolean,
             speed: Int = 50,
@@ -215,7 +215,7 @@ class GuiBuilder(
          */
         fun compoundScrollForwards(
             slots: GuiSlotCompound,
-            icon: ItemStack,
+            icon: GuiIcon,
             compound: GuiCompound<*>,
             speed: Int = 50,
             scrollTimes: Int = compound.compoundHeight,
@@ -232,7 +232,7 @@ class GuiBuilder(
          */
         fun compoundScrollBackwards(
             slots: GuiSlotCompound,
-            icon: ItemStack,
+            icon: GuiIcon,
             compound: GuiCompound<*>,
             speed: Int = 50,
             scrollTimes: Int = compound.compoundHeight,

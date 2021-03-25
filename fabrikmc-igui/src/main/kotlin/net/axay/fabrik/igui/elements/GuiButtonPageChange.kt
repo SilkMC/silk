@@ -1,18 +1,18 @@
 package net.axay.fabrik.igui.elements
 
 import net.axay.fabrik.igui.Gui
+import net.axay.fabrik.igui.GuiIcon
 import net.axay.fabrik.igui.GuiPage
 import net.axay.fabrik.igui.changePage
 import net.axay.fabrik.igui.events.GuiClickEvent
-import net.minecraft.item.ItemStack
 
 class GuiButtonPageChange(
-    itemStack: ItemStack,
+    icon: GuiIcon,
     calculator: Calculator,
     shouldChange: (GuiClickEvent) -> Boolean,
     onChange: ((GuiClickEvent) -> Unit)?,
 ) : GuiButton(
-    itemStack,
+    icon,
     { event ->
         val newPage = calculator.calculateNewPage(event.gui)
         if (newPage != null && shouldChange.invoke(event)) {

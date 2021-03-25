@@ -11,7 +11,7 @@ class GuiCompound<E>(
     val content: GuiList<E>,
     private val iconGenerator: (E) -> ItemStack,
     private val onClick: ((event: GuiClickEvent, element: E) -> Unit)?
-) {
+) : GuiUseable() {
     private var slots = startSlot rectTo endSlot
     private var slotIndexes = slots.withDimensions(guiType.dimensions)
         .mapNotNull { it.slotIndexIn(guiType.dimensions) }
@@ -28,8 +28,6 @@ class GuiCompound<E>(
 
     var displayedContent = emptyList<E>()
         private set
-
-    private val registeredGuis = HashSet<Gui>()
 
     private val contentListener: (List<E>) -> Unit = {
         recalculateContent()
@@ -73,15 +71,7 @@ class GuiCompound<E>(
         onClick?.invoke(event, element)
     }
 
-    internal fun registerGui(gui: Gui) {
-        if (registeredGuis.isEmpty())
-            content.listeners.add(contentListener)
-        registeredGuis += gui
-    }
-
-    internal fun unregisterGui(gui: Gui) {
-        registeredGuis -= gui
-        if (registeredGuis.isEmpty())
-            content.listeners.remove(contentListener)
+    override fun onChangeUseStatus(inUse: Boolean) {
+        if (inUse) content.listeners.add(contentListener) else content.listeners.remove(contentListener)
     }
 }

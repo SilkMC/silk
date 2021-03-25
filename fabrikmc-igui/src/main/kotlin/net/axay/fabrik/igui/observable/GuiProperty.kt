@@ -5,9 +5,14 @@ import kotlin.reflect.KProperty
 class GuiProperty<T>(
     private var value: T
 ) {
-    operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
+    val listeners = HashSet<(T) -> Unit>()
 
-    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+    internal fun invokeListeners() = listeners.forEach { it.invoke(value) }
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>?) = value
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>?, value: T) {
         this.value = value
+        invokeListeners()
     }
 }

@@ -14,7 +14,11 @@ class GuiCompoundElement(
 
     override fun onClick(clickEvent: GuiClickEvent) = compound.onClickElement(clickEvent)
 
-    override fun startUsing(gui: Gui) = compound.registerGui(gui)
+    override fun startUsing(gui: Gui) {
+        compound.startUsing(gui)
+    }
 
-    override fun stopUsing(gui: Gui) = compound.unregisterGui(gui)
+    override fun stopUsing(gui: Gui) {
+        compound.stopUsing(gui)
+    }
 }
