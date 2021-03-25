@@ -7,6 +7,8 @@
   "description": "FabrikMC is an API for using FabricMC with Kotlin.",
   "authors": ["bluefireoly"],
 
+  "mixins": ["fabrikmc-igui.mixins.json"],
+
   "depends": {
     "fabric": "*",
     "fabric-language-kotlin": "*",
