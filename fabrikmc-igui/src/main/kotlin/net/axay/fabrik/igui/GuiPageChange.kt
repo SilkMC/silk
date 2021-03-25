@@ -2,141 +2,57 @@ package net.axay.fabrik.igui
 
 import net.axay.fabrik.core.task.coroutineTask
 
-abstract class GuiPageChangeCalculator {
-
-    abstract fun calculateNewPage(currentPage: Int, pages: Collection<Int>): Int?
-
-    object GuiPreviousPageCalculator : GuiPageChangeCalculator() {
-        override fun calculateNewPage(currentPage: Int, pages: Collection<Int>) =
-            pages.sortedDescending().find { it < currentPage }
-    }
-
-    object GuiNextPageCalculator : GuiPageChangeCalculator() {
-        override fun calculateNewPage(currentPage: Int, pages: Collection<Int>) =
-            pages.sorted().find { it > currentPage }
-    }
-
-    class GuiConsistentPageCalculator(private val toPage: Int) : GuiPageChangeCalculator() {
-        override fun calculateNewPage(currentPage: Int, pages: Collection<Int>) = toPage
-    }
-
-}
-
-enum class PageChangeEffect {
-    INSTANT,
-    SLIDE_HORIZONTALLY,
-    SLIDE_VERTICALLY,
-    SWIPE_HORIZONTALLY,
-    SWIPE_VERTICALLY,
-}
-
-enum class InventoryChangeEffect(
-    val effect: PageChangeEffect
-) {
-    INSTANT(PageChangeEffect.INSTANT)
-}
-
-internal fun GuiInstance.changePage(
-    effect: PageChangeEffect,
+fun Gui.changePage(
     fromPage: GuiPage,
     toPage: GuiPage,
+    overrideEffect: GuiPage.ChangeEffect? = null,
 ) {
+    val effect = overrideEffect
+        ?: ((toPage.effectTo ?: fromPage.effectFrom) ?: GuiPage.ChangeEffect.INSTANT)
 
-    val fromPageInt = fromPage.number
-    val toPageInt = toPage.number
+    val inverted = fromPage.number > toPage.number
 
     when (effect) {
-
-        PageChangeEffect.INSTANT -> loadPageUnsafe(toPage)
-
-        PageChangeEffect.SLIDE_HORIZONTALLY -> {
-
-            val width = gui.data.guiType.dimensions.width
-
-            changePageEffect(fromPageInt, toPageInt, width) { currentOffset, ifInverted ->
-                if (ifInverted) {
-                    loadPageUnsafe(fromPage, offsetHorizontally = currentOffset)
-                    loadPageUnsafe(toPage, offsetHorizontally = -(width - currentOffset))
-                } else {
-                    loadPageUnsafe(fromPage, offsetHorizontally = -currentOffset)
-                    loadPageUnsafe(toPage, offsetHorizontally = width - currentOffset)
-                }
+        GuiPage.ChangeEffect.INSTANT -> loadPage(toPage)
+        GuiPage.ChangeEffect.SLIDE_HORIZONTALLY -> {
+            changePageEffect(guiType.dimensions.width, inverted) { offset, offsetOpposite ->
+                loadPage(fromPage, offsetHorizontally = offset)
+                loadPage(toPage, offsetHorizontally = offsetOpposite)
             }
-
         }
-
-        PageChangeEffect.SLIDE_VERTICALLY -> {
-
-            val height = gui.data.guiType.dimensions.height
-
-            changePageEffect(fromPageInt, toPageInt, height) { currentOffset, ifInverted ->
-                if (ifInverted) {
-                    loadPageUnsafe(fromPage, offsetVertically = currentOffset)
-                    loadPageUnsafe(toPage, offsetVertically = -(height - currentOffset))
-                } else {
-                    loadPageUnsafe(fromPage, offsetVertically = -currentOffset)
-                    loadPageUnsafe(toPage, offsetVertically = height - currentOffset)
-                }
+        GuiPage.ChangeEffect.SLIDE_VERTICALLY -> {
+            changePageEffect(guiType.dimensions.height, inverted) { offset, offsetOpposite ->
+                loadPage(fromPage, offsetVertically = offset)
+                loadPage(toPage, offsetVertically = offsetOpposite)
             }
-
         }
-
-        PageChangeEffect.SWIPE_HORIZONTALLY -> {
-
-            val width = gui.data.guiType.dimensions.width
-
-            changePageEffect(fromPageInt, toPageInt, width) { currentOffset, ifInverted ->
-                if (ifInverted) {
-                    loadPageUnsafe(toPage, offsetHorizontally = -(width - currentOffset))
-                } else {
-                    loadPageUnsafe(toPage, offsetHorizontally = width - currentOffset)
-                }
+        GuiPage.ChangeEffect.SWIPE_HORIZONTALLY -> {
+            changePageEffect(guiType.dimensions.width, inverted) { _, offsetOpposite ->
+                loadPage(toPage, offsetHorizontally = offsetOpposite)
             }
-
         }
-
-        PageChangeEffect.SWIPE_VERTICALLY -> {
-
-            val height = gui.data.guiType.dimensions.height
-
-            changePageEffect(fromPageInt, toPageInt, height) { currentOffset, ifInverted ->
-                if (ifInverted) {
-                    loadPageUnsafe(toPage, offsetVertically = -(height - currentOffset))
-                } else {
-                    loadPageUnsafe(toPage, offsetVertically = height - currentOffset)
-                }
+        GuiPage.ChangeEffect.SWIPE_VERTICALLY -> {
+            changePageEffect(guiType.dimensions.height, inverted) { _, offsetOpposite ->
+                loadPage(toPage, offsetVertically = offsetOpposite)
             }
-
         }
-
     }
 }
 
-internal fun GuiInstance.changeGui(
-    effect: InventoryChangeEffect,
-    fromPage: GuiPage,
-    toPage: GuiPage
-) = changePage(effect.effect, fromPage, toPage)
-
 private inline fun changePageEffect(
-    fromPage: Int,
-    toPage: Int,
-    doFor: Int,
-    crossinline effect: (currentOffset: Int, ifInverted: Boolean) -> Unit,
+    effectLength: Int,
+    inverted: Boolean,
+    crossinline effect: (offset: Int, offsetOpposite: Int) -> Unit
 ) {
-
-    val ifInverted = fromPage >= toPage
-
     var currentOffset = 1
     coroutineTask(
         period = 50,
-        howOften = doFor.toLong()
+        howOften = effectLength.toLong()
     ) {
-
-        effect.invoke(currentOffset, ifInverted)
-
+        effect.invoke(
+            if (inverted) currentOffset else -currentOffset,
+            if (inverted) -(effectLength - currentOffset) else (effectLength - currentOffset)
+        )
         currentOffset++
-
     }
-
 }

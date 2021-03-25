@@ -1,17 +1,13 @@
 package net.axay.fabrik.igui.elements
 
-import net.axay.fabrik.igui.GuiClickEvent
 import net.axay.fabrik.igui.GuiElement
+import net.axay.fabrik.igui.events.GuiClickEvent
 import net.minecraft.item.ItemStack
 
 class GuiPlaceholder(
-    private val icon: ItemStack
+    override val itemStack: ItemStack,
 ) : GuiElement() {
-
-    override fun getItemStack(slot: Int) = icon
-
     override fun shouldCancel(clickEvent: GuiClickEvent) = true
 
-    override fun onClickElement(clickEvent: GuiClickEvent) { }
-
+    override fun onClick(clickEvent: GuiClickEvent) { }
 }

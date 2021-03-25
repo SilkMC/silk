@@ -1,5 +1,7 @@
 package net.axay.fabrik.igui
 
+import net.axay.fabrik.igui.events.GuiClickEvent
+import net.axay.fabrik.igui.events.GuiCloseEvent
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
@@ -10,26 +12,30 @@ import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 
 class GuiScreenHandler(
-    val guiInstance: GuiInstance,
+    val gui: Gui,
     syncId: Int,
     private val playerInv: PlayerInventory,
-    inv: Inventory
+    inv: Inventory,
 ) : GenericContainerScreenHandler(
-    guiInstance.gui.data.guiType.screenHandlerType, syncId,
-    playerInv, inv,
-    guiInstance.gui.data.guiType.dimensions.height
+    gui.guiType.screenHandlerType,
+    syncId,
+    playerInv,
+    inv,
+    gui.guiType.dimensions.height
 ) {
-    val Slot.posIndex get() = slots.indexOf(this)
+    override fun insertItem(
+        stack: ItemStack,
+        startIndex: Int,
+        endIndex: Int,
+        fromLast: Boolean,
+    ): Boolean {
+        if (gui.isOffset) return false
 
-    override fun insertItem(stack: ItemStack, startIndex: Int, endIndex: Int, fromLast: Boolean): Boolean {
-        if (guiInstance.isInMove) return false
+        val slotIndex = if (fromLast) endIndex else startIndex
 
         val shouldCancel = (startIndex..endIndex).any {
-            guiInstance.currentPage.slots[it]?.shouldCancel(
-                GuiClickEvent(
-                    guiInstance, playerInv.player, GuiActionType.INSERT,
-                    if (fromLast) endIndex else startIndex
-                )
+            gui.currentPage.content[it]?.shouldCancel(
+                GuiClickEvent(gui, playerInv.player, GuiActionType.INSERT, slotIndex, GuiSlot(slots[slotIndex]))
             ) == true
         }
 
@@ -42,17 +48,27 @@ class GuiScreenHandler(
         slotIndex: Int,
         clickData: Int,
         actionType: SlotActionType,
-        player: PlayerEntity
+        player: PlayerEntity,
     ): ItemStack {
-        if (guiInstance.isInMove) return ItemStack.EMPTY
+        if (gui.isOffset) return ItemStack.EMPTY
 
-        val slot = guiInstance.currentPage.slots[slotIndex]
-        val event =
-            GuiClickEvent(guiInstance, player, GuiActionType.fromSlotActionType(actionType, clickData), slotIndex)
+        val slot = slots[slotIndex]
 
-        slot?.onClick(event)
+        var shouldCancel = false
 
-        return if (slot?.shouldCancel(event) != true)
+        val element = gui.currentPage.content[slotIndex]
+        if (element != null) {
+            val event = GuiClickEvent(
+                gui, player, GuiActionType.fromSlotActionType(actionType, clickData), slotIndex, GuiSlot(slot)
+            )
+
+            shouldCancel = element.shouldCancel(event)
+
+            element.onClick(event)
+            gui.eventHandler.onClick?.invoke(event)
+        }
+
+        return if (!shouldCancel)
             super.onSlotClick(slotIndex, clickData, actionType, player)
         else {
             (player as? ServerPlayerEntity)?.refreshScreenHandler(this)
@@ -61,17 +77,16 @@ class GuiScreenHandler(
     }
 
     override fun close(player: PlayerEntity) {
-        if (guiInstance.gui is GuiIndividual)
-            guiInstance.gui.deleteInstance(player)
+        gui.eventHandler.onClose?.invoke(GuiCloseEvent(gui, player))
     }
 
     override fun canInsertIntoSlot(slot: Slot): Boolean {
-        if (guiInstance.isInMove) return false
+        if (gui.isOffset) return false
 
-        val slotIndex = slot.posIndex
+        val slotIndex = slots.indexOf(slot)
 
-        return guiInstance.currentPage.slots[slotIndex]?.shouldCancel(
-            GuiClickEvent(guiInstance, playerInv.player, GuiActionType.INSERT, slotIndex)
+        return gui.currentPage.content[slotIndex]?.shouldCancel(
+            GuiClickEvent(gui, playerInv.player, GuiActionType.INSERT, slotIndex, GuiSlot(slot))
         ) == false
     }
 
