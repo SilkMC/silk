@@ -9,3 +9,8 @@ import net.minecraft.text.LiteralText
 fun PlayerEntity.sendText(text: LiteralText) {
     sendMessage(text, false)
 }
+
+/**
+ * Converts this string to a [LiteralText] instance.
+ */
+val String.literal get() = LiteralText(this)
