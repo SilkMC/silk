@@ -12,14 +12,14 @@ import java.util.*
 /**
  * Opens the given gui.
  *
- * @param page (optional) specifies the key of the page which should be loaded
+ * @param pageKey (optional) specifies the key of the page which should be loaded
  * with the process of opening the gui
  *
  * @return an [OptionalInt] which may contain the syncId of the inventory holding the gui
  */
-fun PlayerEntity.openGui(gui: Gui, page: String? = null): OptionalInt {
-    if (page != null)
-        gui.pagesByKey[page]?.let { gui.loadPage(it) }
+fun PlayerEntity.openGui(gui: Gui, pageKey: Any? = null): OptionalInt {
+    if (pageKey != null)
+        gui.pagesByKey[pageKey.toString()]?.let { gui.loadPage(it) }
 
     return openHandledScreen(gui)
 }
@@ -40,7 +40,7 @@ class Gui(
     var currentPage = pagesByKey[defaultPageKey] ?: error("The specified defaultPage does not exits")
 
     init {
-        loadPage(currentPage)
+        //loadPage(currentPage)
     }
 
     @Suppress("CAST_NEVER_SUCCEEDS")
@@ -82,8 +82,9 @@ class Gui(
                 if (guiSlot != null) {
                     val offsetIndex =
                         GuiSlot(guiSlot.row + offsetVertically, guiSlot.slotInRow + offsetHorizontally)
-                            .slotIndexIn(guiType.dimensions)!!
-                    accessor.stacks[offsetIndex] = element.getItemStack(offsetIndex)
+                            .slotIndexIn(guiType.dimensions)
+                    if (offsetIndex != null)
+                        accessor.stacks[offsetIndex] = element.getItemStack(offsetIndex)
                 }
             } else accessor.stacks[slotIndex] = element.getItemStack(slotIndex)
         }
@@ -103,18 +104,13 @@ class Gui(
     }
 
     override fun createMenu(syncId: Int, playerInv: PlayerInventory, player: PlayerEntity) =
-        guiType.createScreenHandler(this, syncId, playerInv, this)
+        guiType.createScreenHandler(this, syncId, playerInv, this).apply {
+            if (views.isEmpty())
+                currentPage.startUsing(this@Gui)
+            views[player] = this
+        }
 
     override fun getDisplayName() = title
-
-    override fun onOpen(player: PlayerEntity) {
-        val screenHandler = player.currentScreenHandler
-        if (screenHandler is GuiScreenHandler) {
-            if (views.isEmpty())
-                currentPage.startUsing(this)
-            views[player] = screenHandler
-        }
-    }
 
     override fun onClose(player: PlayerEntity) {
         views -= player

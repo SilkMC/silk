@@ -11,5 +11,5 @@ class GuiClickEvent(
     override val player: PlayerEntity,
     val type: GuiActionType,
     val slotIndex: Int,
-    val slot: GuiSlot,
+    val slot: GuiSlot?,
 ) : GuiPlayerEvent

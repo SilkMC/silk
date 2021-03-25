@@ -17,7 +17,7 @@ val guiCommand = command("gui") {
             simpleExecutes {
                 val gui = guis[it.getArgument("guiname")]
                 if (gui != null)
-                    it.source.player.openGui(gui)
+                    it.source.player.openGui(gui.invoke(), 1)
                 else it.source.sendError(LiteralText("Dieses GUI existiert nicht"))
             }
         }

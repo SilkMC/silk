@@ -52,14 +52,18 @@ class GuiScreenHandler(
     ): ItemStack {
         if (gui.isOffset) return ItemStack.EMPTY
 
-        val slot = slots[slotIndex]
+        val slot = slots.getOrNull(slotIndex)
 
         var shouldCancel = false
 
         val element = gui.currentPage.content[slotIndex]
         if (element != null) {
             val event = GuiClickEvent(
-                gui, player, GuiActionType.fromSlotActionType(actionType, clickData), slotIndex, GuiSlot(slot)
+                gui,
+                player,
+                GuiActionType.fromSlotActionType(actionType, clickData),
+                slotIndex,
+                slot?.let { GuiSlot(it) }
             )
 
             shouldCancel = element.shouldCancel(event)
