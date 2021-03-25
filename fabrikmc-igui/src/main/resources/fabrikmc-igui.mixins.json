@@ -1,0 +1,8 @@
+{
+  "package": "net.axay.fabrik.igui.mixins",
+  "required": true,
+  "compatibilityLevel": "JAVA_11",
+  "server": [
+    "SimpleInventoryAccessor"
+  ]
+}
