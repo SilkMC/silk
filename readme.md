@@ -1,5 +1,7 @@
 # FabrikMC
 
+[Discord](https://discord.gg/CJDUVuJ)
+
 FabrikMC is an API for using FabricMC with Kotlin
 
 It offers:
