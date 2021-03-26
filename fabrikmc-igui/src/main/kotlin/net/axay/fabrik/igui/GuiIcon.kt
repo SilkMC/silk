@@ -35,7 +35,7 @@ abstract class GuiIcon : GuiUseable() {
 /**
  * Creates a static gui icon.
  */
-val ItemStack.guiIcon get() = GuiIcon.StaticIcon(this.setCustomName(null))
+val ItemStack.guiIcon get() = GuiIcon.StaticIcon(this.setCustomName("".literal))
 
 /**
  * Creates a static gui icon.
