@@ -61,7 +61,7 @@ class GuiCompound<E>(
         } else false
     }
 
-    internal fun getItemStack(slotIndex: Int): ItemStack = displayedContent.getOrNull(slotIndex)
+    internal fun getItemStack(slotIndex: Int): ItemStack = displayedContent.getOrNull(slotIndexes.indexOf(slotIndex))
         ?.let { iconGenerator.invoke(it) } ?: ItemStack.EMPTY
 
     internal fun onClickElement(event: GuiClickEvent) {
