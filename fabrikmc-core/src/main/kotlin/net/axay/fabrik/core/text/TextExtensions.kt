@@ -20,5 +20,5 @@ val String.literal get() = LiteralText(this)
  * Returns a list of [Text] elements which all do not exceed
  * the given width.
  */
-inline fun String.literalLines(width: Int, lineBuilder: (line: String) -> Text) =
+inline fun String.literalLines(width: Int = 40, lineBuilder: (line: String) -> Text = { it.literal }) =
     chunked(width).map { lineBuilder.invoke(it) }
