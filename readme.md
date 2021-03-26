@@ -9,6 +9,7 @@ It offers:
 - coroutine utilities
 - kotlinx.serialization support
 - a scoreboard (sideboard) API
+- `ItemStack` utils
 
 This is not Fabric, this is just a Kotlin extension for Fabric - called Fabri<ins>k</ins>.
 
