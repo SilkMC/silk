@@ -22,10 +22,22 @@ interface GuiSlotCompound {
 
         class Rectangle(startSlot: GuiSlot, endSlot: GuiSlot) : SlotRange(startSlot, endSlot) {
             override fun withDimensions(dimensions: GuiDimensions) = ArrayList<GuiSlot>().apply {
-                // all possible combinations between the two slots form the rectangle
                 for (row in start.row..endInclusive.row)
                     for (slotInRow in start.slotInRow..endInclusive.slotInRow)
                         this += GuiSlot(row, slotInRow)
+            }
+        }
+
+        class HollowRectangle(startSlot: GuiSlot, endSlot: GuiSlot) : SlotRange(startSlot, endSlot) {
+            override fun withDimensions(dimensions: GuiDimensions) = HashSet<GuiSlot>().apply {
+                for (row in start.row..endInclusive.row) {
+                    this += GuiSlot(row, start.slotInRow)
+                    this += GuiSlot(row, endInclusive.slotInRow)
+                }
+                for (slotInRow in start.slotInRow..endInclusive.slotInRow) {
+                    this += GuiSlot(start.row, slotInRow)
+                    this += GuiSlot(endInclusive.row, slotInRow)
+                }
             }
         }
 
@@ -123,6 +135,16 @@ infix fun GuiSlot.lineTo(slot: GuiSlot) =
  */
 infix fun GuiSlot.rectTo(slot: GuiSlot) =
     GuiSlotCompound.SlotRange.Rectangle(this, slot)
+
+/**
+ * Creates a new slot range.
+ *
+ * This range contains all slots border slots of a rectangle
+ * with the two given slots as two opposite corners in the rectangle.
+ * (The result is a hollow rectangle)
+ */
+infix fun GuiSlot.hrectTo(slot: GuiSlot) =
+    GuiSlotCompound.SlotRange.HollowRectangle(this, slot)
 
 object Slots {
     // ROW
