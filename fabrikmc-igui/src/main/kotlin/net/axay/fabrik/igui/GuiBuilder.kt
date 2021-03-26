@@ -86,6 +86,14 @@ class GuiBuilder(
         var effectFrom: GuiPage.ChangeEffect? = null
 
         /**
+         * Sets both [effectTo] and [effectFrom] at the same time.
+         */
+        fun setEffect(effect: GuiPage.ChangeEffect?) {
+            effectTo = effect
+            effectFrom = effect
+        }
+
+        /**
          * Adds the given element for each given slot to the gui.
          */
         fun element(guiSlotCompound: GuiSlotCompound, element: GuiElement) {
