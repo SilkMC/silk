@@ -1,5 +1,7 @@
 package net.axay.fabrik.core.item
 
+import net.axay.fabrik.core.text.LiteralTextBuilder
+import net.axay.fabrik.core.text.literalText
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.ListTag
@@ -26,3 +28,10 @@ fun ItemStack.setLore(text: Collection<Text>) {
         text.mapTo(ListTag()) { StringTag.of(Text.Serializer.toJson(it)) }
     )
 }
+
+/**
+ * Opens a [LiteralTextBuilder] to change the custom name of
+ * the item stack.
+ */
+inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit): ItemStack =
+    setCustomName(literalText(baseText, builder))
