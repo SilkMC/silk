@@ -1,5 +1,6 @@
 package net.axay.fabrik.core
 
+import net.axay.fabrik.core.logging.logInfo
 import net.axay.fabrik.core.task.FabrikCoroutineManager
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.MinecraftServer
@@ -12,14 +13,13 @@ object Fabrik {
      * use the Fabrik API.
      */
     fun init() {
-        println("Initializing Fabrik due to init call...")
+        logInfo("Initializing Fabrik due to init call")
 
         ServerLifecycleEvents.SERVER_STARTING.register {
             currentServer = it
-            println("Reached SERVER_STARTING state")
+            logInfo("Reached SERVER_STARTING state")
         }
 
         FabrikCoroutineManager.init()
     }
-
 }
