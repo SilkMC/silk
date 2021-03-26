@@ -1,5 +1,6 @@
 package net.axay.fabrik.igui
 
+import net.axay.fabrik.core.text.literal
 import net.axay.fabrik.igui.observable.GuiProperty
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -34,12 +35,12 @@ abstract class GuiIcon : GuiUseable() {
 /**
  * Creates a static gui icon.
  */
-val ItemStack.guiIcon get() = GuiIcon.StaticIcon(this)
+val ItemStack.guiIcon get() = GuiIcon.StaticIcon(this.setCustomName(null))
 
 /**
  * Creates a static gui icon.
  */
-val Item.guiIcon get() = GuiIcon.StaticIcon(this.defaultStack)
+val Item.guiIcon get() = this.defaultStack.guiIcon
 
 /**
  * Creates a gui icon which automatically updates itself
