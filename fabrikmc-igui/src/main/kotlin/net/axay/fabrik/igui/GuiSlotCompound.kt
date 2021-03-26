@@ -6,17 +6,12 @@ import net.axay.fabrik.core.kotlin.min
 interface GuiSlotCompound {
     fun withDimensions(dimensions: GuiDimensions): Collection<GuiSlot>
 
-    class SlotRange(
+    abstract class SlotRange(
         startSlot: GuiSlot,
         endSlot: GuiSlot,
-        val type: Type,
     ) : GuiSlotCompound, ClosedRange<GuiSlot> {
-        enum class Type {
-            LINEAR, RECTANGLE
-        }
-
-        override val start: GuiSlot
-        override val endInclusive: GuiSlot
+        final override val start: GuiSlot
+        final override val endInclusive: GuiSlot
 
         init {
             val minMaxPairRow = startSlot.row to endSlot.row
@@ -25,32 +20,33 @@ interface GuiSlotCompound {
             endInclusive = GuiSlot(minMaxPairRow.max, minMaxPairSlotInRow.max)
         }
 
-        override fun withDimensions(dimensions: GuiDimensions) = ArrayList<GuiSlot>().apply {
-            when (type) {
-                Type.RECTANGLE -> {
-                    // all possible combinations between the two slots form the rectangle
-                    for (row in start.row..endInclusive.row)
-                        for (slotInRow in start.slotInRow..endInclusive.slotInRow)
-                            this += GuiSlot(row, slotInRow)
-                }
-                Type.LINEAR -> {
-                    if (endInclusive.row > start.row) {
-                        // from start --->| to end of row
-                        for (slotInRow in start.slotInRow..dimensions.width)
-                            this += GuiSlot(start.row, slotInRow)
-                        // all rows in between
-                        if (endInclusive.row > start.row + 1)
-                            for (row in start.row + 1 until endInclusive.row)
-                                for (slotInRow in 1..dimensions.width)
-                                    this += GuiSlot(row, slotInRow)
-                        // from start of row |---> to endInclusive
-                        for (slotInRow in 1..endInclusive.slotInRow)
-                            this += GuiSlot(endInclusive.row, slotInRow)
-                    } else if (endInclusive.row == start.row) {
-                        // from start ---> to endInclusive in the same row
-                        for (slotInRow in start.slotInRow..endInclusive.slotInRow)
-                            this += GuiSlot(start.row, slotInRow)
-                    }
+        class Rectangle(startSlot: GuiSlot, endSlot: GuiSlot) : SlotRange(startSlot, endSlot) {
+            override fun withDimensions(dimensions: GuiDimensions) = ArrayList<GuiSlot>().apply {
+                // all possible combinations between the two slots form the rectangle
+                for (row in start.row..endInclusive.row)
+                    for (slotInRow in start.slotInRow..endInclusive.slotInRow)
+                        this += GuiSlot(row, slotInRow)
+            }
+        }
+
+        class Line(startSlot: GuiSlot, endSlot: GuiSlot) : SlotRange(startSlot, endSlot) {
+            override fun withDimensions(dimensions: GuiDimensions) = ArrayList<GuiSlot>().apply {
+                if (endInclusive.row > start.row) {
+                    // from start --->| to end of row
+                    for (slotInRow in start.slotInRow..dimensions.width)
+                        this += GuiSlot(start.row, slotInRow)
+                    // all rows in between
+                    if (endInclusive.row > start.row + 1)
+                        for (row in start.row + 1 until endInclusive.row)
+                            for (slotInRow in 1..dimensions.width)
+                                this += GuiSlot(row, slotInRow)
+                    // from start of row |---> to endInclusive
+                    for (slotInRow in 1..endInclusive.slotInRow)
+                        this += GuiSlot(endInclusive.row, slotInRow)
+                } else if (endInclusive.row == start.row) {
+                    // from start ---> to endInclusive in the same row
+                    for (slotInRow in start.slotInRow..endInclusive.slotInRow)
+                        this += GuiSlot(start.row, slotInRow)
                 }
             }
         }
@@ -117,7 +113,7 @@ interface GuiSlotCompound {
  * the indexes of the two given slots.
  */
 infix fun GuiSlot.lineTo(slot: GuiSlot) =
-    GuiSlotCompound.SlotRange(this, slot, GuiSlotCompound.SlotRange.Type.LINEAR)
+    GuiSlotCompound.SlotRange.Line(this, slot)
 
 /**
  * Creates a new slot range.
@@ -126,7 +122,7 @@ infix fun GuiSlot.lineTo(slot: GuiSlot) =
  * with the two given slots as two opposite corners in the rectangle.
  */
 infix fun GuiSlot.rectTo(slot: GuiSlot) =
-    GuiSlotCompound.SlotRange(this, slot, GuiSlotCompound.SlotRange.Type.RECTANGLE)
+    GuiSlotCompound.SlotRange.Rectangle(this, slot)
 
 object Slots {
     // ROW

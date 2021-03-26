@@ -177,14 +177,13 @@ class GuiBuilder(
          * a compound scroll button
          */
         fun <E> compound(
-            startSlot: GuiSlot,
-            endSlot: GuiSlot,
+            slots: GuiSlotCompound.SlotRange.Rectangle,
             content: GuiList<E>,
             iconGenerator: (E) -> ItemStack,
             onClick: (event: GuiClickEvent, element: E) -> Unit,
         ): GuiCompound<E> {
-            val compound = GuiCompound(type, startSlot, endSlot, content, iconGenerator, onClick)
-            element(startSlot rectTo endSlot, GuiCompoundElement(compound))
+            val compound = GuiCompound(type, slots, content, iconGenerator, onClick)
+            element(slots, GuiCompoundElement(compound))
             return compound
         }
 

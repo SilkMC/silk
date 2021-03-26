@@ -6,13 +6,11 @@ import net.minecraft.item.ItemStack
 
 class GuiCompound<E>(
     val guiType: GuiType,
-    startSlot: GuiSlot,
-    endSlot: GuiSlot,
+    val slots: GuiSlotCompound.SlotRange.Rectangle,
     val content: GuiList<E>,
     private val iconGenerator: (E) -> ItemStack,
     private val onClick: ((event: GuiClickEvent, element: E) -> Unit)?
 ) : GuiUseable() {
-    private var slots = startSlot rectTo endSlot
     private var slotIndexes = slots.withDimensions(guiType.dimensions)
         .mapNotNull { it.slotIndexIn(guiType.dimensions) }
         .sorted()
