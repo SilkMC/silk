@@ -54,7 +54,10 @@ class GuiBuilder(
      */
     val internalBuilder = this.Internal()
 
-    inner class PageBuilder {
+    inner class PageBuilder(
+        val key: String,
+        val number: Int,
+    ) {
         inner class Internal {
             val content = HashMap<Int, GuiElement>()
 
@@ -63,7 +66,7 @@ class GuiBuilder(
              *
              * INTERNAL! You probably do not need this function.
              */
-            fun internalBuild(key: String, number: Int) = GuiPage(key, number, content, effectTo, effectFrom)
+            fun internalBuild() = GuiPage(key, number, content, effectTo, effectFrom)
         }
 
         /**
@@ -264,7 +267,7 @@ class GuiBuilder(
         if (internalBuilder.pagesByNumber.containsKey(key)) error("The specified page number is already in use")
 
         val stringKey = key.toString()
-        val page = PageBuilder().apply(builder).internalBuilder.internalBuild(stringKey, number)
+        val page = PageBuilder(stringKey, number).apply(builder).internalBuilder.internalBuild()
         internalBuilder.pagesByKey[stringKey] = page
         internalBuilder.pagesByNumber[number] = page
     }
