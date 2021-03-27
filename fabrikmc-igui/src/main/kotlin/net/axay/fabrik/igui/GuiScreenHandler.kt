@@ -35,7 +35,14 @@ class GuiScreenHandler(
 
         val shouldCancel = (startIndex..endIndex).any {
             gui.currentPage.content[it]?.shouldCancel(
-                GuiClickEvent(gui, playerInv.player, GuiActionType.INSERT, slotIndex, GuiSlot(slots[slotIndex]))
+                GuiClickEvent(
+                    gui,
+                    playerInv.player,
+                    GuiActionType.INSERT,
+                    slotIndex,
+                    slots.getOrNull(slotIndex),
+                    gui.guiType.dimensions.slotMap[slotIndex]
+                )
             ) == true
         }
 
@@ -52,8 +59,6 @@ class GuiScreenHandler(
     ): ItemStack {
         if (gui.isOffset) return ItemStack.EMPTY
 
-        val slot = slots.getOrNull(slotIndex)
-
         var shouldCancel = false
 
         val element = gui.currentPage.content[slotIndex]
@@ -63,7 +68,8 @@ class GuiScreenHandler(
                 player,
                 GuiActionType.fromSlotActionType(actionType, clickData),
                 slotIndex,
-                slot?.let { GuiSlot(it) }
+                slots.getOrNull(slotIndex),
+                gui.guiType.dimensions.slotMap[slotIndex]
             )
 
             shouldCancel = element.shouldCancel(event)
@@ -90,7 +96,14 @@ class GuiScreenHandler(
         val slotIndex = slots.indexOf(slot)
 
         return gui.currentPage.content[slotIndex]?.shouldCancel(
-            GuiClickEvent(gui, playerInv.player, GuiActionType.INSERT, slotIndex, GuiSlot(slot))
+            GuiClickEvent(
+                gui,
+                playerInv.player,
+                GuiActionType.INSERT,
+                slotIndex,
+                slot,
+                gui.guiType.dimensions.slotMap[slotIndex]
+            )
         ) == false
     }
 

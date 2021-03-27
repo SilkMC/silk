@@ -1,12 +1,8 @@
 package net.axay.fabrik.igui
 
-import net.minecraft.screen.slot.Slot
-
 data class GuiSlot(
     val row: Int, val slotInRow: Int
 ) : GuiSlotCompound, Comparable<GuiSlot> {
-    constructor(slot: Slot) : this(slot.y + 1, slot.x + 1)
-
     override fun withDimensions(dimensions: GuiDimensions) = listOf(this)
 
     override fun compareTo(other: GuiSlot) = when {
