@@ -65,7 +65,7 @@ class GuiCompound<E>(
         ?.let { iconGenerator.invoke(it) } ?: ItemStack.EMPTY
 
     internal fun onClickElement(event: GuiClickEvent) {
-        val element = displayedContent.getOrNull(event.slotIndex) ?: return
+        val element = displayedContent.getOrNull(slotIndexes.indexOf(event.slotIndex)) ?: return
         onClick?.invoke(event, element)
     }
 
