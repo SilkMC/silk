@@ -5,7 +5,7 @@ class GuiList<T>(val internalCollection: MutableList<T>) {
 
     fun invokeListeners() = listeners.forEach { it.invoke(internalCollection) }
 
-    inline fun doUpdating(action: (MutableList<T>) -> Unit) {
+    inline fun mutate(action: (MutableList<T>) -> Unit) {
         action.invoke(internalCollection)
         invokeListeners()
     }
