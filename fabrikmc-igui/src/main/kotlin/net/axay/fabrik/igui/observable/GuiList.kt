@@ -1,5 +1,7 @@
 package net.axay.fabrik.igui.observable
 
+import net.axay.fabrik.core.task.coroutineTask
+
 class GuiList<T>(val internalCollection: MutableList<T>) {
     val listeners = HashSet<(List<T>) -> Unit>()
 
@@ -7,7 +9,9 @@ class GuiList<T>(val internalCollection: MutableList<T>) {
 
     inline fun mutate(action: (MutableList<T>) -> Unit) {
         action.invoke(internalCollection)
-        invokeListeners()
+        coroutineTask {
+            invokeListeners()
+        }
     }
 }
 
