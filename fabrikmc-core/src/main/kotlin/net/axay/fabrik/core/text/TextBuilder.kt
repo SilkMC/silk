@@ -17,10 +17,13 @@ inline fun literalText(
 ) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build()
 
 class LiteralTextBuilder(
-    private val text: String,
+    private val text: BaseText,
     private val parentStyle: Style,
     private val inheritStyle: Boolean
 ) {
+    constructor(text: String, parentStyle: Style, inheritStyle: Boolean) :
+            this(LiteralText(text), parentStyle, inheritStyle)
+
     var bold: Boolean? = null
     var italic: Boolean? = null
     var underline: Boolean? = null
@@ -72,13 +75,32 @@ class LiteralTextBuilder(
     }
 
     /**
+     * Append text to the parent.
+     *
+     * @param text the text instance
+     * @param inheritStyle if true, this text will inherit the style from its parent
+     * @param builder the builder which can be used to set the style and add child text components
+     */
+    inline fun text(
+        text: Text,
+        inheritStyle: Boolean = true,
+        builder: LiteralTextBuilder.() -> Unit = { }
+    ) {
+        if (text is BaseText) {
+            siblingText.append(LiteralTextBuilder(text, currentStyle, inheritStyle).apply(builder).build())
+        } else {
+            siblingText.append(text)
+        }
+    }
+
+    /**
      * Adds a line break.
      */
     fun newLine() {
         siblingText.append(LiteralText("\n"))
     }
 
-    fun build() = LiteralText(text).apply {
+    fun build() = text.apply {
         style = currentStyle
         if (siblingText.siblings.isNotEmpty())
             append(siblingText)
