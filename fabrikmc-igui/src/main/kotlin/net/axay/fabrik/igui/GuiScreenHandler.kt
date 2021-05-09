@@ -87,6 +87,7 @@ class GuiScreenHandler(
     }
 
     override fun close(player: PlayerEntity) {
+        super.close(player)
         gui.eventHandler.onClose?.invoke(GuiCloseEvent(gui, player))
     }
 
