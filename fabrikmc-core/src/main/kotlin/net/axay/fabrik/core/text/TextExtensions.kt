@@ -8,7 +8,7 @@ import org.apache.commons.lang3.text.WordUtils
 /**
  * Sends the given [LiteralText] to the player.
  */
-fun PlayerEntity.sendText(text: LiteralText) {
+fun PlayerEntity.sendText(text: Text) {
     sendMessage(text, false)
 }
 
