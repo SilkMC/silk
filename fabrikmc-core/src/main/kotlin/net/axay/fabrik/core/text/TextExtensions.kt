@@ -13,6 +13,16 @@ fun PlayerEntity.sendText(text: LiteralText) {
 }
 
 /**
+ * Opens a [LiteralTextBuilder] and sends the resulting [LiteralText]
+ * to the player.
+ *
+ * @see [literalText]
+ */
+inline fun PlayerEntity.sendText(baseText: String = "", builder: (LiteralTextBuilder) -> Unit) {
+    sendMessage(literalText(baseText, builder), false)
+}
+
+/**
  * Converts this string to a [LiteralText] instance.
  */
 val String.literal get() = LiteralText(this)
