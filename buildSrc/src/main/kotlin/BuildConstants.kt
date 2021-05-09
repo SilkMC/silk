@@ -7,8 +7,8 @@ object BuildConstants {
 
     // check these values here: https://axay.net/fabric/gradlekts/latest
     const val minecraftVersion = "1.16.5"
-    const val yarnMappingsVersion = "1.16.5+build.6:v2"
+    const val yarnMappingsVersion = "1.16.5+build.9:v2"
     const val fabricLoaderVersion = "0.11.3"
-    const val fabricApiVersion = "0.32.5+1.16"
-    const val fabricLanguageKotlinVersion = "1.5.0+kotlin.1.4.31"
+    const val fabricApiVersion = "0.34.1+1.16"
+    const val fabricLanguageKotlinVersion = "1.6.0+kotlin.1.5.0"
 }
