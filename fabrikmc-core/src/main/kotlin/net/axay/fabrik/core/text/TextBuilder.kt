@@ -14,7 +14,7 @@ import net.minecraft.util.Formatting
 inline fun literalText(
     baseText: String = "",
     builder: LiteralTextBuilder.() -> Unit = { }
-) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build()
+) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build() as LiteralText
 
 class LiteralTextBuilder(
     private val text: BaseText,
