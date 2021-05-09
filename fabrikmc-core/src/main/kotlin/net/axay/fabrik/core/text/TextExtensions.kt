@@ -18,7 +18,7 @@ fun PlayerEntity.sendText(text: Text) {
  *
  * @see [literalText]
  */
-inline fun PlayerEntity.sendText(baseText: String = "", builder: (LiteralTextBuilder) -> Unit) {
+inline fun PlayerEntity.sendText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit) {
     sendMessage(literalText(baseText, builder), false)
 }
 
