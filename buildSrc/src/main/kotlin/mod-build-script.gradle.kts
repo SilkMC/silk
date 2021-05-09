@@ -20,7 +20,7 @@ description = "FabrikMC is an API for using FabricMC with Kotlin."
 
 repositories {
     mavenCentral()
-    maven("http://maven.fabricmc.net/")
+    maven("https://maven.fabricmc.net/")
 }
 
 dependencies {
