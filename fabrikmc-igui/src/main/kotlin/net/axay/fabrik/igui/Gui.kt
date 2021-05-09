@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.SimpleInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.NamedScreenHandlerFactory
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
 import java.util.*
 
@@ -122,8 +123,8 @@ class Gui(
      * Closes this gui for all players viewing it.
      */
     fun closeForViewers() {
-        views.entries.forEach {
-            it.value.close(it.key)
+        views.keys.forEach {
+            (it as ServerPlayerEntity).closeHandledScreen()
         }
     }
 }
