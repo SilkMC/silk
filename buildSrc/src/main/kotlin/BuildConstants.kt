@@ -9,6 +9,6 @@ object BuildConstants {
     const val minecraftVersion = "1.16.5"
     const val yarnMappingsVersion = "1.16.5+build.9:v2"
     const val fabricLoaderVersion = "0.11.3"
-    const val fabricApiVersion = "0.34.1+1.16"
+    const val fabricApiVersion = "0.34.2+1.16"
     const val fabricLanguageKotlinVersion = "1.6.0+kotlin.1.5.0"
 }
