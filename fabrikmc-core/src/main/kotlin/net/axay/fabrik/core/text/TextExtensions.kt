@@ -1,26 +1,12 @@
 package net.axay.fabrik.core.text
 
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.network.MessageType
+import net.minecraft.server.MinecraftServer
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.util.Util
 import org.apache.commons.lang3.text.WordUtils
-
-/**
- * Sends the given [LiteralText] to the player.
- */
-fun PlayerEntity.sendText(text: Text) {
-    sendMessage(text, false)
-}
-
-/**
- * Opens a [LiteralTextBuilder] and sends the resulting [LiteralText]
- * to the player.
- *
- * @see [literalText]
- */
-inline fun PlayerEntity.sendText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit) {
-    sendMessage(literalText(baseText, builder), false)
-}
 
 /**
  * Converts this string to a [LiteralText] instance.
@@ -42,3 +28,37 @@ inline fun String.literalLines(
     lineBuilder: (line: String) -> Text = { it.literal }
 ): List<Text> = WordUtils.wrap(this, width, System.lineSeparator(), cutLongWords).split(System.lineSeparator())
     .map(lineBuilder)
+
+/**
+ * Sends the given [LiteralText] to the player.
+ */
+fun PlayerEntity.sendText(text: Text) {
+    sendMessage(text, false)
+}
+
+/**
+ * Opens a [LiteralTextBuilder] and sends the resulting [LiteralText]
+ * to the player.
+ *
+ * @see [literalText]
+ */
+inline fun PlayerEntity.sendText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = { }) {
+    sendMessage(literalText(baseText, builder), false)
+}
+
+/**
+ * Opens a [LiteralTextBuilder] and sends the resulting [LiteralText]
+ * to each player on the server.
+ *
+ * @see [literalText]
+ */
+inline fun MinecraftServer.broadcastText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit= { }) {
+    playerManager.broadcastChatMessage(literalText(baseText, builder), MessageType.CHAT, Util.NIL_UUID)
+}
+
+/**
+ * Sends the given [LiteralText] to each player on the server.
+ */
+fun MinecraftServer.sendText(text: Text) {
+    playerManager.broadcastChatMessage(text, MessageType.CHAT, Util.NIL_UUID)
+}
