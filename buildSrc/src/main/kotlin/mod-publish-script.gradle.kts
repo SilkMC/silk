@@ -64,6 +64,10 @@ publishing {
             name = "ossrh"
             credentials(PasswordCredentials::class)
         }
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+            name = "ossrhSnapshot"
+            credentials(PasswordCredentials::class)
+        }
     }
 
     publications {
