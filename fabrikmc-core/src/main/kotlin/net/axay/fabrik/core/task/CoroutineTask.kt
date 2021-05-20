@@ -3,20 +3,6 @@ package net.axay.fabrik.core.task
 import kotlinx.coroutines.*
 
 /**
- * A [CoroutineDispatcher] which executes code synchronously to the
- * MinecraftServer main thread.
- */
-lateinit var mcCoroutineDispatcher: CoroutineDispatcher
-    internal set
-
-/**
- * A [CoroutineScope] using the current MinecraftServer
- * as the Dispatcher.
- */
-lateinit var mcCoroutineScope: CoroutineScope
-    internal set
-
-/**
  * A CoroutineScope using the IO Dispatcher
  * of kotlinx.coroutines.
  */
