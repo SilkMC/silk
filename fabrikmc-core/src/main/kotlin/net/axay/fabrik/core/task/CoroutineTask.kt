@@ -1,16 +1,6 @@
 package net.axay.fabrik.core.task
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-/**
- * A CoroutineScope using the current MinecraftServer
- * as the Dispatcher.
- */
-lateinit var mcCoroutineScope: CoroutineScope
-    internal set
+import kotlinx.coroutines.*
 
 /**
  * A CoroutineScope using the IO Dispatcher

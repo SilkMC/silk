@@ -59,7 +59,7 @@ class GuiScreenHandler(
     ): ItemStack {
         if (gui.isOffset) return ItemStack.EMPTY
 
-        var shouldCancel = false
+        var shouldCancel = true
 
         val element = gui.currentPage.content[slotIndex]
         if (element != null) {

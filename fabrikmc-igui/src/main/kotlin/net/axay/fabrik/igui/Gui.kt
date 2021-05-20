@@ -63,6 +63,8 @@ class Gui(
                 page.startUsing(this)
 
                 currentPage = page
+            } else if (!page.inUse) {
+                page.startUsing(this)
             }
         }
 
