@@ -1,6 +1,7 @@
 import BuildConstants.curseforgeId
 import BuildConstants.fabrikVersion
 import BuildConstants.githubRepo
+import BuildConstants.isSnapshot
 import BuildConstants.minecraftVersion
 import BuildConstants.projectState
 import com.matthewprenger.cursegradle.CurseProject
@@ -64,7 +65,7 @@ publishing {
             name = "ossrh"
             credentials(PasswordCredentials::class)
             setUrl(
-                if (!version.toString().endsWith("-SNAPSHOT"))
+                if (!isSnapshot)
                     "https://oss.sonatype.org/service/local/staging/deploy/maven2"
                 else
                     "https://oss.sonatype.org/content/repositories/snapshots"
