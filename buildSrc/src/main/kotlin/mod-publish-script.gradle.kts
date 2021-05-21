@@ -60,9 +60,15 @@ curseforge {
 
 publishing {
     repositories {
-        maven("https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+        maven {
             name = "ossrh"
             credentials(PasswordCredentials::class)
+            setUrl(
+                if (!version.toString().endsWith("-SNAPSHOT"))
+                    "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                else
+                    "https://oss.sonatype.org/content/repositories/snapshots"
+            )
         }
     }
 
