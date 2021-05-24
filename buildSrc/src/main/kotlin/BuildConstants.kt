@@ -1,6 +1,7 @@
 object BuildConstants {
     const val fabrikVersion = "0.4.2-SNAPSHOT"
-    const val projectState = "beta"
+    val isSnapshot = fabrikVersion.endsWith("-SNAPSHOT")
+    val projectState = if (isSnapshot) "beta" else "release"
 
     const val curseforgeId = "447425"
     const val githubRepo = "bluefireoly/fabrikmc"

@@ -100,6 +100,14 @@ class LiteralTextBuilder(
         siblingText.append(LiteralText("\n"))
     }
 
+    /**
+     * Adds an empty line.
+     */
+    fun emptyLine() {
+        newLine()
+        newLine()
+    }
+
     fun build() = text.apply {
         style = currentStyle
         if (siblingText.siblings.isNotEmpty())
