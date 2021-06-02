@@ -36,7 +36,7 @@ private val textExamples = mapOf(
     }
 )
 
-val textTestCommand = command("text") {
+val textTestCommand = command("text", true) {
     argument("textexample", string()) {
         simpleSuggests { textExamples.keys }
         simpleExecutes {

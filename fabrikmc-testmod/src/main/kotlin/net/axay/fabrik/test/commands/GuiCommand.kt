@@ -10,7 +10,7 @@ private val guis = mapOf(
     "simpletestgui" to SimpleTestGui.gui
 )
 
-val guiCommand = command("gui") {
+val guiCommand = command("gui", true) {
     literal("open") {
         argument("guiname", StringArgumentType.string()) {
             simpleSuggests { guis.keys }
