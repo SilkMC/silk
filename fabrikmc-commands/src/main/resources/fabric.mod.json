@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabrikmc-commands",
+  "id": "${id}",
   "version": "${version}",
 
   "name": "FabrikMC Commands",
-  "description": "FabrikMC is an API for using FabricMC with Kotlin.",
-  "authors": ["bluefireoly"],
+  "description": "${description}",
+  "authors": ["${author}"],
 
   "depends": {
     "fabric": "*",

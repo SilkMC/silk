@@ -1,3 +1,4 @@
+import BuildConstants.author
 import BuildConstants.fabricApiVersion
 import BuildConstants.fabricLanguageKotlinVersion
 import BuildConstants.fabricLoaderVersion
@@ -38,10 +39,17 @@ java {
 
 tasks {
     processResources {
-        inputs.property("version", project.version)
+        val properties = linkedMapOf(
+            "id" to project.name,
+            "version" to project.version,
+            "description" to project.description,
+            "author" to author
+        )
+
+        inputs.properties(properties)
 
         filesMatching("fabric.mod.json") {
-            expand("version" to project.version)
+            expand(properties)
         }
     }
 

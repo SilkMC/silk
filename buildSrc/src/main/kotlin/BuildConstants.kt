@@ -6,6 +6,8 @@ object BuildConstants {
     const val curseforgeId = "447425"
     const val githubRepo = "bluefireoly/fabrikmc"
 
+    const val author = "bluefireoly"
+
     // check these values here: https://axay.net/fabric/gradlekts/latest
     const val minecraftVersion = "1.16.5"
     const val yarnMappingsVersion = "1.16.5+build.9:v2"
