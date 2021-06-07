@@ -1,5 +1,5 @@
 object BuildConstants {
-    const val fabrikVersion = "0.4.2-SNAPSHOT"
+    const val fabrikVersion = "0.4.2"
     val isSnapshot = fabrikVersion.endsWith("-SNAPSHOT")
     val projectState = if (isSnapshot) "beta" else "release"
 
