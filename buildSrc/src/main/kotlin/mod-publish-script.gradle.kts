@@ -5,6 +5,7 @@ import BuildConstants.isSnapshot
 import BuildConstants.minecraftVersion
 import BuildConstants.projectState
 import com.matthewprenger.cursegradle.CurseProject
+import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.CurseUploadTask
 import com.matthewprenger.cursegradle.Options
 import com.modrinth.minotaur.TaskModrinthUpload
@@ -53,6 +54,15 @@ curseforge {
         id = curseforgeId
         releaseType = projectState
         addGameVersion(minecraftVersion)
+
+        relations(closureOf<CurseRelation> {
+            requiredDependency("fabric-api")
+            requiredDependency("fabric-language-kotlin")
+            // TODO add the following if the projects are separated on curseforge
+            /*if (project.name != "fabrikmc-core") {
+                requiredDependency("fabrikmc-core")
+            }*/
+        })
     })
     options(closureOf<Options> {
         forgeGradleIntegration = false
