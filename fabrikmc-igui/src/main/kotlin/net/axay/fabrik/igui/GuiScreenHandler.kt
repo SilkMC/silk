@@ -56,8 +56,8 @@ class GuiScreenHandler(
         clickData: Int,
         actionType: SlotActionType,
         player: PlayerEntity,
-    ): ItemStack {
-        if (gui.isOffset) return ItemStack.EMPTY
+    ) {
+        if (gui.isOffset) return
 
         var shouldCancel = true
 
@@ -78,11 +78,10 @@ class GuiScreenHandler(
             gui.eventHandler.onClick?.invoke(event)
         }
 
-        return if (!shouldCancel)
+        if (!shouldCancel)
             super.onSlotClick(slotIndex, clickData, actionType, player)
         else {
             (player as? ServerPlayerEntity)?.refreshScreenHandler(this)
-            ItemStack.EMPTY
         }
     }
 
