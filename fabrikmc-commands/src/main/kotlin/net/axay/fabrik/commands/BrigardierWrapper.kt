@@ -139,5 +139,12 @@ fun <S> RequiredArgumentBuilder<S, *>.simpleSuggests(
 /**
  * Get the value of this argument.
  */
-inline fun <reified T, S> CommandContext<S>.getArgument(name: String): T =
+inline fun <reified T> CommandContext<ServerCommandSource>.getArgument(name: String): T =
+    getArgument(name, T::class.java)
+
+/**
+ * Get the value of this argument.
+ */
+@JvmName("clientGetArgument")
+inline fun <reified T> CommandContext<FabricClientCommandSource>.getArgument(name: String): T =
     getArgument(name, T::class.java)
