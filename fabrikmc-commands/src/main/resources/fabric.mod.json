@@ -10,7 +10,7 @@
   "depends": {
     "fabric": "*",
     "fabric-language-kotlin": "*",
-    "minecraft": "1.16.x",
+    "minecraft": "${minecraftversion}",
     "fabrikmc-core": "*"
   }
 }

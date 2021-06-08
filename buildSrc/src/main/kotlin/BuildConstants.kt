@@ -1,5 +1,5 @@
 object BuildConstants {
-    const val fabrikVersion = "0.5.0"
+    const val fabrikVersion = "1.0.0"
     val isSnapshot = fabrikVersion.endsWith("-SNAPSHOT")
     val projectState = if (isSnapshot) "beta" else "release"
 
@@ -7,6 +7,8 @@ object BuildConstants {
     const val githubRepo = "bluefireoly/fabrikmc"
 
     const val author = "bluefireoly"
+
+    const val majorMinecraftVersion = "1.17"
 
     // check these values here: https://axay.net/fabric/gradlekts/latest
     const val minecraftVersion = "1.17"

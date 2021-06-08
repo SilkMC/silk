@@ -3,6 +3,7 @@ import BuildConstants.fabricApiVersion
 import BuildConstants.fabricLanguageKotlinVersion
 import BuildConstants.fabricLoaderVersion
 import BuildConstants.fabrikVersion
+import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.yarnMappingsVersion
 import org.gradle.kotlin.dsl.*
@@ -43,7 +44,8 @@ tasks {
             "id" to project.name,
             "version" to project.version,
             "description" to project.description,
-            "author" to author
+            "author" to author,
+            "minecraftversion" to "${majorMinecraftVersion}.x"
         )
 
         inputs.properties(properties)
