@@ -2,6 +2,7 @@ package net.axay.fabrik.igui
 
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.events.GuiCloseEvent
+import net.axay.fabrik.igui.mixins.ServerPlayerEntityAccessor
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
@@ -81,7 +82,7 @@ class GuiScreenHandler(
         if (!shouldCancel)
             super.onSlotClick(slotIndex, clickData, actionType, player)
         else {
-            (player as? ServerPlayerEntity)?.refreshScreenHandler(this)
+            updateSyncHandler((player as? ServerPlayerEntityAccessor)?.screenHandlerSyncHandler)
         }
     }
 
