@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(SimpleInventory.class)
 public interface SimpleInventoryAccessor {
     @Accessor("stacks")
-    public DefaultedList<ItemStack> getStacks();
+    DefaultedList<ItemStack> getStacks();
 }

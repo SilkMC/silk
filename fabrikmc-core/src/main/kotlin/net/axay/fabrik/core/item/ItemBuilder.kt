@@ -4,8 +4,8 @@ import net.axay.fabrik.core.text.LiteralTextBuilder
 import net.axay.fabrik.core.text.literalText
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.ListTag
-import net.minecraft.nbt.StringTag
+import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.NbtString
 import net.minecraft.text.Text
 
 /**
@@ -25,7 +25,7 @@ inline fun itemStack(
 fun ItemStack.setLore(text: Collection<Text>) {
     getOrCreateSubTag("display").put(
         "Lore",
-        text.mapTo(ListTag()) { StringTag.of(Text.Serializer.toJson(it)) }
+        text.mapTo(NbtList()) { NbtString.of(Text.Serializer.toJson(it)) }
     )
 }
 
