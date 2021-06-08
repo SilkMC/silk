@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabrikmc-test",
+  "id": "${id}",
   "version": "${version}",
 
   "name": "FabrikMC Test",
   "description": "Test mod for Fabrik.",
-  "authors": ["bluefireoly"],
+  "authors": ["${author}"],
 
   "environment": "*",
   "entrypoints": {
@@ -18,7 +18,7 @@
     "fabricloader": ">=0.8.7",
     "fabric": "*",
     "fabric-language-kotlin": "*",
-    "minecraft": "1.16.x",
+    "minecraft": "${minecraftversion}",
     "fabrikmc-core": "*",
     "fabrikmc-igui": "*",
     "fabrikmc-commands": "*"
