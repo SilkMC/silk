@@ -9,9 +9,9 @@ object BuildConstants {
     const val author = "bluefireoly"
 
     // check these values here: https://axay.net/fabric/gradlekts/latest
-    const val minecraftVersion = "1.16.5"
-    const val yarnMappingsVersion = "1.16.5+build.9:v2"
+    const val minecraftVersion = "1.17-rc2"
+    const val yarnMappingsVersion = "1.17-rc2+build.10:v2"
     const val fabricLoaderVersion = "0.11.3"
-    const val fabricApiVersion = "0.34.6+1.16"
+    const val fabricApiVersion = "0.34.9+1.17"
     const val fabricLanguageKotlinVersion = "1.6.1+kotlin.1.5.10"
 }
