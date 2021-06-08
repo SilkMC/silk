@@ -43,7 +43,7 @@ class FabrikPosition(
 
     constructor(player: ServerPlayerEntity) : this(player.pos, player.world.registryKey.value, player.pitch, player.yaw)
 
-    val worldKey: RegistryKey<World> get() = RegistryKey.of(Registry.DIMENSION, worldIdentifier)
+    val worldKey: RegistryKey<World> get() = RegistryKey.of(Registry.WORLD_KEY, worldIdentifier)
     val world get() = if (worldIdentifier != null) Fabrik.currentServer?.getWorld(worldKey) else null
     val blockPos get() = BlockPos(x.toInt(), y.toInt(), z.toInt())
     val roundedBlockPos get() = BlockPos(x.roundToInt(), y.roundToInt(), z.roundToInt())
