@@ -1,7 +1,10 @@
+import com.modrinth.minotaur.request.VersionType
+
 object BuildConstants {
     const val fabrikVersion = "1.0.1-SNAPSHOT"
     val isSnapshot = fabrikVersion.endsWith("-SNAPSHOT")
     val projectState = if (isSnapshot) "beta" else "release"
+    val projectStateType = if (isSnapshot) VersionType.BETA else VersionType.RELEASE
 
     const val curseforgeId = "447425"
     const val githubRepo = "bluefireoly/fabrikmc"
