@@ -1,7 +1,7 @@
 import com.modrinth.minotaur.request.VersionType
 
 object BuildConstants {
-    const val fabrikVersion = "1.0.1-SNAPSHOT"
+    const val fabrikVersion = "1.1.0"
     val isSnapshot = fabrikVersion.endsWith("-SNAPSHOT")
     val projectState = if (isSnapshot) "beta" else "release"
     val projectStateType = if (isSnapshot) VersionType.BETA else VersionType.RELEASE
