@@ -7,6 +7,12 @@
   "description": "${description}",
   "authors": ["${author}"],
 
+  "entrypoints": {
+    "main": [
+      "net.axay.fabrik.core.FabrikKt::init"
+    ]
+  },
+
   "depends": {
     "fabric": "*",
     "fabric-language-kotlin": "*",

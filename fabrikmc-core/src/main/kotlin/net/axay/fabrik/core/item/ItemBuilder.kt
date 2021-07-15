@@ -23,7 +23,7 @@ inline fun itemStack(
  * name of the item stack.
  */
 fun ItemStack.setLore(text: Collection<Text>) {
-    getOrCreateSubTag("display").put(
+    getOrCreateSubNbt("display").put(
         "Lore",
         text.mapTo(NbtList()) { NbtString.of(Text.Serializer.toJson(it)) }
     )

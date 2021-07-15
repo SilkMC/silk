@@ -4,6 +4,7 @@ import BuildConstants.githubRepo
 import BuildConstants.isSnapshot
 import BuildConstants.minecraftVersion
 import BuildConstants.projectState
+import BuildConstants.projectStateType
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.CurseUploadTask
@@ -35,7 +36,7 @@ tasks {
         uploadFile = tasks.named("remapJar").get()
         addGameVersion(minecraftVersion)
         addLoader("fabric")
-        releaseType = projectState
+        versionType = projectStateType
     }
 
     create("publishAndUploadMod") {
