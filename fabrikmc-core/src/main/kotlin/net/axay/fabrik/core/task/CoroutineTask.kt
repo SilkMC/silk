@@ -6,7 +6,7 @@ import kotlinx.coroutines.*
  * A CoroutineScope using the IO Dispatcher
  * of kotlinx.coroutines.
  */
-val fabrikCoroutineScope = CoroutineScope(Dispatchers.IO)
+val fabrikCoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 /**
  * Simplifies the usage with coroutines, if you
