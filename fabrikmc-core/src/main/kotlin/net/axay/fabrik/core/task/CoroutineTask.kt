@@ -3,15 +3,14 @@ package net.axay.fabrik.core.task
 import kotlinx.coroutines.*
 
 /**
- * A CoroutineScope using the IO Dispatcher
+ * A CoroutineScope using the "Default" dispatcher
  * of kotlinx.coroutines.
  */
-val fabrikCoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+val fabrikCoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
 /**
- * Simplifies the usage with coroutines, if you
- * just want to sync something to the main server
- * thread.
+ * Allows you to use coroutines for tasks which are commonly needed
+ * when creating mods.
  *
  * @param sync if true, the coroutine will be executed by the
  * MinecraftServer itself
@@ -27,33 +26,46 @@ inline fun coroutineTask(
     howOften: Long = 1,
     period: Long = 0,
     delay: Long = 0,
-    crossinline task: suspend (CoroutineTask) -> Unit
-): CoroutineTask {
-    val coroutineTask = CoroutineTask()
-    (if (sync) mcCoroutineScope else fabrikCoroutineScope).launch {
+    crossinline task: suspend CoroutineScope.(task: CoroutineTask) -> Unit
+): Job {
+    val coroutineTask = CoroutineTask(howOften)
+    return (if (sync) mcCoroutineScope else fabrikCoroutineScope).launch {
         delay(delay)
         for (i in 1..howOften) {
             coroutineTask.round = i
 
-            task.invoke(coroutineTask)
+            task.invoke(this, coroutineTask)
 
-            if (coroutineTask.isCancelled)
-                break
+            if (!isActive) break
 
             if (i < howOften)
                 delay(period)
         }
     }
-    return coroutineTask
 }
 
 class CoroutineTask(
+    private val howOften: Long,
     /**
      * The current round.
+     *
+     * Counts up from 1 to the given value of howOften (inclusive).
      */
-    var round: Long = 0,
+    var round: Long = 1,
+) {
     /**
-     * Set this to true, if you wish to cancel the repeating execution of the task.
+     * The current round.
+     *
+     * Counts up from 0 to the given value of howOften (exclusive).
      */
-    var isCancelled: Boolean = false
-)
+    val roundFromZero get() = round - 1
+
+    /**
+     * Counts down to 1, starting from the given value of howOften (inclusive).
+     */
+    val counterDownToOne get() = (howOften + 1) - round
+    /**
+     * Counts down to 0, starting from the given value of howOften (exclusive).
+     */
+    val counterDownToZero get() = howOften - round
+}
