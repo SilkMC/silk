@@ -1,6 +1,7 @@
 package net.axay.fabrik.core.scoreboard
 
 import net.axay.fabrik.core.packet.sendPacket
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.network.Packet
 import net.minecraft.network.packet.s2c.play.ScoreboardDisplayS2CPacket
 import net.minecraft.network.packet.s2c.play.ScoreboardObjectiveUpdateS2CPacket
@@ -27,7 +28,13 @@ internal class FabrikSideboardScoreboard(
     displayName: Text,
 ) : Scoreboard() {
     companion object {
-        val sidebarId = getDisplaySlotId("sidebar")
+        private val sidebarId = getDisplaySlotId("sidebar")
+
+        private val scoreboards = HashSet<FabrikSideboardScoreboard>().also { boards ->
+            ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
+                boards.removeIf { it.players.remove(handler.player) && it.players.isEmpty() }
+            }
+        }
     }
 
     private val players = HashSet<ServerPlayerEntity>()
@@ -35,21 +42,26 @@ internal class FabrikSideboardScoreboard(
     private val dummyObjective =
         addObjective(name, ScoreboardCriterion.DUMMY, displayName, ScoreboardCriterion.RenderType.INTEGER)
 
-    // initialize the objective slot of the dummy objective
     init {
         setObjectiveSlot(sidebarId, dummyObjective)
+    }
+
+    fun displayToPlayer(player: ServerPlayerEntity) {
+        players += player
+        scoreboards.add(this)
 
         val updatePackets = ArrayList<Packet<*>>()
+
         updatePackets += ScoreboardObjectiveUpdateS2CPacket(dummyObjective, ScoreboardObjectiveUpdateS2CPacket.ADD_MODE)
         updatePackets += ScoreboardDisplayS2CPacket(sidebarId, dummyObjective)
-        // TODO: the following is probably not needed
-        updatePackets += getAllPlayerScores(dummyObjective).map {
+        getAllPlayerScores(dummyObjective).mapTo(updatePackets) {
             ScoreboardPlayerUpdateS2CPacket(
                 ServerScoreboard.UpdateMode.CHANGE, it.objective!!.name, it.playerName, it.score
             )
         }
+        teams.mapTo(updatePackets) { TeamS2CPacket.updateTeam(it, true) }
 
-        updatePackets.forEach(players::sendPacket)
+        updatePackets.forEach(player.networkHandler::sendPacket)
     }
 
     fun setPlayerScore(player: String, score: Int) {

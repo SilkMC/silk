@@ -11,7 +11,7 @@ class Sideboard(
     displayName: Text,
     lines: List<SideboardLine>,
 ) {
-    private val scoreboard = FabrikSideboardScoreboard(name, displayName)
+    internal val scoreboard = FabrikSideboardScoreboard(name, displayName)
 
     init {
         lines.forEachIndexed { index, line ->
