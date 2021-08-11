@@ -106,14 +106,6 @@ class SideboardBuilder {
     }
 
     /**
-     * Same as [lineChangingPeriodically], with the difference that this function
-     * immediately opens a [literalText] builder.
-     */
-    inline fun literalLineChangingPeriodically(period: Long, crossinline builder: LiteralTextBuilder.() -> Unit) {
-        lineChangingPeriodically(period) { literalText(builder = builder) }
-    }
-
-    /**
      * A utility function, allowing you to emit a [Text] to the flow, which is
      * built by an easy to use [literalText] builder.
      */
