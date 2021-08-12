@@ -1,0 +1,12 @@
+{
+  "package": "net.axay.fabrik.persistence.mixin",
+  "required": true,
+  "compatibilityLevel": "JAVA_16",
+  "server": [
+    "chunk.ChunkSerializerMixin",
+    "chunk.EmptyChunkMixin",
+    "chunk.ProtoChunkMixin",
+    "chunk.ReadOnlyChunkMixin",
+    "chunk.WorldChunkMixin"
+  ]
+}
