@@ -5,7 +5,7 @@ import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 
-@OptIn(ExperimentalSerializationApi::class)
+@ExperimentalSerializationApi
 class BinaryNbtEncoder : AbstractEncoder() {
     override val serializersModule: SerializersModule = EmptySerializersModule
 }

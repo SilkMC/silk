@@ -10,6 +10,7 @@ import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
+import net.axay.fabrik.nbt.toNbt
 import net.minecraft.nbt.*
 import kotlin.collections.ArrayDeque
 
@@ -20,7 +21,7 @@ private val intListSerializer = serializer<List<Int>>()
 private val longArraySerializer = serializer<LongArray>()
 private val longListSerializer = serializer<List<Long>>()
 
-@OptIn(ExperimentalSerializationApi::class)
+@ExperimentalSerializationApi
 abstract class NbtTagEncoder : AbstractEncoder() {
     override val serializersModule: SerializersModule = EmptySerializersModule
 
@@ -37,20 +38,62 @@ abstract class NbtTagEncoder : AbstractEncoder() {
         }
     }
 
-    open fun encodeByteArray(value: ByteArray) {
-        throw SerializationException("Byte arrays are not supported by this encoder")
+    abstract fun encodeElement(element: NbtElement)
+
+    override fun encodeBoolean(value: Boolean) {
+        encodeElement(value.toNbt())
     }
 
-    open fun encodeIntArray(value: IntArray) {
-        throw SerializationException("Int arrays are not supported by this encoder")
+    override fun encodeByte(value: Byte) {
+        encodeElement(value.toNbt())
     }
 
-    open fun encodeLongArray(value: LongArray) {
-        throw SerializationException("Long arrays are not supported by this encoder")
+    override fun encodeShort(value: Short) {
+        encodeElement(value.toNbt())
+    }
+
+    override fun encodeInt(value: Int) {
+        encodeElement(value.toNbt())
+    }
+
+    override fun encodeLong(value: Long) {
+        encodeElement(value.toNbt())
+    }
+
+    override fun encodeFloat(value: Float) {
+        encodeElement(value.toNbt())
+    }
+
+    override fun encodeDouble(value: Double) {
+        encodeElement(value.toNbt())
+    }
+
+    override fun encodeChar(value: Char) {
+        encodeElement(value.toNbt())
+    }
+
+    override fun encodeString(value: String) {
+        encodeElement(value.toNbt())
+    }
+
+    override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
+        encodeElement(NbtString.of(enumDescriptor.getElementName(index)))
+    }
+
+    private fun encodeByteArray(value: ByteArray) {
+        encodeElement(value.toNbt())
+    }
+
+    private fun encodeIntArray(value: IntArray) {
+        encodeElement(value.toNbt())
+    }
+
+    private fun encodeLongArray(value: LongArray) {
+        encodeElement(value.toNbt())
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
+@ExperimentalSerializationApi
 class NbtCompoundEncoder(private val consumer: (NbtCompound) -> Unit) : NbtTagEncoder() {
     private val compound = NbtCompound()
     private val tags = ArrayDeque<String>()
@@ -70,62 +113,14 @@ class NbtCompoundEncoder(private val consumer: (NbtCompound) -> Unit) : NbtTagEn
         return true
     }
 
-    override fun encodeBoolean(value: Boolean) {
-        compound.putBoolean(popTag(), value)
-    }
-
-    override fun encodeByte(value: Byte) {
-        compound.putByte(popTag(), value)
-    }
-
-    override fun encodeShort(value: Short) {
-        compound.putShort(popTag(), value)
-    }
-
-    override fun encodeInt(value: Int) {
-        compound.putInt(popTag(), value)
-    }
-
-    override fun encodeLong(value: Long) {
-        compound.putLong(popTag(), value)
-    }
-
-    override fun encodeFloat(value: Float) {
-        compound.putFloat(popTag(), value)
-    }
-
-    override fun encodeDouble(value: Double) {
-        compound.putDouble(popTag(), value)
-    }
-
-    override fun encodeChar(value: Char) {
-        compound.putInt(popTag(), value.code)
-    }
-
-    override fun encodeString(value: String) {
-        compound.putString(popTag(), value)
-    }
-
-    override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
-        compound.putString(popTag(), enumDescriptor.getElementName(index))
-    }
-
-    override fun encodeByteArray(value: ByteArray) {
-        compound.putByteArray(popTag(), value)
-    }
-
-    override fun encodeIntArray(value: IntArray) {
-        compound.putIntArray(popTag(), value)
-    }
-
-    override fun encodeLongArray(value: LongArray) {
-        compound.putLongArray(popTag(), value)
+    override fun encodeElement(element: NbtElement) {
+        compound.put(popTag(), element)
     }
 
     private fun popTag() = tags.removeLast()
 }
 
-@OptIn(ExperimentalSerializationApi::class)
+@ExperimentalSerializationApi
 class NbtListEncoder(private val consumer: (NbtList) -> Unit) : NbtTagEncoder() {
     private val list = NbtList()
 
@@ -139,55 +134,19 @@ class NbtListEncoder(private val consumer: (NbtList) -> Unit) : NbtTagEncoder() 
         consumer(list)
     }
 
-    override fun encodeBoolean(value: Boolean) {
-        list.add(NbtByte.of(value))
+    override fun encodeElement(element: NbtElement) {
+        list.add(element)
     }
+}
 
-    override fun encodeByte(value: Byte) {
-        list.add(NbtByte.of(value))
-    }
+@ExperimentalSerializationApi
+class NbtPrimitiveEncoder : NbtTagEncoder() {
+    var value: NbtElement? = null
 
-    override fun encodeShort(value: Short) {
-        list.add(NbtShort.of(value))
-    }
-
-    override fun encodeInt(value: Int) {
-        list.add(NbtInt.of(value))
-    }
-
-    override fun encodeLong(value: Long) {
-        list.add(NbtLong.of(value))
-    }
-
-    override fun encodeFloat(value: Float) {
-        list.add(NbtFloat.of(value))
-    }
-
-    override fun encodeDouble(value: Double) {
-        list.add(NbtDouble.of(value))
-    }
-
-    override fun encodeChar(value: Char) {
-        list.add(NbtInt.of(value.code))
-    }
-
-    override fun encodeString(value: String) {
-        list.add(NbtString.of(value))
-    }
-
-    override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
-        list.add(NbtString.of(enumDescriptor.getElementName(index)))
-    }
-
-    override fun encodeByteArray(value: ByteArray) {
-        list.add(NbtByteArray(value))
-    }
-
-    override fun encodeIntArray(value: IntArray) {
-        list.add(NbtIntArray(value))
-    }
-
-    override fun encodeLongArray(value: LongArray) {
-        list.add(NbtLongArray(value))
+    override fun encodeElement(element: NbtElement) {
+        if (value != null) {
+            throw SerializationException("Multiple calls to encodeXxx for NBT primitive")
+        }
+        value = element
     }
 }
