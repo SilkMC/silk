@@ -5,17 +5,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.chunk.EmptyChunk;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(EmptyChunk.class)
 public class EmptyChunkMixin implements CompoundProvider {
-    @Unique
-    private NbtCompound nbtCompound = new NbtCompound();
-
     @NotNull
     @Override
     public NbtCompound getCompound() {
-        return nbtCompound;
+        return new NbtCompound();
     }
 
     @Override
