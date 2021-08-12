@@ -8,7 +8,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkSerializer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.ReadOnlyChunk;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,11 +33,6 @@ public class ChunkSerializerMixin {
                                       ChunkPos pos,
                                       NbtCompound nbt,
                                       CallbackInfoReturnable<ProtoChunk> cir) {
-        var returnChunk = cir.getReturnValue();
-        var chunk = returnChunk instanceof ReadOnlyChunk ? ((ReadOnlyChunk) returnChunk).getWrappedChunk() : returnChunk;
-
-        var levelCompound = nbt.getCompound("Level");
-
-        ((CompoundProvider) chunk).setCompound(levelCompound.getCompound("fabrikmcData"));
+        ((CompoundProvider) cir.getReturnValue()).setCompound(nbt.getCompound("Level").getCompound("fabrikmcData"));
     }
 }
