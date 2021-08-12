@@ -1,5 +1,6 @@
 package net.axay.fabrik.igui.elements
 
+import kotlinx.coroutines.cancel
 import net.axay.fabrik.core.task.coroutineTask
 import net.axay.fabrik.igui.GuiCompound
 import net.axay.fabrik.igui.GuiIcon
@@ -21,8 +22,7 @@ class GuiButtonCompoundScroll(
                 period = speed,
                 howOften = scrollTimes.toLong()
             ) {
-                if (!scroll())
-                    it.isCancelled = true
+                if (!scroll()) cancel()
             }
         } else scroll()
     }
