@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "FabrikMC Core",
+  "description": "${description}",
+  "authors": [
+    "${author}"
+  ],
+  "entrypoints": {
+    "main": [
+    ]
+  },
+  "depends": {
+    "fabric": "*",
+    "fabric-language-kotlin": "*",
+    "minecraft": "${minecraftversion}"
+  }
+}
