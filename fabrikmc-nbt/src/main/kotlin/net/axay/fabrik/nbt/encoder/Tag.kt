@@ -25,16 +25,25 @@ private val longListSerializer = serializer<List<Long>>()
 abstract class NbtTagEncoder : AbstractEncoder() {
     override val serializersModule: SerializersModule = EmptySerializersModule
 
-    @Suppress("unchecked_cast")
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
         when (serializer) {
             byteArraySerializer -> encodeByteArray(value as ByteArray)
-            byteListSerializer -> encodeByteArray((value as List<Byte>).toByteArray())
             intArraySerializer -> encodeIntArray(value as IntArray)
-            intListSerializer -> encodeIntArray((value as List<Int>).toIntArray())
             longArraySerializer -> encodeLongArray(value as LongArray)
-            longListSerializer -> encodeLongArray((value as List<Long>).toLongArray())
-            else -> super.encodeSerializableValue(serializer, value)
+            else -> {
+                // Is always `ArrayListSerializer` regardless of the generic parameter
+                if (serializer::class == byteListSerializer::class) {
+                    @Suppress("unchecked_cast")
+                    when (serializer.descriptor) {
+                        byteListSerializer.descriptor -> encodeByteArray((value as List<Byte>).toByteArray())
+                        intListSerializer.descriptor -> encodeIntArray((value as List<Int>).toIntArray())
+                        longListSerializer.descriptor -> encodeLongArray((value as List<Long>).toLongArray())
+                        else -> super.encodeSerializableValue(serializer, value)
+                    }
+                } else {
+                    super.encodeSerializableValue(serializer, value)
+                }
+            }
         }
     }
 
