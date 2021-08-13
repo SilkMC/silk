@@ -23,20 +23,25 @@ class NbtTest : StringSpec({
         element.getString("name") shouldBe value.name
     }
 
-    "byte arrays and lists should encode to byte array" {
+    "byte collections should encode to byte array" {
         checkAll(Arb.byteArrays(Arb.int(0..0x1000), Arb.byte())) {
             val element = Nbt.encodeToNbtElement(it)
             element.shouldBeInstanceOf<NbtByteArray>()
             element.byteArray shouldBe it
         }
-        checkAll(Arb.list(Arb.byte(), 1..0x1000)) {
+        checkAll(Arb.list(Arb.byte(), 0..0x1000)) {
+            val element = Nbt.encodeToNbtElement(it)
+            element.shouldBeInstanceOf<NbtByteArray>()
+            element.byteArray shouldBe it
+        }
+        checkAll(Arb.set(Arb.byte(), 0..Byte.MAX_VALUE)) {
             val element = Nbt.encodeToNbtElement(it)
             element.shouldBeInstanceOf<NbtByteArray>()
             element.byteArray shouldBe it.toByteArray()
         }
     }
 
-    "int arrays and lists should encode to byte array" {
+    "int collections should encode to byte array" {
         checkAll(Arb.list(Arb.int(), 0..0x1000)) {
             val array = it.toIntArray()
             val elements = listOf(Nbt.encodeToNbtElement(it), Nbt.encodeToNbtElement(array))
@@ -45,9 +50,14 @@ class NbtTest : StringSpec({
                 element.intArray shouldBe array
             }
         }
+        checkAll(Arb.set(Arb.int(), 0..0x1000)) {
+            val element = Nbt.encodeToNbtElement(it)
+            element.shouldBeInstanceOf<NbtIntArray>()
+            element.intArray shouldBe it.toIntArray()
+        }
     }
 
-    "long arrays and lists should encode to byte array" {
+    "long collections should encode to byte array" {
         checkAll(Arb.list(Arb.long(), 0..0x1000)) {
             val array = it.toLongArray()
             val elements = listOf(Nbt.encodeToNbtElement(it), Nbt.encodeToNbtElement(array))
@@ -55,6 +65,11 @@ class NbtTest : StringSpec({
                 element.shouldBeInstanceOf<NbtLongArray>()
                 element.longArray shouldBe array
             }
+        }
+        checkAll(Arb.set(Arb.long(), 0..0x1000)) {
+            val element = Nbt.encodeToNbtElement(it)
+            element.shouldBeInstanceOf<NbtLongArray>()
+            element.longArray shouldBe it.toLongArray()
         }
     }
 })

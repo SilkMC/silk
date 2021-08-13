@@ -7,7 +7,6 @@ import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.internal.ListLikeSerializer
 import net.axay.fabrik.nbt.toNbt
 import net.minecraft.nbt.*
 import kotlin.collections.ArrayDeque
@@ -16,19 +15,24 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
 
 private val byteArraySerializer = serializer<ByteArray>()
-private val byteListSerializer = serializer<List<Byte>>()
 private val intArraySerializer = serializer<IntArray>()
-private val intListSerializer = serializer<List<Int>>()
 private val longArraySerializer = serializer<LongArray>()
-private val longListSerializer = serializer<List<Long>>()
 private val byteSerializer = serializer<Byte>()
 private val intSerializer = serializer<Int>()
 private val longSerializer = serializer<Long>()
 
-private val listLikeSerializerClass = Class.forName("kotlinx.serialization.internal.ListLikeSerializer").kotlin
-
 @ExperimentalSerializationApi
 abstract class NbtTagEncoder : AbstractEncoder() {
+    companion object {
+        private val listLikeSerializerClass = Class.forName("kotlinx.serialization.internal.ListLikeSerializer").kotlin
+
+        @Suppress("unchecked_cast")
+        private val listLikeElementSerializerField = listLikeSerializerClass.declaredMemberProperties
+            .first { it.name == "elementSerializer" }
+            .apply { isAccessible = true } as KProperty1<SerializationStrategy<*>, KSerializer<*>>
+
+    }
+
     override val serializersModule: SerializersModule = EmptySerializersModule
 
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
@@ -37,15 +41,9 @@ abstract class NbtTagEncoder : AbstractEncoder() {
             intArraySerializer -> encodeIntArray(value as IntArray)
             longArraySerializer -> encodeLongArray(value as LongArray)
             else -> {
-
-                if (ListLikeSerializer::class.isInstance(serializer)) {
+                if (listLikeSerializerClass.isInstance(serializer)) {
                     @Suppress("unchecked_cast")
-                    val elementSerializer = (listLikeSerializerClass.declaredMemberProperties
-                        .first { it.name == "elementSerializer" }
-                        .apply { isAccessible = true } as KProperty1<SerializationStrategy<T>, KSerializer<*>>)
-                        .get(serializer)
-                    @Suppress("unchecked_cast")
-                    when (elementSerializer) {
+                    when (listLikeElementSerializerField.get(serializer)) {
                         byteSerializer -> encodeByteArray((value as Collection<Byte>).toByteArray())
                         intSerializer -> encodeIntArray((value as Collection<Int>).toIntArray())
                         longSerializer -> encodeLongArray((value as Collection<Long>).toLongArray())
