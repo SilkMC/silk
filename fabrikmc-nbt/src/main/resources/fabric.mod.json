@@ -15,5 +15,6 @@
     "fabric": "*",
     "fabric-language-kotlin": "*",
     "minecraft": "${minecraftversion}"
-  }
+  },
+  "accessWidener": "${id}.accesswidener"
 }

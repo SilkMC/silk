@@ -7,7 +7,6 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.serializer
 import net.minecraft.nbt.NbtByteArray
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtIntArray

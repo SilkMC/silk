@@ -1,0 +1,4 @@
+accessWidener	v1	named
+
+accessible class kotlinx/serialization/internal/ListLikeSerializer
+accessible field kotlinx/serialization/internal/ListLikeSerializer elementSerializer Lkotlinx/serialization/KSerializer;
