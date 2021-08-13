@@ -38,7 +38,15 @@ abstract class NbtTagEncoder : AbstractEncoder() {
         }
     }
 
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
+        when (descriptor.kind) {
+            StructureKind.LIST -> NbtListEncoder(::consumeStructure)
+            else -> NbtCompoundEncoder(::consumeStructure)
+        }
+
     abstract fun encodeElement(element: NbtElement)
+
+    abstract fun consumeStructure(element: NbtElement)
 
     override fun encodeBoolean(value: Boolean) {
         encodeElement(value.toNbt())
@@ -94,19 +102,23 @@ abstract class NbtTagEncoder : AbstractEncoder() {
 }
 
 @ExperimentalSerializationApi
+class NbtRootEncoder : NbtTagEncoder() {
+    var element: NbtElement? = null
+        private set
+
+    override fun encodeElement(element: NbtElement) {
+        this.element = element
+    }
+
+    override fun consumeStructure(element: NbtElement) {
+        this.element = element
+    }
+}
+
+@ExperimentalSerializationApi
 class NbtCompoundEncoder(private val consumer: (NbtCompound) -> Unit) : NbtTagEncoder() {
     private val compound = NbtCompound()
     private val tags = ArrayDeque<String>()
-
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
-        when (descriptor.kind) {
-            StructureKind.LIST -> NbtListEncoder { compound.put(popTag(), it) }
-            else -> NbtCompoundEncoder { compound.put(popTag(), it) }
-        }
-
-    override fun endStructure(descriptor: SerialDescriptor) {
-        consumer(compound)
-    }
 
     override fun encodeElement(descriptor: SerialDescriptor, index: Int): Boolean {
         tags.add(descriptor.getElementName(index))
@@ -117,6 +129,14 @@ class NbtCompoundEncoder(private val consumer: (NbtCompound) -> Unit) : NbtTagEn
         compound.put(popTag(), element)
     }
 
+    override fun consumeStructure(element: NbtElement) {
+        compound.put(popTag(), element)
+    }
+
+    override fun endStructure(descriptor: SerialDescriptor) {
+        consumer(compound)
+    }
+
     private fun popTag() = tags.removeLast()
 }
 
@@ -124,29 +144,15 @@ class NbtCompoundEncoder(private val consumer: (NbtCompound) -> Unit) : NbtTagEn
 class NbtListEncoder(private val consumer: (NbtList) -> Unit) : NbtTagEncoder() {
     private val list = NbtList()
 
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
-        when (descriptor.kind) {
-            StructureKind.LIST -> NbtListEncoder { list.add(it) }
-            else -> NbtCompoundEncoder { list.add(it) }
-        }
-
-    override fun endStructure(descriptor: SerialDescriptor) {
-        consumer(list)
-    }
-
     override fun encodeElement(element: NbtElement) {
         list.add(element)
     }
-}
 
-@ExperimentalSerializationApi
-class NbtPrimitiveEncoder : NbtTagEncoder() {
-    var value: NbtElement? = null
+    override fun consumeStructure(element: NbtElement) {
+        list.add(element)
+    }
 
-    override fun encodeElement(element: NbtElement) {
-        if (value != null) {
-            throw SerializationException("Multiple calls to encodeXxx for NBT primitive")
-        }
-        value = element
+    override fun endStructure(descriptor: SerialDescriptor) {
+        consumer(list)
     }
 }
