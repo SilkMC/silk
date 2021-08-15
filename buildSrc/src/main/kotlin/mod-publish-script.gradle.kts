@@ -28,7 +28,7 @@ tasks {
         dependsOn(tasks.withType<RemapJarTask>())
     }
 
-    val modrinthTask = create<TaskModrinthUpload>("uploadModrinth") {
+    val modrinthTask = register<TaskModrinthUpload>("uploadModrinth") {
         group = "upload"
         token = findProperty("modrinth.token").toString()
         projectId = "aTaCgKLW"
@@ -39,11 +39,11 @@ tasks {
         versionType = projectStateType
     }
 
-    create("publishAndUploadMod") {
+    register("publishAndUploadMod") {
         group = "upload"
         dependsOn(curseTasks)
         dependsOn(modrinthTask)
-        dependsOn(tasks.getByName("publish"))
+        dependsOn(tasks.named("publish"))
     }
 }
 
@@ -85,15 +85,15 @@ publishing {
     }
 
     publications {
-        create<MavenPublication>(project.name) {
-            val remapJarTask = tasks.named("remapJar").get()
+        register<MavenPublication>(project.name) {
+            val remapJarTask = tasks.named("remapJar")
             artifact(remapJarTask) {
                 builtBy(remapJarTask)
             }
-            artifact(tasks.named("sourcesJar").get()) {
-                builtBy(tasks.named("remapSourcesJar").get())
+            artifact(tasks.named("sourcesJar")) {
+                builtBy(tasks.named("remapSourcesJar"))
             }
-            artifact(tasks.getByName("javadocJar"))
+            artifact(tasks.named("javadocJar"))
             artifact(tasks.jar)
 
             this.groupId = project.group.toString()
