@@ -1,38 +1,22 @@
 package net.axay.fabrik.nbt.encoder
 
-import kotlinx.serialization.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import net.axay.fabrik.nbt.internal.*
 import net.axay.fabrik.nbt.toNbt
-import net.minecraft.nbt.*
-import kotlin.collections.ArrayDeque
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.isAccessible
-
-private val byteArraySerializer = serializer<ByteArray>()
-private val intArraySerializer = serializer<IntArray>()
-private val longArraySerializer = serializer<LongArray>()
-private val byteSerializer = serializer<Byte>()
-private val intSerializer = serializer<Int>()
-private val longSerializer = serializer<Long>()
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.NbtString
 
 @ExperimentalSerializationApi
 abstract class NbtTagEncoder : AbstractEncoder() {
-    companion object {
-        private val listLikeSerializerClass = Class.forName("kotlinx.serialization.internal.ListLikeSerializer").kotlin
-
-        @Suppress("unchecked_cast")
-        private val listLikeElementSerializerField = listLikeSerializerClass.declaredMemberProperties
-            .first { it.name == "elementSerializer" }
-            .apply { isAccessible = true } as KProperty1<SerializationStrategy<*>, KSerializer<*>>
-
-    }
-
     override val serializersModule: SerializersModule = EmptySerializersModule
 
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
@@ -40,27 +24,16 @@ abstract class NbtTagEncoder : AbstractEncoder() {
             byteArraySerializer -> encodeByteArray(value as ByteArray)
             intArraySerializer -> encodeIntArray(value as IntArray)
             longArraySerializer -> encodeLongArray(value as LongArray)
-            else -> {
-                if (listLikeSerializerClass.isInstance(serializer)) {
-                    @Suppress("unchecked_cast")
-                    when (listLikeElementSerializerField.get(serializer)) {
-                        byteSerializer -> encodeByteArray((value as Collection<Byte>).toByteArray())
-                        intSerializer -> encodeIntArray((value as Collection<Int>).toIntArray())
-                        longSerializer -> encodeLongArray((value as Collection<Long>).toLongArray())
-                        else -> super.encodeSerializableValue(serializer, value)
-                    }
-                } else {
-                    super.encodeSerializableValue(serializer, value)
+            else ->
+                @Suppress("unchecked_cast")
+                when (serializer.elementSerializer) {
+                    byteSerializer -> encodeByteArray((value as Collection<Byte>).toByteArray())
+                    intSerializer -> encodeIntArray((value as Collection<Int>).toIntArray())
+                    longSerializer -> encodeLongArray((value as Collection<Long>).toLongArray())
+                    else -> super.encodeSerializableValue(serializer, value)
                 }
-            }
         }
     }
-
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
-        when (descriptor.kind) {
-            StructureKind.LIST -> NbtListEncoder(::consumeStructure)
-            else -> NbtCompoundEncoder(::consumeStructure)
-        }
 
     abstract fun encodeElement(element: NbtElement)
 
@@ -117,6 +90,12 @@ abstract class NbtTagEncoder : AbstractEncoder() {
     private fun encodeLongArray(value: LongArray) {
         encodeElement(value.toNbt())
     }
+
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
+        when (descriptor.kind) {
+            StructureKind.LIST -> NbtListEncoder(::consumeStructure)
+            else -> NbtCompoundEncoder(::consumeStructure)
+        }
 }
 
 @ExperimentalSerializationApi
