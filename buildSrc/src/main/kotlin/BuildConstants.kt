@@ -19,4 +19,6 @@ object BuildConstants {
     const val fabricLoaderVersion = "0.11.6"
     const val fabricApiVersion = "0.37.1+1.17"
     const val fabricLanguageKotlinVersion = "1.6.3+kotlin.1.5.21"
+
+    const val kotestVersion = "4.6.1"
 }
