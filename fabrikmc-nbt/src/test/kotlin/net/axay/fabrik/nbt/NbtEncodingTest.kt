@@ -8,6 +8,7 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.enum
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.minecraft.nbt.*
 
@@ -92,6 +93,17 @@ class NbtEncodingTest : StringSpec({
             element.asString() shouldBe it.name
         }
     }
+
+    "closed polymorphism should encode correctly" {
+        val value = SealedChild1(1f, 2.5)
+        val element = Nbt.encodeToNbtElement<SealedBase>(value)
+        element.shouldBeInstanceOf<NbtCompound>()
+        element.getString("type") shouldBe "child1"
+        with(element.getCompound("value")) {
+            getFloat("baseVal") shouldBe value.baseVal
+            getDouble("childProp") shouldBe value.childProp
+        }
+    }
 })
 
 @Serializable
@@ -110,3 +122,15 @@ class InnerTestClass(val test: Boolean)
 enum class TestEnum {
     VARIANT_1, VARIANT_2, LastVariant,
 }
+
+@Serializable
+sealed class SealedBase {
+    abstract val baseVal: Float
+}
+
+@Serializable
+@SerialName("child1")
+class SealedChild1(override val baseVal: Float, val childProp: Double) : SealedBase()
+
+@Serializable
+class SealedChild2(override val baseVal: Float, val otherChildProp: String) : SealedBase()

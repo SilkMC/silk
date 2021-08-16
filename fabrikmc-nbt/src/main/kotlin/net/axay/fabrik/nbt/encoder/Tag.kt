@@ -16,9 +16,7 @@ import net.minecraft.nbt.NbtList
 import net.minecraft.nbt.NbtString
 
 @ExperimentalSerializationApi
-abstract class NbtTagEncoder : AbstractEncoder() {
-    override val serializersModule: SerializersModule = EmptySerializersModule
-
+abstract class NbtTagEncoder(override val serializersModule: SerializersModule) : AbstractEncoder() {
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
         when (serializer) {
             byteArraySerializer -> encodeByteArray(value as ByteArray)
@@ -41,8 +39,8 @@ abstract class NbtTagEncoder : AbstractEncoder() {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
         when (descriptor.kind) {
-            StructureKind.LIST -> NbtListEncoder(::consumeStructure)
-            else -> NbtCompoundEncoder(::consumeStructure)
+            StructureKind.LIST -> NbtListEncoder(serializersModule, ::consumeStructure)
+            else -> NbtCompoundEncoder(serializersModule, ::consumeStructure)
         }
 
     override fun encodeBoolean(value: Boolean) {
@@ -99,7 +97,7 @@ abstract class NbtTagEncoder : AbstractEncoder() {
 }
 
 @ExperimentalSerializationApi
-class NbtRootEncoder : NbtTagEncoder() {
+class NbtRootEncoder(serializersModule: SerializersModule) : NbtTagEncoder(serializersModule) {
     var element: NbtElement? = null
         private set
 
@@ -113,7 +111,10 @@ class NbtRootEncoder : NbtTagEncoder() {
 }
 
 @ExperimentalSerializationApi
-class NbtCompoundEncoder(private val consumer: (NbtCompound) -> Unit) : NbtTagEncoder() {
+class NbtCompoundEncoder(
+    serializersModule: SerializersModule,
+    private val consumer: (NbtCompound) -> Unit
+) : NbtTagEncoder(serializersModule) {
     private val compound = NbtCompound()
     private val tags = ArrayDeque<String>()
 
@@ -138,7 +139,10 @@ class NbtCompoundEncoder(private val consumer: (NbtCompound) -> Unit) : NbtTagEn
 }
 
 @ExperimentalSerializationApi
-class NbtListEncoder(private val consumer: (NbtList) -> Unit) : NbtTagEncoder() {
+class NbtListEncoder(
+    serializersModule: SerializersModule,
+    private val consumer: (NbtList) -> Unit
+) : NbtTagEncoder(serializersModule) {
     private val list = NbtList()
 
     override fun encodeElement(element: NbtElement) {

@@ -1,15 +1,17 @@
 package net.axay.fabrik.nbt
 
 import kotlinx.serialization.*
+import kotlinx.serialization.modules.EmptySerializersModule
+import kotlinx.serialization.modules.SerializersModule
 import net.axay.fabrik.nbt.encoder.NbtRootEncoder
 import net.minecraft.nbt.NbtElement
 
 @OptIn(ExperimentalSerializationApi::class)
-sealed class Nbt {
-    companion object Default : Nbt()
+sealed class Nbt(val serializersModule: SerializersModule) {
+    companion object Default : Nbt(EmptySerializersModule)
 
     fun <T> encodeToNbtElement(serializer: SerializationStrategy<T>, value: T): NbtElement =
-        NbtRootEncoder().apply { encodeSerializableValue(serializer, value) }.element
+        NbtRootEncoder(serializersModule).apply { encodeSerializableValue(serializer, value) }.element
             ?: throw SerializationException("Serializer did not encode any element")
 
     fun <T> decodeFromNbtElement(deserializer: DeserializationStrategy<T>, element: NbtElement) {

@@ -14,9 +14,7 @@ import net.axay.fabrik.nbt.mixin.NbtCompoundAccessor
 import net.minecraft.nbt.*
 
 @ExperimentalSerializationApi
-abstract class NbtTagDecoder : AbstractDecoder() {
-    override val serializersModule: SerializersModule = EmptySerializersModule
-
+abstract class NbtTagDecoder(override val serializersModule: SerializersModule) : AbstractDecoder() {
     private enum class NextArrayType {
         Byte, Int, Long, None
     }
@@ -48,8 +46,8 @@ abstract class NbtTagDecoder : AbstractDecoder() {
             NextArrayType.Int -> NbtIntArrayDecoder(next() as NbtIntArray)
             NextArrayType.Long -> NbtLongArrayDecoder(next() as NbtLongArray)
             NextArrayType.None -> when (descriptor.kind) {
-                StructureKind.LIST -> NbtListDecoder(next() as NbtList)
-                else -> NbtCompoundDecoder(next() as NbtCompound)
+                StructureKind.LIST -> NbtListDecoder(serializersModule, next() as NbtList)
+                else -> NbtCompoundDecoder(serializersModule, next() as NbtCompound)
             }
         }
 
@@ -77,7 +75,10 @@ abstract class NbtTagDecoder : AbstractDecoder() {
 }
 
 @ExperimentalSerializationApi
-class NbtCompoundDecoder(private val compound: NbtCompound) : NbtTagDecoder() {
+class NbtCompoundDecoder(
+    serializersModule: SerializersModule,
+    private val compound: NbtCompound
+) : NbtTagDecoder(serializersModule) {
     private val entries = (compound as NbtCompoundAccessor).entries.iterator()
     private lateinit var currentEntry: Map.Entry<String, NbtElement>
 
@@ -95,7 +96,10 @@ class NbtCompoundDecoder(private val compound: NbtCompound) : NbtTagDecoder() {
 }
 
 @ExperimentalSerializationApi
-class NbtListDecoder(private val list: NbtList) : NbtTagDecoder() {
+class NbtListDecoder(
+    serializersModule: SerializersModule,
+    private val list: NbtList
+) : NbtTagDecoder(serializersModule) {
     private val elements = list.listIterator()
 
     override fun next(): NbtElement = elements.next()
