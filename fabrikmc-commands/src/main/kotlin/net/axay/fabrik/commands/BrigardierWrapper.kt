@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import net.axay.fabrik.core.task.fabrikCoroutineScope
@@ -50,18 +51,6 @@ inline fun clientCommand(
     }
 
 /**
- * Add custom execution logic for this command.
- */
-inline fun <S> ArgumentBuilder<S, *>.simpleExecutes(
-    crossinline executor: (CommandContext<S>) -> Unit
-) {
-    executes wrapped@{
-        executor.invoke(it)
-        return@wrapped 1
-    }
-}
-
-/**
  * Add a new literal to this command.
  *
  * @param name the name of the literal
@@ -69,9 +58,7 @@ inline fun <S> ArgumentBuilder<S, *>.simpleExecutes(
 inline fun ArgumentBuilder<ServerCommandSource, *>.literal(
     name: String,
     builder: LiteralArgumentBuilder<ServerCommandSource>.() -> Unit
-) {
-    then(command(name, false, builder))
-}
+) = command(name, false, builder).also { then(it) }
 
 /**
  * Add a new literal to this command.
@@ -83,9 +70,7 @@ inline fun ArgumentBuilder<ServerCommandSource, *>.literal(
 inline fun ArgumentBuilder<FabricClientCommandSource, *>.literal(
     name: String,
     builder: LiteralArgumentBuilder<FabricClientCommandSource>.() -> Unit
-) {
-    then(clientCommand(name, false, builder))
-}
+) = clientCommand(name, false, builder).also { then(it) }
 
 /**
  * Add an argument.
@@ -97,9 +82,8 @@ inline fun <T> ArgumentBuilder<ServerCommandSource, *>.argument(
     name: String,
     type: ArgumentType<T>,
     builder: RequiredArgumentBuilder<ServerCommandSource, T>.() -> Unit
-) {
-    then(CommandManager.argument(name, type).apply(builder))
-}
+): RequiredArgumentBuilder<ServerCommandSource, T> =
+    CommandManager.argument(name, type).apply(builder).also { then(it) }
 
 /**
  * Add an argument.
@@ -113,18 +97,33 @@ inline fun <T> ArgumentBuilder<FabricClientCommandSource, *>.argument(
     name: String,
     type: ArgumentType<T>,
     builder: RequiredArgumentBuilder<FabricClientCommandSource, T>.() -> Unit
+): RequiredArgumentBuilder<FabricClientCommandSource, T> =
+    ClientCommandManager.argument(name, type).apply(builder).also { then(it) }
+
+/**
+ * Add custom execution logic for this command.
+ */
+inline fun <S> ArgumentBuilder<S, *>.simpleExecutes(
+    crossinline executor: (CommandContext<S>) -> Unit
 ) {
-    then(ClientCommandManager.argument(name, type).apply(builder))
+    executes wrapped@{
+        executor.invoke(it)
+        return@wrapped 1
+    }
 }
 
 /**
  * Add custom suspending suggestion logic for an argument.
+ *
+ * @param coroutineScope the [CoroutineScope] where the suggestions should be built in - an async scope by default,
+ * but you can change this to a synchronous scope using [net.axay.fabrik.core.task.mcCoroutineScope]
  */
 fun <S> RequiredArgumentBuilder<S, *>.simpleSuggests(
+    coroutineScope: CoroutineScope = fabrikCoroutineScope,
     suggestionBuilder: suspend (CommandContext<S>) -> Iterable<Any?>?
 ) {
     suggests { context, builder ->
-        fabrikCoroutineScope.async {
+        coroutineScope.async {
             suggestionBuilder.invoke(context)?.forEach {
                 if (it is Int)
                     builder.suggest(it)
