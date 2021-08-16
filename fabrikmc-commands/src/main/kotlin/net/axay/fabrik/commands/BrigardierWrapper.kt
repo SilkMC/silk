@@ -17,7 +17,7 @@ import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 
 /**
- * Create a new command.
+ * Creates a new command.
  *
  * @param name the name of the root command
  * @param register if true, the command will automatically be registered
@@ -33,7 +33,7 @@ inline fun command(
     }
 
 /**
- * Create a new client command.
+ * Creates a new client command.
  * This command will work on the client, even if the player
  * is connected to a third party server.
  *
@@ -51,17 +51,17 @@ inline fun clientCommand(
     }
 
 /**
- * Add a new literal to this command.
+ * Adds a new literal to this command.
  *
  * @param name the name of the literal
  */
 inline fun ArgumentBuilder<ServerCommandSource, *>.literal(
     name: String,
-    builder: LiteralArgumentBuilder<ServerCommandSource>.() -> Unit
+    builder: LiteralArgumentBuilder<ServerCommandSource>.() -> Unit = {}
 ) = command(name, false, builder).also { then(it) }
 
 /**
- * Add a new literal to this command.
+ * Adds a new literal to this command.
  *
  * @param name the name of the literal
  */
@@ -69,11 +69,11 @@ inline fun ArgumentBuilder<ServerCommandSource, *>.literal(
 @JvmName("clientLiteral")
 inline fun ArgumentBuilder<FabricClientCommandSource, *>.literal(
     name: String,
-    builder: LiteralArgumentBuilder<FabricClientCommandSource>.() -> Unit
+    builder: LiteralArgumentBuilder<FabricClientCommandSource>.() -> Unit = {}
 ) = clientCommand(name, false, builder).also { then(it) }
 
 /**
- * Add an argument.
+ * Adds an argument.
  *
  * @param name the name of the argument
  * @param type the type of the argument - e.g. IntegerArgumentType.integer() or StringArgumentType.string()
@@ -81,12 +81,25 @@ inline fun ArgumentBuilder<FabricClientCommandSource, *>.literal(
 inline fun <T> ArgumentBuilder<ServerCommandSource, *>.argument(
     name: String,
     type: ArgumentType<T>,
-    builder: RequiredArgumentBuilder<ServerCommandSource, T>.() -> Unit
+    builder: RequiredArgumentBuilder<ServerCommandSource, T>.() -> Unit = {}
 ): RequiredArgumentBuilder<ServerCommandSource, T> =
     CommandManager.argument(name, type).apply(builder).also { then(it) }
 
 /**
- * Add an argument.
+ * Adds an argument. The argument type will be resolved via the reified
+ * type [T].
+ *
+ * @param name the name of the argument
+ */
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T> ArgumentBuilder<ServerCommandSource, *>.argument(
+    name: String,
+    builder: RequiredArgumentBuilder<ServerCommandSource, T>.() -> Unit = {}
+): RequiredArgumentBuilder<ServerCommandSource, T> =
+    CommandManager.argument(name, ArgumentTypeUtils.fromReifiedType<T>()).apply(builder).also { then(it) }
+
+/**
+ * Adds an argument.
  *
  * @param name the name of the argument
  * @param type the type of the argument - e.g. IntegerArgumentType.integer() or StringArgumentType.string()
@@ -96,24 +109,38 @@ inline fun <T> ArgumentBuilder<ServerCommandSource, *>.argument(
 inline fun <T> ArgumentBuilder<FabricClientCommandSource, *>.argument(
     name: String,
     type: ArgumentType<T>,
-    builder: RequiredArgumentBuilder<FabricClientCommandSource, T>.() -> Unit
+    builder: RequiredArgumentBuilder<FabricClientCommandSource, T>.() -> Unit = {}
 ): RequiredArgumentBuilder<FabricClientCommandSource, T> =
     ClientCommandManager.argument(name, type).apply(builder).also { then(it) }
+
+/**
+ * Adds an argument. The argument type will be resolved via the reified
+ * type [T].
+ *
+ * @param name the name of the argument
+ */
+@Environment(EnvType.CLIENT)
+@JvmName("clientArgument")
+inline fun <reified T> ArgumentBuilder<FabricClientCommandSource, *>.argument(
+    name: String,
+    builder: RequiredArgumentBuilder<FabricClientCommandSource, T>.() -> Unit = {}
+): RequiredArgumentBuilder<FabricClientCommandSource, T> =
+    ClientCommandManager.argument(name, ArgumentTypeUtils.fromReifiedType<T>()).apply(builder).also { then(it) }
 
 /**
  * Add custom execution logic for this command.
  */
 inline fun <S> ArgumentBuilder<S, *>.simpleExecutes(
-    crossinline executor: (CommandContext<S>) -> Unit
+    crossinline executor: SimpleCommandContext<S>.() -> Unit
 ) {
     executes wrapped@{
-        executor.invoke(it)
+        executor.invoke(SimpleCommandContext(it))
         return@wrapped 1
     }
 }
 
 /**
- * Add custom suspending suggestion logic for an argument.
+ * Adds custom suspending suggestion logic for an argument.
  *
  * @param coroutineScope the [CoroutineScope] where the suggestions should be built in - an async scope by default,
  * but you can change this to a synchronous scope using [net.axay.fabrik.core.task.mcCoroutineScope]

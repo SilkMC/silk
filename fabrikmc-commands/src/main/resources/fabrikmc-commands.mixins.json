@@ -1,0 +1,8 @@
+{
+  "package": "net.axay.fabrik.commands.mixin",
+  "required": true,
+  "compatibilityLevel": "JAVA_16",
+  "server": [
+    "CommandContextAccessor"
+  ]
+}
