@@ -4,8 +4,10 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.enum
 import kotlinx.serialization.Serializable
 import net.minecraft.nbt.*
 
@@ -82,6 +84,14 @@ class NbtEncodingTest : StringSpec({
             element.longArray shouldBe it.toLongArray()
         }
     }
+
+    "enums should encode to strings" {
+        checkAll(Exhaustive.enum<TestEnum>()) {
+            val element = Nbt.encodeToNbtElement(it)
+            element.shouldBeInstanceOf<NbtString>()
+            element.asString() shouldBe it.name
+        }
+    }
 })
 
 @Serializable
@@ -96,3 +106,7 @@ class TestClass(
 
 @Serializable
 class InnerTestClass(val test: Boolean)
+
+enum class TestEnum {
+    VARIANT_1, VARIANT_2, LastVariant,
+}

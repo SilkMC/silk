@@ -11,6 +11,9 @@
     "main": [
     ]
   },
+  "mixins": [
+    "fabrikmc-nbt.mixins.json"
+  ],
   "depends": {
     "fabric": "*",
     "fabric-language-kotlin": "*",

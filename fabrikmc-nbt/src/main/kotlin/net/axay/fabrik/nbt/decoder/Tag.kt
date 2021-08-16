@@ -108,7 +108,6 @@ class NbtListDecoder(private val list: NbtList) : NbtTagDecoder() {
         }
 
     override fun decodeCollectionSize(descriptor: SerialDescriptor) = list.size
-
     override fun decodeSequentially() = true
 }
 
