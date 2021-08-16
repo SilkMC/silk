@@ -1,17 +1,19 @@
 package net.axay.fabrik.test.commands
 
-import com.mojang.brigadier.arguments.StringArgumentType
-import net.axay.fabrik.commands.*
+import net.axay.fabrik.commands.argument
+import net.axay.fabrik.commands.command
+import net.axay.fabrik.commands.simpleExecutes
+import net.axay.fabrik.commands.simpleSuggests
 import net.axay.fabrik.core.scoreboard.sideboard.showSideboard
 import net.axay.fabrik.core.scoreboard.sideboard.sideboard
 import net.axay.fabrik.core.text.literalText
 
 val sideboardCommand = command("sideboard", true) {
-    argument("example", StringArgumentType.string()) {
+    argument<String>("example") {
         simpleSuggests { sideboardExamples.keys }
         simpleExecutes {
-            val sideboard = sideboardExamples[it.getArgument("example")] ?: return@simpleExecutes
-            it.source.player.showSideboard(sideboard)
+            val sideboard = sideboardExamples[resolveArgument()] ?: return@simpleExecutes
+            source.player.showSideboard(sideboard)
         }
     }
 }

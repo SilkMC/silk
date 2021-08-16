@@ -1,6 +1,5 @@
 package net.axay.fabrik.test.commands
 
-import com.mojang.brigadier.arguments.StringArgumentType
 import net.axay.fabrik.commands.*
 import net.axay.fabrik.igui.openGui
 import net.axay.fabrik.test.gui.SimpleTestGui
@@ -12,13 +11,13 @@ private val guis = mapOf(
 
 val guiCommand = command("gui", true) {
     literal("open") {
-        argument("guiname", StringArgumentType.string()) {
+        argument<String>("guiname") {
             simpleSuggests { guis.keys }
             simpleExecutes {
-                val gui = guis[it.getArgument("guiname")]
+                val gui = guis[resolveArgument()]
                 if (gui != null)
-                    it.source.player.openGui(gui.invoke(), 1)
-                else it.source.sendError(LiteralText("Dieses GUI existiert nicht"))
+                    source.player.openGui(gui.invoke(), 1)
+                else source.sendError(LiteralText("Dieses GUI existiert nicht"))
             }
         }
     }

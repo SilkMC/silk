@@ -1,7 +1,9 @@
 package net.axay.fabrik.test.commands
 
-import com.mojang.brigadier.arguments.StringArgumentType.string
-import net.axay.fabrik.commands.*
+import net.axay.fabrik.commands.argument
+import net.axay.fabrik.commands.command
+import net.axay.fabrik.commands.simpleExecutes
+import net.axay.fabrik.commands.simpleSuggests
 import net.axay.fabrik.core.text.literalText
 import net.minecraft.text.ClickEvent
 import net.minecraft.text.HoverEvent
@@ -37,10 +39,10 @@ private val textExamples = mapOf(
 )
 
 val textTestCommand = command("text", true) {
-    argument("textexample", string()) {
+    argument<String>("textexample") {
         simpleSuggests { textExamples.keys }
         simpleExecutes {
-            it.source.sendFeedback(textExamples[it.getArgument("textexample")], false)
+            source.sendFeedback(textExamples[resolveArgument()], false)
         }
     }
 }
