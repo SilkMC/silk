@@ -4,14 +4,12 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import net.axay.fabrik.nbt.internal.byteArraySerializer
-import net.axay.fabrik.nbt.internal.elementSerializer
-import net.axay.fabrik.nbt.internal.intArraySerializer
-import net.axay.fabrik.nbt.internal.longArraySerializer
+import net.axay.fabrik.nbt.internal.*
 import net.axay.fabrik.nbt.mixin.NbtCompoundAccessor
 import net.minecraft.nbt.*
 
@@ -19,71 +17,139 @@ import net.minecraft.nbt.*
 abstract class NbtTagDecoder : AbstractDecoder() {
     override val serializersModule: SerializersModule = EmptySerializersModule
 
+    private enum class NextArrayType {
+        Byte, Int, Long, None
+    }
+
+    private var nextArrayType = NextArrayType.None
+
+    abstract fun next(): NbtElement
+
+    @Suppress("unchecked_cast")
     override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T =
         when (deserializer) {
-            byteArraySerializer -> decodeByteArray()
-            intArraySerializer -> decodeIntArray()
-            longArraySerializer -> decodeLongArray()
-            else -> when (deserializer.elementSerializer) {
-                else -> super.decodeSerializableValue(deserializer)
+            byteArraySerializer -> decodeByteArray() as T
+            intArraySerializer -> decodeIntArray() as T
+            longArraySerializer -> decodeLongArray() as T
+            else -> {
+                nextArrayType = when (deserializer.elementSerializer) {
+                    byteSerializer -> NextArrayType.Byte
+                    intSerializer -> NextArrayType.Int
+                    longSerializer -> NextArrayType.Long
+                    else -> NextArrayType.None
+                }
+                super.decodeSerializableValue(deserializer)
             }
         }
 
-    private fun <T> decodeByteArray(): T {
-        TODO()
-    }
-
-    private fun <T> decodeIntArray(): T {
-        TODO()
-    }
-
-    private fun <T> decodeLongArray(): T {
-        TODO()
-    }
-}
-
-@ExperimentalSerializationApi
-class NbtCompoundDecoder(compound: NbtCompound) : NbtTagDecoder() {
-    private val entries = (compound as NbtCompoundAccessor).entries.iterator()
-    private lateinit var current: Map.Entry<String, NbtElement>
-
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int =
-        if (entries.hasNext()) {
-            current = entries.next()
-            descriptor.getElementIndex(current.key)
-        } else {
-            CompositeDecoder.DECODE_DONE
-        }
-
-    override fun decodeCollectionSize(descriptor: SerialDescriptor): Int =
-        when (val element = current.value) {
-            is NbtCompound -> element.size
-            is AbstractNbtList<*> -> element.size
-            else -> -1
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder =
+        when (nextArrayType) {
+            NextArrayType.Byte -> NbtByteArrayDecoder(next() as NbtByteArray)
+            NextArrayType.Int -> NbtIntArrayDecoder(next() as NbtIntArray)
+            NextArrayType.Long -> NbtLongArrayDecoder(next() as NbtLongArray)
+            NextArrayType.None -> when (descriptor.kind) {
+                StructureKind.LIST -> NbtListDecoder(next() as NbtList)
+                else -> NbtCompoundDecoder(next() as NbtCompound)
+            }
         }
 
     override fun decodeBoolean(): Boolean =
-        when ((current as NbtByte).byteValue()) {
+        when ((next() as NbtByte).byteValue()) {
             0.toByte() -> false
             1.toByte() -> true
             else -> throw SerializationException("Byte is not a valid boolean")
         }
 
-    override fun decodeByte(): Byte = (current as NbtByte).byteValue()
-    override fun decodeShort(): Short = (current as NbtShort).shortValue()
-    override fun decodeChar(): Char = (current as NbtInt).intValue().toChar()
-    override fun decodeInt(): Int = (current as NbtInt).intValue()
-    override fun decodeLong(): Long = (current as NbtLong).longValue()
-    override fun decodeFloat(): Float = (current as NbtFloat).floatValue()
-    override fun decodeDouble(): Double = (current as NbtDouble).doubleValue()
-    override fun decodeString(): String = (current as NbtString).asString()
+    override fun decodeByte(): Byte = (next() as NbtByte).byteValue()
+    override fun decodeShort(): Short = (next() as NbtShort).shortValue()
+    override fun decodeChar(): Char = (next() as NbtInt).intValue().toChar()
+    override fun decodeInt(): Int = (next() as NbtInt).intValue()
+    override fun decodeLong(): Long = (next() as NbtLong).longValue()
+    override fun decodeFloat(): Float = (next() as NbtFloat).floatValue()
+    override fun decodeDouble(): Double = (next() as NbtDouble).doubleValue()
+    override fun decodeString(): String = (next() as NbtString).asString()
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int =
         enumDescriptor.getElementIndex(decodeString())
+
+    private fun decodeByteArray(): ByteArray = (next() as NbtByteArray).byteArray
+    private fun decodeIntArray(): IntArray = (next() as NbtIntArray).intArray
+    private fun decodeLongArray(): LongArray = (next() as NbtLongArray).longArray
 }
 
 @ExperimentalSerializationApi
-class NbtListDecoder : NbtTagDecoder() {
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
-        TODO("Not yet implemented")
-    }
+class NbtCompoundDecoder(private val compound: NbtCompound) : NbtTagDecoder() {
+    private val entries = (compound as NbtCompoundAccessor).entries.iterator()
+    private lateinit var currentEntry: Map.Entry<String, NbtElement>
+
+    override fun next() = currentEntry.value
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int =
+        if (entries.hasNext()) {
+            currentEntry = entries.next()
+            descriptor.getElementIndex(currentEntry.key)
+        } else {
+            CompositeDecoder.DECODE_DONE
+        }
+
+    override fun decodeCollectionSize(descriptor: SerialDescriptor) = compound.size
+}
+
+@ExperimentalSerializationApi
+class NbtListDecoder(private val list: NbtList) : NbtTagDecoder() {
+    private val elements = list.listIterator()
+
+    override fun next(): NbtElement = elements.next()
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int =
+        if (elements.hasNext()) {
+            elements.nextIndex()
+        } else {
+            CompositeDecoder.DECODE_DONE
+        }
+
+    override fun decodeCollectionSize(descriptor: SerialDescriptor) = list.size
+
+    override fun decodeSequentially() = true
+}
+
+@ExperimentalSerializationApi
+class NbtByteArrayDecoder(array: NbtByteArray) : AbstractDecoder() {
+    private val array = array.byteArray
+
+    override val serializersModule: SerializersModule = EmptySerializersModule
+
+    private var idx = 0
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int = idx
+    override fun decodeCollectionSize(descriptor: SerialDescriptor) = array.size
+    override fun decodeByte(): Byte = array[idx++]
+    override fun decodeSequentially() = true
+}
+
+@ExperimentalSerializationApi
+class NbtIntArrayDecoder(array: NbtIntArray) : AbstractDecoder() {
+    private val array = array.intArray
+
+    override val serializersModule: SerializersModule = EmptySerializersModule
+
+    private var idx = 0
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int = idx
+    override fun decodeCollectionSize(descriptor: SerialDescriptor) = array.size
+    override fun decodeInt(): Int = array[idx++]
+    override fun decodeSequentially() = true
+}
+
+@ExperimentalSerializationApi
+class NbtLongArrayDecoder(array: NbtLongArray) : AbstractDecoder() {
+    private val array = array.longArray
+
+    override val serializersModule: SerializersModule = EmptySerializersModule
+
+    private var idx = 0
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int = idx
+    override fun decodeCollectionSize(descriptor: SerialDescriptor) = array.size
+    override fun decodeLong(): Long = array[idx++]
+    override fun decodeSequentially() = true
 }

@@ -39,6 +39,12 @@ abstract class NbtTagEncoder : AbstractEncoder() {
 
     abstract fun consumeStructure(element: NbtElement)
 
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
+        when (descriptor.kind) {
+            StructureKind.LIST -> NbtListEncoder(::consumeStructure)
+            else -> NbtCompoundEncoder(::consumeStructure)
+        }
+
     override fun encodeBoolean(value: Boolean) {
         encodeElement(value.toNbt())
     }
@@ -90,12 +96,6 @@ abstract class NbtTagEncoder : AbstractEncoder() {
     private fun encodeLongArray(value: LongArray) {
         encodeElement(value.toNbt())
     }
-
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
-        when (descriptor.kind) {
-            StructureKind.LIST -> NbtListEncoder(::consumeStructure)
-            else -> NbtCompoundEncoder(::consumeStructure)
-        }
 }
 
 @ExperimentalSerializationApi
