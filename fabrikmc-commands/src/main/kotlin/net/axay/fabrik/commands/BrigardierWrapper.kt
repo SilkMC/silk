@@ -144,6 +144,7 @@ inline fun <reified T> CommandContext<ServerCommandSource>.getArgument(name: Str
 /**
  * Get the value of this argument.
  */
+@Environment(EnvType.CLIENT)
 @JvmName("clientGetArgument")
 inline fun <reified T> CommandContext<FabricClientCommandSource>.getArgument(name: String): T =
     getArgument(name, T::class.java)
