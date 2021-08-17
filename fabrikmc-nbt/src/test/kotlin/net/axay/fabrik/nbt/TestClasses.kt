@@ -27,8 +27,8 @@ sealed class SealedBase {
 
 @Serializable
 @SerialName("child1")
-class SealedChild1(override val baseVal: Float, val childProp: Double) : SealedBase()
+data class SealedChild1(override val baseVal: Float, val childProp: Double) : SealedBase()
 
 @Serializable
 @SerialName("child2")
-class SealedChild2(override val baseVal: Float, val otherChildProp: String) : SealedBase()
+data class SealedChild2(override val baseVal: Float, val otherChildProp: String) : SealedBase()
