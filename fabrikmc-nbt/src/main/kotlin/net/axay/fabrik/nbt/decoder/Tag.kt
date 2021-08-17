@@ -75,11 +75,21 @@ abstract class NbtTagDecoder(override val serializersModule: SerializersModule) 
 }
 
 @ExperimentalSerializationApi
+class NbtRootDecoder(
+    serializersModule: SerializersModule,
+    private val element: NbtElement
+) : NbtTagDecoder(serializersModule) {
+    override fun next() = element
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor) = 0
+}
+
+@ExperimentalSerializationApi
 class NbtCompoundDecoder(
     serializersModule: SerializersModule,
     private val compound: NbtCompound
 ) : NbtTagDecoder(serializersModule) {
-    private val entries = (compound as NbtCompoundAccessor).entries.iterator()
+    private val entries = compound.entries.iterator()
     private lateinit var currentEntry: Map.Entry<String, NbtElement>
 
     override fun next() = currentEntry.value
