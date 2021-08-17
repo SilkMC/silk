@@ -11,6 +11,7 @@ data class TestClass(
     val stringList: List<String>,
     val longSet: Set<Long>,
     val inner: InnerTestClass,
+    val nullable: Short?,
 )
 
 @Serializable

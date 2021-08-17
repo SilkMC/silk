@@ -10,6 +10,6 @@ dependencies {
     testImplementation("io.kotest:kotest-property:$kotestVersion")
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
 }

@@ -14,10 +14,11 @@ class NbtDecodingTest : StringSpec({
         val value = TestClass(
             10,
             -1248,
-            "Taito",
+            "Joe",
             listOf("abc", "äèðßèäßð", "1 2"),
             setOf(5, 34, 9, 3443),
-            InnerTestClass(true)
+            InnerTestClass(true),
+            null
         )
         val compound = nbtCompound {
             put("x", value.x)

@@ -2,15 +2,11 @@
   "schemaVersion": 1,
   "id": "${id}",
   "version": "${version}",
-  "name": "FabrikMC Core",
+  "name": "FabrikMC NBT",
   "description": "${description}",
   "authors": [
     "${author}"
   ],
-  "entrypoints": {
-    "main": [
-    ]
-  },
   "mixins": [
     "fabrikmc-nbt.mixins.json"
   ],
