@@ -1,6 +1,9 @@
 package net.axay.fabrik.nbt
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldBeIn
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
@@ -23,7 +26,7 @@ class NbtEncodingTest : StringSpec({
         )
         val element = Nbt.encodeToNbtElement(value)
         element.shouldBeInstanceOf<NbtCompound>()
-        element.size shouldBe 6
+        element.size shouldBe 7
         element.getInt("x") shouldBe value.x
         element.getLong("y") shouldBe value.y
         element.getString("name") shouldBe value.name
@@ -32,6 +35,22 @@ class NbtEncodingTest : StringSpec({
         with(element.getCompound("inner")) {
             size shouldBe 1
             getBoolean("test") shouldBe value.inner.test
+        }
+        with(element.get("nullable")) {
+            shouldBeInstanceOf<NbtList>()
+            shouldBeEmpty()
+        }
+    }
+
+    "nullable types should encode to lists" {
+        with(Nbt.encodeToNbtElement<Int?>(null)) {
+            shouldBeInstanceOf<NbtList>()
+            shouldBeEmpty()
+        }
+        with(Nbt.encodeToNbtElement<Int?>(5)) {
+            shouldBeInstanceOf<NbtList>()
+            shouldHaveSize(1)
+            this[0] shouldBe 5.toNbt()
         }
     }
 

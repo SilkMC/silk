@@ -9,13 +9,12 @@ import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.modules.SerializersModule
 import net.axay.fabrik.nbt.internal.*
 import net.axay.fabrik.nbt.toNbt
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtElement
-import net.minecraft.nbt.NbtList
-import net.minecraft.nbt.NbtString
+import net.minecraft.nbt.*
 
 @ExperimentalSerializationApi
 abstract class NbtTagEncoder(override val serializersModule: SerializersModule) : AbstractEncoder() {
+    private var isNextNullable = false
+
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
         when (serializer) {
             byteArraySerializer -> encodeByteArray(value as ByteArray)
@@ -32,6 +31,16 @@ abstract class NbtTagEncoder(override val serializersModule: SerializersModule) 
         }
     }
 
+    private fun encodeMaybeNullable(element: NbtElement) {
+        encodeElement(if (isNextNullable) {
+            isNextNullable = false
+            // Always use a list because we cannot know whether a null value would be one of the primitives
+            NbtList().apply { add(element) }
+        } else {
+            element
+        })
+    }
+
     abstract fun encodeElement(element: NbtElement)
 
     abstract fun consumeStructure(element: NbtElement)
@@ -42,56 +51,64 @@ abstract class NbtTagEncoder(override val serializersModule: SerializersModule) 
             else -> NbtCompoundEncoder(serializersModule, ::consumeStructure)
         }
 
+    override fun encodeNotNullMark() {
+        isNextNullable = true
+    }
+
+    override fun encodeNull() {
+        encodeElement(NbtList())
+    }
+
     override fun encodeBoolean(value: Boolean) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeByte(value: Byte) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeShort(value: Short) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeInt(value: Int) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeLong(value: Long) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeFloat(value: Float) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeDouble(value: Double) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeChar(value: Char) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeString(value: String) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
-        encodeElement(NbtString.of(enumDescriptor.getElementName(index)))
+        encodeMaybeNullable(NbtString.of(enumDescriptor.getElementName(index)))
     }
 
     private fun encodeByteArray(value: ByteArray) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     private fun encodeIntArray(value: IntArray) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 
     private fun encodeLongArray(value: LongArray) {
-        encodeElement(value.toNbt())
+        encodeMaybeNullable(value.toNbt())
     }
 }
 

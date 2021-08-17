@@ -1,13 +1,17 @@
 package net.axay.fabrik.nbt
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.enum
 import io.kotest.property.forAll
+import net.minecraft.nbt.NbtList
 
 class NbtDecodingTest : StringSpec({
     "compound should decode to class" {
@@ -29,8 +33,14 @@ class NbtDecodingTest : StringSpec({
             compound("inner") {
                 put("test", value.inner.test)
             }
+            list("nullable", listOf<Short>())
         }
         Nbt.decodeFromNbtElement<TestClass>(compound) shouldBe value
+    }
+
+    "lists should decode to nullable types" {
+        Nbt.decodeFromNbtElement<Int?>(NbtList()) shouldBe null
+        Nbt.decodeFromNbtElement<Int?>(NbtList().apply { add(5.toNbt()) }) shouldBe 5
     }
 
     "byte array should decode to collections" {

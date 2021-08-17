@@ -19,6 +19,7 @@ abstract class NbtTagDecoder(override val serializersModule: SerializersModule) 
     }
 
     private var nextArrayType = NextArrayType.None
+    private var nextNullable: NbtElement? = null
 
     abstract fun next(): NbtElement
 
@@ -41,36 +42,57 @@ abstract class NbtTagDecoder(override val serializersModule: SerializersModule) 
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder =
         when (nextArrayType) {
-            NextArrayType.Byte -> NbtByteArrayDecoder(next() as NbtByteArray)
-            NextArrayType.Int -> NbtIntArrayDecoder(next() as NbtIntArray)
-            NextArrayType.Long -> NbtLongArrayDecoder(next() as NbtLongArray)
+            NextArrayType.Byte -> NbtByteArrayDecoder(nextMaybeNullable() as NbtByteArray)
+            NextArrayType.Int -> NbtIntArrayDecoder(nextMaybeNullable() as NbtIntArray)
+            NextArrayType.Long -> NbtLongArrayDecoder(nextMaybeNullable() as NbtLongArray)
             NextArrayType.None -> when (descriptor.kind) {
-                StructureKind.LIST -> NbtListDecoder(serializersModule, next() as NbtList)
-                else -> NbtCompoundDecoder(serializersModule, next() as NbtCompound)
+                StructureKind.LIST -> NbtListDecoder(serializersModule, nextMaybeNullable() as NbtList)
+                else -> NbtCompoundDecoder(serializersModule, nextMaybeNullable() as NbtCompound)
             }
         }
 
+    override fun decodeNotNullMark() =
+        (next() as NbtList).let {
+            if (it.isEmpty()) {
+                false
+            } else {
+                nextNullable = it[0]
+                true
+            }
+        }
+
+    override fun decodeNull(): Nothing? {
+        nextNullable = null
+        return null
+    }
+
+    private fun nextMaybeNullable(): NbtElement {
+        val next = nextNullable ?: next()
+        nextNullable = null
+        return next
+    }
+
     override fun decodeBoolean(): Boolean =
-        when ((next() as NbtByte).byteValue()) {
+        when ((nextMaybeNullable() as NbtByte).byteValue()) {
             0.toByte() -> false
             1.toByte() -> true
             else -> throw SerializationException("Byte is not a valid boolean")
         }
 
-    override fun decodeByte(): Byte = (next() as NbtByte).byteValue()
-    override fun decodeShort(): Short = (next() as NbtShort).shortValue()
-    override fun decodeChar(): Char = (next() as NbtInt).intValue().toChar()
-    override fun decodeInt(): Int = (next() as NbtInt).intValue()
-    override fun decodeLong(): Long = (next() as NbtLong).longValue()
-    override fun decodeFloat(): Float = (next() as NbtFloat).floatValue()
-    override fun decodeDouble(): Double = (next() as NbtDouble).doubleValue()
-    override fun decodeString(): String = (next() as NbtString).asString()
+    override fun decodeByte(): Byte = (nextMaybeNullable() as NbtByte).byteValue()
+    override fun decodeShort(): Short = (nextMaybeNullable() as NbtShort).shortValue()
+    override fun decodeChar(): Char = (nextMaybeNullable() as NbtInt).intValue().toChar()
+    override fun decodeInt(): Int = (nextMaybeNullable() as NbtInt).intValue()
+    override fun decodeLong(): Long = (nextMaybeNullable() as NbtLong).longValue()
+    override fun decodeFloat(): Float = (nextMaybeNullable() as NbtFloat).floatValue()
+    override fun decodeDouble(): Double = (nextMaybeNullable() as NbtDouble).doubleValue()
+    override fun decodeString(): String = (nextMaybeNullable() as NbtString).asString()
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int =
         enumDescriptor.getElementIndex(decodeString())
 
-    private fun decodeByteArray(): ByteArray = (next() as NbtByteArray).byteArray
-    private fun decodeIntArray(): IntArray = (next() as NbtIntArray).intArray
-    private fun decodeLongArray(): LongArray = (next() as NbtLongArray).longArray
+    private fun decodeByteArray(): ByteArray = (nextMaybeNullable() as NbtByteArray).byteArray
+    private fun decodeIntArray(): IntArray = (nextMaybeNullable() as NbtIntArray).intArray
+    private fun decodeLongArray(): LongArray = (nextMaybeNullable() as NbtLongArray).longArray
 }
 
 @ExperimentalSerializationApi
