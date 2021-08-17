@@ -10,7 +10,6 @@ import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import net.axay.fabrik.nbt.internal.*
-import net.axay.fabrik.nbt.mixin.NbtCompoundAccessor
 import net.minecraft.nbt.*
 
 @ExperimentalSerializationApi

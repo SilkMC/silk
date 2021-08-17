@@ -3,14 +3,9 @@ package net.axay.fabrik.nbt
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import net.axay.fabrik.nbt.decoder.NbtCompoundDecoder
-import net.axay.fabrik.nbt.decoder.NbtListDecoder
 import net.axay.fabrik.nbt.decoder.NbtRootDecoder
 import net.axay.fabrik.nbt.encoder.NbtRootEncoder
-import net.minecraft.nbt.NbtByteArray
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
-import net.minecraft.nbt.NbtList
 
 @OptIn(ExperimentalSerializationApi::class)
 sealed class Nbt(val serializersModule: SerializersModule) {

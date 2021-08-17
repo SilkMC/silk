@@ -3,9 +3,17 @@ package net.axay.fabrik.nbt
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtList
 
+/**
+ * Build an NBT compound.
+ */
 inline fun nbtCompound(build: NbtCompoundBuilder.() -> Unit) =
     NbtCompoundBuilder().apply(build).build()
 
+/**
+ * Build an NBT list.
+ *
+ * @see NbtListBuilder
+ */
 inline fun nbtList(build: NbtListBuilder.() -> Unit) =
     NbtListBuilder().apply(build).build()
 
@@ -101,6 +109,13 @@ class NbtCompoundBuilder {
     fun build() = compound
 }
 
+/**
+ * Builder class for an NBT list.
+ *
+ * [NbtList] determines its type from the first element added, all following
+ * elements are required to have the same type, otherwise an
+ * [UnsupportedOperationException] is thrown.
+ */
 class NbtListBuilder {
     val list = NbtList()
 
