@@ -1,6 +1,7 @@
 package net.axay.fabrik.nbt
 
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
 
 /**
@@ -18,50 +19,54 @@ inline fun nbtList(build: NbtListBuilder.() -> Unit) =
     NbtListBuilder().apply(build).build()
 
 class NbtCompoundBuilder {
-    val compound = NbtCompound()
+    private val compound = NbtCompound()
+
+    fun put(key: String, value: NbtElement) {
+        compound.put(key, value)
+    }
 
     fun put(key: String, value: Boolean) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun put(key: String, value: Byte) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun put(key: String, value: Short) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun put(key: String, value: Int) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun put(key: String, value: Long) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun put(key: String, value: Float) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun put(key: String, value: Double) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun put(key: String, value: Char) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun put(key: String, value: String) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     inline fun compound(key: String, build: NbtCompoundBuilder.() -> Unit) {
-        compound.put(key, nbtCompound(build))
+        put(key, nbtCompound(build))
     }
 
     inline fun list(key: String, build: NbtListBuilder.() -> Unit) {
-        compound.put(key, nbtList(build))
+        put(key, nbtList(build))
     }
 
     /**
@@ -86,21 +91,21 @@ class NbtCompoundBuilder {
     }
 
     fun byteArray(key: String, value: ByteArray) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun byteArray(key: String, value: Collection<Byte>) =
         byteArray(key, value.toByteArray())
 
     fun intArray(key: String, value: IntArray) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun intArray(key: String, value: Collection<Int>) =
         intArray(key, value.toIntArray())
 
     fun longArray(key: String, value: LongArray) {
-        compound.put(key, value.toNbt())
+        put(key, value.toNbt())
     }
 
     fun longArray(key: String, value: Collection<Long>) =
@@ -117,50 +122,54 @@ class NbtCompoundBuilder {
  * [UnsupportedOperationException] is thrown.
  */
 class NbtListBuilder {
-    val list = NbtList()
+    private val list = NbtList()
+
+    fun add(value: NbtElement) {
+        list.add(value)
+    }
 
     fun add(value: Boolean) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun add(value: Byte) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun add(value: Short) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun add(value: Int) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun add(value: Long) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun add(value: Float) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun add(value: Double) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun add(value: Char) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun add(value: String) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     inline fun compound(build: NbtCompoundBuilder.() -> Unit) {
-        list.add(nbtCompound(build))
+        add(nbtCompound(build))
     }
 
     inline fun list(build: NbtListBuilder.() -> Unit) {
-        list.add(nbtList(build))
+        add(nbtList(build))
     }
 
     /**
@@ -185,19 +194,19 @@ class NbtListBuilder {
     }
 
     fun byteArray(vararg value: Byte) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun byteArray(value: Collection<Byte>) = byteArray(*value.toByteArray())
 
     fun intArray(vararg value: Int) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun intArray(value: Collection<Int>) = intArray(*value.toIntArray())
 
     fun longArray(vararg value: Long) {
-        list.add(value.toNbt())
+        add(value.toNbt())
     }
 
     fun longArray(value: Collection<Long>) = longArray(*value.toLongArray())
