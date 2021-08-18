@@ -21,7 +21,7 @@ public class WorldChunkMixin implements CompoundProvider {
 
     @Inject(
             method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Ljava/util/function/Consumer;)V",
-            at = @At("HEAD")
+            at = @At("RETURN")
     )
     private void initFromProtoChunk(ServerWorld serverWorld,
                                     ProtoChunk protoChunk,

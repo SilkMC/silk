@@ -14,26 +14,23 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ChunkSerializer.class)
 public class ChunkSerializerMixin {
-    @Inject(method = "serialize", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "serialize", at = @At("RETURN"))
     private static void onSerialize(ServerWorld world,
                                     Chunk chunk,
-                                    CallbackInfoReturnable<NbtCompound> cir,
-                                    NbtCompound nbtCompound2) {
-        PersistentCompoundKt.putPersistentData(nbtCompound2, ((CompoundProvider) chunk).getCompound());
+                                    CallbackInfoReturnable<NbtCompound> cir) {
+        PersistentCompoundKt.putPersistentData(cir.getReturnValue().getCompound("Level"), ((CompoundProvider) chunk).getCompound());
     }
 
-    @Inject(method = "deserialize", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "deserialize", at = @At("RETURN"))
     private static void onDeserialize(ServerWorld world,
                                       StructureManager structureManager,
                                       PointOfInterestStorage poiStorage,
                                       ChunkPos pos,
                                       NbtCompound nbt,
-                                      CallbackInfoReturnable<ProtoChunk> cir,
-                                      NbtCompound nbtCompound) {
-        ((CompoundProvider) cir.getReturnValue()).setCompound(PersistentCompoundKt.getPersistentData(nbtCompound));
+                                      CallbackInfoReturnable<ProtoChunk> cir) {
+        ((CompoundProvider) cir.getReturnValue()).setCompound(PersistentCompoundKt.getPersistentData(nbt.getCompound("Level")));
     }
 }
