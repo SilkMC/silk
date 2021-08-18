@@ -7,8 +7,6 @@
   "description": "${description}",
   "authors": ["${author}"],
 
-  "mixins": ["fabrikmc-commands.mixins.json"],
-
   "depends": {
     "fabric": "*",
     "fabric-language-kotlin": "*",
