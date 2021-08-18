@@ -13,6 +13,7 @@ pluginManagement {
 include("$projectName-core")
 include("$projectName-commands")
 include("$projectName-igui")
+include("$projectName-nbt")
 include("$projectName-persistence")
 
 include("$projectName-testmod")
