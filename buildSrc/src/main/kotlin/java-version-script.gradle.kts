@@ -6,7 +6,10 @@ plugins {
 
 tasks {
     withType<JavaCompile> {
-        options.release.set(16)
+        options.apply {
+            release.set(16)
+            encoding = "UTF-8"
+        }
     }
 
     withType<KotlinCompile> {

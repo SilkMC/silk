@@ -54,8 +54,4 @@ tasks {
             expand(properties)
         }
     }
-
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
-    }
 }
