@@ -2,6 +2,7 @@ package net.axay.fabrik.core
 
 import net.axay.fabrik.core.logging.logInfo
 import net.axay.fabrik.core.task.FabrikCoroutineManager
+import net.axay.fabrik.core.task.LifecycleTasksManager
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.MinecraftServer
 
@@ -18,6 +19,7 @@ fun init() {
     }
 
     FabrikCoroutineManager.init()
+    LifecycleTasksManager.init()
 }
 
 object Fabrik {
