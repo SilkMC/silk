@@ -17,7 +17,7 @@ import net.minecraft.text.Text
  * if you wish to show the player the same sideboard.
  */
 fun ServerPlayerEntity.showSideboard(sideboard: Sideboard) {
-    sideboard.scoreboard.displayToPlayer(this)
+    sideboard.displayToPlayer(this)
 }
 
 /**
@@ -86,7 +86,7 @@ class SideboardBuilder {
      * @param block the callback which is executed each time to get the content
      * of the line
      */
-    inline fun lineChangingPeriodically(period: Long, crossinline block: () -> Text) {
+    inline fun lineChangingPeriodically(period: Long, crossinline block: suspend () -> Text) {
         lines += ChangingSideboardLine(flow {
             while (Fabrik.currentServer?.isRunning == true) {
                 emit(block())
