@@ -11,7 +11,7 @@ import net.minecraft.nbt.NbtElement
  */
 abstract class PersistentCompound {
     @PublishedApi
-    internal abstract val data: NbtCompound?
+    internal abstract var data: NbtCompound?
 
     @PublishedApi
     internal abstract val compoundKeys: MutableSet<CompoundKey<*>>?
@@ -67,6 +67,33 @@ abstract class PersistentCompound {
         } else value
     }
 
+    /**
+     * Removes the current value associated with the given [key].
+     */
+    fun remove(key: CompoundKey<*>) {
+        compoundKeys?.remove(key)
+        key.values -= this
+    }
+
+    /**
+     * @see remove
+     */
+    operator fun minusAssign(key: CompoundKey<*>) =
+        remove(key)
+
+    /**
+     * Clears all persistent data from this compound.
+     *
+     * **Be aware that this deletes data of other mods as well!**
+     */
+    fun clear() {
+        if (data != null)
+            data = NbtCompound()
+
+        compoundKeys?.forEach { it.values -= this }
+        compoundKeys?.clear()
+    }
+
     internal abstract fun loadFromCompound(nbtCompound: NbtCompound)
     internal abstract fun putInCompound(nbtCompound: NbtCompound)
 }
@@ -76,7 +103,7 @@ abstract class PersistentCompound {
  * Needed for empty holders such as [net.minecraft.world.chunk.EmptyChunk] for example.
  */
 object EmptyPersistentCompound : PersistentCompound() {
-    override val data: Nothing? = null
+    override var data: NbtCompound? = null
     override val compoundKeys: Nothing? = null
 
     override fun loadFromCompound(nbtCompound: NbtCompound) = Unit
@@ -92,7 +119,7 @@ class PersistentCompoundImpl : PersistentCompound() {
         private const val CUSTOM_DATA_KEY = "fabrikmcData"
     }
 
-    override var data = NbtCompound()
+    override var data: NbtCompound? = NbtCompound()
 
     override val compoundKeys = HashSet<CompoundKey<*>>()
 
@@ -102,7 +129,7 @@ class PersistentCompoundImpl : PersistentCompound() {
 
     override fun putInCompound(nbtCompound: NbtCompound) {
         for (key in compoundKeys) {
-            data.put(key.name, key.serializeValueToNbtElement(this))
+            data!!.put(key.name, key.serializeValueToNbtElement(this))
 
             // ensure that both the key and this persistent compound
             // are garbage collectible, as this function could be the
@@ -111,7 +138,7 @@ class PersistentCompoundImpl : PersistentCompound() {
         }
         compoundKeys.clear()
 
-        if (!data.isEmpty) {
+        if (!data!!.isEmpty) {
             nbtCompound.put(CUSTOM_DATA_KEY, data)
         }
     }
