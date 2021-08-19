@@ -14,16 +14,32 @@ abstract class PersistentCompound {
     @PublishedApi
     internal abstract val valuesMap: HashMap<String, PersistentCompoundValue>?
 
+    /**
+     * Puts the given value into the persistent storage.
+     *
+     * Values of a type which can be represented by NBT natively will be
+     * converted in a lightweight way.
+     *
+     * Other values **have to** be serializable. Annotate them with
+     * [kotlinx.serialization.Serializable] to enable support for fast
+     * serialization.
+     */
     inline operator fun <reified T : Any> set(key: String, value: T) {
-        valuesMap?.set(
+        valuesMap?.put(
             key,
             NativePersistentCompoundValue.fromValueOrNull(value)
                 ?: SerializablePersistentCompoundValue(value)
         )
     }
 
+    /**
+     * Puts the given collection into the persistent storage.
+     *
+     * Collections with a generic type of [Byte], [Int] or [Long] will
+     * be stored effeciently as a Long internally.
+     */
     operator fun set(key: String, value: Collection<Any>) {
-        valuesMap?.set(
+        valuesMap?.put(
             key,
             CollectionPersistentCompoundValue(value)
         )
