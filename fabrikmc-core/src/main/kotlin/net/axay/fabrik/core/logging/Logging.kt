@@ -2,14 +2,26 @@ package net.axay.fabrik.core.logging
 
 import org.apache.logging.log4j.LogManager
 
+/**
+ * Logs a message with the [org.apache.logging.log4j.Level.INFO] level.
+ */
 @Suppress("NOTHING_TO_INLINE")
-inline fun logInfo(msg: String) = LogManager.getLogger().info(msg)
+inline fun logInfo(msg: Any?) = LogManager.getLogger().info(msg)
 
+/**
+ * Logs a message with the [org.apache.logging.log4j.Level.WARN] level.
+ */
 @Suppress("NOTHING_TO_INLINE")
-inline fun logWarning(msg: String) = LogManager.getLogger().warn(msg)
+inline fun logWarning(msg: Any?) = LogManager.getLogger().warn(msg)
 
+/**
+ * Logs a message with the [org.apache.logging.log4j.Level.ERROR] level.
+ */
 @Suppress("NOTHING_TO_INLINE")
-inline fun logError(msg: String) = LogManager.getLogger().error(msg)
+inline fun logError(msg: Any?) = LogManager.getLogger().error(msg)
 
+/**
+ * Logs a message with the [org.apache.logging.log4j.Level.FATAL] level.
+ */
 @Suppress("NOTHING_TO_INLINE")
-inline fun logFatal(msg: String) = LogManager.getLogger().fatal(msg)
+inline fun logFatal(msg: Any?) = LogManager.getLogger().fatal(msg)
