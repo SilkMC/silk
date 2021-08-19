@@ -24,7 +24,7 @@ import net.minecraft.server.command.ServerCommandSource
  */
 inline fun command(
     name: String,
-    register: Boolean = false,
+    register: Boolean = true,
     builder: LiteralArgumentBuilder<ServerCommandSource>.() -> Unit
 ): LiteralArgumentBuilder<ServerCommandSource> =
     CommandManager.literal(name).apply(builder).apply {
