@@ -1,6 +1,7 @@
 plugins {
     `java-version-script`
     `mod-build-script`
+    kotlin("plugin.serialization") version "1.5.21"
 }
 
 dependencies {
