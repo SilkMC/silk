@@ -1,7 +1,6 @@
 package net.axay.fabrik.persistence.mixin.chunk;
 
 import net.axay.fabrik.persistence.CompoundProvider;
-import net.axay.fabrik.persistence.PersistentCompoundKt;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
@@ -21,7 +20,8 @@ public class ChunkSerializerMixin {
     private static void onSerialize(ServerWorld world,
                                     Chunk chunk,
                                     CallbackInfoReturnable<NbtCompound> cir) {
-        PersistentCompoundKt.putPersistentData(cir.getReturnValue().getCompound("Level"), ((CompoundProvider) chunk).getCompound());
+        ((CompoundProvider) chunk).getCompound()
+                .putInCompound$fabrikmc_persistence(cir.getReturnValue().getCompound("Level"));
     }
 
     @Inject(method = "deserialize", at = @At("RETURN"))
@@ -31,6 +31,7 @@ public class ChunkSerializerMixin {
                                       ChunkPos pos,
                                       NbtCompound nbt,
                                       CallbackInfoReturnable<ProtoChunk> cir) {
-        ((CompoundProvider) cir.getReturnValue()).setCompound(PersistentCompoundKt.getPersistentData(nbt.getCompound("Level")));
+        ((CompoundProvider) cir.getReturnValue()).getCompound()
+                .loadFromCompound$fabrikmc_persistence(nbt.getCompound("Level"));
     }
 }

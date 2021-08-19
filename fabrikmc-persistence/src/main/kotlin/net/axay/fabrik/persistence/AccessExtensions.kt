@@ -3,8 +3,9 @@ package net.axay.fabrik.persistence
 import net.minecraft.world.chunk.Chunk
 
 /**
- * Returns a persistent [net.minecraft.nbt.NbtCompound].
+ * Returns a persistent [PersistentCompound].
  *
+ * @see CompoundProvider.compound
  * @see CompoundProvider
  */
 val Chunk.persistentCompound get() = (this as CompoundProvider).compound

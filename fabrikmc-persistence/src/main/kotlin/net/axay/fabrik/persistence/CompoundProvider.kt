@@ -1,13 +1,19 @@
 package net.axay.fabrik.persistence
 
-import net.minecraft.nbt.NbtCompound
-
 /**
- * This class provides an [NbtCompound] which is persistent.
+ * This class provides a [PersistentCompound].
  *
- * Everything you write to this compound will be saved to disk, and can
- * be accessed at any time later.
+ * @see compound
  */
 interface CompoundProvider {
-    var compound: NbtCompound
+    /**
+     * Returns a [PersistentCompound].
+     *
+     * Everything you write to this compound will be saved to disk, and can
+     * be accessed at any time later.
+     *
+     * Even though this compound is persistent, accessing data from it and
+     * writing data to it is fast, as this happens in memory.
+     */
+    val compound: PersistentCompound
 }

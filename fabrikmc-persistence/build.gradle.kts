@@ -6,4 +6,5 @@ plugins {
 
 dependencies {
     implementation(project(":${rootProject.name}-core"))
+    implementation(project(":${rootProject.name}-nbt"))
 }

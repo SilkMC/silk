@@ -1,7 +1,7 @@
 package net.axay.fabrik.persistence.mixin.chunk;
 
 import net.axay.fabrik.persistence.CompoundProvider;
-import net.minecraft.nbt.NbtCompound;
+import net.axay.fabrik.persistence.PersistentCompound;
 import net.minecraft.world.chunk.ReadOnlyChunk;
 import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.NotNull;
@@ -15,12 +15,7 @@ public class ReadOnlyChunkMixin implements CompoundProvider {
 
     @NotNull
     @Override
-    public NbtCompound getCompound() {
+    public PersistentCompound getCompound() {
         return ((CompoundProvider) wrapped).getCompound();
-    }
-
-    @Override
-    public void setCompound(@NotNull NbtCompound compound) {
-        ((CompoundProvider) wrapped).setCompound(compound);
     }
 }
