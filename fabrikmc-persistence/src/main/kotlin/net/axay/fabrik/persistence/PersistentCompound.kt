@@ -11,9 +11,6 @@ import net.minecraft.nbt.NbtCompound
  * game decides to do so.
  */
 abstract class PersistentCompound {
-    @PublishedApi
-    internal abstract val valuesMap: HashMap<String, PersistentCompoundValue>?
-
     /**
      * Puts the given value into the persistent storage.
      *
@@ -24,13 +21,7 @@ abstract class PersistentCompound {
      * [kotlinx.serialization.Serializable] to enable support for fast
      * serialization.
      */
-    inline operator fun <reified T : Any> set(key: String, value: T) {
-        valuesMap?.put(
-            key,
-            NativePersistentCompoundValue.fromValueOrNull(value)
-                ?: SerializablePersistentCompoundValue(value)
-        )
-    }
+    abstract operator fun set(key: String, value: Any)
 
     /**
      * Puts the given collection into the persistent storage.
@@ -38,12 +29,7 @@ abstract class PersistentCompound {
      * Collections with a generic type of [Byte], [Int] or [Long] will
      * be stored effeciently as a Long internally.
      */
-    operator fun set(key: String, value: Collection<Any>) {
-        valuesMap?.put(
-            key,
-            CollectionPersistentCompoundValue(value)
-        )
-    }
+    abstract operator fun set(key: String, value: Collection<Any>)
 
     internal abstract fun loadFromCompound(nbtCompound: NbtCompound)
     internal abstract fun putInCompound(nbtCompound: NbtCompound)
@@ -54,7 +40,8 @@ abstract class PersistentCompound {
  * Needed for empty holders such as [net.minecraft.world.chunk.EmptyChunk] for example.
  */
 object EmptyPersistentCompound : PersistentCompound() {
-    override val valuesMap: HashMap<String, PersistentCompoundValue>? = null
+    override fun set(key: String, value: Collection<Any>) = Unit
+    override fun set(key: String, value: Any) = Unit
 
     override fun loadFromCompound(nbtCompound: NbtCompound) = Unit
     override fun putInCompound(nbtCompound: NbtCompound) = Unit
@@ -71,7 +58,16 @@ class PersistentCompoundImpl : PersistentCompound() {
 
     private var data = NbtCompound()
 
-    override val valuesMap = HashMap<String, PersistentCompoundValue>()
+    private val valuesMap = HashMap<String, PersistentCompoundValue>()
+
+    override fun set(key: String, value: Any) {
+        valuesMap[key] = NativePersistentCompoundValue.fromValueOrNull(value)
+            ?: SerializablePersistentCompoundValue(value)
+    }
+
+    override fun set(key: String, value: Collection<Any>) {
+        valuesMap[key] = CollectionPersistentCompoundValue(value)
+    }
 
     override fun loadFromCompound(nbtCompound: NbtCompound) {
         data = nbtCompound.getCompound(CUSTOM_DATA_KEY)
@@ -94,7 +90,7 @@ internal interface PersistentCompoundValue {
 internal class NativePersistentCompoundValue(private val value: Any) : PersistentCompoundValue {
     companion object {
         @PublishedApi
-        internal inline fun <reified T : Any> fromValueOrNull(value: T): PersistentCompoundValue? {
+        internal fun fromValueOrNull(value: Any): PersistentCompoundValue? {
             val isNative = when (value) {
                 is Boolean -> true
                 is Byte, is Short, is Int, is Long -> true
@@ -102,7 +98,7 @@ internal class NativePersistentCompoundValue(private val value: Any) : Persisten
                 is String -> true
                 is ByteArray, is IntArray, is LongArray -> true
                 is Array<*> -> {
-                    when (T::class) {
+                    when (value::class) {
                         Array<Byte>::class, Array<Int>::class, Array<Long>::class -> true
                         else -> false
                     }
