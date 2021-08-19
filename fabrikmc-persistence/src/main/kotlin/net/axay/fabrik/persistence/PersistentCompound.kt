@@ -1,9 +1,11 @@
 package net.axay.fabrik.persistence
 
 import net.axay.fabrik.nbt.Nbt
+import net.axay.fabrik.nbt.decodeFromNbtElement
 import net.axay.fabrik.nbt.encodeToNbtElement
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * Holds data which can be accessed fast because it is stored in memory.
@@ -12,34 +14,65 @@ import net.minecraft.nbt.NbtElement
  * game decides to do so.
  */
 abstract class PersistentCompound {
+    @PublishedApi
+    internal abstract val data: NbtCompound?
+
+    @PublishedApi
+    internal abstract val valuesMap: MutableMap<String, Any>?
+
     /**
      * Puts the given value into the persistent storage.
      *
-     * Values of a type which can be represented by NBT natively will be
-     * converted in a lightweight way.
-     *
-     * Other values **have to** be serializable. Annotate them with
+     * Values **have to** be serializable. Annotate them with
      * [kotlinx.serialization.Serializable] to enable support for fast
      * serialization.
+     *
+     * An exception to the above are values of the type [NbtElement].
+     * You can use these to skip serialization and deserialization. It is not
+     * as convenient to work with them, but they are faster.
      */
     abstract operator fun set(key: String, value: Any)
 
     /**
-     * Puts the given collection into the persistent storage.
+     * Tries to get the value for the given [key] and convert it
+     * to the given type [T].
      *
-     * Collections with a generic type of [Byte], [Int] or [Long] will
-     * be stored effeciently as a Long internally.
+     * The access is fast, as it caches deserialized values. But keep in mind
+     * that if a value has been deserialized by the game itself it has to
+     * be deserialized by FabrikMC once (lazily) before it can be cached into memory.
+     *
+     * Note: this function will only return null if the value is not present, it
+     * will still throw an exception if cast or conversion to the given type [T] failed
      */
-    abstract operator fun set(key: String, value: Collection<Any>)
+    inline fun <reified T : Any> getOrNull(key: String): T? {
+        if (valuesMap == null) return null
+
+        val value = valuesMap!![key]?.let { it as? T }
+
+        // try to load / reload the value if it was not cached
+        // or if the cast failed
+        return if (value == null) {
+            val newValue = if (T::class.isSubclassOf(NbtElement::class))
+                data?.get(key) as T?
+            else
+                data?.get(key)?.let { Nbt.decodeFromNbtElement(it) }
+
+            if (newValue != null) {
+                valuesMap!![key] = newValue
+            }
+
+            newValue
+        } else value
+    }
 
     /**
-     * Puts the given [NbtElement] as a value into the persistent storage.
+     * Does the same as [getOrNull] but with the assumption that the value
+     * is present.
      *
-     * Using this method is not the most convenient way, but it is
-     * the fastest, because no serialization or conversion steps have to
-     * be executed when the game decides to save the compound.
+     * This will throw a [NullPointerException] if the value is not present.
      */
-    abstract operator fun set(key: String, value: NbtElement)
+    inline operator fun <reified T : Any> get(key: String): T =
+        getOrNull(key)!!
 
     internal abstract fun loadFromCompound(nbtCompound: NbtCompound)
     internal abstract fun putInCompound(nbtCompound: NbtCompound)
@@ -50,9 +83,10 @@ abstract class PersistentCompound {
  * Needed for empty holders such as [net.minecraft.world.chunk.EmptyChunk] for example.
  */
 object EmptyPersistentCompound : PersistentCompound() {
-    override fun set(key: String, value: Collection<Any>) = Unit
+    override val data: Nothing? = null
+    override val valuesMap: Nothing? = null
+
     override fun set(key: String, value: Any) = Unit
-    override fun set(key: String, value: NbtElement) = Unit
 
     override fun loadFromCompound(nbtCompound: NbtCompound) = Unit
     override fun putInCompound(nbtCompound: NbtCompound) = Unit
@@ -67,21 +101,12 @@ class PersistentCompoundImpl : PersistentCompound() {
         private const val CUSTOM_DATA_KEY = "fabrikmcData"
     }
 
-    private var data = NbtCompound()
+    override var data = NbtCompound()
 
-    private val valuesMap = HashMap<String, PersistentCompoundValue>()
+    override val valuesMap = HashMap<String, Any>()
 
     override fun set(key: String, value: Any) {
-        valuesMap[key] = NativePersistentCompoundValue.fromValueOrNull(value)
-            ?: SerializablePersistentCompoundValue(value)
-    }
-
-    override fun set(key: String, value: Collection<Any>) {
-        valuesMap[key] = CollectionPersistentCompoundValue(value)
-    }
-
-    override fun set(key: String, value: NbtElement) {
-        valuesMap[key] = NbtElementPersistentCompoundValue(value)
+        valuesMap[key] = value
     }
 
     override fun loadFromCompound(nbtCompound: NbtCompound) {
@@ -90,61 +115,9 @@ class PersistentCompoundImpl : PersistentCompound() {
 
     override fun putInCompound(nbtCompound: NbtCompound) {
         for ((key, value) in valuesMap) {
-            value.putInCompound(data, key)
+            nbtCompound.put(key, if (value is NbtElement) value else Nbt.encodeToNbtElement(value))
         }
         if (!data.isEmpty)
             nbtCompound.put(CUSTOM_DATA_KEY, data)
-    }
-}
-
-internal interface PersistentCompoundValue {
-    fun putInCompound(nbtCompound: NbtCompound, key: String)
-}
-
-internal class NativePersistentCompoundValue(private val value: Any) : PersistentCompoundValue {
-    companion object {
-        internal fun fromValueOrNull(value: Any): PersistentCompoundValue? {
-            val isNative = when (value) {
-                is Boolean -> true
-                is Byte, is Short, is Int, is Long -> true
-                is Float, is Double -> true
-                is String -> true
-                is ByteArray, is IntArray, is LongArray -> true
-                is Array<*> -> {
-                    when (value::class) {
-                        Array<Byte>::class, Array<Int>::class, Array<Long>::class -> true
-                        else -> false
-                    }
-                }
-                else -> false
-            }
-            return if (isNative) NativePersistentCompoundValue(value) else null
-        }
-    }
-
-    override fun putInCompound(nbtCompound: NbtCompound, key: String) {
-        nbtCompound.put(
-            key,
-            value.toPrimitiveNbtOrNull()
-                ?: error("Could not convert value of the type ${value::class.qualifiedName} to an NbtElement")
-        )
-    }
-}
-
-internal class SerializablePersistentCompoundValue(private val value: Any) : PersistentCompoundValue {
-    override fun putInCompound(nbtCompound: NbtCompound, key: String) {
-        nbtCompound.put(key, Nbt.encodeToNbtElement(value))
-    }
-}
-
-internal class CollectionPersistentCompoundValue(private val iterable: Collection<Any>) : PersistentCompoundValue {
-    override fun putInCompound(nbtCompound: NbtCompound, key: String) {
-        nbtCompound.put(key, iterable.toNbt())
-    }
-}
-
-internal class NbtElementPersistentCompoundValue(private val element: NbtElement) : PersistentCompoundValue {
-    override fun putInCompound(nbtCompound: NbtCompound, key: String) {
-        nbtCompound.put(key, element)
     }
 }
