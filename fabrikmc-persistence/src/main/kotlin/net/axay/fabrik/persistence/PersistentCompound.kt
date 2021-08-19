@@ -3,6 +3,7 @@ package net.axay.fabrik.persistence
 import net.axay.fabrik.nbt.Nbt
 import net.axay.fabrik.nbt.encodeToNbtElement
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
 
 /**
  * Holds data which can be accessed fast because it is stored in memory.
@@ -31,6 +32,15 @@ abstract class PersistentCompound {
      */
     abstract operator fun set(key: String, value: Collection<Any>)
 
+    /**
+     * Puts the given [NbtElement] as a value into the persistent storage.
+     *
+     * Using this method is not the most convenient way, but it is
+     * the fastest, because no serialization or conversion steps have to
+     * be executed when the game decides to save the compound.
+     */
+    abstract operator fun set(key: String, value: NbtElement)
+
     internal abstract fun loadFromCompound(nbtCompound: NbtCompound)
     internal abstract fun putInCompound(nbtCompound: NbtCompound)
 }
@@ -42,6 +52,7 @@ abstract class PersistentCompound {
 object EmptyPersistentCompound : PersistentCompound() {
     override fun set(key: String, value: Collection<Any>) = Unit
     override fun set(key: String, value: Any) = Unit
+    override fun set(key: String, value: NbtElement) = Unit
 
     override fun loadFromCompound(nbtCompound: NbtCompound) = Unit
     override fun putInCompound(nbtCompound: NbtCompound) = Unit
@@ -69,6 +80,10 @@ class PersistentCompoundImpl : PersistentCompound() {
         valuesMap[key] = CollectionPersistentCompoundValue(value)
     }
 
+    override fun set(key: String, value: NbtElement) {
+        valuesMap[key] = NbtElementPersistentCompoundValue(value)
+    }
+
     override fun loadFromCompound(nbtCompound: NbtCompound) {
         data = nbtCompound.getCompound(CUSTOM_DATA_KEY)
     }
@@ -86,10 +101,8 @@ internal interface PersistentCompoundValue {
     fun putInCompound(nbtCompound: NbtCompound, key: String)
 }
 
-@PublishedApi
 internal class NativePersistentCompoundValue(private val value: Any) : PersistentCompoundValue {
     companion object {
-        @PublishedApi
         internal fun fromValueOrNull(value: Any): PersistentCompoundValue? {
             val isNative = when (value) {
                 is Boolean -> true
@@ -118,16 +131,20 @@ internal class NativePersistentCompoundValue(private val value: Any) : Persisten
     }
 }
 
-@PublishedApi
 internal class SerializablePersistentCompoundValue(private val value: Any) : PersistentCompoundValue {
     override fun putInCompound(nbtCompound: NbtCompound, key: String) {
         nbtCompound.put(key, Nbt.encodeToNbtElement(value))
     }
 }
 
-@PublishedApi
 internal class CollectionPersistentCompoundValue(private val iterable: Collection<Any>) : PersistentCompoundValue {
     override fun putInCompound(nbtCompound: NbtCompound, key: String) {
         nbtCompound.put(key, iterable.toNbt())
+    }
+}
+
+internal class NbtElementPersistentCompoundValue(private val element: NbtElement) : PersistentCompoundValue {
+    override fun putInCompound(nbtCompound: NbtCompound, key: String) {
+        nbtCompound.put(key, element)
     }
 }
