@@ -3,7 +3,6 @@ package net.axay.fabrik.core.scoreboard.sideboard
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import net.axay.fabrik.core.Fabrik
-import net.axay.fabrik.core.logging.logInfo
 import net.axay.fabrik.core.scoreboard.FabrikSideboardScoreboard
 import net.axay.fabrik.core.task.fabrikCoroutineScope
 import net.axay.fabrik.core.task.initWithServerAsync
@@ -28,7 +27,6 @@ class Sideboard(
 
                 fabrikCoroutineScope.launch {
                     line.textFlow.collect {
-                        logInfo("setting ${team.name} prefix to '${it.string}'")
                         team.prefix = it
                     }
                 }
