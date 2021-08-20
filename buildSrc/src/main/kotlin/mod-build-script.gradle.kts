@@ -6,13 +6,11 @@ import BuildConstants.fabrikVersion
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.yarnMappingsVersion
-import org.gradle.kotlin.dsl.*
 
 plugins {
     kotlin("jvm")
 
     id("fabric-loom")
-    id("com.matthewprenger.cursegradle")
 }
 
 group = "net.axay"

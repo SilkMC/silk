@@ -1,73 +1,14 @@
-import BuildConstants.curseforgeId
 import BuildConstants.fabrikVersion
 import BuildConstants.githubRepo
 import BuildConstants.isSnapshot
-import BuildConstants.minecraftVersion
-import BuildConstants.projectState
-import BuildConstants.projectStateType
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseRelation
-import com.matthewprenger.cursegradle.CurseUploadTask
-import com.matthewprenger.cursegradle.Options
-import com.modrinth.minotaur.TaskModrinthUpload
-import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     kotlin("jvm")
 
     id("fabric-loom")
-    id("com.matthewprenger.cursegradle")
-    id("com.modrinth.minotaur")
 
     `maven-publish`
     signing
-}
-
-tasks {
-    val curseTasks = withType<CurseUploadTask> {
-        dependsOn(tasks.withType<RemapJarTask>())
-    }
-
-    val modrinthTask = register<TaskModrinthUpload>("uploadModrinth") {
-        group = "upload"
-        token = findProperty("modrinth.token").toString()
-        projectId = "aTaCgKLW"
-        versionNumber = fabrikVersion
-        uploadFile = tasks.named("remapJar").get()
-        addGameVersion(minecraftVersion)
-        addLoader("fabric")
-        versionType = projectStateType
-    }
-
-    register("publishAndUploadMod") {
-        group = "upload"
-        dependsOn(curseTasks)
-        dependsOn(modrinthTask)
-        dependsOn(tasks.named("publish"))
-    }
-}
-
-curseforge {
-    apiKey = findProperty("curseforge.token") ?: ""
-    project(closureOf<CurseProject> {
-        mainArtifact(tasks.getByName("remapJar").outputs.files.first())
-
-        id = curseforgeId
-        releaseType = projectState
-        addGameVersion(minecraftVersion)
-
-        relations(closureOf<CurseRelation> {
-            requiredDependency("fabric-api")
-            requiredDependency("fabric-language-kotlin")
-            // TODO add the following if the projects are separated on curseforge
-            /*if (project.name != "fabrikmc-core") {
-                requiredDependency("fabrikmc-core")
-            }*/
-        })
-    })
-    options(closureOf<Options> {
-        forgeGradleIntegration = false
-    })
 }
 
 publishing {
