@@ -10,6 +10,8 @@ pluginManagement {
 }
 
 
+include("$projectName-all")
+
 include("$projectName-core")
 include("$projectName-commands")
 include("$projectName-igui")

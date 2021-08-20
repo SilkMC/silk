@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+
+  "name": "FabrikMC All",
+  "description": "${description}",
+  "authors": ["${author}"],
+
+  "depends": {
+    "fabric": "*",
+    "fabric-language-kotlin": "*",
+    "minecraft": "${minecraftversion}"
+  }
+}
