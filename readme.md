@@ -78,7 +78,7 @@ Also, make sure that you
 provide [fabric-language-kotlin](https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files) and
 the [fabric-api](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files) at runtime.
 
-### Leightweight and Stable
+### Lightweight and Stable
 
 Fabrik does not put a whole new API on top of Mojang's code, instead it provides utilities which make high use of the
 possibilites Kotlin gives you. You decide where to use Fabrik, Fabric or just the Vanilla Code. Additionally, Fabrik is
