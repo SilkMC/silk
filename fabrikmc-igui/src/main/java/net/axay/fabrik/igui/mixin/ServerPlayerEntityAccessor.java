@@ -1,4 +1,4 @@
-package net.axay.fabrik.igui.mixins;
+package net.axay.fabrik.igui.mixin;
 
 import net.minecraft.screen.ScreenHandlerSyncHandler;
 import net.minecraft.server.network.ServerPlayerEntity;

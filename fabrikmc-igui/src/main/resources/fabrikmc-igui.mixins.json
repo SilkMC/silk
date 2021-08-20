@@ -1,5 +1,5 @@
 {
-  "package": "net.axay.fabrik.igui.mixins",
+  "package": "net.axay.fabrik.igui.mixin",
   "required": true,
   "compatibilityLevel": "JAVA_16",
   "mixins": [

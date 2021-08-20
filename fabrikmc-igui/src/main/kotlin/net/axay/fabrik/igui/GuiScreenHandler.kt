@@ -2,7 +2,7 @@ package net.axay.fabrik.igui
 
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.events.GuiCloseEvent
-import net.axay.fabrik.igui.mixins.ServerPlayerEntityAccessor
+import net.axay.fabrik.igui.mixin.ServerPlayerEntityAccessor
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.GenericContainerScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.screen.slot.SlotActionType
-import net.minecraft.server.network.ServerPlayerEntity
 
 class GuiScreenHandler(
     val gui: Gui,

@@ -1,6 +1,6 @@
 package net.axay.fabrik.igui
 
-import net.axay.fabrik.igui.mixins.SimpleInventoryAccessor
+import net.axay.fabrik.igui.mixin.SimpleInventoryAccessor
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.SimpleInventory
