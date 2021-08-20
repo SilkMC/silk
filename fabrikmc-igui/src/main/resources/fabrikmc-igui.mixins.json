@@ -2,7 +2,7 @@
   "package": "net.axay.fabrik.igui.mixins",
   "required": true,
   "compatibilityLevel": "JAVA_16",
-  "server": [
+  "mixins": [
     "ServerPlayerEntityAccessor",
     "SimpleInventoryAccessor"
   ]
