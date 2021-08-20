@@ -7,6 +7,7 @@ object BuildConstants {
     val projectStateType = if (isSnapshot) VersionType.BETA else VersionType.RELEASE
 
     const val curseforgeId = "447425"
+    const val modrinthId = "aTaCgKLW"
     const val githubRepo = "bluefireoly/fabrikmc"
 
     const val author = "bluefireoly"

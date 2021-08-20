@@ -1,6 +1,7 @@
 import BuildConstants.curseforgeId
 import BuildConstants.fabrikVersion
 import BuildConstants.minecraftVersion
+import BuildConstants.modrinthId
 import BuildConstants.projectState
 import BuildConstants.projectStateType
 import com.matthewprenger.cursegradle.CurseProject
@@ -16,16 +17,33 @@ plugins {
     id("com.modrinth.minotaur")
 }
 
+val fabrikModules = listOf(
+    project(":${rootProject.name}-commands"),
+    project(":${rootProject.name}-core"),
+    project(":${rootProject.name}-igui"),
+    project(":${rootProject.name}-nbt"),
+    project(":${rootProject.name}-persistence")
+)
+
 tasks {
     val modrinthTask = register<TaskModrinthUpload>("uploadModrinth") {
         group = "upload"
+        onlyIf {
+            findProperty("modrinth.token") != null
+        }
+
         token = findProperty("modrinth.token").toString()
-        projectId = "aTaCgKLW"
+
+        projectId = modrinthId
         versionNumber = fabrikVersion
-        uploadFile = remapJar
         addGameVersion(minecraftVersion)
         addLoader("fabric")
         versionType = projectStateType
+
+        uploadFile = remapJar.get()
+        fabrikModules.forEach {
+            addFile(it.tasks.named("remapJar").get())
+        }
     }
 
     register("publishAndUploadMod") {
@@ -34,12 +52,20 @@ tasks {
         dependsOn(modrinthTask)
         dependsOn(tasks.named("publish"))
     }
+
+    named("curseforge") {
+        onlyIf {
+            findProperty("curseforge.token") != null
+        }
+        dependsOn(tasks.named("remapJar"))
+    }
 }
 
 curseforge {
-    apiKey = findProperty("curseforge.token") ?: ""
+    apiKey = findProperty("curseforge.token").toString()
+
     project(closureOf<CurseProject> {
-        mainArtifact(tasks.getByName("remapJar").outputs.files.first())
+        mainArtifact(tasks.named("remapJar").get())
 
         id = curseforgeId
         releaseType = projectState
@@ -49,11 +75,6 @@ curseforge {
             requiredDependency("fabric-api")
             requiredDependency("fabric-language-kotlin")
         })
-
-        afterEvaluate {
-            mainArtifact(tasks.named("remapJar"))
-            uploadTask.dependsOn(tasks.named("remapJar"))
-        }
     })
     options(closureOf<Options> {
         forgeGradleIntegration = false
