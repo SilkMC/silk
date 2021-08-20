@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtElement
 import net.minecraft.particle.ParticleEffect
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import net.minecraft.util.Identifier
 import java.util.*
 
 object ArgumentTypeUtils {
@@ -25,6 +26,7 @@ object ArgumentTypeUtils {
         BlockStateArgument::class -> BlockStateArgumentType.blockState()
         Formatting::class -> ColorArgumentType.color()
         Enchantment::class -> EnchantmentArgumentType.enchantment()
+        Identifier::class -> IdentifierArgumentType.identifier()
         ItemStackArgument::class -> ItemStackArgumentType.itemStack()
         NbtCompound::class -> NbtCompoundArgumentType.nbtCompound()
         NbtElement::class -> NbtElementArgumentType.nbtElement()
