@@ -7,12 +7,13 @@ import net.axay.fabrik.commands.simpleExecutes
 import net.axay.fabrik.core.text.sendText
 import net.axay.fabrik.persistence.compoundKey
 import net.axay.fabrik.persistence.persistentCompound
+import net.axay.fabrik.test.testmodId
 
 @Serializable
 private data class Person(val name: String, val age: Int, val friends: List<String>)
 
-private val simpleIntKey by compoundKey<Int>()
-private val personKey by compoundKey<Person>()
+private val simpleIntKey = compoundKey<Int>("simpleInt".testmodId)
+private val personKey = compoundKey<Person>("person".testmodId)
 
 val persistenceTestCommand = command("persistence") {
     literal("player") {
