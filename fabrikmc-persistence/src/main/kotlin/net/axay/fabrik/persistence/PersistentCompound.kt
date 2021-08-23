@@ -27,7 +27,7 @@ abstract class PersistentCompound {
      * as convenient to work with them, but they are faster.
      */
     operator fun <T> set(key: CompoundKey<T>, value: T) {
-        if (data != null) return
+        if (data == null) return
 
         key.setValue(this, value)
         compoundKeysWithValue += key
