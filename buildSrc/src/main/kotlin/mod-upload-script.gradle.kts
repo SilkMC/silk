@@ -26,7 +26,7 @@ val fabrikModules = listOf(
 )
 
 tasks {
-    val modrinthTask = register<TaskModrinthUpload>("uploadModrinth") {
+    register<TaskModrinthUpload>("uploadModrinth") {
         group = "upload"
         onlyIf {
             findProperty("modrinth.token") != null
@@ -44,13 +44,6 @@ tasks {
         fabrikModules.forEach {
             addFile(it.tasks.named("remapJar").get())
         }
-    }
-
-    register("publishAndUploadMod") {
-        group = "upload"
-        dependsOn(curseforge)
-        dependsOn(modrinthTask)
-        dependsOn(tasks.named("publish"))
     }
 
     named("curseforge") {
