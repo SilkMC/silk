@@ -56,11 +56,11 @@ inline fun <reified T : NbtElement> nbtElementCompoundKey(id: Identifier) =
  */
 inline fun <reified T, reified NbtType : NbtElement> customCompoundKey(
     id: Identifier,
-    crossinline convertValueToNbtElement: (value: T) -> NbtType,
-    crossinline convertNbtElementToValue: (nbtElement: NbtType) -> T
+    crossinline valueToNbt: (value: T) -> NbtType,
+    crossinline nbtToValue: (nbtElement: NbtType) -> T
 ) = object : CompoundKey<T>(id) {
-    override fun convertValueToNbtElement(value: T) = convertValueToNbtElement(value)
-    override fun convertNbtElementToValue(nbtElement: NbtElement) = convertNbtElementToValue(nbtElement as NbtType)
+    override fun convertValueToNbtElement(value: T) = valueToNbt(value)
+    override fun convertNbtElementToValue(nbtElement: NbtElement) = nbtToValue(nbtElement as NbtType)
 }
 
 /**

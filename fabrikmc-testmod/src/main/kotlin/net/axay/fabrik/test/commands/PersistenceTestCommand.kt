@@ -12,7 +12,7 @@ import net.axay.fabrik.test.testmodId
 @Serializable
 private data class Person(val name: String, val age: Int, val friends: List<String>)
 
-private val simpleIntKey = compoundKey<Int>("simpleInt".testmodId)
+private val simpleIntKey = compoundKey<Int>("simpleint".testmodId)
 private val personKey = compoundKey<Person>("person".testmodId)
 
 val persistenceTestCommand = command("persistence") {
