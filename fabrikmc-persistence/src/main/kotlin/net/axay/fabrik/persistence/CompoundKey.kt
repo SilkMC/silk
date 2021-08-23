@@ -12,8 +12,7 @@ import kotlin.reflect.full.isSubclassOf
  * Creates a [CompoundKey] which can be used to read and write data
  * to a [PersistentCompound] in a typesafe way.
  *
- * @param name an optional name for this compound value - defaults to the name of
- * the property with the suffix "Key" being removed
+ * @param id the unique identifier for this key, this should contain your mod id
  */
 inline fun <reified T> compoundKey(id: Identifier) =
     object : CompoundKey<T>(id) {
@@ -37,8 +36,7 @@ inline fun <reified T> compoundKey(id: Identifier) =
  * These can be treated differently, as they don't have to be converted
  * or serialized.
  *
- * @param name an optional name for this compound value - defaults to the name of
- * the property with the suffix "Key" being removed
+ * @param id the unique identifier for this key, this should contain your mod id
  */
 inline fun <reified T : NbtElement> nbtElementCompoundKey(id: Identifier) =
     object : CompoundKey<T>(id) {
@@ -46,6 +44,41 @@ inline fun <reified T : NbtElement> nbtElementCompoundKey(id: Identifier) =
 
         override fun convertNbtElementToValue(nbtElement: NbtElement) = nbtElement as T
     }
+
+/**
+ * Creates a [CompoundKey] which can be used to read and write data
+ * to a [PersistentCompound] in a typesafe way.
+ *
+ * This compound key allows you to specify custom serialization or conversion logic
+ * to convert elements of the type [T] to NbtElements of the type [NbtType].
+ *
+ * @param id the unique identifier for this key, this should contain your mod id
+ */
+inline fun <reified T, reified NbtType : NbtElement> customCompoundKey(
+    id: Identifier,
+    crossinline convertValueToNbtElement: (value: T) -> NbtType,
+    crossinline convertNbtElementToValue: (nbtElement: NbtType) -> T
+) = object : CompoundKey<T>(id) {
+    override fun convertValueToNbtElement(value: T) = convertValueToNbtElement(value)
+    override fun convertNbtElementToValue(nbtElement: NbtElement) = convertNbtElementToValue(nbtElement as NbtType)
+}
+
+/**
+ * Creates a [CompoundKey] which can be used to read and write data
+ * to a [PersistentCompound] in a typesafe way.
+ *
+ * This compound key allows you to specify custom serialization or conversion logic
+ * to convert elements of the type [T] to NbtElements of the type [NbtElement] (this is
+ * the version of the [customCompoundKey] function with no specific NbtElement type).
+ *
+ * @param id the unique identifier for this key, this should contain your mod id
+ */
+@JvmName("customCompoundKeyNbtElement")
+inline fun <reified T> customCompoundKey(
+    id: Identifier,
+    crossinline convertValueToNbtElement: (value: T) -> NbtElement,
+    crossinline convertNbtElementToValue: (nbtElement: NbtElement) -> T
+) = customCompoundKey<T, NbtElement>(id, convertValueToNbtElement, convertNbtElementToValue)
 
 abstract class CompoundKey<T>(val name: String) {
     constructor(id: Identifier) : this(id.toString())
