@@ -13,8 +13,7 @@ abstract class PersistentCompound {
     @PublishedApi
     internal abstract var data: NbtCompound?
 
-    @PublishedApi
-    internal abstract val compoundKeys: MutableSet<CompoundKey<*>>?
+    protected val compoundKeysWithValue = HashSet<CompoundKey<*>>()
 
     /**
      * Puts the given value into the persistent storage.
@@ -27,11 +26,11 @@ abstract class PersistentCompound {
      * You can use these to skip serialization and deserialization. It is not
      * as convenient to work with them, but they are faster.
      */
-    inline operator fun <reified T : Any> set(key: CompoundKey<T>, value: T) {
-        if (compoundKeys != null) {
-            key.values[this] = value
-            compoundKeys!! += key
-        }
+    operator fun <T> set(key: CompoundKey<T>, value: T) {
+        if (data != null) return
+
+        key.setValue(this, value)
+        compoundKeysWithValue += key
     }
 
     /**
@@ -45,34 +44,20 @@ abstract class PersistentCompound {
      * Note: this function will only return null if the value is not present, it
      * will still throw an exception if cast or conversion to the given type [T] failed
      */
-    inline operator fun <reified T : Any> get(key: CompoundKey<T>): T? {
-        if (compoundKeys == null) return null
+    operator fun <T> get(key: CompoundKey<T>): T? {
+        if (data == null) return null
 
-        val value = key.values[this]
-
-        // try to load / reload the value if it was not cached
-        return if (value == null) {
-            val nbtElement = data?.get(key.name)
-
-            val newValue = if (nbtElement != null)
-                key.deserializeValueFromNbtElement(nbtElement)
-            else
-                null
-
-            if (newValue != null) {
-                this[key] = newValue
-            }
-
-            newValue
-        } else value
+        return key.getValue(this) {
+            compoundKeysWithValue += key
+        }
     }
 
     /**
      * Removes the current value associated with the given [key].
      */
     fun remove(key: CompoundKey<*>) {
-        compoundKeys?.remove(key)
-        key.values -= this
+        compoundKeysWithValue -= key
+        key.removeValue(this)
     }
 
     /**
@@ -87,11 +72,12 @@ abstract class PersistentCompound {
      * **Be aware that this deletes data of other mods as well!**
      */
     fun clear() {
-        if (data != null)
-            data = NbtCompound()
+        if (data == null) return
 
-        compoundKeys?.forEach { it.values -= this }
-        compoundKeys?.clear()
+        compoundKeysWithValue.forEach { it.removeValue(this) }
+        compoundKeysWithValue.clear()
+
+        data = NbtCompound()
     }
 
     internal abstract fun loadFromCompound(nbtCompound: NbtCompound)
@@ -104,7 +90,6 @@ abstract class PersistentCompound {
  */
 object EmptyPersistentCompound : PersistentCompound() {
     override var data: NbtCompound? = null
-    override val compoundKeys: Nothing? = null
 
     override fun loadFromCompound(nbtCompound: NbtCompound) = Unit
     override fun putInCompound(nbtCompound: NbtCompound) = Unit
@@ -121,22 +106,21 @@ class PersistentCompoundImpl : PersistentCompound() {
 
     override var data: NbtCompound? = NbtCompound()
 
-    override val compoundKeys = HashSet<CompoundKey<*>>()
-
     override fun loadFromCompound(nbtCompound: NbtCompound) {
         data = nbtCompound.getCompound(CUSTOM_DATA_KEY)
     }
 
     override fun putInCompound(nbtCompound: NbtCompound) {
-        for (key in compoundKeys) {
-            data!!.put(key.name, key.serializeValueToNbtElement(this))
+        for (key in compoundKeysWithValue) {
+            data!!.put(key.name, key.getNbtElement(this))
 
             // ensure that both the key and this persistent compound
             // are garbage collectible, as this function could be the
             // last one called on this instance
-            key.values -= this
+            key.removeValue(this)
         }
-        compoundKeys.clear()
+        // we removed all values, therefore clear this set
+        compoundKeysWithValue.clear()
 
         if (!data!!.isEmpty) {
             nbtCompound.put(CUSTOM_DATA_KEY, data)
