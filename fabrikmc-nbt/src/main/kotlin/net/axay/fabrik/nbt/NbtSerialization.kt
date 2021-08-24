@@ -8,8 +8,8 @@ import net.axay.fabrik.nbt.encoder.NbtRootEncoder
 import net.minecraft.nbt.NbtElement
 
 @OptIn(ExperimentalSerializationApi::class)
-sealed class Nbt(val serializersModule: SerializersModule) {
-    companion object Default : Nbt(EmptySerializersModule)
+sealed class Nbt(val config: NbtConfig, val serializersModule: SerializersModule) {
+    companion object Default : Nbt(NbtConfig(), EmptySerializersModule)
 
     fun <T> encodeToNbtElement(serializer: SerializationStrategy<T>, value: T): NbtElement =
         NbtRootEncoder(serializersModule).apply { encodeSerializableValue(serializer, value) }.element
@@ -17,6 +17,25 @@ sealed class Nbt(val serializersModule: SerializersModule) {
 
     fun <T> decodeFromNbtElement(deserializer: DeserializationStrategy<T>, element: NbtElement): T =
         NbtRootDecoder(serializersModule, element).decodeSerializableValue(deserializer)
+}
+
+private class NbtImpl(config: NbtConfig, serializersModule: SerializersModule) : Nbt(config, serializersModule)
+
+data class NbtConfig(
+    val shouldEncodeDefaults: Boolean = false,
+    val ignoreUnknownKeys: Boolean = false
+)
+
+inline fun Nbt(from: Nbt = Nbt.Default, build: NbtBuilder.() -> Unit): Nbt =
+    NbtBuilder(from).apply(build).build()
+
+class NbtBuilder(from: Nbt) {
+    var shouldEncodeDefaults = from.config.shouldEncodeDefaults
+    var ignoreUnknownKeys = from.config.ignoreUnknownKeys
+
+    var serializersModule = from.serializersModule
+
+    fun build(): Nbt = NbtImpl(NbtConfig(), serializersModule)
 }
 
 inline fun <reified T> Nbt.encodeToNbtElement(value: T) =
