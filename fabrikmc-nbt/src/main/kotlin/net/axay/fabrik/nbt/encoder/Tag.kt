@@ -7,12 +7,15 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.modules.SerializersModule
+import net.axay.fabrik.nbt.Nbt
 import net.axay.fabrik.nbt.internal.*
 import net.axay.fabrik.nbt.toNbt
 import net.minecraft.nbt.*
 
 @ExperimentalSerializationApi
-abstract class NbtTagEncoder(override val serializersModule: SerializersModule) : AbstractEncoder() {
+abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
+    override val serializersModule: SerializersModule = nbt.serializersModule
+
     private var isNextNullable = false
 
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
@@ -47,8 +50,8 @@ abstract class NbtTagEncoder(override val serializersModule: SerializersModule) 
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
         when (descriptor.kind) {
-            StructureKind.LIST -> NbtListEncoder(serializersModule, ::consumeStructure)
-            else -> NbtCompoundEncoder(serializersModule, ::consumeStructure)
+            StructureKind.LIST -> NbtListEncoder(nbt, ::consumeStructure)
+            else -> NbtCompoundEncoder(nbt, ::consumeStructure)
         }
 
     override fun encodeNotNullMark() {
@@ -113,7 +116,7 @@ abstract class NbtTagEncoder(override val serializersModule: SerializersModule) 
 }
 
 @ExperimentalSerializationApi
-class NbtRootEncoder(serializersModule: SerializersModule) : NbtTagEncoder(serializersModule) {
+class NbtRootEncoder(nbt: Nbt) : NbtTagEncoder(nbt) {
     var element: NbtElement? = null
         private set
 
@@ -128,9 +131,9 @@ class NbtRootEncoder(serializersModule: SerializersModule) : NbtTagEncoder(seria
 
 @ExperimentalSerializationApi
 class NbtCompoundEncoder(
-    serializersModule: SerializersModule,
+    nbt: Nbt,
     private val consumer: (NbtCompound) -> Unit
-) : NbtTagEncoder(serializersModule) {
+) : NbtTagEncoder(nbt) {
     private val compound = NbtCompound()
     private val tags = ArrayDeque<String>()
 
@@ -151,14 +154,17 @@ class NbtCompoundEncoder(
         consumer(compound)
     }
 
+    override fun shouldEncodeElementDefault(descriptor: SerialDescriptor, index: Int) =
+        nbt.config.encodeDefaults
+
     private fun popTag() = tags.removeLast()
 }
 
 @ExperimentalSerializationApi
 class NbtListEncoder(
-    serializersModule: SerializersModule,
+    nbt: Nbt,
     private val consumer: (NbtList) -> Unit
-) : NbtTagEncoder(serializersModule) {
+) : NbtTagEncoder(Nbt) {
     private val list = NbtList()
 
     override fun encodeElement(element: NbtElement) {

@@ -12,17 +12,17 @@ sealed class Nbt(val config: NbtConfig, val serializersModule: SerializersModule
     companion object Default : Nbt(NbtConfig(), EmptySerializersModule)
 
     fun <T> encodeToNbtElement(serializer: SerializationStrategy<T>, value: T): NbtElement =
-        NbtRootEncoder(serializersModule).apply { encodeSerializableValue(serializer, value) }.element
+        NbtRootEncoder(this).apply { encodeSerializableValue(serializer, value) }.element
             ?: throw SerializationException("Serializer did not encode any element")
 
     fun <T> decodeFromNbtElement(deserializer: DeserializationStrategy<T>, element: NbtElement): T =
-        NbtRootDecoder(serializersModule, element).decodeSerializableValue(deserializer)
+        NbtRootDecoder(this, element).decodeSerializableValue(deserializer)
 }
 
 private class NbtImpl(config: NbtConfig, serializersModule: SerializersModule) : Nbt(config, serializersModule)
 
 data class NbtConfig(
-    val shouldEncodeDefaults: Boolean = false,
+    val encodeDefaults: Boolean = false,
     val ignoreUnknownKeys: Boolean = false
 )
 
@@ -30,7 +30,7 @@ inline fun Nbt(from: Nbt = Nbt.Default, build: NbtBuilder.() -> Unit): Nbt =
     NbtBuilder(from).apply(build).build()
 
 class NbtBuilder(from: Nbt) {
-    var shouldEncodeDefaults = from.config.shouldEncodeDefaults
+    var encodeDefaults = from.config.encodeDefaults
     var ignoreUnknownKeys = from.config.ignoreUnknownKeys
 
     var serializersModule = from.serializersModule

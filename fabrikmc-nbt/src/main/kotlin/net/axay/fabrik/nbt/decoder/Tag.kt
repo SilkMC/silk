@@ -9,11 +9,14 @@ import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import net.axay.fabrik.nbt.Nbt
 import net.axay.fabrik.nbt.internal.*
 import net.minecraft.nbt.*
 
 @ExperimentalSerializationApi
-abstract class NbtTagDecoder(override val serializersModule: SerializersModule) : AbstractDecoder() {
+abstract class NbtTagDecoder(protected val nbt: Nbt) : AbstractDecoder() {
+    override val serializersModule: SerializersModule = nbt.serializersModule
+
     private enum class NextArrayType {
         Byte, Int, Long, None
     }
@@ -46,8 +49,8 @@ abstract class NbtTagDecoder(override val serializersModule: SerializersModule) 
             NextArrayType.Int -> NbtIntArrayDecoder(nextMaybeNullable() as NbtIntArray)
             NextArrayType.Long -> NbtLongArrayDecoder(nextMaybeNullable() as NbtLongArray)
             NextArrayType.None -> when (descriptor.kind) {
-                StructureKind.LIST -> NbtListDecoder(serializersModule, nextMaybeNullable() as NbtList)
-                else -> NbtCompoundDecoder(serializersModule, nextMaybeNullable() as NbtCompound)
+                StructureKind.LIST -> NbtListDecoder(nbt, nextMaybeNullable() as NbtList)
+                else -> NbtCompoundDecoder(nbt, nextMaybeNullable() as NbtCompound)
             }
         }
 
@@ -97,9 +100,9 @@ abstract class NbtTagDecoder(override val serializersModule: SerializersModule) 
 
 @ExperimentalSerializationApi
 class NbtRootDecoder(
-    serializersModule: SerializersModule,
+    nbt: Nbt,
     private val element: NbtElement
-) : NbtTagDecoder(serializersModule) {
+) : NbtTagDecoder(nbt) {
     override fun next() = element
 
     override fun decodeElementIndex(descriptor: SerialDescriptor) = 0
@@ -107,9 +110,9 @@ class NbtRootDecoder(
 
 @ExperimentalSerializationApi
 class NbtCompoundDecoder(
-    serializersModule: SerializersModule,
+    nbt: Nbt,
     private val compound: NbtCompound
-) : NbtTagDecoder(serializersModule) {
+) : NbtTagDecoder(nbt) {
     private val entries = compound.entries.iterator()
     private lateinit var currentEntry: Map.Entry<String, NbtElement>
 
@@ -128,9 +131,9 @@ class NbtCompoundDecoder(
 
 @ExperimentalSerializationApi
 class NbtListDecoder(
-    serializersModule: SerializersModule,
+    nbt: Nbt,
     private val list: NbtList
-) : NbtTagDecoder(serializersModule) {
+) : NbtTagDecoder(nbt) {
     private val elements = list.listIterator()
 
     override fun next(): NbtElement = elements.next()
