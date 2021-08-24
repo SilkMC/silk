@@ -17,6 +17,9 @@ data class TestClass(
 @Serializable
 data class InnerTestClass(val test: Boolean)
 
+@Serializable
+data class TestClassWithDefault(val one: Int = 1, val tru: Boolean = true)
+
 enum class TestEnum {
     VARIANT_1, VARIANT_2, LastVariant,
 }

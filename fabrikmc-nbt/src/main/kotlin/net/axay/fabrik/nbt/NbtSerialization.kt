@@ -35,7 +35,7 @@ class NbtBuilder(from: Nbt) {
 
     var serializersModule = from.serializersModule
 
-    fun build(): Nbt = NbtImpl(NbtConfig(), serializersModule)
+    fun build(): Nbt = NbtImpl(NbtConfig(encodeDefaults, ignoreUnknownKeys), serializersModule)
 }
 
 inline fun <reified T> Nbt.encodeToNbtElement(value: T) =
