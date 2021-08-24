@@ -122,4 +122,19 @@ class NbtEncodingTest : StringSpec({
             getDouble("childProp") shouldBe value.childProp
         }
     }
+
+    "defaults should only be encoded when the config value is set" {
+        val value = TestClassWithDefault()
+        with(Nbt.encodeToNbtElement(value)) {
+            shouldBeInstanceOf<NbtCompound>()
+            isEmpty shouldBe true
+        }
+
+        with(Nbt { encodeDefaults = true }.encodeToNbtElement(value)) {
+            shouldBeInstanceOf<NbtCompound>()
+            size shouldBe 2
+            getInt("one") shouldBe value.one
+            getBoolean("tru") shouldBe value.tru
+        }
+    }
 })

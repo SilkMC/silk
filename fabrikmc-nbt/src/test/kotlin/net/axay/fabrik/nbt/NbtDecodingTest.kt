@@ -1,5 +1,7 @@
 package net.axay.fabrik.nbt
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
@@ -98,5 +100,18 @@ class NbtDecodingTest : StringSpec({
             }
         }
         Nbt.decodeFromNbtElement<SealedBase>(compound) shouldBe value
+    }
+
+    "decoding should honor ignoreUnknownKeys setting" {
+        val withUnknown = nbtCompound {
+            put("one", 1)
+            put("unknown", 4.5)
+        }
+        shouldThrow<UnknownKeyException> {
+            Nbt.decodeFromNbtElement<TestClassWithDefault>(withUnknown)
+        }.key shouldBe "unknown"
+        Nbt {
+            ignoreUnknownKeys = true
+        }.decodeFromNbtElement<TestClassWithDefault>(withUnknown) shouldBe TestClassWithDefault(1)
     }
 })

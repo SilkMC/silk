@@ -3,17 +3,22 @@ package net.axay.fabrik.nbt.decoder
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import net.axay.fabrik.nbt.Nbt
+import net.axay.fabrik.nbt.UnknownKeyException
 import net.axay.fabrik.nbt.internal.*
 import net.minecraft.nbt.*
 
 @ExperimentalSerializationApi
-abstract class NbtTagDecoder(override val serializersModule: SerializersModule) : AbstractDecoder() {
+abstract class NbtTagDecoder(protected val nbt: Nbt) : AbstractDecoder() {
+    override val serializersModule: SerializersModule = nbt.serializersModule
+
     private enum class NextArrayType {
         Byte, Int, Long, None
     }
@@ -46,8 +51,8 @@ abstract class NbtTagDecoder(override val serializersModule: SerializersModule) 
             NextArrayType.Int -> NbtIntArrayDecoder(nextMaybeNullable() as NbtIntArray)
             NextArrayType.Long -> NbtLongArrayDecoder(nextMaybeNullable() as NbtLongArray)
             NextArrayType.None -> when (descriptor.kind) {
-                StructureKind.LIST -> NbtListDecoder(serializersModule, nextMaybeNullable() as NbtList)
-                else -> NbtCompoundDecoder(serializersModule, nextMaybeNullable() as NbtCompound)
+                StructureKind.LIST -> NbtListDecoder(nbt, nextMaybeNullable() as NbtList)
+                else -> NbtCompoundDecoder(nbt, nextMaybeNullable() as NbtCompound)
             }
         }
 
@@ -97,9 +102,9 @@ abstract class NbtTagDecoder(override val serializersModule: SerializersModule) 
 
 @ExperimentalSerializationApi
 class NbtRootDecoder(
-    serializersModule: SerializersModule,
+    nbt: Nbt,
     private val element: NbtElement
-) : NbtTagDecoder(serializersModule) {
+) : NbtTagDecoder(nbt) {
     override fun next() = element
 
     override fun decodeElementIndex(descriptor: SerialDescriptor) = 0
@@ -107,30 +112,44 @@ class NbtRootDecoder(
 
 @ExperimentalSerializationApi
 class NbtCompoundDecoder(
-    serializersModule: SerializersModule,
+    nbt: Nbt,
     private val compound: NbtCompound
-) : NbtTagDecoder(serializersModule) {
-    private val entries = compound.entries.iterator()
-    private lateinit var currentEntry: Map.Entry<String, NbtElement>
+) : NbtTagDecoder(nbt) {
+    private lateinit var element: NbtElement
+    private var idx = 0
 
-    override fun next() = currentEntry.value
+    override fun next() = element
 
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int =
-        if (entries.hasNext()) {
-            currentEntry = entries.next()
-            descriptor.getElementIndex(currentEntry.key)
-        } else {
-            CompositeDecoder.DECODE_DONE
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+        while (idx < descriptor.elementsCount) {
+            val name = descriptor.getElementName(idx++)
+            compound.get(name)?.let {
+                element = it
+                return idx - 1
+            }
         }
+        return CompositeDecoder.DECODE_DONE
+    }
 
     override fun decodeCollectionSize(descriptor: SerialDescriptor) = compound.size
+
+    override fun endStructure(descriptor: SerialDescriptor) {
+        if (nbt.config.ignoreUnknownKeys || descriptor.kind is PolymorphicKind) return
+
+        val names = (0 until descriptor.elementsCount).mapTo(HashSet()) { descriptor.getElementName(it) }
+        for (key in compound.keys) {
+            if (!names.contains(key)) {
+                throw UnknownKeyException(key)
+            }
+        }
+    }
 }
 
 @ExperimentalSerializationApi
 class NbtListDecoder(
-    serializersModule: SerializersModule,
+    nbt: Nbt,
     private val list: NbtList
-) : NbtTagDecoder(serializersModule) {
+) : NbtTagDecoder(nbt) {
     private val elements = list.listIterator()
 
     override fun next(): NbtElement = elements.next()
