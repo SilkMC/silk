@@ -3,6 +3,7 @@ package net.axay.fabrik.nbt.decoder
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractDecoder
@@ -127,6 +128,17 @@ class NbtCompoundDecoder(
         }
 
     override fun decodeCollectionSize(descriptor: SerialDescriptor) = compound.size
+
+    override fun endStructure(descriptor: SerialDescriptor) {
+        if (nbt.config.ignoreUnknownKeys || descriptor.kind is PolymorphicKind) return
+
+        val names = (0 until descriptor.elementsCount).mapTo(HashSet()) { descriptor.getElementName(it) }
+        for (key in compound.keys) {
+            if (!names.contains(key)) {
+                throw SerializationException("Encountered unknown key '$key' while decoding NBT compound")
+            }
+        }
+    }
 }
 
 @ExperimentalSerializationApi
