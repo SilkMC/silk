@@ -11,6 +11,7 @@ import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import net.axay.fabrik.nbt.Nbt
+import net.axay.fabrik.nbt.UnknownKeyException
 import net.axay.fabrik.nbt.internal.*
 import net.minecraft.nbt.*
 
@@ -114,18 +115,21 @@ class NbtCompoundDecoder(
     nbt: Nbt,
     private val compound: NbtCompound
 ) : NbtTagDecoder(nbt) {
-    private val entries = compound.entries.iterator()
-    private lateinit var currentEntry: Map.Entry<String, NbtElement>
+    private lateinit var element: NbtElement
+    private var idx = 0
 
-    override fun next() = currentEntry.value
+    override fun next() = element
 
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int =
-        if (entries.hasNext()) {
-            currentEntry = entries.next()
-            descriptor.getElementIndex(currentEntry.key)
-        } else {
-            CompositeDecoder.DECODE_DONE
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+        while (idx < descriptor.elementsCount) {
+            val name = descriptor.getElementName(idx++)
+            compound.get(name)?.let {
+                element = it
+                return idx - 1
+            }
         }
+        return CompositeDecoder.DECODE_DONE
+    }
 
     override fun decodeCollectionSize(descriptor: SerialDescriptor) = compound.size
 
@@ -135,7 +139,7 @@ class NbtCompoundDecoder(
         val names = (0 until descriptor.elementsCount).mapTo(HashSet()) { descriptor.getElementName(it) }
         for (key in compound.keys) {
             if (!names.contains(key)) {
-                throw SerializationException("Encountered unknown key '$key' while decoding NBT compound")
+                throw UnknownKeyException(key)
             }
         }
     }

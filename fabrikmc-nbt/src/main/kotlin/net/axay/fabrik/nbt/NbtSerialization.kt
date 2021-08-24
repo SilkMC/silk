@@ -43,3 +43,5 @@ inline fun <reified T> Nbt.encodeToNbtElement(value: T) =
 
 inline fun <reified T> Nbt.decodeFromNbtElement(element: NbtElement) =
     decodeFromNbtElement(serializer<T>(), element)
+
+class UnknownKeyException(val key: String) : SerializationException("Encountered unknown key '$key'")
