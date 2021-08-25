@@ -164,7 +164,7 @@ class NbtCompoundEncoder(
 class NbtListEncoder(
     nbt: Nbt,
     private val consumer: (NbtList) -> Unit
-) : NbtTagEncoder(Nbt) {
+) : NbtTagEncoder(nbt) {
     private val list = NbtList()
 
     override fun encodeElement(element: NbtElement) {
