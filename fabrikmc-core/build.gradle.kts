@@ -5,7 +5,7 @@ plugins {
     `mod-build-script`
     `mod-publish-script`
     `kotest-script`
-    kotlin("plugin.serialization") version "1.5.21"
+    kotlin("plugin.serialization")
 }
 
 val modName by extra("$projectTitle Core")

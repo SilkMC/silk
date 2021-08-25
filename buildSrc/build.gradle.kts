@@ -1,6 +1,9 @@
+apply(from = "${rootDir.parentFile}/shared.properties.gradle.kts")
+val kotlinVersion: String by extra
+
 plugins {
     `kotlin-dsl`
-    kotlin("plugin.serialization") version "1.5.21"
+    kotlin("plugin.serialization")
 }
 
 repositories {
@@ -10,7 +13,8 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("gradle-plugin", "1.5.21"))
+    implementation(kotlin("gradle-plugin", kotlinVersion))
+
     implementation("net.fabricmc", "fabric-loom", "0.8-SNAPSHOT")
     implementation("gradle.plugin.com.matthewprenger:CurseGradle:1.4.0")
     implementation("gradle.plugin.com.modrinth.minotaur:Minotaur:1.2.1")
