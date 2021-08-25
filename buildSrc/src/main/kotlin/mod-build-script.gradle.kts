@@ -9,7 +9,6 @@ import BuildConstants.yarnMappingsVersion
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.nio.file.Files
 
 plugins {
     kotlin("jvm")
@@ -63,10 +62,8 @@ val modMixinFiles: List<String>? by extra(null)
 val modDepends: LinkedHashMap<String, String>? by extra(null)
 
 tasks {
-    val modDotJson = register<Copy>("modDotJson") {
-        val modDotJson = Files.createTempFile("fabric.mod", ".json").toFile()
-
-        modDotJson.writeText(Json { prettyPrint = true }.encodeToString(FabricModConfiguration(
+    val modDotJsonTask = register("modDotJson") {
+        val modConfig = FabricModConfiguration(
             1,
             project.name,
             project.version.toString(),
@@ -80,18 +77,26 @@ tasks {
                 "fabric-language-kotlin" to "*",
                 "minecraft" to "${majorMinecraftVersion}.x"
             ).apply { putAll(modDepends ?: emptyMap()) }
-        )))
+        )
 
-        from(modDotJson)
-        into(layout.buildDirectory.dir("resources/main/"))
+        val modDotJson = buildDir.resolve("resources/main/fabric.mod.json")
 
-        rename {
-            if (it == modDotJson.name) "fabric.mod.json" else it
+        inputs.property("modConfig", modConfig.toString())
+        outputs.file(modDotJson)
+
+        doFirst {
+            val prettyJson = Json { prettyPrint = true }
+
+            if (!modDotJson.exists()) {
+                modDotJson.parentFile.mkdirs()
+                modDotJson.createNewFile()
+            }
+
+            modDotJson.writeText(prettyJson.encodeToString(modConfig))
         }
     }
 
-    // TODO optimize this
-    jar {
-        dependsOn(modDotJson)
+    processResources {
+        dependsOn(modDotJsonTask)
     }
 }
