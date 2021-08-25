@@ -1,5 +1,7 @@
 # FabrikMC
 
+*Fabrik [[faˈbriːk]](https://cdn.duden.de/_media_/audio/ID4108073_10393000.mp3) (German for factory) is the place where fabrics and quilts are produced.*
+
 [Discord](https://discord.gg/CJDUVuJ)
 
 FabrikMC is an API for using FabricMC with Kotlin
