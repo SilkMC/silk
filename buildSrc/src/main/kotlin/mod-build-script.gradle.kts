@@ -1,4 +1,4 @@
-import BuildConstants.author
+import BuildConstants.authors
 import BuildConstants.fabricApiVersion
 import BuildConstants.fabricLanguageKotlinVersion
 import BuildConstants.fabricLoaderVersion
@@ -6,6 +6,10 @@ import BuildConstants.fabrikVersion
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.yarnMappingsVersion
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.nio.file.Files
 
 plugins {
     kotlin("jvm")
@@ -40,20 +44,54 @@ java {
     withJavadocJar()
 }
 
+@Serializable
+data class FabricModConfiguration(
+    val schemaVersion: Int,
+    val id: String,
+    val version: String,
+    val name: String,
+    val description: String,
+    val authors: List<String>,
+    val entrypoints: LinkedHashMap<String, List<String>> = linkedMapOf(),
+    val mixins: List<String> = emptyList(),
+    val depends: LinkedHashMap<String, String>,
+)
+
+val modName: String by extra
+val modEntrypoints: LinkedHashMap<String, List<String>>? by extra(null)
+val modMixinFiles: List<String>? by extra(null)
+val modDepends: LinkedHashMap<String, String>? by extra(null)
+
 tasks {
-    processResources {
-        val properties = linkedMapOf(
-            "id" to project.name,
-            "version" to project.version,
-            "description" to project.description,
-            "author" to author,
-            "minecraftversion" to "${majorMinecraftVersion}.x"
-        )
+    val modDotJson = register<Copy>("modDotJson") {
+        val modDotJson = Files.createTempFile("fabric.mod", ".json").toFile()
 
-        inputs.properties(properties)
+        modDotJson.writeText(Json { prettyPrint = true }.encodeToString(FabricModConfiguration(
+            1,
+            project.name,
+            project.version.toString(),
+            modName,
+            project.description.toString(),
+            authors,
+            modEntrypoints ?: linkedMapOf(),
+            modMixinFiles ?: emptyList(),
+            linkedMapOf(
+                "fabric" to "*",
+                "fabric-language-kotlin" to "*",
+                "minecraft" to "${majorMinecraftVersion}.x"
+            ).apply { putAll(modDepends ?: emptyMap()) }
+        )))
 
-        filesMatching("fabric.mod.json") {
-            expand(properties)
+        from(modDotJson)
+        into(layout.buildDirectory.dir("resources/main/"))
+
+        rename {
+            if (it == modDotJson.name) "fabric.mod.json" else it
         }
+    }
+
+    // TODO optimize this
+    jar {
+        dependsOn(modDotJson)
     }
 }

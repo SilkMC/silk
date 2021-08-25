@@ -6,11 +6,13 @@ object BuildConstants {
     val projectState = if (isSnapshot) "beta" else "release"
     val projectStateType = if (isSnapshot) VersionType.BETA else VersionType.RELEASE
 
+    const val projectTitle = "FabrikMC"
+
     const val curseforgeId = "447425"
     const val modrinthId = "aTaCgKLW"
-    const val githubRepo = "bluefireoly/fabrikmc"
+    const val githubRepo = "jakobkmar/fabrikmc"
 
-    const val author = "bluefireoly"
+    val authors = listOf("jakobkmar", "_F0X")
 
     const val majorMinecraftVersion = "1.17"
 

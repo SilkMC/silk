@@ -1,3 +1,5 @@
+import BuildConstants.projectTitle
+
 plugins {
     `java-version-script`
     `mod-build-script`
@@ -11,3 +13,5 @@ dependencies {
     include(project(":${rootProject.name}-nbt"))
     include(project(":${rootProject.name}-persistence"))
 }
+
+val modName by extra("$projectTitle (All modules)")
