@@ -17,6 +17,11 @@ tasks {
                     ))
                     remoteLineSuffix.set("#L")
                 }
+
+                perPackageOption {
+                    matchingRegex.set(""".*\.internal.*""")
+                    suppress.set(true)
+                }
             }
         }
     }
