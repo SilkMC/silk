@@ -18,9 +18,11 @@ tasks {
                     remoteLineSuffix.set("#L")
                 }
 
-                perPackageOption {
-                    matchingRegex.set(""".*\.internal.*""")
-                    suppress.set(true)
+                listOf("internal", "mixin").forEach {
+                    perPackageOption {
+                        matchingRegex.set(""".*\.$it.*""")
+                        suppress.set(true)
+                    }
                 }
             }
         }
