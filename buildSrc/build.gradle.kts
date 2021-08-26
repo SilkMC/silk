@@ -19,5 +19,7 @@ dependencies {
     implementation("gradle.plugin.com.matthewprenger:CurseGradle:1.4.0")
     implementation("gradle.plugin.com.modrinth.minotaur:Minotaur:1.2.1")
 
+    implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.5.0")
+
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 }

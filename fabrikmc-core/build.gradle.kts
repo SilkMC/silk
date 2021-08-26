@@ -5,6 +5,7 @@ plugins {
     `mod-build-script`
     `mod-publish-script`
     `kotest-script`
+    `dokka-script`
     kotlin("plugin.serialization")
 }
 
