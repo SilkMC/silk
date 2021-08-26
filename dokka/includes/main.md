@@ -9,7 +9,7 @@ fabrics and quilts are produced.*
 
 Click on each module below to get started with it and to see how to use it in your build environment.
 
-### Prove it at runtime
+### Provide it at runtime
 
 If your use FabrikMC, it must be available at runtime.
 
