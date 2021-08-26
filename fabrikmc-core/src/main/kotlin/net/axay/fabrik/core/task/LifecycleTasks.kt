@@ -7,9 +7,9 @@ import net.axay.fabrik.core.Fabrik
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.MinecraftServer
 
-object LifecycleTasksManager {
-    @PublishedApi
-    internal val uninitializedServerDeferred = CompletableDeferred<Boolean>()
+@PublishedApi
+internal object LifecycleTasksManager {
+    val uninitializedServerDeferred = CompletableDeferred<Boolean>()
 
     fun init() {
         ServerLifecycleEvents.SERVER_STARTING.register {

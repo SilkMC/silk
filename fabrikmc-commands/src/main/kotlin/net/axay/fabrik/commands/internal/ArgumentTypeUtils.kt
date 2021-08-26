@@ -1,4 +1,4 @@
-package net.axay.fabrik.commands
+package net.axay.fabrik.commands.internal
 
 import com.mojang.brigadier.arguments.*
 import net.minecraft.command.argument.*

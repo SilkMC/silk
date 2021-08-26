@@ -1,4 +1,4 @@
-package net.axay.fabrik.core.scoreboard.sideboard
+package net.axay.fabrik.core.sideboard
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.FlowCollector

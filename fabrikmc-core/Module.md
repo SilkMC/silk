@@ -5,6 +5,10 @@ mixins.
 
 Here you will find ItemStack builders, a Sideboard API, Position utilities and coroutine task functions.
 
+# Package net.axay.fabrik.core
+
+Contains the global `Fabrik` object
+
 # Package net.axay.fabrik.core.item
 
 ItemStack builder and ItemStack modification extensions

@@ -1,7 +1,8 @@
 package net.axay.fabrik.persistence
 
 /**
- * This class provides a [PersistentCompound].
+ * This class provides a [PersistentCompound]. Providers are classes like
+ * [net.minecraft.world.chunk.Chunk], [net.minecraft.entity.Entity] and more.
  *
  * @see compound
  */

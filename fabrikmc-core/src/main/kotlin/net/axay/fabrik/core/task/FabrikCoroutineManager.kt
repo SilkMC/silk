@@ -6,7 +6,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import net.axay.fabrik.core.logging.logInfo
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 
-object FabrikCoroutineManager {
+internal object FabrikCoroutineManager {
     fun init() {
         ServerLifecycleEvents.SERVER_STARTING.register {
             mcCoroutineDispatcher = it.asCoroutineDispatcher()

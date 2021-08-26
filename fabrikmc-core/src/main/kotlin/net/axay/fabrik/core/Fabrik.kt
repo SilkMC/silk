@@ -1,27 +1,14 @@
 package net.axay.fabrik.core
 
-import net.axay.fabrik.core.logging.logInfo
-import net.axay.fabrik.core.task.FabrikCoroutineManager
-import net.axay.fabrik.core.task.LifecycleTasksManager
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.MinecraftServer
 
 /**
- * Do not call this function, as it is the entry point of the Fabrik
- * mod itself.
+ * An object containing global values used by FabrikMC.
  */
-fun init() {
-    logInfo("Initializing Fabrik due to init call")
-
-    ServerLifecycleEvents.SERVER_STARTING.register {
-        Fabrik.currentServer = it
-        logInfo("Reached SERVER_STARTING state")
-    }
-
-    FabrikCoroutineManager.init()
-    LifecycleTasksManager.init()
-}
-
 object Fabrik {
+    /**
+     * The current [MinecraftServer] server instance.
+     */
     var currentServer: MinecraftServer? = null
+        internal set
 }

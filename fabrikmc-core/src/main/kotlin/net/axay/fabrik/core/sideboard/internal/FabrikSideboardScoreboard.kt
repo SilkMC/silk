@@ -1,4 +1,4 @@
-package net.axay.fabrik.core.scoreboard
+package net.axay.fabrik.core.sideboard.internal
 
 import net.axay.fabrik.core.packet.sendPacket
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
@@ -14,7 +14,7 @@ import net.minecraft.text.Text
 /**
  * A server side scoreboard which is only displayed to
  * a selected collection of players.
- * This implementation is used by the [net.axay.fabrik.core.scoreboard.sideboard.Sideboard]
+ * This implementation is used by the [net.axay.fabrik.core.sideboard.Sideboard]
  * api.
  *
  * The packet implementation of this class is not completed, thus
