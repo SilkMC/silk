@@ -6,6 +6,8 @@ custom and easy-to-use builder DSL.
 The GUI rerenders automatically if the state changes, it provides animations and "compounds" which are
 an easy-to-use abstraction for listing a lot of elements of the same type.
 
+${dependencyNotice}
+
 # Package net.axay.fabrik.igui
 
 Contains the GUI builder and all GUI implementation classes

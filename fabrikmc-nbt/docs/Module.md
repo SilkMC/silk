@@ -4,6 +4,8 @@ Provides NBT serialization and deserialization using kotlinx.serialization. This
 annotated with `@Serializable` to an `NbtElement`. Additionally, this module contains some NBT utilities, like simple
 conversion extensions.
 
+${dependencyNotice}
+
 ## Serialization and deserialization
 
 You can serialize any class annotated with `@Serializable` to an `NbtElement`. In the same way it is possible

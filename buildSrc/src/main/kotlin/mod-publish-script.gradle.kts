@@ -1,3 +1,4 @@
+import BuildConstants.authors
 import BuildConstants.fabrikVersion
 import BuildConstants.githubRepo
 import BuildConstants.isSnapshot
@@ -46,8 +47,10 @@ publishing {
                 description.set(project.description)
 
                 developers {
-                    developer {
-                        name.set("bluefireoly")
+                    authors.forEach {
+                        developer {
+                            name.set(it)
+                        }
                     }
                 }
 

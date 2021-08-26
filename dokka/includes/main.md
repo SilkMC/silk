@@ -14,5 +14,6 @@ Click on each module below to get started with it and to see how to use it in yo
 If you use FabrikMC, it must be available at runtime.
 
 You can declare a dependency on the FabrikMC releases on [Modrinth](https://modrinth.com/mod/fabrik/versions)
-or [Curseforge](https://www.curseforge.com/minecraft/mc-mods/fabrik/files). For users manually downloading your mods
-you should advise them to also download FabrikMC as well (just as you would do it with the Fabric API for example).
+or [Curseforge](https://www.curseforge.com/minecraft/mc-mods/fabrik/files). <br> For users manually downloading your mod
+you should advise them to download FabrikMC alongside your mod
+(just as you would do it with the Fabric API for example).

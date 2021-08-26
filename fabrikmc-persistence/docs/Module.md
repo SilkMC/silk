@@ -4,6 +4,8 @@ Allows you to persistently store any (serializable) data on Chunks, Entities (in
 
 If the component is currently loaded, the data is kept in memory as well for faster access.
 
+${dependencyNotice}
+
 ## Define a compound key
 
 A compound key is required to write and write values to a persistent compound. These read and write operations can then

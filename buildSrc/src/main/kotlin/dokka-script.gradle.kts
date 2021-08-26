@@ -1,4 +1,5 @@
 import BuildConstants.fabricApiVersion
+import BuildConstants.fabrikVersion
 import BuildConstants.yarnMappingsVersion
 import java.net.URL
 
@@ -7,16 +8,37 @@ plugins {
 }
 
 tasks {
+    val processDokkaMarkdown = register<Copy>("processDokkaMarkdown") {
+        from(layout.projectDirectory.dir("docs"))
+        into(layout.buildDirectory.dir("docs-markdown"))
+
+        val properties = linkedMapOf(
+            "dependencyNotice" to """
+                ### Dependency
+                ```kt
+                modImplementation("net.axay:${project.name}:$fabrikVersion")
+                ```
+            """.trimIndent()
+        )
+
+        inputs.properties(properties)
+        expand(properties)
+    }
+
     withType<org.jetbrains.dokka.gradle.DokkaTaskPartial> {
+        dependsOn(processDokkaMarkdown)
+
         dokkaSourceSets {
             configureEach {
-                includes.from("Module.md")
+                includes.from(buildDir.resolve("docs-markdown").listFiles()!!.map { "build/docs-markdown/${it.name}" }.toTypedArray())
 
                 sourceLink {
                     localDirectory.set(file("src/main/kotlin"))
-                    remoteUrl.set(URL(
-                        "https://github.com/jakobkmar/fabrikmc/tree/main/${project.name}/src/main/kotlin"
-                    ))
+                    remoteUrl.set(
+                        URL(
+                            "https://github.com/jakobkmar/fabrikmc/tree/main/${project.name}/src/main/kotlin"
+                        )
+                    )
                     remoteLineSuffix.set("#L")
                 }
 
