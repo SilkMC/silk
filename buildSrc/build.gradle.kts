@@ -15,7 +15,7 @@ repositories {
 dependencies {
     implementation(kotlin("gradle-plugin", kotlinVersion))
 
-    implementation("net.fabricmc", "fabric-loom", "0.8-SNAPSHOT")
+    implementation("net.fabricmc:fabric-loom:0.8-SNAPSHOT")
     implementation("gradle.plugin.com.matthewprenger:CurseGradle:1.4.0")
     implementation("gradle.plugin.com.modrinth.minotaur:Minotaur:1.2.1")
 

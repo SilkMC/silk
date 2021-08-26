@@ -15,7 +15,6 @@ pluginManagement {
     }
 }
 
-
 include("$projectName-all")
 
 include("$projectName-core")

@@ -11,7 +11,7 @@ Click on each module below to get started with it and to see how to use it in yo
 
 ### Provide it at runtime
 
-If your use FabrikMC, it must be available at runtime.
+If you use FabrikMC, it must be available at runtime.
 
 You can declare a dependency on the FabrikMC releases on [Modrinth](https://modrinth.com/mod/fabrik/versions)
 or [Curseforge](https://www.curseforge.com/minecraft/mc-mods/fabrik/files). For users manually downloading your mods

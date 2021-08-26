@@ -1,3 +1,5 @@
+import BuildConstants.fabricApiVersion
+import BuildConstants.yarnMappingsVersion
 import java.net.URL
 
 plugins {
@@ -23,6 +25,17 @@ tasks {
                         matchingRegex.set(""".*\.$it.*""")
                         suppress.set(true)
                     }
+                }
+
+                externalDocumentationLink {
+                    val yarnJavadocVersion = yarnMappingsVersion.removeSuffix(":v2")
+                    url.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/"))
+                    packageListUrl.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/element-list"))
+                }
+
+                externalDocumentationLink {
+                    url.set(URL("https://maven.fabricmc.net/docs/fabric-api-$fabricApiVersion/"))
+                    packageListUrl.set(URL("https://maven.fabricmc.net/docs/fabric-api-$fabricApiVersion/element-list"))
                 }
             }
         }
