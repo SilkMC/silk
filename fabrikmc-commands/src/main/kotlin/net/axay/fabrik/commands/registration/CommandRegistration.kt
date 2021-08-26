@@ -1,4 +1,4 @@
-package net.axay.fabrik.commands
+package net.axay.fabrik.commands.registration
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.fabricmc.api.EnvType

@@ -29,7 +29,7 @@ Conversion between different types of Locations, extensions for working with vec
 
 Simple extensions for sending packets
 
-# Package net.axay.fabrik.core.scoreboard.sideboard
+# Package net.axay.fabrik.core.sideboard
 
 A sideboard builder (displayed using scoreboards), supporting boards with changing content. The sideboard can be
 displayed to a selection of players.
