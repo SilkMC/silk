@@ -1,12 +1,19 @@
 # Module fabrikmc-igui
 
-The Inventory GUI (`igui` in short) provides a high level **server-side** GUI API. You build the GUI using a
-custom and easy-to-use builder DSL.
+The Inventory GUI (`igui` in short) provides a high level **server-side** GUI API. You build the GUI using a custom and
+easy-to-use builder DSL.
 
-The GUI rerenders automatically if the state changes, it provides animations and "compounds" which are
-an easy-to-use abstraction for listing a lot of elements of the same type.
+The GUI rerenders automatically if the state changes, it provides animations and "compounds" which are an easy-to-use
+abstraction for listing a lot of elements of the same type.
 
 ${dependencyNotice}
+
+## Using the igui builder
+
+The [net.axay.fabrik.igui.igui] function opens up a new GUI builder.
+
+Use the [net.axay.fabrik.igui.GuiBuilder.page] to add a new page to this GUI.
+See [net.axay.fabrik.igui.GuiBuilder.PageBuilder] for details on how to build a page.
 
 # Package net.axay.fabrik.igui
 
