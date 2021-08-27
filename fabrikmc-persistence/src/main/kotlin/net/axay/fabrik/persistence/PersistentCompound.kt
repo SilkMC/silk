@@ -55,6 +55,9 @@ abstract class PersistentCompound {
 
     /**
      * Removes the current value associated with the given [key].
+     *
+     * This function does not return the removed value, if you need that
+     * use [getAndRemove].
      */
     fun remove(key: CompoundKey<*>) {
         if (data == null) return
@@ -64,12 +67,20 @@ abstract class PersistentCompound {
     }
 
     /**
-     * Removes the current value associated with the given [key].
+     * Removes the current value associated with the given [key]. Additionally,
+     * this function returns the value that was removed, **if** one was removed.
+     * Otherwise, the return value will be null.
      *
-     * @see remove
+     * Note: Calling this function may result in deserialization of the value which
+     * was deleted from the internal [NbtCompound], if the removed value was not
+     * loaded into memory.
      */
-    operator fun minusAssign(key: CompoundKey<*>) =
-        remove(key)
+    inline fun <reified T : Any> getAndRemove(key: CompoundKey<T>): T? {
+        if (data == null) return null
+
+        return ((values.remove(key) as T?) ?: data!!.get(key.name)?.let { key.convertNbtElementToValue(it) })
+            .also { data!!.remove(key.name) }
+    }
 
     /**
      * Clears all persistent data from this compound.
@@ -81,6 +92,34 @@ abstract class PersistentCompound {
 
         values.clear()
         data = NbtCompound()
+    }
+
+    /**
+     * Removes the current value associated with the given [key].
+     *
+     * As this function is an operator function, it does not return the
+     * removed value.
+     *
+     * @see remove
+     */
+    inline operator fun <reified T : Any> minusAssign(key: CompoundKey<T>) {
+        remove(key)
+    }
+
+    /**
+     * Executes the [get] function. If the result of the [get] function is null
+     * the [defaultValue] will be evaluated and put into the compound.
+     *
+     * This function won't return null, it either returns the value in already present
+     * in the compound, or it will return the evaluated default value, after having
+     * stored it as well.
+     *
+     * @see get
+     */
+    inline fun <reified T : Any> getOrPut(key: CompoundKey<T>, defaultValue: () -> T): T {
+        if (data == null) return defaultValue()
+
+        return this[key] ?: defaultValue().also { this[key] = it }
     }
 
     @PublishedApi
@@ -105,7 +144,7 @@ object EmptyPersistentCompound : PersistentCompound() {
  * The [PersistentCompound] implementation used by all normal
  * [CompoundProvider]s.
  */
-class PersistentCompoundImpl : PersistentCompound() {
+internal class PersistentCompoundImpl : PersistentCompound() {
     companion object {
         private const val CUSTOM_DATA_KEY = "fabrikmcData"
     }
