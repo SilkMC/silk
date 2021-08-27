@@ -21,7 +21,7 @@ public class ChunkSerializerMixin {
                                     Chunk chunk,
                                     CallbackInfoReturnable<NbtCompound> cir) {
         ((CompoundProvider) chunk).getCompound()
-                .putInCompound$fabrikmc_persistence(cir.getReturnValue().getCompound("Level"));
+                .putInCompound(cir.getReturnValue().getCompound("Level"));
     }
 
     @Inject(method = "deserialize", at = @At("RETURN"))
@@ -32,6 +32,6 @@ public class ChunkSerializerMixin {
                                       NbtCompound nbt,
                                       CallbackInfoReturnable<ProtoChunk> cir) {
         ((CompoundProvider) cir.getReturnValue()).getCompound()
-                .loadFromCompound$fabrikmc_persistence(nbt.getCompound("Level"));
+                .loadFromCompound(nbt.getCompound("Level"));
     }
 }

@@ -20,7 +20,7 @@ public class EntityMixin implements CompoundProvider {
 
     @Inject(method = "writeNbt", at = @At("RETURN"))
     private void onWriteNbt(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir) {
-        compound.putInCompound$fabrikmc_persistence(cir.getReturnValue());
+        compound.putInCompound(cir.getReturnValue());
     }
 
     @Inject(
@@ -32,7 +32,7 @@ public class EntityMixin implements CompoundProvider {
             )
     )
     private void onReadNbt(NbtCompound nbt, CallbackInfo ci) {
-        compound.loadFromCompound$fabrikmc_persistence(nbt);
+        compound.loadFromCompound(nbt);
     }
 
     @NotNull

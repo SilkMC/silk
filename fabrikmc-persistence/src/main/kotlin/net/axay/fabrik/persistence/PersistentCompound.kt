@@ -83,7 +83,10 @@ abstract class PersistentCompound {
         data = NbtCompound()
     }
 
+    @PublishedApi
     internal abstract fun loadFromCompound(nbtCompound: NbtCompound)
+
+    @PublishedApi
     internal abstract fun putInCompound(nbtCompound: NbtCompound)
 }
 
