@@ -13,7 +13,8 @@ abstract class PersistentCompound {
     @PublishedApi
     internal abstract var data: NbtCompound?
 
-    protected val compoundKeysWithValue = HashSet<CompoundKey<*>>()
+    @PublishedApi
+    internal val values = HashMap<CompoundKey<*>, Any>()
 
     /**
      * Puts the given value into the persistent storage.
@@ -26,11 +27,10 @@ abstract class PersistentCompound {
      * You can use these to skip serialization and deserialization. It is not
      * as convenient to work with them, but they are faster.
      */
-    operator fun <T> set(key: CompoundKey<T>, value: T) {
+    operator fun <T : Any> set(key: CompoundKey<T>, value: T) {
         if (data == null) return
 
-        key.setValue(this, value)
-        compoundKeysWithValue += key
+        values[key] = value
     }
 
     /**
@@ -44,23 +44,28 @@ abstract class PersistentCompound {
      * Note: this function will only return null if the value is not present, it
      * will still throw an exception if cast or conversion to the given type [T] failed
      */
-    operator fun <T> get(key: CompoundKey<T>): T? {
+    inline operator fun <reified T : Any> get(key: CompoundKey<T>): T? {
         if (data == null) return null
 
-        return key.getValue(this) {
-            compoundKeysWithValue += key
-        }
+        return (values[key] as T?)
+            ?: data!!.get(key.name)
+                ?.let { key.convertNbtElementToValue(it) }
+                ?.also { values[key] = it }
     }
 
     /**
      * Removes the current value associated with the given [key].
      */
     fun remove(key: CompoundKey<*>) {
-        compoundKeysWithValue -= key
-        key.removeValue(this)
+        if (data == null) return
+
+        data!!.remove(key.name)
+        values -= key
     }
 
     /**
+     * Removes the current value associated with the given [key].
+     *
      * @see remove
      */
     operator fun minusAssign(key: CompoundKey<*>) =
@@ -74,9 +79,7 @@ abstract class PersistentCompound {
     fun clear() {
         if (data == null) return
 
-        compoundKeysWithValue.forEach { it.removeValue(this) }
-        compoundKeysWithValue.clear()
-
+        values.clear()
         data = NbtCompound()
     }
 
@@ -111,16 +114,12 @@ class PersistentCompoundImpl : PersistentCompound() {
     }
 
     override fun putInCompound(nbtCompound: NbtCompound) {
-        for (key in compoundKeysWithValue) {
-            data!!.put(key.name, key.getNbtElement(this))
+        for ((untypedKey, value) in values) {
+            @Suppress("UNCHECKED_CAST")
+            val typedKey = untypedKey as CompoundKey<Any>
 
-            // ensure that both the key and this persistent compound
-            // are garbage collectible, as this function could be the
-            // last one called on this instance
-            key.removeValue(this)
+            data!!.put(typedKey.name, typedKey.convertValueToNbtElement(value))
         }
-        // we removed all values, therefore clear this set
-        compoundKeysWithValue.clear()
 
         if (!data!!.isEmpty) {
             nbtCompound.put(CUSTOM_DATA_KEY, data)

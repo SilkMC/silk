@@ -14,7 +14,7 @@ import kotlin.reflect.full.isSubclassOf
  *
  * @param id the unique identifier for this key, this should contain your mod id
  */
-inline fun <reified T> compoundKey(id: Identifier) =
+inline fun <reified T : Any> compoundKey(id: Identifier) =
     object : CompoundKey<T>(id) {
         init {
             if (T::class.isSubclassOf(NbtElement::class))
@@ -54,7 +54,7 @@ inline fun <reified T : NbtElement> nbtElementCompoundKey(id: Identifier) =
  *
  * @param id the unique identifier for this key, this should contain your mod id
  */
-inline fun <reified T, reified NbtType : NbtElement> customCompoundKey(
+inline fun <reified T : Any, reified NbtType : NbtElement> customCompoundKey(
     id: Identifier,
     crossinline valueToNbt: (value: T) -> NbtType,
     crossinline nbtToValue: (nbtElement: NbtType) -> T
@@ -74,39 +74,17 @@ inline fun <reified T, reified NbtType : NbtElement> customCompoundKey(
  * @param id the unique identifier for this key, this should contain your mod id
  */
 @JvmName("customCompoundKeyNbtElement")
-inline fun <reified T> customCompoundKey(
+inline fun <reified T : Any> customCompoundKey(
     id: Identifier,
     crossinline convertValueToNbtElement: (value: T) -> NbtElement,
     crossinline convertNbtElementToValue: (nbtElement: NbtElement) -> T
 ) = customCompoundKey<T, NbtElement>(id, convertValueToNbtElement, convertNbtElementToValue)
 
-abstract class CompoundKey<T>(val name: String) {
+abstract class CompoundKey<T : Any>(val name: String) {
     constructor(id: Identifier) : this(id.toString())
 
-    private val values = HashMap<PersistentCompound, T>()
+    internal abstract fun convertValueToNbtElement(value: T): NbtElement
 
-    internal fun setValue(compound: PersistentCompound, value: T) {
-        values[compound] = value
-    }
-
-    internal fun removeValue(compound: PersistentCompound) {
-        values -= compound
-    }
-
-    internal fun getNbtElement(compound: PersistentCompound): NbtElement? {
-        return values[compound]?.let { convertValueToNbtElement(it) }
-    }
-
-    internal inline fun getValue(compound: PersistentCompound, ifConverted: () -> Unit = {}): T? {
-        return values[compound] ?: compound.data?.get(name)
-            ?.let { convertNbtElementToValue(it) }
-            ?.also {
-                setValue(compound, it)
-                ifConverted()
-            }
-    }
-
-    protected abstract fun convertValueToNbtElement(value: T): NbtElement
-
-    protected abstract fun convertNbtElementToValue(nbtElement: NbtElement): T
+    @PublishedApi
+    internal abstract fun convertNbtElementToValue(nbtElement: NbtElement): T
 }
