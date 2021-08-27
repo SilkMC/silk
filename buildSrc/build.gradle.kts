@@ -1,5 +1,6 @@
 apply(from = "${rootDir.parentFile}/shared.properties.gradle.kts")
 val kotlinVersion: String by extra
+val dokkaVersion: String by extra
 
 plugins {
     `kotlin-dsl`
@@ -19,7 +20,8 @@ dependencies {
     implementation("gradle.plugin.com.matthewprenger:CurseGradle:1.4.0")
     implementation("gradle.plugin.com.modrinth.minotaur:Minotaur:1.2.1")
 
-    implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.5.0")
+    implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+    implementation("org.jetbrains.dokka:versioning-plugin:$dokkaVersion")
 }

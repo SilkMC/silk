@@ -1,10 +1,10 @@
 import com.modrinth.minotaur.request.VersionType
+import org.gradle.api.Project
 
 object BuildConstants {
-    const val fabrikVersion = "1.2.1"
-    val isSnapshot = fabrikVersion.endsWith("-SNAPSHOT")
-    val projectState = if (isSnapshot) "beta" else "release"
-    val projectStateType = if (isSnapshot) VersionType.BETA else VersionType.RELEASE
+    val Project.isSnapshot get() = version.toString().endsWith("-SNAPSHOT")
+    val Project.projectState get() = if (isSnapshot) "beta" else "release"
+    val Project.projectStateType get() = if (isSnapshot) VersionType.BETA else VersionType.RELEASE
 
     const val projectTitle = "FabrikMC"
 

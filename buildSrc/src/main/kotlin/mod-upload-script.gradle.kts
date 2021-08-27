@@ -1,5 +1,4 @@
 import BuildConstants.curseforgeId
-import BuildConstants.fabrikVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.modrinthId
 import BuildConstants.projectState
@@ -35,7 +34,7 @@ tasks {
         token = findProperty("modrinth.token").toString()
 
         projectId = modrinthId
-        versionNumber = fabrikVersion
+        versionNumber = rootProject.version.toString()
         addGameVersion(minecraftVersion)
         addLoader("fabric")
         versionType = projectStateType

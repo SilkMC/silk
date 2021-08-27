@@ -1,5 +1,4 @@
 import BuildConstants.authors
-import BuildConstants.fabrikVersion
 import BuildConstants.githubRepo
 import BuildConstants.isSnapshot
 
@@ -40,7 +39,7 @@ publishing {
 
             this.groupId = project.group.toString()
             this.artifactId = project.name
-            this.version = fabrikVersion
+            this.version = rootProject.version.toString()
 
             pom {
                 name.set(project.name)

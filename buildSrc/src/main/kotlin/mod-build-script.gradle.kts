@@ -2,7 +2,6 @@ import BuildConstants.authors
 import BuildConstants.fabricApiVersion
 import BuildConstants.fabricLanguageKotlinVersion
 import BuildConstants.fabricLoaderVersion
-import BuildConstants.fabrikVersion
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.yarnMappingsVersion
@@ -17,7 +16,7 @@ plugins {
 }
 
 group = "net.axay"
-version = fabrikVersion
+version = rootProject.version
 
 description = "FabrikMC is an API for using FabricMC with Kotlin."
 

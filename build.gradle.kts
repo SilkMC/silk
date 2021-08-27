@@ -1,3 +1,8 @@
+import org.jetbrains.dokka.versioning.VersioningConfiguration
+import org.jetbrains.dokka.versioning.VersioningPlugin
+
+version = "1.2.2"
+
 plugins {
     id("org.jetbrains.dokka")
 }
@@ -18,7 +23,12 @@ tasks {
 }
 
 tasks.dokkaHtmlMultiModule {
-    outputDirectory.set(rootDir.resolve("dokka/build"))
+    outputDirectory.set(projectDir.resolve("docs"))
 
     includes.from("dokka/includes/main.md")
+
+    pluginConfiguration<VersioningPlugin, VersioningConfiguration> {
+        version = project.version.toString()
+        olderVersionsDir = projectDir.resolve("dokka/old-builds")
+    }
 }

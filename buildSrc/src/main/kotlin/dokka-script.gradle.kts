@@ -1,5 +1,4 @@
 import BuildConstants.fabricApiVersion
-import BuildConstants.fabrikVersion
 import BuildConstants.yarnMappingsVersion
 import java.net.URL
 
@@ -16,7 +15,7 @@ tasks {
             "dependencyNotice" to """
                 ### Dependency
                 ```kt
-                modImplementation("net.axay:${project.name}:$fabrikVersion")
+                modImplementation("net.axay:${project.name}:${rootProject.version}")
                 ```
             """.trimIndent()
         )
