@@ -51,5 +51,14 @@ val persistenceTestCommand = command("persistence") {
                 }
             }
         }
+
+        literal("remove") {
+            simpleExecutes {
+                source.player.persistentCompound.let {
+                    it -= simpleIntKey
+                    it -= personKey
+                }
+            }
+        }
     }
 }
