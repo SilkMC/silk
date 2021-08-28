@@ -7,6 +7,7 @@ import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
 import com.modrinth.minotaur.TaskModrinthUpload
+import com.modrinth.minotaur.request.Dependency
 
 plugins {
     kotlin("jvm")
@@ -43,6 +44,9 @@ tasks {
         fabrikModules.forEach {
             addFile(it.tasks.named("remapJar").get())
         }
+
+        addDependency("gjN9CB30", Dependency.DependencyType.REQUIRED)
+        addDependency("1qsZV7U7", Dependency.DependencyType.REQUIRED)
     }
 
     named("curseforge") {
