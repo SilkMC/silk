@@ -92,6 +92,11 @@ internal class FabrikSideboardScoreboard(
         players.sendPacket(TeamS2CPacket.changePlayerTeam(team, playerName, TeamS2CPacket.Operation.REMOVE))
     }
 
+    override fun updateScoreboardTeamAndPlayers(team: Team) {
+        super.updateScoreboardTeamAndPlayers(team)
+        players.sendPacket(TeamS2CPacket.updateTeam(team, true))
+    }
+
     override fun updateScoreboardTeam(team: Team) {
         super.updateScoreboardTeam(team)
         players.sendPacket(TeamS2CPacket.updateTeam(team, false))

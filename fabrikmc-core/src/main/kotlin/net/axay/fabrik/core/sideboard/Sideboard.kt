@@ -1,5 +1,6 @@
 package net.axay.fabrik.core.sideboard
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import net.axay.fabrik.core.Fabrik
@@ -23,6 +24,8 @@ class Sideboard(
 ) {
     private val scoreboardDeferred = initWithServerAsync { FabrikSideboardScoreboard(name, displayName) }
 
+    private val initLock = CompletableDeferred<Boolean>()
+
     init {
         fabrikCoroutineScope.launch {
             val scoreboard = scoreboardDeferred.await()
@@ -38,11 +41,16 @@ class Sideboard(
                     }
                 }
             }
+
+            initLock.complete(true)
         }
     }
 
-    internal fun displayToPlayer(player: ServerPlayerEntity) = fabrikCoroutineScope.launch {
+    internal fun displayToPlayer(player: ServerPlayerEntity) {
         if (Fabrik.currentServer?.isRunning == true)
-            scoreboardDeferred.await().displayToPlayer(player)
+            fabrikCoroutineScope.launch {
+                initLock.await()
+                scoreboardDeferred.await().displayToPlayer(player)
+            }
     }
 }
