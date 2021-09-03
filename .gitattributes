@@ -1,3 +1,6 @@
 # Auto detect text files and perform LF normalization
 *       text=auto
 *.bat   eol=crlf
+
+# Do not count docs for repository language
+dokka/old-builds/* linguist-vendored
