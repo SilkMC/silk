@@ -3,4 +3,4 @@
 *.bat   eol=crlf
 
 # Do not count docs for repository language
-dokka/old-builds/* linguist-vendored
+dokka/old-builds/** linguist-vendored
