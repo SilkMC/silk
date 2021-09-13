@@ -20,7 +20,7 @@ import net.minecraft.server.command.ServerCommandSource
 inline fun command(
     name: String,
     register: Boolean = true,
-    builder: LiteralArgumentBuilder<ServerCommandSource>.() -> Unit
+    builder: LiteralArgumentBuilder<ServerCommandSource>.() -> Unit = {}
 ): LiteralArgumentBuilder<ServerCommandSource> =
     CommandManager.literal(name).apply(builder).apply {
         if (register)
@@ -39,7 +39,7 @@ inline fun command(
 inline fun clientCommand(
     name: String,
     register: Boolean = false,
-    builder: LiteralArgumentBuilder<FabricClientCommandSource>.() -> Unit
+    builder: LiteralArgumentBuilder<FabricClientCommandSource>.() -> Unit = {}
 ): LiteralArgumentBuilder<FabricClientCommandSource> =
     ClientCommandManager.literal(name).apply(builder).apply {
         if (register) register()
