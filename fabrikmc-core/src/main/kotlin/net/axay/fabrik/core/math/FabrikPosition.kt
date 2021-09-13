@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 @Serializable
 data class FabrikPosition(
-    val x: Double, val y: Double, val z: Double,
+    val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0,
     @Serializable(with = IdentifierSerializer::class) val worldIdentifier: Identifier? = null,
     val pitch: Float = 0f, val yaw: Float = 0f,
 ) {
