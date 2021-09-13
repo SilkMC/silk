@@ -10,6 +10,7 @@ net.axay.fabrik.core.item
 net.axay.fabrik.core.kotlin
 net.axay.fabrik.core.logging
 net.axay.fabrik.core.math
+net.axay.fabrik.core.math.vector
 net.axay.fabrik.core.packet
 net.axay.fabrik.core.serialization
 net.axay.fabrik.core.serialization.serializers
