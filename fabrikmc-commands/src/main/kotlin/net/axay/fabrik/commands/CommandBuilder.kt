@@ -26,6 +26,17 @@ import net.minecraft.command.CommandSource
 import net.minecraft.server.command.ServerCommandSource
 import java.util.concurrent.CompletableFuture
 
+/**
+ * An argument resolver extracts the argument value out of the current [CommandContext].
+ */
+typealias ArgumentResolver<S, T> = CommandContext<S>.() -> T
+
+/**
+ * The simple argument builder is a variant of an [ArgumentCommandBuilder] lambda function
+ * that supports [ArgumentResolver] (passed as `it`).
+ */
+typealias SimpleArgumentBuilder<Source, T> = ArgumentCommandBuilder<Source, T>.(argument: ArgumentResolver<Source, T>) -> Unit
+
 abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<Source, Builder>> {
     @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *>>()
@@ -49,19 +60,14 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * }
      * ```
      *
-     * Note, the implicit return value of this lambda function will be used for the exit
-     * code of the command. Possible types are [Boolean] and [Int], other types will always
-     * result in an exit code of 1.
+     * Note that this function will always return 1 as the exit code.
      *
      * @see com.mojang.brigadier.builder.ArgumentBuilder.executes
      */
-    inline infix fun runs(crossinline block: CommandContext<Source>.() -> Any): CommandBuilder<Source, Builder> {
+    inline infix fun runs(crossinline block: CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
         command = Command {
-            when (val result = block(it)) {
-                is Int -> result
-                is Boolean -> if (result) 1 else -1
-                else -> 1
-            }
+            block(it)
+            1
         }
         return this
     }
@@ -69,9 +75,6 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
     /**
      * Does the same as [runs] (see its docs for more information), but launches the command
      * logic in an async coroutine.
-     *
-     * Note: Due to the async nature of this function, it always has an exit code of 1 (technically this
-     * command immediately returns after launching the async coroutine).
      *
      * @see runs
      */
@@ -123,8 +126,10 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * `IdentifierArgumentType.identifier()`. You can also pass lambda, as [ArgumentType] is a functional
      * interface. For simple types, consider using the `inline reified` version of this function instead.
      */
-    inline fun <T> argument(name: String, type: ArgumentType<T>, builder: ArgumentCommandBuilder<Source, T>.() -> Unit = {}) =
-        ArgumentCommandBuilder<Source, T>(name, type).apply(builder).also { children += it }
+    inline fun <reified T> argument(name: String, type: ArgumentType<T>, builder: SimpleArgumentBuilder<Source, T> = {}) =
+        ArgumentCommandBuilder<Source, T>(name, type)
+            .apply { builder { getArgument(name, T::class.java) } }
+            .also { children += it }
 
     /**
      * Adds a new argument to this command. This variant of the argument function you to specifiy the
@@ -135,8 +140,10 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * @param parser gives you a [StringReader], which allows you to parse the input of the user - you should return a
      * value of the given type [T], which will be the argument value
      */
-    inline fun <T> argument(name: String, crossinline parser: (StringReader) -> T, builder: ArgumentCommandBuilder<Source, T>.() -> Unit = {}) =
-        ArgumentCommandBuilder<Source, T>(name) { parser(it) }.apply(builder).also { children += it }
+    inline fun <reified T> argument(name: String, crossinline parser: (StringReader) -> T, builder: SimpleArgumentBuilder<Source, T> = {}) =
+        ArgumentCommandBuilder<Source, T>(name) { parser(it) }
+            .apply { builder { getArgument(name, T::class.java) } }
+            .also { children += it }
 
     /**
      * Adds a new argument to this command. The [ArgumentType] will be resolved using the reified
@@ -146,8 +153,10 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * @param name the name of the argument - This will be displayed to the player, if there is enough room for the
      * tooltip.
      */
-    inline fun <reified T> argument(name: String, builder: ArgumentCommandBuilder<Source, T>.() -> Unit = {}) =
-        ArgumentCommandBuilder<Source, T>(name, ArgumentTypeUtils.fromReifiedType()).apply(builder).also { children += it }
+    inline fun <reified T> argument(name: String, builder: SimpleArgumentBuilder<Source, T> = {}) =
+        ArgumentCommandBuilder<Source, T>(name, ArgumentTypeUtils.fromReifiedType())
+            .apply { builder { getArgument(name, T::class.java) } }
+            .also { children += it }
 
     protected abstract fun createBrigardierBuilder(): Builder
 
