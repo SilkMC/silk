@@ -15,15 +15,19 @@ command("mycommand") {
 }
 ```
 
+You can see all command builder function here: [net.axay.fabrik.commands]
+
+### Clientside
+
 For a command which should be handled by the client, use the `clientCommand` function instead.
 
 ## Registering the command
 
-This command will be registered automatically if it is initialized at the correct moment (during initialization of your
-mod).
+Commands created using the `command` builder function will be registered automatically if called during initialization of your
+mod (only if `register` is set to true).
 
 If you need to register it manually, call the `setupRegistrationCallback()` (server-side) or `register()` (client-side)
-functions by yourself.
+function by yourself.
 
 # Package net.axay.fabrik.commands
 
