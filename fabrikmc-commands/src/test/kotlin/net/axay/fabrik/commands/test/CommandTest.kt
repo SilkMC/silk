@@ -3,12 +3,13 @@ package net.axay.fabrik.commands.test
 import com.mojang.brigadier.tree.ArgumentCommandNode
 import com.mojang.brigadier.tree.CommandNode
 import io.kotest.core.spec.style.FunSpec
-import net.axay.fabrik.commands.*
+import io.kotest.matchers.shouldBe
+import net.axay.fabrik.commands.command
 import net.minecraft.command.CommandSource
 
 class CommandTest : FunSpec({
-    fun <S : CommandSource> printCommand(commandNode: CommandNode<S>, depth: Int = 0) {
-        fun printWithDepth(message: Any) = println(" ".repeat(depth * 2) + message)
+    fun <S : CommandSource> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
+        fun printWithDepth(message: Any) = println((" ".repeat(depth * 2) + message).also { stringBuilder.appendLine(it) })
 
         printWithDepth("-> ${commandNode.name}")
         commandNode.command?.let { printWithDepth(" |- has executor") }
@@ -18,8 +19,10 @@ class CommandTest : FunSpec({
         }
 
         commandNode.children.forEach {
-            printCommand(it, depth + 1)
+            printCommand(it, depth + 1, stringBuilder)
         }
+
+        return stringBuilder.toString().trim()
     }
 
     fun doNothing() = Unit
@@ -31,7 +34,10 @@ class CommandTest : FunSpec({
                     val command = command("testcommand") {
                         runs { doNothing() }
                     }
-                    printCommand(command.build())
+                    printCommand(command.build()) shouldBe """
+                        -> testcommand
+                         |- has executor
+                    """.trimIndent()
                 }
 
                 test("command with subcommands") {
@@ -43,7 +49,13 @@ class CommandTest : FunSpec({
                             runs { doNothing() }
                         }
                     }
-                    printCommand(command.build())
+                    printCommand(command.build()) shouldBe """
+                        -> testcommand
+                          -> subcommandone
+                           |- has executor
+                          -> subcommandtwo
+                           |- has executor
+                    """.trimIndent()
                 }
             }
 
@@ -61,7 +73,17 @@ class CommandTest : FunSpec({
                         runs { doNothing() }
                     }
                 }
-                printCommand(command.build())
+                printCommand(command.build()) shouldBe """
+                    -> testcommand
+                      -> subcommandone
+                       |- has executor
+                        -> argumentone
+                         |- has executor
+                         |- argument type of StringArgumentType
+                         |- has suggestions
+                      -> subcommandtwo
+                       |- has executor
+                """.trimIndent()
             }
         }
 
@@ -70,7 +92,13 @@ class CommandTest : FunSpec({
                 literal("subcommandone") runs { doNothing() }
                 literal("subcommandtwo") runs { doNothing() }
             }
-            printCommand(command.build())
+            printCommand(command.build()) shouldBe """
+                -> testcommand
+                  -> subcommandone
+                   |- has executor
+                  -> subcommandtwo
+                   |- has executor
+            """.trimIndent()
         }
     }
 })
