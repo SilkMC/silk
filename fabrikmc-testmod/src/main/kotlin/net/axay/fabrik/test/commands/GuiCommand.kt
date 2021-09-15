@@ -11,10 +11,10 @@ private val guis = mapOf(
 
 val guiCommand = command("gui", true) {
     literal("open") {
-        argument<String>("guiname") {
-            simpleSuggests { guis.keys }
-            simpleExecutes {
-                val gui = guis[resolveArgument()]
+        argument<String>("guiname") { guiname ->
+            suggestList { guis.keys }
+            runs {
+                val gui = guis[guiname()]
                 if (gui != null)
                     source.player.openGui(gui.invoke(), 1)
                 else source.sendError("This GUI does not exist!".literal)
