@@ -11,7 +11,7 @@ class GuiFreeSlot(
 
     override fun shouldCancel(clickEvent: GuiClickEvent) = false
 
-    override fun onClick(clickEvent: GuiClickEvent) {
+    override suspend fun onClick(clickEvent: GuiClickEvent) {
         onClick?.invoke(clickEvent)
     }
 }

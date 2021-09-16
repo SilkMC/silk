@@ -9,7 +9,7 @@ class GuiCompound<E>(
     val slots: GuiSlotCompound.SlotRange.Rectangle,
     val content: GuiList<E, List<E>>,
     private val iconGenerator: (E) -> ItemStack,
-    private val onClick: ((event: GuiClickEvent, element: E) -> Unit)?
+    private val onClick: (suspend (event: GuiClickEvent, element: E) -> Unit)?
 ) : GuiUseable() {
     private var slotIndexes = slots.withDimensions(guiType.dimensions)
         .mapNotNull { it.slotIndexIn(guiType.dimensions) }
@@ -64,7 +64,7 @@ class GuiCompound<E>(
     internal fun getItemStack(slotIndex: Int): ItemStack = displayedContent.getOrNull(slotIndexes.indexOf(slotIndex))
         ?.let { iconGenerator.invoke(it) } ?: ItemStack.EMPTY
 
-    internal fun onClickElement(event: GuiClickEvent) {
+    internal suspend fun onClickElement(event: GuiClickEvent) {
         val element = displayedContent.getOrNull(slotIndexes.indexOf(event.slotIndex)) ?: return
         onClick?.invoke(event, element)
     }

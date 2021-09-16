@@ -4,6 +4,6 @@ import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.events.GuiCloseEvent
 
 class GuiEventHandler(
-    val onClick: ((GuiClickEvent) -> Unit)?,
-    val onClose: ((GuiCloseEvent) -> Unit)?,
+    val onClick: (suspend (GuiClickEvent) -> Unit)?,
+    val onClose: (suspend (GuiCloseEvent) -> Unit)?,
 )

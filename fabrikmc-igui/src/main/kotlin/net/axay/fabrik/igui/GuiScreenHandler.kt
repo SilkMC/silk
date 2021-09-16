@@ -1,5 +1,7 @@
 package net.axay.fabrik.igui
 
+import kotlinx.coroutines.launch
+import net.axay.fabrik.core.task.mcCoroutineScope
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.events.GuiCloseEvent
 import net.axay.fabrik.igui.mixin.ServerPlayerEntityAccessor
@@ -74,8 +76,10 @@ class GuiScreenHandler(
 
             shouldCancel = element.shouldCancel(event)
 
-            element.onClick(event)
-            gui.eventHandler.onClick?.invoke(event)
+            mcCoroutineScope.launch {
+                element.onClick(event)
+                gui.eventHandler.onClick?.invoke(event)
+            }
         }
 
         if (!shouldCancel)
@@ -87,7 +91,9 @@ class GuiScreenHandler(
 
     override fun close(player: PlayerEntity) {
         super.close(player)
-        gui.eventHandler.onClose?.invoke(GuiCloseEvent(gui, player))
+        mcCoroutineScope.launch {
+            gui.eventHandler.onClose?.invoke(GuiCloseEvent(gui, player))
+        }
     }
 
     override fun canInsertIntoSlot(slot: Slot): Boolean {

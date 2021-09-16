@@ -12,7 +12,7 @@ open class GuiPlaceholder(
 
     override fun shouldCancel(clickEvent: GuiClickEvent) = true
 
-    override fun onClick(clickEvent: GuiClickEvent) { }
+    override suspend fun onClick(clickEvent: GuiClickEvent) { }
 
     override fun startUsing(gui: Gui) {
         icon.startUsing(gui)

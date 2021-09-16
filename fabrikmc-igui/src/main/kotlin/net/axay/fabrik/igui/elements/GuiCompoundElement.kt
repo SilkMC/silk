@@ -12,7 +12,7 @@ class GuiCompoundElement(
 
     override fun shouldCancel(clickEvent: GuiClickEvent) = true
 
-    override fun onClick(clickEvent: GuiClickEvent) = compound.onClickElement(clickEvent)
+    override suspend fun onClick(clickEvent: GuiClickEvent) = compound.onClickElement(clickEvent)
 
     override fun startUsing(gui: Gui) {
         compound.startUsing(gui)

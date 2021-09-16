@@ -8,7 +8,7 @@ interface GuiElement {
 
     fun shouldCancel(clickEvent: GuiClickEvent): Boolean
 
-    fun onClick(clickEvent: GuiClickEvent)
+    suspend fun onClick(clickEvent: GuiClickEvent)
 
     fun startUsing(gui: Gui) { }
 
