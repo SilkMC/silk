@@ -123,7 +123,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * @param name the name of the argument - This will be displayed to the player, if there is enough room for the
      * tooltip.
      * @param type the type of the argument - There are predefined types like `StringArgumentType.string()` or
-     * `IdentifierArgumentType.identifier()`. You can also pass lambda, as [ArgumentType] is a functional
+     * `IdentifierArgumentType.identifier()`. You can also pass a lambda, as [ArgumentType] is a functional
      * interface. For simple types, consider using the `inline reified` version of this function instead.
      */
     inline fun <reified T> argument(name: String, type: ArgumentType<T>, builder: SimpleArgumentBuilder<Source, T> = {}) =

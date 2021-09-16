@@ -15,7 +15,7 @@ command("mycommand") {
 }
 ```
 
-You can see all command builder function here: [net.axay.fabrik.commands]
+You can see all command builder functions here: [net.axay.fabrik.commands]
 
 ### Clientside
 
