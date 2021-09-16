@@ -15,7 +15,6 @@ import kotlin.random.Random
 
 private class DslAnnotations {
     class TopLevel {
-        @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.TYPE)
         @DslMarker
         annotation class GuiDsl
     }
