@@ -7,10 +7,9 @@ import kotlinx.coroutines.sync.withLock
 import net.axay.fabrik.core.task.mcSyncLaunch
 
 /**
- * Wraps a normal list into a format which can be used by specific gui components - the most
- * prominent one being [net.axay.fabrik.igui.GuiCompound].
+ * Parent class of the immutable [GuiList] and mutable [GuiMutableList].
  */
-open class GuiList<T, out L : List<T>>(@PublishedApi internal val collection: L) {
+abstract class AbstractGuiList<T, out L : List<T>>(@PublishedApi internal val collection: L) {
     protected val onChangeListeners = HashSet<suspend (List<T>) -> Unit>()
 
     /**
@@ -25,12 +24,18 @@ open class GuiList<T, out L : List<T>>(@PublishedApi internal val collection: L)
 }
 
 /**
+ * Wraps a normal list into a format which can be used by specific gui components - the most
+ * prominent one being [net.axay.fabrik.igui.GuiCompound]. This gui list is immutable.
+ */
+class GuiList<T>(collection: List<T>) : AbstractGuiList<T, List<T>>(collection)
+
+/**
  * Does the same as [GuiList], but is mutatable. If you change the content if this list using the
  * [mutate] function, the gui will update accordingly.
  *
  * @see GuiList
  */
-class GuiMutableList<T>(collection: MutableList<T>) : GuiList<T, MutableList<T>>(collection) {
+class GuiMutableList<T>(collection: MutableList<T>) : AbstractGuiList<T, MutableList<T>>(collection) {
     override fun onChange(block: suspend (List<T>) -> Unit) {
         onChangeListeners += block
     }

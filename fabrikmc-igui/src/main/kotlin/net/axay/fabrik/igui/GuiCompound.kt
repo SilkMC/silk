@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack
 class GuiCompound<E>(
     val guiType: GuiType,
     val slots: GuiSlotCompound.SlotRange.Rectangle,
-    val content: GuiList<E, List<E>>,
+    val content: GuiList<E>,
     private val iconGenerator: (E) -> ItemStack,
     private val onClick: (suspend (event: GuiClickEvent, element: E) -> Unit)?
 ) : GuiUseable() {
