@@ -33,5 +33,5 @@ fun ItemStack.setLore(text: Collection<Text>) {
  * Opens a [LiteralTextBuilder] to change the custom name of
  * the item stack.
  */
-inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit): ItemStack =
+inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack =
     setCustomName(literalText(baseText, builder))
