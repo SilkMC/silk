@@ -25,7 +25,11 @@ Simple logging, integrated into Minecraft's logging system
 
 # Package net.axay.fabrik.core.math
 
-Conversion between different types of Locations, extensions for working with vectors
+Conversion between different types of Locations
+
+# Package net.axay.fabrik.core.math.vector
+
+Operator functions and extensions for working with vectors
 
 # Package net.axay.fabrik.core.packet
 
