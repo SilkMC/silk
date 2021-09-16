@@ -20,10 +20,9 @@ object SimpleTestGui {
 
                 placeholder(Slots.All, Items.WHITE_STAINED_GLASS_PANE.guiIcon)
 
-                val changingNameProperty = GuiProperty("Ausgangsstring")
-                var changingName by changingNameProperty
+                val changingName = GuiProperty("Ausgangsstring")
 
-                placeholder(2 sl 5, changingNameProperty.guiIcon {
+                placeholder(2 sl 5, changingName.guiIcon {
                     listOf(Items.ACACIA_SIGN, Items.BIRCH_SIGN, Items.DARK_OAK_SIGN)
                         .random().defaultStack.setCustomName(it.literal)
                 })
@@ -31,7 +30,7 @@ object SimpleTestGui {
                 fabrikCoroutineScope.launch {
                     repeat(30) {
                         delay(500)
-                        changingName = UUID.randomUUID().toString()
+                        changingName.set(UUID.randomUUID().toString())
                     }
                 }
 

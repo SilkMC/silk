@@ -1,5 +1,6 @@
 package net.axay.fabrik.igui
 
+import kotlinx.coroutines.runBlocking
 import net.axay.fabrik.core.text.literal
 import net.axay.fabrik.igui.observable.GuiProperty
 import net.minecraft.item.Item
@@ -17,17 +18,17 @@ abstract class GuiIcon : GuiUseable() {
         val property: GuiProperty<E>,
         val iconGenerator: (E) -> ItemStack
     ) : GuiIcon() {
-        private var internalItemStack = iconGenerator.invoke(property.getValue(null, null))
+        private var internalItemStack = iconGenerator.invoke(runBlocking { property.get() })
 
         override val itemStack get() = internalItemStack
 
-        private val elementListener: (E) -> Unit = {
-            internalItemStack = iconGenerator.invoke(property.getValue(null, null))
-            registeredGuis.forEach { it.reloadCurrentPage() }
+        private val elementListener: suspend (E) -> Unit = {
+            internalItemStack = iconGenerator.invoke(it)
+            registeredGuis.forEach { gui -> gui.reloadCurrentPage() }
         }
 
         override fun onChangeUseStatus(inUse: Boolean) {
-            if (inUse) property.listeners.add(elementListener) else property.listeners.remove(elementListener)
+            if (inUse) property.onChangeListeners.add(elementListener) else property.onChangeListeners.remove(elementListener)
         }
     }
 }
