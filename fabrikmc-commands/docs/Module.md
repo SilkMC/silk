@@ -5,33 +5,13 @@ This DSL does not wrap Brigardier, it just extends it.
 
 ${dependencyNotice}
 
-## Creating a command
+## Usage
 
-You can open a new command builder using the `command` function:
-
-```kt
-command("mycommand") {
-    // the command builder
-}
-```
-
-You can see all command builder functions here: [net.axay.fabrik.commands]
-
-### Clientside
-
-For a command which should be handled by the client, use the `clientCommand` function instead.
-
-## Registering the command
-
-Commands created using the `command` builder function will be registered automatically if called during initialization of your
-mod (only if `register` is set to true).
-
-If you need to register it manually, call the `setupRegistrationCallback()` (server-side) or `register()` (client-side)
-function by yourself.
+Click on the modules below to see how to create and register commands.
 
 # Package net.axay.fabrik.commands
 
-Contains all command builder extension functions
+Contains all command builder functions
 
 # Package net.axay.fabrik.commands.registration
 
