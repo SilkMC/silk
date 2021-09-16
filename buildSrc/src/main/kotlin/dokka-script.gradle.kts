@@ -29,7 +29,12 @@ tasks {
 
         dokkaSourceSets {
             configureEach {
-                includes.from(buildDir.resolve("docs-markdown").listFiles()!!.map { "build/docs-markdown/${it.name}" }.toTypedArray())
+                includes.from(
+                    buildDir.resolve("docs-markdown").listFiles()!!
+                        .sortedBy { if (it.name == "Module.md") "0" else it.name }
+                        .map { "build/docs-markdown/${it.name}" }
+                        .toTypedArray()
+                )
 
                 sourceLink {
                     localDirectory.set(file("src/main/kotlin"))
