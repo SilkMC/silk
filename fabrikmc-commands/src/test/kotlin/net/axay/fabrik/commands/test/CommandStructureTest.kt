@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 import net.axay.fabrik.commands.command
 import net.minecraft.command.CommandSource
 
-class CommandTest : FunSpec({
+class CommandStructureTest : FunSpec({
     fun <S : CommandSource> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
         fun printWithDepth(message: Any) = println((" ".repeat(depth * 2) + message).also { stringBuilder.appendLine(it) })
 
