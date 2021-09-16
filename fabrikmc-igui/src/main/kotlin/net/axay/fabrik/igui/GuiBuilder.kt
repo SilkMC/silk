@@ -232,7 +232,7 @@ class GuiBuilder(
             iconGenerator: (E) -> ItemStack,
             onClick: (suspend (event: GuiClickEvent, element: E) -> Unit)? = null,
         ): GuiCompound<E> {
-            val compound = GuiCompound(type, slots, content, iconGenerator, onClick)
+            val compound = GuiCompound(this@GuiBuilder.type, slots, content, iconGenerator, onClick)
             element(slots, GuiCompoundElement(compound))
             return compound
         }
