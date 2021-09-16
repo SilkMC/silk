@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack
 class GuiCompound<E>(
     val guiType: GuiType,
     val slots: GuiSlotCompound.SlotRange.Rectangle,
-    val content: GuiList<E>,
+    val content: GuiList<E, List<E>>,
     private val iconGenerator: (E) -> ItemStack,
     private val onClick: ((event: GuiClickEvent, element: E) -> Unit)?
 ) : GuiUseable() {
@@ -19,7 +19,7 @@ class GuiCompound<E>(
     val compoundWidth = (slots.endInclusive.slotInRow - slots.start.slotInRow) + 1
     val compoundHeight = (slots.endInclusive.row - slots.start.row) + 1
 
-    val contentSize get() = content.internalCollection.size
+    val contentSize get() = content.collection.size
 
     var scrollProgress = 0
         private set
@@ -27,7 +27,7 @@ class GuiCompound<E>(
     var displayedContent = emptyList<E>()
         private set
 
-    private val contentListener: (List<E>) -> Unit = {
+    private val contentListener: suspend (List<E>) -> Unit = {
         recalculateContent()
         registeredGuis.forEach { it.reloadCurrentPage() }
     }
@@ -41,7 +41,7 @@ class GuiCompound<E>(
         if (sliceUntil > contentSize)
             sliceUntil = contentSize
 
-        displayedContent = content.internalCollection.slice(scrollProgress until sliceUntil)
+        displayedContent = content.collection.slice(scrollProgress until sliceUntil)
     }
 
     internal fun scroll(distance: Int): Boolean {
@@ -70,6 +70,6 @@ class GuiCompound<E>(
     }
 
     override fun onChangeUseStatus(inUse: Boolean) {
-        if (inUse) content.listeners.add(contentListener) else content.listeners.remove(contentListener)
+        if (inUse) content.onChange(contentListener) else content.removeOnChangeListener(contentListener)
     }
 }

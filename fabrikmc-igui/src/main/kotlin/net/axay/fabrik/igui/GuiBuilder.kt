@@ -189,7 +189,7 @@ class GuiBuilder(
          */
         fun <E> compound(
             slots: GuiSlotCompound.SlotRange.Rectangle,
-            content: GuiList<E>,
+            content: GuiList<E, List<E>>,
             iconGenerator: (E) -> ItemStack,
             onClick: ((event: GuiClickEvent, element: E) -> Unit)? = null,
         ): GuiCompound<E> {

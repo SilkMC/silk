@@ -1,6 +1,7 @@
 package net.axay.fabrik.igui.observable
 
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import net.axay.fabrik.core.task.mcSyncLaunch
@@ -11,7 +12,7 @@ import net.axay.fabrik.core.task.mcSyncLaunch
  * property can be rendered to the gui.
  */
 class GuiProperty<T>(private var value: T) {
-    internal val onChangeListeners = HashSet<suspend (T) -> Unit>()
+    private val onChangeListeners = HashSet<suspend (T) -> Unit>()
 
     private val setValueMutex = Mutex()
 
@@ -21,6 +22,13 @@ class GuiProperty<T>(private var value: T) {
      */
     fun onChange(block: suspend (T) -> Unit) {
         onChangeListeners += block
+    }
+
+    /**
+     * Unregisters an already registered onChangeListener.
+     */
+    fun removeOnChangeListener(block: suspend (T) -> Unit) {
+        onChangeListeners -= block
     }
 
     /**
@@ -35,11 +43,13 @@ class GuiProperty<T>(private var value: T) {
      * @return the job updating the icons and guis
      */
     suspend fun set(value: T) = coroutineScope {
-        setValueMutex.withLock {
-            this@GuiProperty.value = value
-        }
-        mcSyncLaunch {
-            onChangeListeners.forEach { it.invoke(value) }
+        launch {
+            setValueMutex.withLock {
+                this@GuiProperty.value = value
+            }
+            mcSyncLaunch {
+                onChangeListeners.forEach { it.invoke(value) }
+            }
         }
     }
 }

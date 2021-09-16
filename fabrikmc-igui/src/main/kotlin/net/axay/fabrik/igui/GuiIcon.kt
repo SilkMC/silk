@@ -28,7 +28,7 @@ abstract class GuiIcon : GuiUseable() {
         }
 
         override fun onChangeUseStatus(inUse: Boolean) {
-            if (inUse) property.onChangeListeners.add(elementListener) else property.onChangeListeners.remove(elementListener)
+            if (inUse) property.onChange(elementListener) else property.removeOnChangeListener(elementListener)
         }
     }
 }
