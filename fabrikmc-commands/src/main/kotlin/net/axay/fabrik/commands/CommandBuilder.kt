@@ -15,6 +15,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
+import net.axay.fabrik.commands.DslAnnotations.NodeLevel.RunsDsl
+import net.axay.fabrik.commands.DslAnnotations.NodeLevel.SuggestsDsl
+import net.axay.fabrik.commands.DslAnnotations.TopLevel.NodeDsl
 import net.axay.fabrik.commands.internal.ArgumentTypeUtils
 import net.axay.fabrik.commands.registration.register
 import net.axay.fabrik.commands.registration.setupRegistrationCallback
@@ -25,6 +28,21 @@ import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
 import net.minecraft.command.CommandSource
 import net.minecraft.server.command.ServerCommandSource
 import java.util.concurrent.CompletableFuture
+
+private class DslAnnotations {
+    class TopLevel {
+        @DslMarker
+        annotation class NodeDsl
+    }
+
+    class NodeLevel {
+        @DslMarker
+        annotation class RunsDsl
+
+        @DslMarker
+        annotation class SuggestsDsl
+    }
+}
 
 /**
  * An argument resolver extracts the argument value out of the current [CommandContext].
@@ -64,6 +82,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      *
      * @see com.mojang.brigadier.builder.ArgumentBuilder.executes
      */
+    @RunsDsl
     inline infix fun runs(crossinline block: CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
         command = Command {
             block(it)
@@ -78,6 +97,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      *
      * @see runs
      */
+    @RunsDsl
     inline infix fun runsAsync(crossinline block: suspend CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
         command = Command {
             fabrikCoroutineScope.launch {
@@ -113,6 +133,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      *
      * @param name the name of the subcommand
      */
+    @NodeDsl
     inline fun literal(name: String, builder: LiteralCommandBuilder<Source>.() -> Unit = {}) =
         LiteralCommandBuilder<Source>(name).apply(builder).also { children += it }
 
@@ -126,6 +147,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * `IdentifierArgumentType.identifier()`. You can also pass a lambda, as [ArgumentType] is a functional
      * interface. For simple types, consider using the `inline reified` version of this function instead.
      */
+    @NodeDsl
     inline fun <reified T> argument(name: String, type: ArgumentType<T>, builder: SimpleArgumentBuilder<Source, T> = {}) =
         ArgumentCommandBuilder<Source, T>(name, type)
             .apply { builder { getArgument(name, T::class.java) } }
@@ -140,6 +162,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * @param parser gives you a [StringReader], which allows you to parse the input of the user - you should return a
      * value of the given type [T], which will be the argument value
      */
+    @NodeDsl
     inline fun <reified T> argument(name: String, crossinline parser: (StringReader) -> T, builder: SimpleArgumentBuilder<Source, T> = {}) =
         ArgumentCommandBuilder<Source, T>(name) { parser(it) }
             .apply { builder { getArgument(name, T::class.java) } }
@@ -153,6 +176,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * @param name the name of the argument - This will be displayed to the player, if there is enough room for the
      * tooltip.
      */
+    @NodeDsl
     inline fun <reified T> argument(name: String, builder: SimpleArgumentBuilder<Source, T> = {}) =
         ArgumentCommandBuilder<Source, T>(name, ArgumentTypeUtils.fromReifiedType())
             .apply { builder { getArgument(name, T::class.java) } }
@@ -206,6 +230,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     /**
      * Suggest the value which is the result of the [suggestionBuilder].
      */
+    @SuggestsDsl
     inline fun suggestSingle(crossinline suggestionBuilder: (CommandContext<Source>) -> Any?) {
         suggests { context, builder ->
             builder.applyAny(suggestionBuilder(context))
@@ -218,6 +243,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * Additionaly, a separate tooltip associated with the suggestion
      * will be shown as well.
      */
+    @SuggestsDsl
     inline fun suggestSingleWithTooltip(crossinline suggestionBuilder: (CommandContext<Source>) -> Pair<Any, Message>?) {
         suggests { context, builder ->
             builder.applyAnyWithTooltip(suggestionBuilder(context))
@@ -231,6 +257,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * @param coroutineScope the [CoroutineScope] where the suggestion should be built in - an async scope by default,
      * but you can change this to a synchronous scope using [net.axay.fabrik.core.task.mcCoroutineScope]
      */
+    @SuggestsDsl
     inline fun suggestSingleSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
         crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Any?
@@ -251,6 +278,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * @param coroutineScope the [CoroutineScope] where the suggestion should be built in - an async scope by default,
      * but you can change this to a synchronous scope using [net.axay.fabrik.core.task.mcCoroutineScope]
      */
+    @SuggestsDsl
     inline fun suggestSingleWithTooltipSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
         crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Pair<Any?, Message>?
@@ -267,6 +295,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * Suggest the entries of the iterable which is the result of the
      * [suggestionsBuilder].
      */
+    @SuggestsDsl
     inline fun suggestList(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Any?>?) {
         suggests { context, builder ->
             builder.applyIterable(suggestionsBuilder(context))
@@ -280,6 +309,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * Additionaly, a separate tooltip associated with each suggestion
      * will be shown as well.
      */
+    @SuggestsDsl
     inline fun suggestListWithTooltips(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?) {
         suggests { context, builder ->
             builder.applyIterableWithTooltips(suggestionsBuilder(context))
@@ -294,6 +324,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * @param coroutineScope the [CoroutineScope] where the suggestions should be built in - an async scope by default,
      * but you can change this to a synchronous scope using [net.axay.fabrik.core.task.mcCoroutineScope]
      */
+    @SuggestsDsl
     inline fun suggestListSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
         crossinline suggestionsBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?
@@ -315,6 +346,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * @param coroutineScope the [CoroutineScope] where the suggestions should be built in - an async scope by default,
      * but you can change this to a synchronous scope using [net.axay.fabrik.core.task.mcCoroutineScope]
      */
+    @SuggestsDsl
     inline fun suggestListWithTooltipsSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
         crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?
