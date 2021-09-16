@@ -10,7 +10,7 @@ import net.axay.fabrik.igui.events.GuiCloseEvent
 import net.axay.fabrik.igui.observable.GuiList
 import net.minecraft.item.ItemStack
 import net.minecraft.text.LiteralText
-import java.time.Instant
+import java.util.*
 import kotlin.random.Random
 
 private class DslAnnotations {
@@ -49,7 +49,7 @@ inline fun igui(
     title: LiteralText,
     defaultPageKey: Any,
     builder: GuiBuilder.() -> Unit,
-) = GuiBuilder(type, title, defaultPageKey).apply(builder).internalBuilder.internalBuild()
+) = GuiBuilder(type, title, defaultPageKey).apply(builder).build()
 
 @GuiDsl
 class GuiBuilder(
@@ -57,49 +57,23 @@ class GuiBuilder(
     val title: LiteralText,
     val defaultPageKey: Any,
 ) {
-    inner class Internal {
-        val random by lazy { Random(1) }
+    @PublishedApi
+    internal val random by lazy { Random(1) }
 
-        val pagesByKey = HashMap<String, GuiPage>()
-        val pagesByNumber = HashMap<Int, GuiPage>()
+    @PublishedApi
+    internal val pagesByKey = HashMap<String, GuiPage>()
+    @PublishedApi
+    internal val pagesByNumber = HashMap<Int, GuiPage>()
 
-        var eventHandler: GuiEventHandler? = null
-
-        fun internalBuild() = Gui(
-            type,
-            title,
-            pagesByKey,
-            pagesByNumber,
-            defaultPageKey.toString(),
-            eventHandler ?: GuiEventHandler(null, null)
-        )
-    }
-
-    /**
-     * INTERNAL! You probably do not need this value.
-     */
-    val internalBuilder = this.Internal()
+    @PublishedApi
+    internal var eventHandler: GuiEventHandler? = null
 
     @GuiDsl
     inner class PageBuilder(
         val key: String,
         val number: Int,
     ) {
-        inner class Internal {
-            val content = HashMap<Int, GuiElement>()
-
-            /**
-             * Builds the page.
-             *
-             * INTERNAL! You probably do not need this function.
-             */
-            fun internalBuild() = GuiPage(key, number, content, effectTo, effectFrom)
-        }
-
-        /**
-         * INTERNAL! You probably do not need this value.
-         */
-        val internalBuilder = this.Internal()
+        private val content = HashMap<Int, GuiElement>()
 
         /**
          * Effect used for transitions to this page.
@@ -132,7 +106,7 @@ class GuiBuilder(
         @GuiPageDsl
         fun element(guiSlotCompound: GuiSlotCompound, element: GuiElement) {
             guiSlotCompound.withDimensions(this@GuiBuilder.type.dimensions).mapNotNull { it.slotIndexIn(this@GuiBuilder.type.dimensions) }
-                .forEach { internalBuilder.content[it] = element }
+                .forEach { content[it] = element }
         }
 
         /**
@@ -293,6 +267,9 @@ class GuiBuilder(
                 icon, compound, true, speed.toLong(), compound.compoundWidth, scrollTimes
             ))
         }
+
+        @PublishedApi
+        internal fun build() = GuiPage(key, number, content, effectTo, effectFrom)
     }
 
     /**
@@ -302,17 +279,18 @@ class GuiBuilder(
      */
     @GuiDsl
     inline fun page(
-        key: Any = "${Instant.now()}${internalBuilder.random.nextInt(10, 20)}",
-        number: Int = internalBuilder.pagesByNumber.keys.maxOrNull()?.plus(1) ?: 0,
+        key: Any = UUID.randomUUID(),
+        number: Int = pagesByNumber.keys.maxOrNull()?.plus(1) ?: 0,
         builder: PageBuilder.() -> Unit,
     ) {
-        if (internalBuilder.pagesByKey.containsKey(key)) error("The specified page key already exists")
-        if (internalBuilder.pagesByNumber.containsKey(key)) error("The specified page number is already in use")
-
         val stringKey = key.toString()
-        val page = PageBuilder(stringKey, number).apply(builder).internalBuilder.internalBuild()
-        internalBuilder.pagesByKey[stringKey] = page
-        internalBuilder.pagesByNumber[number] = page
+
+        if (pagesByKey.containsKey(stringKey)) error("The specified page key already exists")
+        if (pagesByNumber.containsKey(number)) error("The specified page number is already in use")
+
+        val page = PageBuilder(stringKey, number).apply(builder).build()
+        pagesByKey[stringKey] = page
+        pagesByNumber[number] = page
     }
 
     @GuiDsl
@@ -338,12 +316,8 @@ class GuiBuilder(
             this.onClose = onClose
         }
 
-        /**
-         * Builds the event handler.
-         *
-         * INTERNAL! You probably do not need this function.
-         */
-        fun internalBuild() = GuiEventHandler(onClick, onClose)
+        @PublishedApi
+        internal fun build() = GuiEventHandler(onClick, onClose)
     }
 
     /**
@@ -352,6 +326,16 @@ class GuiBuilder(
      */
     @GuiDsl
     inline fun events(builder: EventHandlerBuilder.() -> Unit) {
-        internalBuilder.eventHandler = EventHandlerBuilder().apply(builder).internalBuild()
+        eventHandler = EventHandlerBuilder().apply(builder).build()
     }
+
+    @PublishedApi
+    internal fun build() = Gui(
+        type,
+        title,
+        pagesByKey,
+        pagesByNumber,
+        defaultPageKey.toString(),
+        eventHandler ?: GuiEventHandler(null, null)
+    )
 }
