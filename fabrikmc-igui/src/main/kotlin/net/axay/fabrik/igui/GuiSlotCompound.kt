@@ -130,7 +130,7 @@ infix fun GuiSlot.lineTo(slot: GuiSlot) =
 /**
  * Creates a new slot range.
  *
- * This range contains all slots inside of a rectangle
+ * This range contains all slots inside a rectangle
  * with the two given slots as two opposite corners in the rectangle.
  */
 infix fun GuiSlot.rectTo(slot: GuiSlot) =
@@ -173,9 +173,7 @@ object Slots {
     val Border = BorderPaddingOne
 
     // CORNER
-    val Corners = GuiSlotCompound.CornerSlots(
-        ifBottomLeft = true, ifBottomRight = true, ifTopLeft = true, ifTopRight = true
-    )
+    val Corners = GuiSlotCompound.CornerSlots(ifBottomLeft = true, ifBottomRight = true, ifTopLeft = true, ifTopRight = true)
     val CornersLeft = GuiSlotCompound.CornerSlots(ifBottomLeft = true, ifTopLeft = true)
     val CornersRight = GuiSlotCompound.CornerSlots(ifBottomRight = true, ifTopRight = true)
     val CornersBottom = GuiSlotCompound.CornerSlots(ifBottomLeft = true, ifBottomRight = true)
