@@ -31,6 +31,7 @@ import java.util.concurrent.CompletableFuture
 
 private class DslAnnotations {
     class TopLevel {
+        @Target(AnnotationTarget.FUNCTION, AnnotationTarget.TYPE, AnnotationTarget.CLASS)
         @DslMarker
         annotation class NodeDsl
     }
@@ -55,12 +56,17 @@ typealias ArgumentResolver<S, T> = CommandContext<S>.() -> T
  */
 typealias SimpleArgumentBuilder<Source, T> = ArgumentCommandBuilder<Source, T>.(argument: ArgumentResolver<Source, T>) -> Unit
 
+@NodeDsl
 abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<Source, Builder>> {
+    @PublishedApi
+    internal var command: Command<Source>? = null
+
     @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *>>()
 
-    @PublishedApi
-    internal var command: Command<Source>? = null
+    private var permissionLevel: Int? = null
+
+    private val onToBrigardierBuilders = ArrayList<Builder.() -> Unit>()
 
     /**
      * Adds execution logic to this command. The place where this function
@@ -182,6 +188,31 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
             .apply { builder { getArgument(name, T::class.java) } }
             .also { children += it }
 
+    /**
+     * Specifies that the given permission [level] is required to execute this part of the command tree. Use
+     * this function on the root command node to secure the whole command.
+     */
+    fun requiresPermissionLevel(level: Int?) {
+        permissionLevel = level
+    }
+
+    /**
+     * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree. Use
+     * this function on the root command node to secure the whole command.
+     */
+    fun requiresPermissionLevel(level: PermissionLevel?) {
+        permissionLevel = level?.level
+    }
+
+    /**
+     * This function allows you to access the regular Brigardier builder. The type of
+     * `this` in its context will equal the type of [Builder].
+     */
+    fun brigardier(block: (@NodeDsl Builder).() -> Unit): CommandBuilder<Source, Builder> {
+        onToBrigardierBuilders += block
+        return this
+    }
+
     protected abstract fun createBrigardierBuilder(): Builder
 
     protected open fun Builder.onToBrigardier() = Unit
@@ -192,7 +223,10 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      */
     fun toBrigardier(): Builder = createBrigardierBuilder().also { builder ->
         command?.let { builder.executes(it) }
+        permissionLevel?.let { level -> builder.requires { it.hasPermissionLevel(level) } }
         builder.onToBrigardier()
+
+        onToBrigardierBuilders.forEach { it(builder) }
 
         children.forEach {
             @Suppress("UNCHECKED_CAST")
