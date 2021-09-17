@@ -122,11 +122,15 @@ abstract class PersistentCompound {
         return this[key] ?: defaultValue().also { this[key] = it }
     }
 
+    // the following to functions are there for calling from java
     @PublishedApi
-    internal abstract fun loadFromCompound(nbtCompound: NbtCompound)
+    internal fun loadFromCompound(nbtCompound: NbtCompound) = loadFromCompound(nbtCompound, false)
+    @PublishedApi
+    internal fun putInCompound(nbtCompound: NbtCompound) = putInCompound(nbtCompound, false)
 
-    @PublishedApi
-    internal abstract fun putInCompound(nbtCompound: NbtCompound)
+    internal abstract fun loadFromCompound(nbtCompound: NbtCompound, loadRaw: Boolean)
+    
+    internal abstract fun putInCompound(nbtCompound: NbtCompound, writeRaw: Boolean)
 }
 
 /**
@@ -136,8 +140,8 @@ abstract class PersistentCompound {
 object EmptyPersistentCompound : PersistentCompound() {
     override var data: NbtCompound? = null
 
-    override fun loadFromCompound(nbtCompound: NbtCompound) = Unit
-    override fun putInCompound(nbtCompound: NbtCompound) = Unit
+    override fun loadFromCompound(nbtCompound: NbtCompound, loadRaw: Boolean) = Unit
+    override fun putInCompound(nbtCompound: NbtCompound, writeRaw: Boolean) = Unit
 }
 
 /**
@@ -146,16 +150,16 @@ object EmptyPersistentCompound : PersistentCompound() {
  */
 internal class PersistentCompoundImpl : PersistentCompound() {
     companion object {
-        private const val CUSTOM_DATA_KEY = "fabrikmcData"
+        const val CUSTOM_DATA_KEY = "fabrikmcData"
     }
 
     override var data: NbtCompound? = NbtCompound()
 
-    override fun loadFromCompound(nbtCompound: NbtCompound) {
-        data = nbtCompound.getCompound(CUSTOM_DATA_KEY)
+    override fun loadFromCompound(nbtCompound: NbtCompound, loadRaw: Boolean) {
+        data = if (loadRaw) nbtCompound else nbtCompound.getCompound(CUSTOM_DATA_KEY)
     }
 
-    override fun putInCompound(nbtCompound: NbtCompound) {
+    override fun putInCompound(nbtCompound: NbtCompound, writeRaw: Boolean) {
         for ((untypedKey, value) in values) {
             @Suppress("UNCHECKED_CAST")
             val typedKey = untypedKey as CompoundKey<Any>
@@ -164,7 +168,10 @@ internal class PersistentCompoundImpl : PersistentCompound() {
         }
 
         if (!data!!.isEmpty) {
-            nbtCompound.put(CUSTOM_DATA_KEY, data)
+            if (writeRaw)
+                nbtCompound.copyFrom(data)
+            else
+                nbtCompound.put(CUSTOM_DATA_KEY, data)
         }
     }
 }

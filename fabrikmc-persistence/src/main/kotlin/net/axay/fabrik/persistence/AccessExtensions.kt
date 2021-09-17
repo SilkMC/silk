@@ -1,6 +1,7 @@
 package net.axay.fabrik.persistence
 
 import net.minecraft.entity.Entity
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.world.chunk.Chunk
 
 /**
@@ -18,3 +19,11 @@ val Chunk.persistentCompound get() = (this as CompoundProvider).compound
  * @see CompoundProvider
  */
 val Entity.persistentCompound get() = (this as CompoundProvider).compound
+
+/**
+ * Returns a persistent [PersistentCompound].
+ *
+ * @see CompoundProvider.compound
+ * @see CompoundProvider
+ */
+val ServerWorld.persistentCompound get() = (this as CompoundProvider).compound

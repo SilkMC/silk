@@ -8,6 +8,7 @@
     "chunk.ProtoChunkMixin",
     "chunk.ReadOnlyChunkMixin",
     "chunk.WorldChunkMixin",
-    "entity.EntityMixin"
+    "entity.EntityMixin",
+    "world.ServerWorldMixin"
   ]
 }
