@@ -1,12 +1,14 @@
 package net.axay.fabrik.igui
 
-import net.axay.fabrik.core.task.coroutineTask
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import net.axay.fabrik.core.task.mcCoroutineScope
 
 fun Gui.changePage(
     fromPage: GuiPage,
     toPage: GuiPage,
     overrideEffect: GuiPage.ChangeEffect? = null,
-) {
+) = mcCoroutineScope.launch {
     val effect = overrideEffect
         ?: ((toPage.effectTo ?: fromPage.effectFrom) ?: GuiPage.ChangeEffect.INSTANT)
 
@@ -39,20 +41,19 @@ fun Gui.changePage(
     }
 }
 
-private inline fun changePageEffect(
+private suspend inline fun changePageEffect(
     effectLength: Int,
     inverted: Boolean,
-    crossinline effect: (offset: Int, offsetOpposite: Int) -> Unit
+    crossinline effect: suspend (offset: Int, offsetOpposite: Int) -> Unit
 ) {
     var currentOffset = 1
-    coroutineTask(
-        period = 50,
-        howOften = effectLength.toLong()
-    ) {
+    repeat(effectLength) {
         effect.invoke(
             if (inverted) currentOffset else -currentOffset,
             if (inverted) -(effectLength - currentOffset) else (effectLength - currentOffset)
         )
         currentOffset++
+
+        delay(50)
     }
 }
