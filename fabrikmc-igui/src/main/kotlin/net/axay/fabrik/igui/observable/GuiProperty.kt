@@ -32,6 +32,13 @@ class GuiProperty<T>(private var value: T) {
     }
 
     /**
+     * Invokes all listeners, causing all open guis using this list to update.
+     */
+    fun invokeListeners() = mcCoroutineScope.launch {
+        onChangeListeners.forEach { it.invoke(value) }
+    }
+
+    /**
      * Gets the current value of the property. This function is thread-safe.
      */
     suspend fun get() = setValueMutex.withLock { value }
@@ -46,8 +53,6 @@ class GuiProperty<T>(private var value: T) {
         setValueMutex.withLock {
             this@GuiProperty.value = value
         }
-        mcCoroutineScope.launch {
-            onChangeListeners.forEach { it.invoke(value) }
-        }
+        invokeListeners()
     }
 }
