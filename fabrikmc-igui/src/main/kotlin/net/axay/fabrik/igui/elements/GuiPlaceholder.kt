@@ -8,7 +8,7 @@ import net.axay.fabrik.igui.events.GuiClickEvent
 open class GuiPlaceholder(
     val icon: GuiIcon,
 ) : GuiElement {
-    override fun getItemStack(slotIndex: Int) = icon.itemStack
+    override suspend fun getItemStack(slotIndex: Int) = icon.itemStack
 
     override fun shouldCancel(clickEvent: GuiClickEvent) = true
 

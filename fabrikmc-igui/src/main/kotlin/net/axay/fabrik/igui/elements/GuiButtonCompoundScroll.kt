@@ -15,7 +15,7 @@ class GuiButtonCompoundScroll(
 ) : GuiButton(
     icon,
     {
-        fun scroll() = if (reverse) compound.scroll(-scrollDistance) else compound.scroll(scrollDistance)
+        suspend fun scroll() = if (reverse) compound.scroll(-scrollDistance) else compound.scroll(scrollDistance)
 
         if (scrollTimes > 1) {
             coroutineTask(

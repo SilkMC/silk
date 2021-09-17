@@ -1,5 +1,8 @@
 package net.axay.fabrik.igui
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import net.axay.fabrik.core.task.mcCoroutineScope
 import net.axay.fabrik.igui.mixin.SimpleInventoryAccessor
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -8,7 +11,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.NamedScreenHandlerFactory
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
-import java.util.*
 
 /**
  * Opens the given gui.
@@ -16,13 +18,15 @@ import java.util.*
  * @param pageKey (optional) specifies the key of the page which should be loaded
  * with the process of opening the gui
  *
- * @return an [OptionalInt] which may contain the syncId of the inventory holding the gui
+ * @return the job of opening the gui and displaying it to the player
  */
-fun PlayerEntity.openGui(gui: Gui, pageKey: Any? = null): OptionalInt {
-    if (pageKey != null)
-        gui.pagesByKey[pageKey.toString()]?.let { gui.loadPage(it) }
+fun PlayerEntity.openGui(gui: Gui, pageKey: Any? = null): Job {
+    return mcCoroutineScope.launch {
+        if (pageKey != null)
+            gui.pagesByKey[pageKey.toString()]?.let { gui.loadPage(it) }
 
-    return openHandledScreen(gui)
+        openHandledScreen(gui)
+    }
 }
 
 class Gui(
@@ -50,7 +54,7 @@ class Gui(
     /**
      * Loads the specified page with the specified offset.
      */
-    fun loadPage(
+    suspend fun loadPage(
         page: GuiPage,
         offsetHorizontally: Int = 0, offsetVertically: Int = 0,
     ) {
@@ -101,7 +105,7 @@ class Gui(
      * You probably do not need this function, as there should always be another (better)
      * way of updating the gui. This function is used internally.
      */
-    fun reloadCurrentPage() {
+    suspend fun reloadCurrentPage() {
         if (!isOffset)
             loadPage(currentPage)
     }

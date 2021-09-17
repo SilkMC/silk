@@ -9,8 +9,8 @@ import net.axay.fabrik.igui.events.GuiClickEvent
 class GuiButtonPageChange(
     icon: GuiIcon,
     calculator: Calculator,
-    shouldChange: (GuiClickEvent) -> Boolean,
-    onChange: ((GuiClickEvent) -> Unit)?,
+    shouldChange: suspend (GuiClickEvent) -> Boolean,
+    onChange: (suspend (GuiClickEvent) -> Unit)?,
 ) : GuiButton(
     icon,
     { event ->

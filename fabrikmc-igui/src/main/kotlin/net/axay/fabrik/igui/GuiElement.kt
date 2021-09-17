@@ -4,7 +4,7 @@ import net.axay.fabrik.igui.events.GuiClickEvent
 import net.minecraft.item.ItemStack
 
 interface GuiElement {
-    fun getItemStack(slotIndex: Int): ItemStack
+    suspend fun getItemStack(slotIndex: Int): ItemStack
 
     fun shouldCancel(clickEvent: GuiClickEvent): Boolean
 

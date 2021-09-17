@@ -5,9 +5,9 @@ import net.axay.fabrik.igui.events.GuiClickEvent
 import net.minecraft.item.ItemStack
 
 class GuiFreeSlot(
-    private val onClick: ((GuiClickEvent) -> Unit)?,
+    private val onClick: (suspend (GuiClickEvent) -> Unit)?,
 ) : GuiElement {
-    override fun getItemStack(slotIndex: Int): ItemStack = ItemStack.EMPTY
+    override suspend fun getItemStack(slotIndex: Int): ItemStack = ItemStack.EMPTY
 
     override fun shouldCancel(clickEvent: GuiClickEvent) = false
 

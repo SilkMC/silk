@@ -126,7 +126,7 @@ class GuiBuilder(
          * Adds a free slot. A free slot allows player interaction.
          */
         @GuiPageDsl
-        fun freeSlot(slots: GuiSlotCompound, onClick: ((GuiClickEvent) -> Unit)? = null) =
+        fun freeSlot(slots: GuiSlotCompound, onClick: (suspend (GuiClickEvent) -> Unit)? = null) =
             element(slots, GuiFreeSlot(onClick))
 
         /**
@@ -136,8 +136,8 @@ class GuiBuilder(
         fun previousPage(
             slots: GuiSlotCompound,
             icon: GuiIcon,
-            shouldChange: ((GuiClickEvent) -> Boolean) = { true },
-            onChange: ((GuiClickEvent) -> Unit)? = null
+            shouldChange: (suspend (GuiClickEvent) -> Boolean) = { true },
+            onChange: (suspend (GuiClickEvent) -> Unit)? = null
         ) {
             element(slots, GuiButtonPageChange(
                 icon, GuiButtonPageChange.Calculator.PreviousPage, shouldChange, onChange
@@ -151,8 +151,8 @@ class GuiBuilder(
         fun nextPage(
             slots: GuiSlotCompound,
             icon: GuiIcon,
-            shouldChange: ((GuiClickEvent) -> Boolean) = { true },
-            onChange: ((GuiClickEvent) -> Unit)? = null
+            shouldChange: (suspend (GuiClickEvent) -> Boolean) = { true },
+            onChange: (suspend (GuiClickEvent) -> Unit)? = null
         ) {
             element(slots, GuiButtonPageChange(
                 icon, GuiButtonPageChange.Calculator.NextPage, shouldChange, onChange
@@ -167,8 +167,8 @@ class GuiBuilder(
             slots: GuiSlotCompound,
             icon: GuiIcon,
             pageNumber: Int,
-            shouldChange: ((GuiClickEvent) -> Boolean) = { true },
-            onChange: ((GuiClickEvent) -> Unit)? = null
+            shouldChange: (suspend (GuiClickEvent) -> Boolean) = { true },
+            onChange: (suspend (GuiClickEvent) -> Unit)? = null
         ) {
             element(slots, GuiButtonPageChange(
                 icon, GuiButtonPageChange.Calculator.StaticPageNumber(pageNumber), shouldChange, onChange
@@ -183,8 +183,8 @@ class GuiBuilder(
             slots: GuiSlotCompound,
             icon: GuiIcon,
             pageKey: Any,
-            shouldChange: ((GuiClickEvent) -> Boolean) = { true },
-            onChange: ((GuiClickEvent) -> Unit)? = null
+            shouldChange: (suspend (GuiClickEvent) -> Boolean) = { true },
+            onChange: (suspend (GuiClickEvent) -> Unit)? = null
         ) {
             element(slots, GuiButtonPageChange(
                 icon, GuiButtonPageChange.Calculator.StaticPageKey(pageKey), shouldChange, onChange
@@ -202,7 +202,7 @@ class GuiBuilder(
         fun <E> compound(
             slots: GuiSlotCompound.SlotRange.Rectangle,
             content: AbstractGuiList<E, List<E>>,
-            iconGenerator: (E) -> ItemStack,
+            iconGenerator: suspend (E) -> ItemStack,
             onClick: (suspend (event: GuiClickEvent, element: E) -> Unit)? = null,
         ): GuiCompound<E> {
             val compound = GuiCompound(this@GuiBuilder.type, slots, content, iconGenerator, onClick)

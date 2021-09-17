@@ -8,7 +8,7 @@ import net.axay.fabrik.igui.events.GuiClickEvent
 class GuiCompoundElement(
     val compound: GuiCompound<*>
 ) : GuiElement {
-    override fun getItemStack(slotIndex: Int) = compound.getItemStack(slotIndex)
+    override suspend fun getItemStack(slotIndex: Int) = compound.getItemStack(slotIndex)
 
     override fun shouldCancel(clickEvent: GuiClickEvent) = true
 

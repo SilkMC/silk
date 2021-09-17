@@ -8,7 +8,7 @@ class GuiCompound<E>(
     val guiType: GuiType,
     val slots: GuiSlotCompound.SlotRange.Rectangle,
     val content: AbstractGuiList<E, List<E>>,
-    private val iconGenerator: (E) -> ItemStack,
+    private val iconGenerator: suspend (E) -> ItemStack,
     private val onClick: (suspend (event: GuiClickEvent, element: E) -> Unit)?
 ) : GuiUseable() {
     private var slotIndexes = slots.withDimensions(guiType.dimensions)
@@ -44,7 +44,7 @@ class GuiCompound<E>(
         displayedContent = content.collection.slice(scrollProgress until sliceUntil)
     }
 
-    internal fun scroll(distance: Int): Boolean {
+    internal suspend fun scroll(distance: Int): Boolean {
         val newProgress = scrollProgress + distance
         return if (newProgress >= 0) {
             val shouldScroll = if (slotAmount + newProgress <= contentSize)
@@ -61,7 +61,7 @@ class GuiCompound<E>(
         } else false
     }
 
-    internal fun getItemStack(slotIndex: Int): ItemStack = displayedContent.getOrNull(slotIndexes.indexOf(slotIndex))
+    internal suspend fun getItemStack(slotIndex: Int): ItemStack = displayedContent.getOrNull(slotIndexes.indexOf(slotIndex))
         ?.let { iconGenerator.invoke(it) } ?: ItemStack.EMPTY
 
     internal suspend fun onClickElement(event: GuiClickEvent) {
