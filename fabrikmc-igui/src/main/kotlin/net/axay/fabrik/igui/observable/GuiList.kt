@@ -10,17 +10,41 @@ import net.axay.fabrik.core.task.mcCoroutineScope
  * Parent class of the immutable [GuiList] and mutable [GuiMutableList].
  */
 abstract class AbstractGuiList<T, out L : List<T>>(@PublishedApi internal val collection: L) {
-    protected val onChangeListeners = HashSet<suspend (List<T>) -> Unit>()
+    private val onChangeListeners = HashSet<suspend (List<T>) -> Unit>()
 
     /**
      * Registers an onChangeListener, which will be called if the content of this list is mutated.
      */
-    open fun onChange(block: suspend (List<T>) -> Unit) = Unit
+    fun onChange(block: suspend (List<T>) -> Unit) {
+        onChangeListeners += block
+    }
 
     /**
      * Unregisters an already registered onChangeListener.
      */
-    open fun removeOnChangeListener(block: suspend (List<T>) -> Unit) = Unit
+    fun removeOnChangeListener(block: suspend (List<T>) -> Unit) {
+        onChangeListeners -= block
+    }
+
+    /**
+     * Invokes all listeners, causing all open guis using this list to update.
+     */
+    fun invokeListeners() = mcCoroutineScope.launch {
+        onChangeListeners.forEach { it.invoke(collection) }
+    }
+
+    @PublishedApi
+    internal val mutateMutex = Mutex()
+
+    /**
+     * Provides access to the internal collection in an immutable form. Please do only use the collection
+     * inside the [block] lambda, as only there thread-safety can be guaranteed.
+     */
+    suspend inline fun <R> lookup(block: (List<T>) -> R): R {
+        return mutateMutex.withLock {
+            block(collection)
+        }
+    }
 }
 
 /**
@@ -36,20 +60,6 @@ class GuiList<T>(collection: List<T>) : AbstractGuiList<T, List<T>>(collection)
  * @see GuiList
  */
 class GuiMutableList<T>(collection: MutableList<T>) : AbstractGuiList<T, MutableList<T>>(collection) {
-    override fun onChange(block: suspend (List<T>) -> Unit) {
-        onChangeListeners += block
-    }
-
-    override fun removeOnChangeListener(block: suspend (List<T>) -> Unit) {
-        onChangeListeners -= block
-    }
-
-    @PublishedApi
-    internal suspend fun invokeListeners() = onChangeListeners.forEach { it.invoke(collection) }
-
-    @PublishedApi
-    internal val mutateMutex = Mutex()
-
     /**
      * Inside the given [block], you can mutate this list. All guis currently using this list will be
      * informed after that mutation, to update properly.
@@ -62,9 +72,7 @@ class GuiMutableList<T>(collection: MutableList<T>) : AbstractGuiList<T, Mutable
         mutateMutex.withLock {
             block(collection)
         }
-        mcCoroutineScope.launch {
-            invokeListeners()
-        }
+        invokeListeners()
     }
 }
 
