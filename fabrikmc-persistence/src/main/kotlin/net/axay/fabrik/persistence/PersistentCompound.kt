@@ -4,10 +4,8 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 
 /**
- * Holds data which can be accessed fast because it is stored in memory.
- *
- * Additionally, the data will be stored persistently to the disk, if the
- * game decides to do so.
+ * Holds data which can be accessed fast because it is stored in memory. Additionally, the data
+ * will be stored persistently to the disk, if the game decides to do so.
  */
 abstract class PersistentCompound {
     @PublishedApi
