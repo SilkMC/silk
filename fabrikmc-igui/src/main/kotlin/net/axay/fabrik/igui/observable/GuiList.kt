@@ -4,7 +4,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import net.axay.fabrik.core.task.mcSyncLaunch
+import net.axay.fabrik.core.task.mcCoroutineScope
 
 /**
  * Parent class of the immutable [GuiList] and mutable [GuiMutableList].
@@ -53,15 +53,17 @@ class GuiMutableList<T>(collection: MutableList<T>) : AbstractGuiList<T, Mutable
     /**
      * Inside the given [block], you can mutate this list. All guis currently using this list will be
      * informed after that mutation, to update properly.
+     *
+     * This functions suspends until the mutation is complete.
+     *
+     * @return the job which updates the gui
      */
     suspend inline fun mutate(crossinline block: suspend (MutableList<T>) -> Unit) = coroutineScope {
-        launch {
-            mutateMutex.withLock {
-                block(collection)
-            }
-            mcSyncLaunch {
-                invokeListeners()
-            }
+        mutateMutex.withLock {
+            block(collection)
+        }
+        mcCoroutineScope.launch {
+            invokeListeners()
         }
     }
 }

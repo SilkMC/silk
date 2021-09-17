@@ -4,7 +4,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import net.axay.fabrik.core.task.mcSyncLaunch
+import net.axay.fabrik.core.task.mcCoroutineScope
 
 /**
  * A property which can be used to represent mutable state in a gui. You can use
@@ -43,13 +43,11 @@ class GuiProperty<T>(private var value: T) {
      * @return the job updating the icons and guis
      */
     suspend fun set(value: T) = coroutineScope {
-        launch {
-            setValueMutex.withLock {
-                this@GuiProperty.value = value
-            }
-            mcSyncLaunch {
-                onChangeListeners.forEach { it.invoke(value) }
-            }
+        setValueMutex.withLock {
+            this@GuiProperty.value = value
+        }
+        mcCoroutineScope.launch {
+            onChangeListeners.forEach { it.invoke(value) }
         }
     }
 }
