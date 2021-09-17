@@ -439,7 +439,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
 }
 
 /**
- * Creates a new command.
+ * Creates a new command. Opens a [LiteralCommandBuilder].
  *
  * @param name the name of the root command
  * @param register if true, the command will automatically be registered
@@ -455,7 +455,7 @@ inline fun command(
     }
 
 /**
- * Creates a new client command.
+ * Creates a new client command. Opens a [LiteralCommandBuilder].
  * This command will work on the client, even if the player
  * is connected to a third party server.
  *
