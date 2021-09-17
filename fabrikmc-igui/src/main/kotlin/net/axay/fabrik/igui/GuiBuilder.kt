@@ -7,7 +7,7 @@ import net.axay.fabrik.igui.DslAnnotations.TopLevel.GuiDsl
 import net.axay.fabrik.igui.elements.*
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.events.GuiCloseEvent
-import net.axay.fabrik.igui.observable.GuiList
+import net.axay.fabrik.igui.observable.AbstractGuiList
 import net.minecraft.item.ItemStack
 import net.minecraft.text.LiteralText
 import java.util.*
@@ -201,7 +201,7 @@ class GuiBuilder(
         @GuiCompoundDsl
         fun <E> compound(
             slots: GuiSlotCompound.SlotRange.Rectangle,
-            content: GuiList<E>,
+            content: AbstractGuiList<E, List<E>>,
             iconGenerator: (E) -> ItemStack,
             onClick: (suspend (event: GuiClickEvent, element: E) -> Unit)? = null,
         ): GuiCompound<E> {

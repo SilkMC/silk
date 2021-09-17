@@ -1,13 +1,13 @@
 package net.axay.fabrik.igui
 
 import net.axay.fabrik.igui.events.GuiClickEvent
-import net.axay.fabrik.igui.observable.GuiList
+import net.axay.fabrik.igui.observable.AbstractGuiList
 import net.minecraft.item.ItemStack
 
 class GuiCompound<E>(
     val guiType: GuiType,
     val slots: GuiSlotCompound.SlotRange.Rectangle,
-    val content: GuiList<E>,
+    val content: AbstractGuiList<E, List<E>>,
     private val iconGenerator: (E) -> ItemStack,
     private val onClick: (suspend (event: GuiClickEvent, element: E) -> Unit)?
 ) : GuiUseable() {
