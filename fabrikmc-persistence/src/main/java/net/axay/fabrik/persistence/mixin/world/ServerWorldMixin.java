@@ -33,7 +33,7 @@ public abstract class ServerWorldMixin implements CompoundProvider {
 
     @Shadow public abstract PersistentStateManager getPersistentStateManager();
 
-    @Inject(method = "<init>", at = @At("HEAD"))
+    @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> worldKey, DimensionType dimensionType, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean debugWorld, long seed, List<Spawner> spawners, boolean shouldTickTime, CallbackInfo ci) {
         getPersistentStateManager().getOrCreate(
             nbt -> CompoundPersistentState.Companion.fromNbt(nbt, compound),
