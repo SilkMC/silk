@@ -1,12 +1,12 @@
 # Module fabrikmc-game
 
-Several utilities not fitting for the core module. They can be useful for minigames, challenges and more - most likely on the server-side.
+Several utilities not fitting for the core module. They can be useful for mini-games, challenges and more - most likely on the server-side.
 
 ${dependencyNotice}
 
 # Package net.axay.fabrik.game.cooldown
 
-Functions for handling cooldowns for actions performed on or by entities, including players
+Functions for handling cooldown for actions performed on or by entities, including players
 
 # Package net.axay.fabrik.game.sideboard
 
