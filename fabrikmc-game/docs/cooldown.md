@@ -34,7 +34,7 @@ if (myCooldown.hasCooldown(entity).not()) {
 }
 ```
 
-### applyCooldown
+#### applyCooldown
 
 You can apply a cooldown instance using the [net.axay.fabrik.game.cooldown.Cooldown.applyCooldown] function.
 
@@ -47,7 +47,7 @@ myCooldown.hasCooldown(entity)
 
 Note: This function also takes a `delay` parameter, but that one is not required.
 
-### withCooldown
+#### withCooldown
 
 Often you want to execute some code if the player or entity does not have an active cooldown, and then apply the cooldown. This can be done in a short form using the [net.axay.fabrik.game.cooldown.Cooldown.withCooldown] function.
 
