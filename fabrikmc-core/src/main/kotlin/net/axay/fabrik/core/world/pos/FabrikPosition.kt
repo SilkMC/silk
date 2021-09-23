@@ -1,4 +1,4 @@
-package net.axay.fabrik.core.math
+package net.axay.fabrik.core.world.pos
 
 import kotlinx.serialization.Serializable
 import net.axay.fabrik.core.Fabrik
@@ -55,7 +55,7 @@ data class FabrikPosition(
     val world get() = if (worldIdentifier != null) Fabrik.currentServer?.getWorld(worldKey) else null
     val blockPos get() = BlockPos(x.toInt(), y.toInt(), z.toInt())
     val roundedBlockPos get() = BlockPos(x.roundToInt(), y.roundToInt(), z.roundToInt())
-    val posInChunk get() = PositionInChunk(blockPos)
+    val posInChunk get() = PosInChunk(blockPos)
     val chunkPos get() = ChunkPos(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z))
     val chunkSectionPos: ChunkSectionPos get() = ChunkSectionPos.from(blockPos)
     val vec3i get() = Vec3i(x, y, z)

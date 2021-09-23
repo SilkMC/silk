@@ -14,3 +14,4 @@ val modEntrypoints by extra(linkedMapOf(
     "main" to listOf("net.axay.fabrik.core.internal.FabrikKt::init"),
     "client" to listOf("net.axay.fabrik.core.internal.FabrikKt::initClient")
 ))
+val modMixinFiles by extra(listOf("${rootProject.name}-core.mixins.json"))

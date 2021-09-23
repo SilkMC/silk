@@ -1,6 +1,6 @@
 # Module fabrikmc-core
 
-The core module contains simple, stable and lightweight extensions for some Minecraft classes. It does not use any
+The core module contains simple, stable and lightweight extensions for some Minecraft classes. It does not use any unstable
 mixins.
 
 Here you will find an `ItemStack` builder, position and math utilities, a `Text` builder and coroutine task functions.
