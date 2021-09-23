@@ -6,14 +6,14 @@ import kotlinx.coroutines.launch
 
 /**
  * A [CoroutineDispatcher] which executes code synchronously to the
- * MinecraftServer main thread.
+ * [net.minecraft.server.MinecraftServer] main server thread.
  */
 lateinit var mcCoroutineDispatcher: CoroutineDispatcher
     internal set
 
 /**
- * A [CoroutineScope] using the current MinecraftServer
- * as the Dispatcher.
+ * A [CoroutineScope] using the current [net.minecraft.server.MinecraftServer]
+ * as the [CoroutineDispatcher].
  */
 lateinit var mcCoroutineScope: CoroutineScope
     internal set
