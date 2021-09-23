@@ -3,7 +3,7 @@
 The core module contains simple, stable and leightweight extensions for some Minecraft classes. It does not use any
 mixins.
 
-Here you will find ItemStack builders, a Sideboard API, Position utilities and coroutine task functions.
+Here you will find an `ItemStack` builder, position and math utilities, a `Text` builder and coroutine task functions.
 
 ${dependencyNotice}
 
@@ -34,11 +34,6 @@ Operator functions and extensions for working with vectors
 # Package net.axay.fabrik.core.packet
 
 Simple extensions for sending packets
-
-# Package net.axay.fabrik.core.sideboard
-
-A sideboard builder (displayed using scoreboards), supporting boards with changing content. The sideboard can be
-displayed to a selection of players.
 
 # Package net.axay.fabrik.core.task
 

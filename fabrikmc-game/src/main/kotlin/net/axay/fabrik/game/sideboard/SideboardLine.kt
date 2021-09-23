@@ -1,4 +1,4 @@
-package net.axay.fabrik.core.sideboard
+package net.axay.fabrik.game.sideboard
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

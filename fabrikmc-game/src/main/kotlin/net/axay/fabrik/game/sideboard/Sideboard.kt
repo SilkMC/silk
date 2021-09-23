@@ -1,10 +1,10 @@
-package net.axay.fabrik.core.sideboard
+package net.axay.fabrik.game.sideboard
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import net.axay.fabrik.core.Fabrik
-import net.axay.fabrik.core.sideboard.internal.FabrikSideboardScoreboard
+import net.axay.fabrik.game.sideboard.internal.FabrikSideboardScoreboard
 import net.axay.fabrik.core.task.fabrikCoroutineScope
 import net.axay.fabrik.core.task.initWithServerAsync
 import net.minecraft.server.network.ServerPlayerEntity

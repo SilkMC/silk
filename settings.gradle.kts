@@ -17,8 +17,9 @@ pluginManagement {
 
 include("$projectName-all")
 
-include("$projectName-core")
 include("$projectName-commands")
+include("$projectName-core")
+include("$projectName-game")
 include("$projectName-igui")
 include("$projectName-nbt")
 include("$projectName-persistence")

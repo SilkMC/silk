@@ -1,4 +1,4 @@
-package net.axay.fabrik.core.sideboard.internal
+package net.axay.fabrik.game.sideboard.internal
 
 import net.axay.fabrik.core.packet.sendPacket
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
