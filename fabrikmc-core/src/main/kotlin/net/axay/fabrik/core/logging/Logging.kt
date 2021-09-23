@@ -1,6 +1,13 @@
 package net.axay.fabrik.core.logging
 
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+
+/**
+ * A shortcut for [LogManager.getLogger].
+ */
+@Suppress("NOTHING_TO_INLINE")
+inline fun logger(): Logger = LogManager.getLogger()
 
 /**
  * Logs a message with the [org.apache.logging.log4j.Level.INFO] level.
