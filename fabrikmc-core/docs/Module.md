@@ -11,6 +11,10 @@ ${dependencyNotice}
 
 Contains the global `Fabrik` object
 
+# Package net.axay.fabrik.core.entity
+
+General extensions for entities
+
 # Package net.axay.fabrik.core.item
 
 ItemStack builder and ItemStack modification extensions
@@ -23,9 +27,9 @@ Utilities related to the Kotlin language itself, used by fabrikmc itself
 
 Simple logging, integrated into Minecraft's logging system
 
-# Package net.axay.fabrik.core.math
+# Package net.axay.fabrik.core.math.geometry
 
-Conversion between different types of Locations
+Generators for circles, spheres and more
 
 # Package net.axay.fabrik.core.math.vector
 
@@ -42,3 +46,11 @@ Coroutine utilities (for example a Minecraft main thread dispatcher) and corouti
 # Package net.axay.fabrik.core.text
 
 Text builder for building literal text objects
+
+# Package net.axay.fabrik.core.world.block
+
+Helper functions to get more information from blocks and block states
+
+# Package net.axay.fabrik.core.world.pos
+
+Contains position classes which are more simple or special and therefore fitting for specific use cases
