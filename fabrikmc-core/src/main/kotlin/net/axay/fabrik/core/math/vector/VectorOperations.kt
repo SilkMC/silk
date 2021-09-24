@@ -18,6 +18,10 @@ operator fun Vec3d.times(vec: Vec3d): Vec3d = multiply(vec)
 operator fun Vec3d.div(vec: Vec3d): Vec3d = Vec3d(x / vec.x, y / vec.y, z / vec.z)
 operator fun Vec3d.compareTo(vec: Vec3d) = lengthSquared().compareTo(vec.lengthSquared())
 
+operator fun Vec3d.component1() = x
+operator fun Vec3d.component2() = y
+operator fun Vec3d.component3() = z
+
 
 operator fun Vec3f.not(): Vec3f = times(-1f)
 
@@ -33,6 +37,10 @@ operator fun Vec3f.times(vec: Vec3f): Vec3f = Vec3f(x * vec.x, y * vec.y, z * ve
 operator fun Vec3f.div(vec: Vec3f): Vec3f = Vec3f(x / vec.x, y / vec.y, z / vec.z)
 operator fun Vec3f.compareTo(vec: Vec3f) = Vec3d(this).lengthSquared().compareTo(Vec3d(vec).lengthSquared())
 
+operator fun Vec3f.component1() = x
+operator fun Vec3f.component2() = y
+operator fun Vec3f.component3() = z
+
 
 operator fun Vec3i.not(): Vec3i = times(-1)
 
@@ -47,3 +55,7 @@ inline operator fun <reified T : Vec3i> T.minus(vec: Vec3i): T = add(!vec) as T
 operator fun Vec3i.times(vec: Vec3i): Vec3i = Vec3i(x * vec.x, y * vec.y, z * vec.z)
 operator fun Vec3i.div(vec: Vec3i): Vec3i = Vec3i(x / vec.x, y / vec.y, z / vec.z)
 operator fun Vec3i.compareTo(vec: Vec3i) = Vec3d(x.toDouble(), y.toDouble(), z.toDouble()).lengthSquared().compareTo(Vec3d(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble()).lengthSquared())
+
+operator fun Vec3i.component1() = x
+operator fun Vec3i.component2() = y
+operator fun Vec3i.component3() = z
