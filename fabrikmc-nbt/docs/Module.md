@@ -31,10 +31,10 @@ val nbt = Nbt {
 
 Serialization, conversion and builders for NBT
 
-# Package net.axay.fabrik.nbt.decoder
+# Package net.axay.fabrik.nbt.serialization.decoder
 
 Logic for decoding an NbtElement to a serializable class
 
-# Package net.axay.fabrik.nbt.encoder
+# Package net.axay.fabrik.nbt.serialization.encoder
 
 Logic for encoding a serializable class to an NbtElement

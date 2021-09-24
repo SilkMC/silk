@@ -1,4 +1,4 @@
-package net.axay.fabrik.nbt.encoder
+package net.axay.fabrik.nbt.serialization.encoder
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
@@ -7,10 +7,13 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.modules.SerializersModule
-import net.axay.fabrik.nbt.Nbt
-import net.axay.fabrik.nbt.internal.*
+import net.axay.fabrik.nbt.serialization.Nbt
+import net.axay.fabrik.nbt.serialization.internal.*
 import net.axay.fabrik.nbt.toNbt
-import net.minecraft.nbt.*
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.NbtString
 
 @ExperimentalSerializationApi
 abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {

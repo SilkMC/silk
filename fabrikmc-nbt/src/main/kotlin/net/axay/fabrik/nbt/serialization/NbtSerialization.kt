@@ -1,10 +1,10 @@
-package net.axay.fabrik.nbt
+package net.axay.fabrik.nbt.serialization
 
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import net.axay.fabrik.nbt.decoder.NbtRootDecoder
-import net.axay.fabrik.nbt.encoder.NbtRootEncoder
+import net.axay.fabrik.nbt.serialization.decoder.NbtRootDecoder
+import net.axay.fabrik.nbt.serialization.encoder.NbtRootEncoder
 import net.minecraft.nbt.NbtElement
 
 /**

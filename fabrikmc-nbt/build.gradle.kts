@@ -10,4 +10,3 @@ plugins {
 }
 
 val modName by extra("$projectTitle NBT")
-val modMixinFiles by extra(listOf("${rootProject.name}-nbt.mixins.json"))

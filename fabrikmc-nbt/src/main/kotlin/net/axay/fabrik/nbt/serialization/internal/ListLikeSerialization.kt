@@ -1,4 +1,4 @@
-package net.axay.fabrik.nbt.internal
+package net.axay.fabrik.nbt.serialization.internal
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer

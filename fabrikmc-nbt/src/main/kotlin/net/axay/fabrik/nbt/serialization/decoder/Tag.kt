@@ -1,4 +1,4 @@
-package net.axay.fabrik.nbt.decoder
+package net.axay.fabrik.nbt.serialization.decoder
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -10,9 +10,9 @@ import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import net.axay.fabrik.nbt.Nbt
-import net.axay.fabrik.nbt.UnknownKeyException
-import net.axay.fabrik.nbt.internal.*
+import net.axay.fabrik.nbt.serialization.Nbt
+import net.axay.fabrik.nbt.serialization.UnknownKeyException
+import net.axay.fabrik.nbt.serialization.internal.*
 import net.minecraft.nbt.*
 
 @ExperimentalSerializationApi

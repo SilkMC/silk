@@ -1,8 +1,0 @@
-{
-  "package": "net.axay.fabrik.nbt.mixin",
-  "required": true,
-  "compatibilityLevel": "JAVA_16",
-  "mixins": [
-    "NbtCompoundAccessor"
-  ]
-}

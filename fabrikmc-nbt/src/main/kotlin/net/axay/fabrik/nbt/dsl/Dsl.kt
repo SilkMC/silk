@@ -1,5 +1,6 @@
-package net.axay.fabrik.nbt
+package net.axay.fabrik.nbt.dsl
 
+import net.axay.fabrik.nbt.toNbt
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
