@@ -6,7 +6,13 @@ import net.axay.fabrik.core.world.pos.Pos3i
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3i
 
+/**
+ * Contains the core sphere generator functions.
+ */
 object Sphere {
+    /**
+     * Produces positions for a filled sphere around x=0, y=0, z=0.
+     */
     inline fun produceFilledSpherePositions(radius: Int, consumer: (Pos3i) -> Unit) {
         for (xIter in (-radius)..(+radius))
             for (yIter in (-radius)..(+radius))
@@ -19,12 +25,18 @@ object Sphere {
                     ) consumer(Pos3i(xIter, yIter, zIter))
     }
 
+    /**
+     * Builds a set using [produceFilledSpherePositions].
+     */
     fun filledSpherePositionSet(radius: Int) =
         HashSet<Pos3i>().apply {
             produceFilledSpherePositions(radius) { add(it) }
         }
 }
 
+/**
+ * Produces positions for a filled sphere around this position.
+ */
 inline fun Vec3i.produceFilledSpherePositions(radius: Int, crossinline consumer: (BlockPos) -> Unit) {
     val x = this.x
     val y = this.y
@@ -34,6 +46,9 @@ inline fun Vec3i.produceFilledSpherePositions(radius: Int, crossinline consumer:
     }
 }
 
+/**
+ * Builds a set using [produceFilledSpherePositions].
+ */
 fun Vec3i.filledSpherePositionSet(radius: Int) =
     HashSet<BlockPos>().apply {
         produceFilledSpherePositions(radius) { add(it) }
