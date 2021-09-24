@@ -29,7 +29,15 @@ val nbt = Nbt {
 
 # Package net.axay.fabrik.nbt
 
-Serialization, conversion and builders for NBT
+Contains `NbtCompound` access functions and conversion functions to create `NbtElement`s
+
+# Package net.axay.fabrik.nbt.dsl
+
+NBT builder DSL for `NbtCompound` and `NbtList`
+
+# Package net.axay.fabrik.nbt.serialization
+
+The main and public NBT serialization API
 
 # Package net.axay.fabrik.nbt.serialization.decoder
 
