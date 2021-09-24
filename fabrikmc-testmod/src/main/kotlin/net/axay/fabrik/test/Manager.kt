@@ -1,11 +1,9 @@
 package net.axay.fabrik.test
 
-import net.axay.fabrik.test.commands.guiCommand
-import net.axay.fabrik.test.commands.persistenceTestCommand
-import net.axay.fabrik.test.commands.sideboardCommand
-import net.axay.fabrik.test.commands.textTestCommand
+import net.axay.fabrik.test.commands.*
 
 fun init() {
+    circleCommand
     guiCommand
     persistenceTestCommand
     textTestCommand
