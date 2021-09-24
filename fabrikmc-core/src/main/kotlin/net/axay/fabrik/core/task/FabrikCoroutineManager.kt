@@ -5,7 +5,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import net.axay.fabrik.core.logging.logger
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.minecraft.client.MinecraftClient
 
 internal object FabrikCoroutineManager {
     private val log = logger()
@@ -19,7 +18,8 @@ internal object FabrikCoroutineManager {
     }
 
     fun initClient() {
-        mcClientCoroutineDispatcher = MinecraftClient.getInstance().asCoroutineDispatcher()
+        // explicit import required, avoid mentioning this class in a server environment
+        mcClientCoroutineDispatcher = net.minecraft.client.MinecraftClient.getInstance().asCoroutineDispatcher()
         mcClientCoroutineScope = CoroutineScope(SupervisorJob() + mcClientCoroutineDispatcher)
         log.info("Initialized mcClientCoroutineScope (MinecraftClient as executor)")
     }
