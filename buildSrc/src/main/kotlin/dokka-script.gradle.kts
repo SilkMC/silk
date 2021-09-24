@@ -1,5 +1,6 @@
 import BuildConstants.fabricApiVersion
 import BuildConstants.yarnMappingsVersion
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URL
 
 plugins {
@@ -24,7 +25,7 @@ tasks {
         expand(properties)
     }
 
-    withType<org.jetbrains.dokka.gradle.DokkaTaskPartial> {
+    withType<DokkaTaskPartial> {
         dependsOn(processDokkaMarkdown)
 
         dokkaSourceSets {
