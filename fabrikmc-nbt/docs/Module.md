@@ -1,7 +1,6 @@
 # Module fabrikmc-nbt
 
-Provides NBT serialization and deserialization using kotlinx.serialization. This allows you to serialize any class
-annotated with `@Serializable` to an `NbtElement`. Additionally, this module contains some NBT utilities, like simple
+Provides NBT serialization and deserialization using kotlinx.serialization. Additionally, this module contains some NBT utilities, like simple
 conversion extensions.
 
 ${dependencyNotice}
