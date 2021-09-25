@@ -1,9 +1,9 @@
 package net.axay.fabrik.persistence
 
 import net.axay.fabrik.core.logging.logError
-import net.axay.fabrik.nbt.Nbt
-import net.axay.fabrik.nbt.decodeFromNbtElement
-import net.axay.fabrik.nbt.encodeToNbtElement
+import net.axay.fabrik.nbt.serialization.Nbt
+import net.axay.fabrik.nbt.serialization.decodeFromNbtElement
+import net.axay.fabrik.nbt.serialization.encodeToNbtElement
 import net.minecraft.nbt.NbtElement
 import net.minecraft.util.Identifier
 import kotlin.reflect.full.isSubclassOf
