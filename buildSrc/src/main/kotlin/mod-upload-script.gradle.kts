@@ -20,6 +20,7 @@ plugins {
 val fabrikModules = listOf(
     project(":${rootProject.name}-commands"),
     project(":${rootProject.name}-core"),
+    project(":${rootProject.name}-game"),
     project(":${rootProject.name}-igui"),
     project(":${rootProject.name}-nbt"),
     project(":${rootProject.name}-persistence")
