@@ -15,6 +15,7 @@ import kotlinx.serialization.serializer
 import net.axay.fabrik.core.Fabrik
 import net.axay.fabrik.core.kotlin.ReadWriteMutex
 import net.axay.fabrik.network.internal.FabrikNetwork
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
@@ -31,6 +32,18 @@ import net.minecraft.util.Identifier
  */
 inline fun <reified T : Any> s2cPacket(id: Identifier, cbor: Cbor = Cbor) =
     ServerToClientPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
+
+/**
+ * Creates a new [ClientToServerPacketDefinition]. This packet can only be sent
+ * from the client to the current server. The packet can only be sent
+ * in a typesafe way. The type is specified by [T].
+ *
+ * @param id the [Identifier] allowing communication between server and client as they
+ * both know this identifier
+ * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
+ */
+inline fun <reified T : Any> c2sPacket(id: Identifier, cbor: Cbor = Cbor) =
+    ClientToServerPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
 
 class ServerToClientPacketDefinition<T : Any>(
     id: Identifier,
@@ -63,9 +76,36 @@ class ServerToClientPacketDefinition<T : Any>(
     }
 
     /**
-     * Executes the given [receiver] as a callback when this packet is received.
+     * Executes the given [receiver] as a callback when this packet is received on the client-side.
      */
     fun receiveOnClient(receiver: suspend (T) -> Unit) {
+        registerReceiver(receiver, registeredDefinitions)
+    }
+}
+
+class ClientToServerPacketDefinition<T : Any>(
+    id: Identifier,
+    cbor: Cbor,
+    deserializer: DeserializationStrategy<T>,
+) : AbstractPacketDefinition<T>(id, cbor, deserializer) {
+    companion object {
+        internal val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*>>()
+    }
+
+    @PublishedApi
+    internal fun push(buffer: PacketByteBuf) {
+        ClientPlayNetworking.send(FabrikNetwork.packetId, buffer)
+    }
+
+    /**
+     * Sends the given [value] as a packet to the server.
+     */
+    inline fun <reified T> send(value: T) = push(createBuffer(value))
+
+    /**
+     * Executes the given [receiver] as a callback when this packet is received on the server-side.
+     */
+    fun receiveOnServer(receiver: suspend (T) -> Unit) {
         registerReceiver(receiver, registeredDefinitions)
     }
 }
