@@ -63,14 +63,14 @@ class ServerToClientPacketDefinition<T : Any>(
      * Sends the given [value] to the given [player]. This will result in the
      * serialization of the given value.
      */
-    inline fun <reified T> send(value: T, player: ServerPlayerEntity) =
+    inline fun <reified TPacket : T> send(value: TPacket, player: ServerPlayerEntity) =
         push(createBuffer(value), player)
 
     /**
      * Sends the given [value] to **all** players on the server. This will result the serialization
      * of the given value.
      */
-    inline fun <reified T> sendToAll(value: T) {
+    inline fun <reified TPacket : T> sendToAll(value: TPacket) {
         val buffer = createBuffer(value)
         Fabrik.currentServer?.playerManager?.playerList?.forEach { push(buffer, it) }
     }
@@ -100,7 +100,7 @@ class ClientToServerPacketDefinition<T : Any>(
     /**
      * Sends the given [value] as a packet to the server.
      */
-    inline fun <reified T> send(value: T) = push(createBuffer(value))
+    inline fun <reified TPacket : T> send(value: TPacket) = push(createBuffer(value))
 
     /**
      * Executes the given [receiver] as a callback when this packet is received on the server-side.
@@ -159,7 +159,7 @@ abstract class AbstractPacketDefinition<T : Any> internal constructor(
     }
 
     @PublishedApi
-    internal inline fun <reified T> createBuffer(value: T): PacketByteBuf {
+    internal inline fun <reified TPacket : T> createBuffer(value: TPacket): PacketByteBuf {
         val buffer = PacketByteBuf(Unpooled.wrappedBuffer(cbor.encodeToByteArray(value)))
         buffer.writeString(idString)
         return buffer
