@@ -22,6 +22,7 @@ include("$projectName-core")
 include("$projectName-game")
 include("$projectName-igui")
 include("$projectName-nbt")
+include("$projectName-network")
 include("$projectName-persistence")
 
 include("$projectName-testmod")
