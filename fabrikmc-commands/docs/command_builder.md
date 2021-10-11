@@ -1,5 +1,7 @@
 # Package net.axay.fabrik.commands
 
+Contains all command builder functions
+
 ## The command builder DSL
 
 ### Create a new command

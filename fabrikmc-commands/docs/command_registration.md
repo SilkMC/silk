@@ -1,5 +1,7 @@
 # Package net.axay.fabrik.commands.registration
 
+Utilities for registering commands
+
 ## Command registration
 
 Commands created using the [net.axay.fabrik.commands.command] builder function **will be registered automatically** if called during initialization of your

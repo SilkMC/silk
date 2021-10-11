@@ -1,5 +1,7 @@
 # Package net.axay.fabrik.game.cooldown
 
+Functions for handling cooldown for actions performed on or by entities, including players
+
 ## Cooldown management
 
 ### Create a cooldown "key"

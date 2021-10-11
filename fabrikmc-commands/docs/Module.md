@@ -8,11 +8,3 @@ ${dependencyNotice}
 ## Usage
 
 Click on the modules below to see how to create and register commands.
-
-# Package net.axay.fabrik.commands
-
-Contains all command builder functions
-
-# Package net.axay.fabrik.commands.registration
-
-Utilities for registering commands
