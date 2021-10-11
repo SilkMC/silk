@@ -19,7 +19,7 @@ Now annotate that class with `@Serializable`.
 
 ### Packet definition instance
 
-Create a packet definition instance, this class holds information about the packet type and the packet type, and
+Create a packet definition instance, this class holds information about the packet type and the packet id, and
 provides you with functions for sending and receiving packets.
 
 #### Server to client
