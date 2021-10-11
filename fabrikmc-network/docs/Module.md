@@ -7,21 +7,22 @@ ${dependencyNotice}
 
 ## Define a packet
 
-## Create your packet class
+### Create your packet class
 
 You have to create a serializable class representing your packet first.
 
 ```kt
-@Serializable
 data class Person(val name: String, val age: Int)
 ```
 
-## Packet definition instance
+Now annotate that class with `@Serializable`.
+
+### Packet definition instance
 
 Create a packet definition instance, this class holds information about the packet type and the packet type, and
 provides you with functions for sending and receiving packets.
 
-### Server to client
+#### Server to client
 
 Use the [net.axay.fabrik.network.packet.s2cPacket] function.
 
@@ -29,7 +30,7 @@ Use the [net.axay.fabrik.network.packet.s2cPacket] function.
 val personPacket = s2cPacket<Person>(Identifier("mymod", "personpacket"))
 ```
 
-### Client to server
+#### Client to server
 
 Use the [net.axay.fabrik.network.packet.c2sPacket] function.
 
@@ -84,6 +85,6 @@ personPacket.receiveOnServer {
 }
 ```
 
-## Package net.axay.fabrik.network.packet
+# Package net.axay.fabrik.network.packet
 
 Utilities for creating client-to-server and server-to-client packets

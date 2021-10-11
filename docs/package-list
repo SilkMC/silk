@@ -33,5 +33,7 @@ net.axay.fabrik.nbt.dsl
 net.axay.fabrik.nbt.serialization
 net.axay.fabrik.nbt.serialization.decoder
 net.axay.fabrik.nbt.serialization.encoder
+module:fabrikmc-network
+net.axay.fabrik.network.packet
 module:fabrikmc-persistence
 net.axay.fabrik.persistence
