@@ -15,17 +15,13 @@ internal class FabrikNetwork : ModInitializer, ClientModInitializer {
 
     override fun onInitialize() {
         ServerPlayNetworking.registerGlobalReceiver(packetId) { server, player, handler, buf, responseSender ->
-            val bytes = buf.readByteArray()
-            val id = buf.readString()
-            ClientToServerPacketDefinition.registeredDefinitions[id]?.onReceive(bytes)
+            ClientToServerPacketDefinition.onReceive(buf.readByteArray(), buf.readString())
         }
     }
 
     override fun onInitializeClient() {
         ClientPlayNetworking.registerGlobalReceiver(packetId) { client, handler, buf, responseSender ->
-            val bytes = buf.readByteArray()
-            val id = buf.readString()
-            ServerToClientPacketDefinition.registeredDefinitions[id]?.onReceive(bytes)
+            ServerToClientPacketDefinition.onReceive(buf.readByteArray(), buf.readString())
         }
     }
 }

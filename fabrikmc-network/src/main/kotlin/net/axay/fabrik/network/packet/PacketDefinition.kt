@@ -50,9 +50,7 @@ class ServerToClientPacketDefinition<T : Any>(
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T>(id, cbor, deserializer) {
-    companion object {
-        internal val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*>>()
-    }
+    companion object : DefinitionRegistry()
 
     @PublishedApi
     internal fun push(buffer: PacketByteBuf, player: ServerPlayerEntity) {
@@ -79,7 +77,7 @@ class ServerToClientPacketDefinition<T : Any>(
      * Executes the given [receiver] as a callback when this packet is received on the client-side.
      */
     fun receiveOnClient(receiver: suspend (T) -> Unit) {
-        registerReceiver(receiver, registeredDefinitions)
+        registerReceiver(receiver, Companion)
     }
 }
 
@@ -88,9 +86,7 @@ class ClientToServerPacketDefinition<T : Any>(
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T>(id, cbor, deserializer) {
-    companion object {
-        internal val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*>>()
-    }
+    companion object : DefinitionRegistry()
 
     @PublishedApi
     internal fun push(buffer: PacketByteBuf) {
@@ -106,14 +102,14 @@ class ClientToServerPacketDefinition<T : Any>(
      * Executes the given [receiver] as a callback when this packet is received on the server-side.
      */
     fun receiveOnServer(receiver: suspend (T) -> Unit) {
-        registerReceiver(receiver, registeredDefinitions)
+        registerReceiver(receiver, Companion)
     }
 }
 
 abstract class AbstractPacketDefinition<T : Any> internal constructor(
     id: Identifier,
     val cbor: Cbor,
-    val deserializer: DeserializationStrategy<T>,
+    private val deserializer: DeserializationStrategy<T>,
 ) {
     companion object {
         /**
@@ -122,39 +118,51 @@ abstract class AbstractPacketDefinition<T : Any> internal constructor(
         val packetCoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     }
 
+    open class DefinitionRegistry {
+        private val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*>>()
+
+        private val definitionLock = ReadWriteMutex()
+
+        internal suspend fun registerDefinition(definition: AbstractPacketDefinition<*>) {
+            definitionLock.write {
+                registeredDefinitions[definition.idString] = definition
+            }
+        }
+
+        internal fun onReceive(bytes: ByteArray, channel: String) {
+            packetCoroutineScope.launch {
+                definitionLock.read { registeredDefinitions[channel] }?.onReceive(bytes)
+            }
+        }
+    }
+
     val idString = id.toString()
 
-    internal val registeredReceivers = ArrayList<suspend (T) -> Unit>()
+    private val registeredReceivers = ArrayList<suspend (T) -> Unit>()
 
     private val receiverLock = ReadWriteMutex()
 
-    internal fun onReceive(bytes: ByteArray) {
-        packetCoroutineScope.launch {
-            receiverLock.read {
-                if (registeredReceivers.isNotEmpty()) {
-                    val value = deserialize(bytes)
-                    registeredReceivers.forEach { receiver ->
-                        receiver(value)
-                    }
+    private suspend fun onReceive(bytes: ByteArray) {
+        receiverLock.read {
+            if (registeredReceivers.isNotEmpty()) {
+                val value = deserialize(bytes)
+                registeredReceivers.forEach { receiver ->
+                    receiver(value)
                 }
             }
         }
     }
 
-    protected fun registerReceiver(
-        receiver: suspend (T) -> Unit,
-        definitionRegistry: MutableMap<String, AbstractPacketDefinition<*>>,
-    ) {
+    protected fun registerReceiver(receiver: suspend (T) -> Unit, definitionRegistry: DefinitionRegistry) {
         packetCoroutineScope.launch {
+            definitionRegistry.registerDefinition(this@AbstractPacketDefinition)
             receiverLock.write {
-                if (!definitionRegistry.containsKey(idString))
-                    definitionRegistry[idString] = this@AbstractPacketDefinition
                 registeredReceivers += receiver
             }
         }
     }
 
-    protected fun deserialize(byteArray: ByteArray): T {
+    private fun deserialize(byteArray: ByteArray): T {
         return cbor.decodeFromByteArray(deserializer, byteArray)
     }
 
