@@ -465,7 +465,7 @@ inline fun command(
 @Environment(EnvType.CLIENT)
 inline fun clientCommand(
     name: String,
-    register: Boolean = false,
+    register: Boolean = true,
     builder: LiteralCommandBuilder<FabricClientCommandSource>.() -> Unit = {},
 ): LiteralArgumentBuilder<FabricClientCommandSource> =
     LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder).toBrigardier().apply {
