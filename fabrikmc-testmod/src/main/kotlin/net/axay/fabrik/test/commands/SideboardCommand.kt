@@ -1,11 +1,10 @@
 package net.axay.fabrik.test.commands
 
-import net.axay.fabrik.commands.command
+import net.axay.fabrik.core.text.literalText
 import net.axay.fabrik.game.sideboard.showSideboard
 import net.axay.fabrik.game.sideboard.sideboard
-import net.axay.fabrik.core.text.literalText
 
-val sideboardCommand = command("sideboard", true) {
+val sideboardCommand = testCommand("sideboard") {
     argument<String>("example") { example ->
         suggestList { sideboardExamples.keys }
         runs {

@@ -1,6 +1,5 @@
 package net.axay.fabrik.test.commands
 
-import net.axay.fabrik.commands.command
 import net.axay.fabrik.core.text.literalText
 import net.minecraft.text.ClickEvent
 import net.minecraft.text.HoverEvent
@@ -35,7 +34,7 @@ private val textExamples = mapOf(
     }
 )
 
-val textTestCommand = command("text", true) {
+val textTestCommand = testCommand("text") {
     argument<String>("textexample") { example ->
         suggestList { textExamples.keys }
         runs {

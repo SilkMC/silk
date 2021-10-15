@@ -1,7 +1,6 @@
 package net.axay.fabrik.test.commands
 
 import net.axay.fabrik.commands.LiteralCommandBuilder
-import net.axay.fabrik.commands.command
 import net.axay.fabrik.core.math.geometry.produceCirclePositions
 import net.axay.fabrik.core.math.geometry.produceFilledCirclePositions
 import net.axay.fabrik.core.math.geometry.produceFilledSpherePositions
@@ -10,7 +9,7 @@ import net.minecraft.command.argument.BlockStateArgument
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.network.ServerPlayerEntity
 
-val circleCommand = command("circle") {
+val circleCommand = testCommand("circle") {
     literal("hollow") {
         buildCircleLikeLogic { radius, blockState ->
             blockPos.produceCirclePositions(radius) { world.setBlockState(it, blockState) }
@@ -24,7 +23,7 @@ val circleCommand = command("circle") {
     }
 }
 
-val sphereCommand = command("sphere") {
+val sphereCommand = testCommand("sphere") {
     literal("filled") {
         buildCircleLikeLogic { radius, blockState ->
             blockPos.produceFilledSpherePositions(radius) { world.setBlockState(it, blockState) }

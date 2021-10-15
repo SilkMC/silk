@@ -1,7 +1,6 @@
 package net.axay.fabrik.test.commands
 
 import kotlinx.serialization.Serializable
-import net.axay.fabrik.commands.command
 import net.axay.fabrik.core.text.sendText
 import net.axay.fabrik.persistence.compoundKey
 import net.axay.fabrik.persistence.persistentCompound
@@ -13,7 +12,7 @@ private data class Person(val name: String, val age: Int, val friends: List<Stri
 private val simpleIntKey = compoundKey<Int>("simpleint".testmodId)
 private val personKey = compoundKey<Person>("person".testmodId)
 
-val persistenceTestCommand = command("persistence") {
+val persistenceTestCommand = testCommand("persistence") {
     literal("player") {
         literal("set") runs {
             source.player.persistentCompound.let {
