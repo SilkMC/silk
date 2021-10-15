@@ -2,7 +2,6 @@
 
 package net.axay.fabrik.network.packet
 
-import io.netty.buffer.Unpooled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -16,6 +15,7 @@ import net.axay.fabrik.core.Fabrik
 import net.axay.fabrik.core.kotlin.ReadWriteMutex
 import net.axay.fabrik.network.internal.FabrikNetwork
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
@@ -168,7 +168,8 @@ abstract class AbstractPacketDefinition<T : Any> internal constructor(
 
     @PublishedApi
     internal inline fun <reified TPacket : T> createBuffer(value: TPacket): PacketByteBuf {
-        val buffer = PacketByteBuf(Unpooled.wrappedBuffer(cbor.encodeToByteArray(value)))
+        val buffer = PacketByteBufs.create()
+        buffer.writeByteArray(cbor.encodeToByteArray(value))
         buffer.writeString(idString)
         return buffer
     }
