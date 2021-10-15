@@ -50,10 +50,16 @@ data class FabricModConfiguration(
     val name: String,
     val description: String,
     val authors: List<String>,
-    val entrypoints: LinkedHashMap<String, List<String>> = linkedMapOf(),
+    val entrypoints: LinkedHashMap<String, List<Entrypoint>> = linkedMapOf(),
     val mixins: List<String> = emptyList(),
     val depends: LinkedHashMap<String, String>,
-)
+) {
+    @Serializable
+    data class Entrypoint(
+        val adapter: String,
+        val value: String,
+    )
+}
 
 val modName: String by extra
 val modEntrypoints: LinkedHashMap<String, List<String>>? by extra(null)
@@ -69,7 +75,9 @@ tasks {
             modName,
             project.description.toString(),
             authors,
-            modEntrypoints ?: linkedMapOf(),
+            modEntrypoints?.mapValuesTo(LinkedHashMap()) {
+                it.value.map { target -> FabricModConfiguration.Entrypoint("kotlin", target) }
+            } ?: linkedMapOf(),
             modMixinFiles ?: emptyList(),
             linkedMapOf(
                 "fabric" to "*",
