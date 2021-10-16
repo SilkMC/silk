@@ -53,7 +53,7 @@ class ServerToClientPacketDefinition<T : Any>(
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T>(id, cbor, deserializer) {
-    private companion object : DefinitionRegistry()
+    internal companion object : DefinitionRegistry()
 
     @PublishedApi
     internal fun push(buffer: PacketByteBuf, player: ServerPlayerEntity) {
@@ -92,7 +92,7 @@ class ClientToServerPacketDefinition<T : Any>(
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T>(id, cbor, deserializer) {
-    private companion object : DefinitionRegistry()
+    internal companion object : DefinitionRegistry()
 
     @PublishedApi
     internal fun push(buffer: PacketByteBuf) {
@@ -128,7 +128,7 @@ abstract class AbstractPacketDefinition<T : Any> internal constructor(
         val packetCoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     }
 
-    protected open class DefinitionRegistry {
+    internal open class DefinitionRegistry {
         private val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*>>()
 
         private val definitionLock = ReadWriteMutex()
@@ -166,7 +166,7 @@ abstract class AbstractPacketDefinition<T : Any> internal constructor(
         }
     }
 
-    protected fun registerReceiver(receiver: suspend (T) -> Unit, definitionRegistry: DefinitionRegistry) {
+    internal fun registerReceiver(receiver: suspend (T) -> Unit, definitionRegistry: DefinitionRegistry) {
         packetCoroutineScope.launch {
             definitionRegistry.registerDefinition(this@AbstractPacketDefinition)
             receiverLock.write {
