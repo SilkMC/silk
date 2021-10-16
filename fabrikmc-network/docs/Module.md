@@ -72,16 +72,16 @@ This can be done using the [net.axay.fabrik.network.packet.ServerToClientPacketD
 ### Server to client
 
 ```kt
-personPacket.receiveOnClient {
-    println(it)
+personPacket.receiveOnClient { packet, context ->
+    println(packet)
 }
 ```
 
 ### Client to server
 
 ```kt
-personPacket.receiveOnServer {
-    println(it)
+personPacket.receiveOnServer { packet, context ->
+    println(packet)
 }
 ```
 

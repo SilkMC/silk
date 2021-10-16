@@ -30,9 +30,9 @@ object NetworkTest {
             }
         }
 
-        c2sTestPacket.receiveOnServer {
+        c2sTestPacket.receiveOnServer { packet, _ ->
             log.info("Received test packet on the server-side!")
-            logInfo("testPacket = $it")
+            logInfo("testPacket = $packet")
         }
     }
 
@@ -43,9 +43,9 @@ object NetworkTest {
             }
         }
 
-        s2cTestPacket.receiveOnClient {
+        s2cTestPacket.receiveOnClient { packet, _ ->
             log.info("Received test packet on the client-side!")
-            logInfo("testPacket = $it")
+            logInfo("testPacket = $packet")
         }
     }
 }
