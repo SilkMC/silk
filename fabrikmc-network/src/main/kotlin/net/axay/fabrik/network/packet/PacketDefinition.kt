@@ -45,12 +45,15 @@ inline fun <reified T : Any> s2cPacket(id: Identifier, cbor: Cbor = Cbor) =
 inline fun <reified T : Any> c2sPacket(id: Identifier, cbor: Cbor = Cbor) =
     ClientToServerPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
 
+/**
+ * See [s2cPacket] function, which constructs this packet definition class.
+ */
 class ServerToClientPacketDefinition<T : Any>(
     id: Identifier,
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T>(id, cbor, deserializer) {
-    companion object : DefinitionRegistry()
+    private companion object : DefinitionRegistry()
 
     @PublishedApi
     internal fun push(buffer: PacketByteBuf, player: ServerPlayerEntity) {
@@ -81,12 +84,15 @@ class ServerToClientPacketDefinition<T : Any>(
     }
 }
 
+/**
+ * See [c2sPacket] function, which constructs this packet definition class.
+ */
 class ClientToServerPacketDefinition<T : Any>(
     id: Identifier,
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T>(id, cbor, deserializer) {
-    companion object : DefinitionRegistry()
+    private companion object : DefinitionRegistry()
 
     @PublishedApi
     internal fun push(buffer: PacketByteBuf) {
@@ -106,6 +112,10 @@ class ClientToServerPacketDefinition<T : Any>(
     }
 }
 
+/**
+ * Abstraction of server-to-client and client-to-server packets. See [ServerToClientPacketDefinition]
+ * and [ClientToServerPacketDefinition].
+ */
 abstract class AbstractPacketDefinition<T : Any> internal constructor(
     id: Identifier,
     val cbor: Cbor,
@@ -118,7 +128,7 @@ abstract class AbstractPacketDefinition<T : Any> internal constructor(
         val packetCoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     }
 
-    open class DefinitionRegistry {
+    protected open class DefinitionRegistry {
         private val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*>>()
 
         private val definitionLock = ReadWriteMutex()
@@ -136,6 +146,9 @@ abstract class AbstractPacketDefinition<T : Any> internal constructor(
         }
     }
 
+    /**
+     * The stored [Identifier] of this packet in its string representation.
+     */
     val idString = id.toString()
 
     private val registeredReceivers = ArrayList<suspend (T) -> Unit>()
