@@ -61,8 +61,12 @@ class ClientToClientPacketDefinition<T : Any>(
 
     /**
      * Specifies the forward logic (on the server, as it is the instance which forwards this packet).
+     * The returned player will receive the packet. Return null if you do not wish to forward this packet.
      */
     fun forwardOnServer(forwarder: ServerPacketForwarder<T>) {
+        packetCoroutineScope.launch {
+            registerDefinition(this@ClientToClientPacketDefinition)
+        }
         this.forwarder = forwarder
     }
 
@@ -70,7 +74,7 @@ class ClientToClientPacketDefinition<T : Any>(
      * Executes the given [receiver] as a callback when this packet is received on the client-side.
      */
     fun receiveOnClient(receiver: suspend (packet: T, context: ClientPacketContext) -> Unit) {
-        registerReceiver(receiver, ServerToClientPacketDefinition)
+        registerReceiver(receiver, Companion)
     }
 
     /**
