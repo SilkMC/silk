@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier
 typealias ServerPacketForwarder<T> = suspend ClientToClientPacketDefinition<T>.(
     packet: ClientToClientPacketDefinition.SerializedPacket,
     context: ServerPacketContext,
-) -> ServerPlayerEntity
+) -> ServerPlayerEntity?
 
 /**
  * See [c2cPacket] function, which constructs this packet definition class.
