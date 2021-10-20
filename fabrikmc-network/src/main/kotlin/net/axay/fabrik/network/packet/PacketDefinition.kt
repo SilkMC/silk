@@ -100,7 +100,7 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
         receiverLock.read {
             if (registeredReceivers.isNotEmpty()) {
                 val value = deserialize(bytes)
-                registeredReceivers.forEach { receiver ->
+                for (receiver in registeredReceivers) {
                     receiver(value, context)
                 }
             }
