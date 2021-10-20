@@ -11,14 +11,9 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.serializer
-import net.axay.fabrik.core.Fabrik
 import net.axay.fabrik.core.kotlin.ReadWriteMutex
-import net.axay.fabrik.network.internal.FabrikNetwork
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.network.PacketByteBuf
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 
 /**
@@ -46,71 +41,17 @@ inline fun <reified T : Any> c2sPacket(id: Identifier, cbor: Cbor = Cbor) =
     ClientToServerPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
 
 /**
- * See [s2cPacket] function, which constructs this packet definition class.
+ * Creates a new [ClientToClientPacketDefinition]. This packet can only be sent
+ * from the client to another client. The server will act as the middle man, it is
+ * responsible for forwarding this packet. The packet can only be sent
+ * in a typesafe way. The type is specified by [T].
+ *
+ * @param id the [Identifier] allowing communication between server and client as they
+ * both know this identifier
+ * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
  */
-class ServerToClientPacketDefinition<T : Any>(
-    id: Identifier,
-    cbor: Cbor,
-    deserializer: DeserializationStrategy<T>,
-) : AbstractPacketDefinition<T, ClientPacketContext>(id, cbor, deserializer) {
-    internal companion object : DefinitionRegistry<ClientPacketContext>()
-
-    @PublishedApi
-    internal fun push(buffer: PacketByteBuf, player: ServerPlayerEntity) {
-        ServerPlayNetworking.send(player, FabrikNetwork.packetId, buffer)
-    }
-
-    /**
-     * Sends the given [value] to the given [player]. This will result in the
-     * serialization of the given value.
-     */
-    inline fun <reified TPacket : T> send(value: TPacket, player: ServerPlayerEntity) =
-        push(createBuffer(value), player)
-
-    /**
-     * Sends the given [value] to **all** players on the server. This will result the serialization
-     * of the given value.
-     */
-    inline fun <reified TPacket : T> sendToAll(value: TPacket) {
-        val buffer = createBuffer(value)
-        Fabrik.currentServer?.playerManager?.playerList?.forEach { push(buffer, it) }
-    }
-
-    /**
-     * Executes the given [receiver] as a callback when this packet is received on the client-side.
-     */
-    fun receiveOnClient(receiver: suspend (packet: T, context: ClientPacketContext) -> Unit) {
-        registerReceiver(receiver, Companion)
-    }
-}
-
-/**
- * See [c2sPacket] function, which constructs this packet definition class.
- */
-class ClientToServerPacketDefinition<T : Any>(
-    id: Identifier,
-    cbor: Cbor,
-    deserializer: DeserializationStrategy<T>,
-) : AbstractPacketDefinition<T, ServerPacketContext>(id, cbor, deserializer) {
-    internal companion object : DefinitionRegistry<ServerPacketContext>()
-
-    @PublishedApi
-    internal fun push(buffer: PacketByteBuf) {
-        ClientPlayNetworking.send(FabrikNetwork.packetId, buffer)
-    }
-
-    /**
-     * Sends the given [value] as a packet to the server.
-     */
-    inline fun <reified TPacket : T> send(value: TPacket) = push(createBuffer(value))
-
-    /**
-     * Executes the given [receiver] as a callback when this packet is received on the server-side.
-     */
-    fun receiveOnServer(receiver: suspend (packet: T, context: ServerPacketContext) -> Unit) {
-        registerReceiver(receiver, Companion)
-    }
-}
+inline fun <reified T : Any> c2cPacket(id: Identifier, cbor: Cbor = Cbor) =
+    ClientToClientPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
 
 /**
  * Abstraction of server-to-client and client-to-server packets. See [ServerToClientPacketDefinition]
@@ -129,9 +70,9 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
     }
 
     internal open class DefinitionRegistry<C> {
-        private val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*, C>>()
+        protected val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*, C>>()
 
-        private val definitionLock = ReadWriteMutex()
+        protected val definitionLock = ReadWriteMutex()
 
         internal suspend fun registerDefinition(definition: AbstractPacketDefinition<*, C>) {
             definitionLock.write {
@@ -175,7 +116,7 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
         }
     }
 
-    private fun deserialize(byteArray: ByteArray): T {
+    internal fun deserialize(byteArray: ByteArray): T {
         return cbor.decodeFromByteArray(deserializer, byteArray)
     }
 
