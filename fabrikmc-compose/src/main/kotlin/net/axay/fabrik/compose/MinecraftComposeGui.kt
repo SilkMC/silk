@@ -193,13 +193,13 @@ class MinecraftComposeGui(
             }
         }
 
-        updateMinecraftMaps()
+        updateMinecraftMaps(placeItemFrames = true)
 
         playerGuis[player]?.close()
         playerGuis[player] = this
     }
 
-    private fun updateMinecraftMaps() {
+    private fun updateMinecraftMaps(placeItemFrames: Boolean = false) {
         scene.render(canvas, System.nanoTime())
 
         val world = player.world
@@ -223,19 +223,21 @@ class MinecraftComposeGui(
                 // send the map data
                 networkHandler.sendPacket(MapUpdateS2CPacket(mapId, 0, false, emptyList(), MapState.UpdateData(0, 0, 128, 128, colors)))
 
-                val framePos = position.down(yFrame).offset(placementDirection, xFrame)
+                if (placeItemFrames) {
+                    val framePos = position.down(yFrame).offset(placementDirection, xFrame)
 
-                // spawn the fake item frame
-                val itemFrame = ItemFrameEntity(world, framePos, guiDirection)
-                itemFrame.isInvisible = true
-                networkHandler.sendPacket(itemFrame.createSpawnPacket())
+                    // spawn the fake item frame
+                    val itemFrame = ItemFrameEntity(world, framePos, guiDirection)
+                    itemFrame.isInvisible = true
+                    networkHandler.sendPacket(itemFrame.createSpawnPacket())
 
-                // put the map in the item frame
-                val composeStack = Items.FILLED_MAP.defaultStack.apply {
-                    orCreateNbt.putInt("map", mapId)
+                    // put the map in the item frame
+                    val composeStack = Items.FILLED_MAP.defaultStack.apply {
+                        orCreateNbt.putInt("map", mapId)
+                    }
+                    itemFrame.setHeldItemStack(composeStack, false)
+                    networkHandler.sendPacket(EntityTrackerUpdateS2CPacket(itemFrame.id, itemFrame.dataTracker, true))
                 }
-                itemFrame.setHeldItemStack(composeStack, false)
-                networkHandler.sendPacket(EntityTrackerUpdateS2CPacket(itemFrame.id, itemFrame.dataTracker, true))
             }
         }
     }
