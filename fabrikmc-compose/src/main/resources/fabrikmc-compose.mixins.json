@@ -1,0 +1,8 @@
+{
+  "package": "net.axay.fabrik.compose.mixin",
+  "required": true,
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "ServerPlayNetworkHandlerMixin"
+  ]
+}
