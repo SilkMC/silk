@@ -1,6 +1,5 @@
 package net.axay.fabrik.compose
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -10,8 +9,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.*
 import net.axay.fabrik.core.logging.logError
-import net.axay.fabrik.core.logging.logInfo
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.block.MapColor
 import net.minecraft.entity.decoration.ItemFrameEntity
@@ -59,7 +58,7 @@ class MinecraftComposeGui(
     val content: @Composable () -> Unit,
     val player: ServerPlayerEntity,
     val position: BlockPos,
-) {
+) : CoroutineScope {
     companion object {
         private val playerGuis = HashMap<ServerPlayerEntity, MinecraftComposeGui>()
 
@@ -84,20 +83,6 @@ class MinecraftComposeGui(
                 Color(javaColor.red, javaColor.green, javaColor.blue, javaColor.alpha) to it.id
             }
             .toTypedArray()
-
-        @OptIn(ExperimentalFoundationApi::class)
-        @Suppress("FunctionName")
-        @Composable
-        private fun MinecraftComposable(
-            width: Int, height: Int,
-            onUpdate: () -> Unit,
-            content: @Composable () -> Unit,
-        ) {
-            Box(Modifier.size(width.dp, height.dp)) {
-                content()
-            }
-            onUpdate()
-        }
 
         private fun Vec3d.toMkArray() = mk.ndarray(doubleArrayOf(x, y, z))
         private fun Vec3i.toMkArray() = mk.ndarray(doubleArrayOf(x.toDouble(), y.toDouble(), z.toDouble()))
@@ -142,6 +127,8 @@ class MinecraftComposeGui(
         operator fun component2() = colors
     }
 
+    override val coroutineContext = Dispatchers.Default
+
     // values for geometry
 
     private val guiDirection = player.horizontalFacing.opposite
@@ -173,7 +160,7 @@ class MinecraftComposeGui(
             logError("Could not allocate the required resources for rendering the compose gui!")
     }
 
-    private val scene = ComposeScene()
+    private val scene = ComposeScene(coroutineContext)
     private val canvas = Canvas(bitmap)
 
     private val guiChunks = Array(blockWidth * blockHeight) { GuiChunk(player.serverWorld) }
@@ -182,13 +169,7 @@ class MinecraftComposeGui(
 
     init {
         scene.setContent {
-            MinecraftComposable(
-                blockWidth * 128, blockHeight * 128,
-                onUpdate = {
-                    logInfo("updated the gui")
-                    //scene.render(canvas, System.nanoTime())
-                }
-            ) {
+            Box(Modifier.size((blockWidth * 128).dp, (blockHeight * 128).dp)) {
                 content()
             }
         }
@@ -197,6 +178,14 @@ class MinecraftComposeGui(
 
         playerGuis[player]?.close()
         playerGuis[player] = this
+
+        launch {
+            while (isActive) {
+                delay(50)
+                if (scene.hasInvalidations())
+                    updateMinecraftMaps()
+            }
+        }
     }
 
     private fun updateMinecraftMaps(placeItemFrames: Boolean = false) {
@@ -274,6 +263,7 @@ class MinecraftComposeGui(
     }
 
     fun close() {
+        cancel()
         scene.close()
     }
 }
