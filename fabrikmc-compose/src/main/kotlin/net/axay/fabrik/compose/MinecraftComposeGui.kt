@@ -162,6 +162,22 @@ class MinecraftComposeGui(
         if (guiDirection == Direction.WEST || guiDirection == Direction.SOUTH) 1 else 0
     ).withoutAxis(guiDirection.axis)
 
+    // values for color mapping
+
+    private val bitmapToMapColorCache = HashMap<Int, Byte>()
+    private fun bitmapToMapColor(bitmapColor: Int) = bitmapToMapColorCache.getOrPut(bitmapColor) {
+        Color(bitmapColor).run {
+            when (alpha) {
+                0f -> whiteMapColorId
+                1f -> mapColors.minByOrNull { it.first colorDistance this }!!.second
+                else -> {
+                    val multipliedColor = Color(alpha * red, alpha * green, alpha * blue)
+                    mapColors.minByOrNull { it.first colorDistance multipliedColor }!!.second
+                }
+            }
+        }
+    }
+
     // values for rendering
 
     private val frameDispatcher = FrameDispatcher(coroutineContext) { updateMinecraftMaps() }
@@ -181,21 +197,6 @@ class MinecraftComposeGui(
 
         playerGuis[player]?.close()
         playerGuis[player] = this
-    }
-
-    // improves color mapping speed by a lot
-    private val bitmapToMapColorCache = HashMap<Int, Byte>()
-    private fun bitmapToMapColor(bitmapColor: Int) = bitmapToMapColorCache.getOrPut(bitmapColor) {
-        Color(bitmapColor).run {
-            when (alpha) {
-                0f -> whiteMapColorId
-                1f -> mapColors.minByOrNull { it.first colorDistance this }!!.second
-                else -> {
-                    val multipliedColor = Color(alpha * red, alpha * green, alpha * blue)
-                    mapColors.minByOrNull { it.first colorDistance multipliedColor }!!.second
-                }
-            }
-        }
     }
 
     private fun updateMinecraftMaps() {
