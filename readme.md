@@ -89,3 +89,8 @@ possibilites Kotlin gives you. You decide where to use Fabrik, Fabric or just th
 structured in modules, meaning that you can just take what you need.
 
 Fabrik tries to use Minecraft functions and classes which are likely to stay the same / be stable.
+
+## License
+
+Current versions of FabrikMC are available under the [**GPL-3.0**](https://www.gnu.org/licenses/gpl-3.0), while older versions below 1.5.1 have been shared under
+the [Apache-2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
