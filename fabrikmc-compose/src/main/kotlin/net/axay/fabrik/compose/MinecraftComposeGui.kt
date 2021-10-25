@@ -80,14 +80,18 @@ class MinecraftComposeGui(
             }
         }
 
-        private val mapColors = MapColor.COLORS
-            .filterNotNull()
-            .filterNot { it.color == 0 }
-            .map {
-                val javaColor = java.awt.Color(it.color)
-                Color(javaColor.red, javaColor.green, javaColor.blue, javaColor.alpha) to it.id
-            }
-            .toTypedArray()
+        private val mapColors = ArrayList<Pair<Color, Byte>>().apply {
+            MapColor.COLORS
+                .filter { it != null && it.color != 0 }
+                .forEach { mapColor ->
+                    repeat(4) {
+                        val javaColor = java.awt.Color(mapColor.getRenderColor(it))
+                        this += Color(javaColor.red, javaColor.green, javaColor.blue, javaColor.alpha) to (mapColor.id * 4 + it).toByte()
+                    }
+                }
+        }.toTypedArray()
+
+        private val whiteMapColorId = (MapColor.WHITE.id * 4 + 2).toByte()
 
         private fun Vec3d.toMkArray() = mk.ndarray(doubleArrayOf(x, y, z))
         private fun Vec3i.toMkArray() = mk.ndarray(doubleArrayOf(x.toDouble(), y.toDouble(), z.toDouble()))
@@ -179,6 +183,21 @@ class MinecraftComposeGui(
         playerGuis[player] = this
     }
 
+    // improves color mapping speed by a lot
+    private val bitmapToMapColorCache = HashMap<Int, Byte>()
+    private fun bitmapToMapColor(bitmapColor: Int) = bitmapToMapColorCache.getOrPut(bitmapColor) {
+        Color(bitmapColor).run {
+            when (alpha) {
+                0f -> whiteMapColorId
+                1f -> mapColors.minByOrNull { it.first colorDistance this }!!.second
+                else -> {
+                    val multipliedColor = Color(alpha * red, alpha * green, alpha * blue)
+                    mapColors.minByOrNull { it.first colorDistance multipliedColor }!!.second
+                }
+            }
+        }
+    }
+
     private fun updateMinecraftMaps() {
         // TODO maybe don't initialize this for each update
         val bitmap = Bitmap().also {
@@ -197,12 +216,7 @@ class MinecraftComposeGui(
 
                 for (x in 0 until 128) {
                     for (y in 0 until 128) {
-                        val bitmapColor = Color(bitmap.getColor(xFrame * 128 + x, yFrame * 128 + y))
-
-                        val mapColor = if (bitmapColor.alpha == 0f) MapColor.WHITE.id else mapColors.minByOrNull { it.first colorDistance bitmapColor }!!.second
-                        val byteColor = (mapColor * 4).toByte()
-
-                        colors[x + y * 128] = byteColor
+                        colors[x + y * 128] = bitmapToMapColor(bitmap.getColor(xFrame * 128 + x, yFrame * 128 + y))
                     }
                 }
 
