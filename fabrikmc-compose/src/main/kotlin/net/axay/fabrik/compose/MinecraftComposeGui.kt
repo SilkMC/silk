@@ -9,7 +9,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.axay.fabrik.core.logging.logError
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.block.MapColor
@@ -32,6 +35,8 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skiko.FrameDispatcher
+import java.util.concurrent.Executors
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -127,7 +132,7 @@ class MinecraftComposeGui(
         operator fun component2() = colors
     }
 
-    override val coroutineContext = Dispatchers.Default
+    override val coroutineContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     // values for geometry
 
@@ -155,17 +160,21 @@ class MinecraftComposeGui(
 
     // values for rendering
 
+    private val frameDispatcher = FrameDispatcher(coroutineContext) { updateMinecraftMaps() }
+
     private val bitmap = Bitmap().also {
         if (!it.allocN32Pixels(blockWidth * 128, blockHeight * 128, true))
             logError("Could not allocate the required resources for rendering the compose gui!")
     }
 
-    private val scene = ComposeScene(coroutineContext)
+    private val scene = ComposeScene(coroutineContext) { frameDispatcher.scheduleFrame() }
     private val canvas = Canvas(bitmap)
 
     private val guiChunks = Array(blockWidth * blockHeight) { GuiChunk(player.serverWorld) }
 
     private fun getGuiChunk(x: Int, y: Int) = guiChunks[x + y * blockWidth]
+
+    private var placedItemFrames = false
 
     init {
         scene.setContent {
@@ -174,24 +183,13 @@ class MinecraftComposeGui(
             }
         }
 
-        updateMinecraftMaps(placeItemFrames = true)
-
         playerGuis[player]?.close()
         playerGuis[player] = this
-
-        launch {
-            while (isActive) {
-                delay(50)
-                if (scene.hasInvalidations())
-                    updateMinecraftMaps()
-            }
-        }
     }
 
-    private fun updateMinecraftMaps(placeItemFrames: Boolean = false) {
+    private fun updateMinecraftMaps() {
         scene.render(canvas, System.nanoTime())
 
-        val world = player.world
         val networkHandler = player.networkHandler
 
         for (xFrame in 0 until blockWidth) {
@@ -212,11 +210,11 @@ class MinecraftComposeGui(
                 // send the map data
                 networkHandler.sendPacket(MapUpdateS2CPacket(mapId, 0, false, emptyList(), MapState.UpdateData(0, 0, 128, 128, colors)))
 
-                if (placeItemFrames) {
+                if (!placedItemFrames) {
                     val framePos = position.down(yFrame).offset(placementDirection, xFrame)
 
                     // spawn the fake item frame
-                    val itemFrame = ItemFrameEntity(world, framePos, guiDirection)
+                    val itemFrame = ItemFrameEntity(player.world, framePos, guiDirection)
                     itemFrame.isInvisible = true
                     networkHandler.sendPacket(itemFrame.createSpawnPacket())
 
@@ -229,9 +227,11 @@ class MinecraftComposeGui(
                 }
             }
         }
+
+        if (!placedItemFrames) placedItemFrames = true
     }
 
-    private fun onLeftClick() {
+    private fun onLeftClick() = launch {
         val intersection = rayPlaneIntersection(
             player.eyePos.toMkArray(),
             player.rotationVector.toMkArray(),
@@ -247,23 +247,24 @@ class MinecraftComposeGui(
         val planeX = when (worldX) {
             in bottomX..topX -> worldX - bottomX
             in topX..bottomX -> bottomX - worldX
-            else -> return
+            else -> return@launch
         }
 
         val planeY = when (worldY) {
             in bottomY..topY -> worldY - bottomY
             in topY..bottomY -> bottomY - worldY
-            else -> return
+            else -> return@launch
         }
 
         val offset = Offset((planeX * 128).toFloat(), (planeY * 128).toFloat())
 
         scene.sendPointerEvent(PointerEventType.Press, offset)
+        delay(20)
         scene.sendPointerEvent(PointerEventType.Release, offset)
     }
 
     fun close() {
-        cancel()
+        coroutineContext.close()
         scene.close()
     }
 }
