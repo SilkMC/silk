@@ -161,17 +161,9 @@ class MinecraftComposeGui(
     // values for rendering
 
     private val frameDispatcher = FrameDispatcher(coroutineContext) { updateMinecraftMaps() }
-
-    private val bitmap = Bitmap().also {
-        if (!it.allocN32Pixels(blockWidth * 128, blockHeight * 128, true))
-            logError("Could not allocate the required resources for rendering the compose gui!")
-    }
-
     private val scene = ComposeScene(coroutineContext) { frameDispatcher.scheduleFrame() }
-    private val canvas = Canvas(bitmap)
 
     private val guiChunks = Array(blockWidth * blockHeight) { GuiChunk(player.serverWorld) }
-
     private fun getGuiChunk(x: Int, y: Int) = guiChunks[x + y * blockWidth]
 
     private var placedItemFrames = false
@@ -188,6 +180,13 @@ class MinecraftComposeGui(
     }
 
     private fun updateMinecraftMaps() {
+        // TODO maybe don't initialize this for each update
+        val bitmap = Bitmap().also {
+            if (!it.allocN32Pixels(blockWidth * 128, blockHeight * 128, true))
+                logError("Could not allocate the required resources for rendering the compose gui!")
+        }
+        val canvas = Canvas(bitmap)
+
         scene.render(canvas, System.nanoTime())
 
         val networkHandler = player.networkHandler
