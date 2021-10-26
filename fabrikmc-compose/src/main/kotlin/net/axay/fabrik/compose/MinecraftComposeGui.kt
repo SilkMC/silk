@@ -9,11 +9,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.unit.dp
+import com.github.ajalt.colormath.calculate.differenceCIE2000
+import com.github.ajalt.colormath.model.LAB
+import com.github.ajalt.colormath.model.RGB
+import com.github.ajalt.colormath.model.RGBInt
+import com.github.ajalt.colormath.model.SRGB
+import com.github.ajalt.colormath.transform.multiplyAlpha
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.axay.fabrik.core.logging.logError
+import net.axay.fabrik.core.logging.logWarning
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.block.MapColor
 import net.minecraft.entity.decoration.ItemFrameEntity
@@ -37,8 +43,6 @@ import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skiko.FrameDispatcher
 import java.util.concurrent.Executors
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 /**
  * Creates a new server-side gui based on composables.
@@ -80,13 +84,23 @@ class MinecraftComposeGui(
             }
         }
 
-        private val mapColors = ArrayList<Pair<Color, Byte>>().apply {
+        private val mapColors = ArrayList<Pair<LAB, Byte>>().apply {
             MapColor.COLORS
                 .filter { it != null && it.color != 0 }
                 .forEach { mapColor ->
                     repeat(4) {
-                        val javaColor = java.awt.Color(mapColor.getRenderColor(it))
-                        this += Color(javaColor.red, javaColor.green, javaColor.blue, javaColor.alpha) to (mapColor.id * 4 + it).toByte()
+                        val alpha = when (it) {
+                            0 -> 0.71
+                            1 -> 0.86
+                            2 -> 1
+                            3 -> 0.53
+                            else -> {
+                                logWarning("Unsupported color shade: $it - Will use alpha of 1 as a fallback")
+                                1
+                            }
+                        }
+                        val realColor = RGBInt(mapColor.color.toUInt()).toSRGB().run { RGB(r, g, b, alpha) }
+                        this += realColor.toLAB() to (mapColor.id * 4 + it).toByte()
                     }
                 }
         }.toTypedArray()
@@ -110,9 +124,6 @@ class MinecraftComposeGui(
             val prod3 = prod1 / prod2
             return rayPoint - rayVector * prod3
         }
-
-        private infix fun Color.colorDistance(c2: Color) =
-            sqrt((c2.red - red).pow(2) + (c2.green - green).pow(2) + (c2.blue - blue).pow(2))
 
         private fun BlockPos.withoutAxis(axis: Direction.Axis) = when (axis) {
             Direction.Axis.X -> z.toDouble() to y.toDouble()
@@ -166,13 +177,12 @@ class MinecraftComposeGui(
 
     private val bitmapToMapColorCache = HashMap<Int, Byte>()
     private fun bitmapToMapColor(bitmapColor: Int) = bitmapToMapColorCache.getOrPut(bitmapColor) {
-        Color(bitmapColor).run {
+        Color(bitmapColor).run { SRGB(red, green, blue, alpha) }.run {
             when (alpha) {
                 0f -> whiteMapColorId
-                1f -> mapColors.minByOrNull { it.first colorDistance this }!!.second
                 else -> {
-                    val multipliedColor = Color(alpha * red, alpha * green, alpha * blue)
-                    mapColors.minByOrNull { it.first colorDistance multipliedColor }!!.second
+                    val multipliedColor = multiplyAlpha()
+                    mapColors.minByOrNull { it.first.differenceCIE2000(multipliedColor) }!!.second
                 }
             }
         }
@@ -201,10 +211,9 @@ class MinecraftComposeGui(
 
     private fun updateMinecraftMaps() {
         // TODO maybe don't initialize this for each update
-        val bitmap = Bitmap().also {
-            if (!it.allocN32Pixels(blockWidth * 128, blockHeight * 128, true))
-                logError("Could not allocate the required resources for rendering the compose gui!")
-        }
+        val bitmap = Bitmap()
+        if (!bitmap.allocN32Pixels(blockWidth * 128, blockHeight * 128, true))
+            logError("Could not allocate the required resources for rendering the compose gui!")
         val canvas = Canvas(bitmap)
 
         scene.render(canvas, System.nanoTime())
@@ -273,7 +282,6 @@ class MinecraftComposeGui(
         val offset = Offset((planeX * 128).toFloat(), (planeY * 128).toFloat())
 
         scene.sendPointerEvent(PointerEventType.Press, offset)
-        delay(20)
         scene.sendPointerEvent(PointerEventType.Release, offset)
     }
 
