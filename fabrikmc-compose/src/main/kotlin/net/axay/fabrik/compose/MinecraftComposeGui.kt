@@ -9,19 +9,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.unit.dp
-import com.github.ajalt.colormath.calculate.differenceCIE2000
-import com.github.ajalt.colormath.model.LAB
-import com.github.ajalt.colormath.model.RGB
-import com.github.ajalt.colormath.model.RGBInt
 import com.github.ajalt.colormath.model.SRGB
 import com.github.ajalt.colormath.transform.multiplyAlpha
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
+import net.axay.fabrik.compose.color.MapColorUtils
 import net.axay.fabrik.core.logging.logError
-import net.axay.fabrik.core.logging.logWarning
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.minecraft.block.MapColor
 import net.minecraft.entity.decoration.ItemFrameEntity
 import net.minecraft.item.Items
 import net.minecraft.item.map.MapState
@@ -83,29 +78,6 @@ class MinecraftComposeGui(
                 playerGuis[player]?.onLeftClick()
             }
         }
-
-        private val mapColors = ArrayList<Pair<LAB, Byte>>().apply {
-            MapColor.COLORS
-                .filter { it != null && it.color != 0 }
-                .forEach { mapColor ->
-                    repeat(4) {
-                        val alpha = when (it) {
-                            0 -> 0.71
-                            1 -> 0.86
-                            2 -> 1
-                            3 -> 0.53
-                            else -> {
-                                logWarning("Unsupported color shade: $it - Will use alpha of 1 as a fallback")
-                                1
-                            }
-                        }
-                        val realColor = RGBInt(mapColor.color.toUInt()).toSRGB().run { RGB(r, g, b, alpha) }
-                        this += realColor.toLAB() to (mapColor.id * 4 + it).toByte()
-                    }
-                }
-        }.toTypedArray()
-
-        private val whiteMapColorId = (MapColor.WHITE.id * 4 + 2).toByte()
 
         private fun Vec3d.toMkArray() = mk.ndarray(doubleArrayOf(x, y, z))
         private fun Vec3i.toMkArray() = mk.ndarray(doubleArrayOf(x.toDouble(), y.toDouble(), z.toDouble()))
@@ -179,11 +151,8 @@ class MinecraftComposeGui(
     private fun bitmapToMapColor(bitmapColor: Int) = bitmapToMapColorCache.getOrPut(bitmapColor) {
         Color(bitmapColor).run { SRGB(red, green, blue, alpha) }.run {
             when (alpha) {
-                0f -> whiteMapColorId
-                else -> {
-                    val multipliedColor = multiplyAlpha()
-                    mapColors.minByOrNull { it.first.differenceCIE2000(multipliedColor) }!!.second
-                }
+                0f -> MapColorUtils.whiteMapColorId
+                else -> MapColorUtils.toMapColorId(this.multiplyAlpha())
             }
         }
     }
