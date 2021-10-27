@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import net.axay.fabrik.compose.color.MapColorUtils
+import net.axay.fabrik.compose.internal.MapIdGenerator
 import net.axay.fabrik.core.logging.logError
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.entity.decoration.ItemFrameEntity
@@ -23,7 +24,6 @@ import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket
 import net.minecraft.network.packet.s2c.play.MapUpdateS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Hand
 import net.minecraft.util.math.*
 import org.jetbrains.kotlinx.multik.api.linalg.dot
@@ -111,8 +111,8 @@ class MinecraftComposeGui(
         }
     }
 
-    private class GuiChunk(val mapId: Int, val colors: ByteArray = ByteArray(128 * 128)) {
-        constructor(world: ServerWorld) : this(world.nextMapId) // TODO use a custom ID generator
+    private class GuiChunk(val colors: ByteArray = ByteArray(128 * 128)) {
+        val mapId = MapIdGenerator.nextId()
 
         operator fun component1() = mapId
         operator fun component2() = colors
@@ -161,7 +161,7 @@ class MinecraftComposeGui(
     private val frameDispatcher = FrameDispatcher(coroutineContext) { updateMinecraftMaps() }
     private val scene = ComposeScene(coroutineContext) { frameDispatcher.scheduleFrame() }
 
-    private val guiChunks = Array(blockWidth * blockHeight) { GuiChunk(player.serverWorld) }
+    private val guiChunks = Array(blockWidth * blockHeight) { GuiChunk() }
     private fun getGuiChunk(x: Int, y: Int) = guiChunks[x + y * blockWidth]
 
     private var placedItemFrames = false
@@ -254,6 +254,7 @@ class MinecraftComposeGui(
     }
 
     fun close() {
+        MapIdGenerator.makeOldIdAvailable(guiChunks.map { it.mapId })
         coroutineContext.close()
         scene.close()
     }
