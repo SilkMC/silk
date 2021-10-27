@@ -60,4 +60,4 @@ object MapColorUtils {
  * Converts the non-shaded color value of this map color instance to
  * the Compose [Color] representation.
  */
-fun MapColor.toCompose() = Color(color)
+fun MapColor.toCompose() = RGBInt(color.toUInt()).run { Color(r.toInt(), g.toInt(), b.toInt()) }
