@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation(project(":${rootProject.name}-commands"))
+    implementation(project(":${rootProject.name}-compose"))
     implementation(project(":${rootProject.name}-core"))
     implementation(project(":${rootProject.name}-game"))
     implementation(project(":${rootProject.name}-igui"))
