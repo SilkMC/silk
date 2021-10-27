@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import net.axay.fabrik.compose.color.toCompose
 import net.axay.fabrik.compose.displayComposable
-import net.axay.fabrik.core.logging.logInfo
 import net.axay.fabrik.test.commands.testCommand
 import net.minecraft.block.MapColor
 
@@ -32,7 +31,7 @@ fun TestComposable() {
     Row(Modifier.padding(6.dp)) {
         Column {
             repeat(5) {
-                Button(onClick = { logInfo("Clicked Button $it") }, colors = ButtonDefaults.buttonColors(colorList[it])) {
+                Button(onClick = {}, colors = ButtonDefaults.buttonColors(colorList[it])) {
                     Text("Button $it")
                 }
             }
@@ -51,10 +50,7 @@ fun TestComposable() {
             Spacer(Modifier.height(5.dp))
             Text("Amount of clicks: $clickCounter")
             Spacer(Modifier.height(5.dp))
-            Button(
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(MapColor.DARK_AQUA.toCompose())
-            ) {
+            Button(onClick = {}, colors = ButtonDefaults.buttonColors(MapColor.DARK_AQUA.toCompose())) {
                 Text("DARK_AQUA looks like this")
             }
         }
