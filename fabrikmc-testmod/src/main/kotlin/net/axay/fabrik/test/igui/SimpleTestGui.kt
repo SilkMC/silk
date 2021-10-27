@@ -1,4 +1,4 @@
-package net.axay.fabrik.test.gui
+package net.axay.fabrik.test.igui
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

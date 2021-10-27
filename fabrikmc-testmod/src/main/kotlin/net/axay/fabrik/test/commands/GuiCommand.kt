@@ -2,7 +2,7 @@ package net.axay.fabrik.test.commands
 
 import net.axay.fabrik.core.text.literal
 import net.axay.fabrik.igui.openGui
-import net.axay.fabrik.test.gui.SimpleTestGui
+import net.axay.fabrik.test.igui.SimpleTestGui
 
 private val guis = mapOf(
     "simpletestgui" to SimpleTestGui.gui
