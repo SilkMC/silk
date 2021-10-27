@@ -111,9 +111,7 @@ class MinecraftComposeGui(
         }
     }
 
-    private class GuiChunk(val colors: ByteArray = ByteArray(128 * 128)) {
-        val mapId = MapIdGenerator.nextId()
-
+    private class GuiChunk(val mapId: Int = MapIdGenerator.nextId(), val colors: ByteArray = ByteArray(128 * 128)) {
         operator fun component1() = mapId
         operator fun component2() = colors
     }
