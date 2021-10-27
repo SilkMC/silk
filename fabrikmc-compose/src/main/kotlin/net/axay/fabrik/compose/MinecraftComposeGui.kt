@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.unit.dp
 import com.github.ajalt.colormath.model.SRGB
-import com.github.ajalt.colormath.transform.multiplyAlpha
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -149,10 +148,10 @@ class MinecraftComposeGui(
 
     private val bitmapToMapColorCache = HashMap<Int, Byte>()
     private fun bitmapToMapColor(bitmapColor: Int) = bitmapToMapColorCache.getOrPut(bitmapColor) {
-        Color(bitmapColor).run { SRGB(red, green, blue, alpha) }.run {
-            when (alpha) {
+        Color(bitmapColor).run { SRGB(red, green, blue, alpha) }.let { color ->
+            when (color.alpha) {
                 0f -> MapColorUtils.whiteMapColorId
-                else -> MapColorUtils.toMapColorId(this.multiplyAlpha())
+                else -> MapColorUtils.toMapColorId(color)
             }
         }
     }
