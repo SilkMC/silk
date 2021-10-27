@@ -16,11 +16,11 @@ repositories {
 dependencies {
     implementation(kotlin("gradle-plugin", kotlinVersion))
 
-    implementation("net.fabricmc:fabric-loom:0.8-SNAPSHOT")
+    implementation("net.fabricmc:fabric-loom:0.9-SNAPSHOT")
     implementation("gradle.plugin.com.matthewprenger:CurseGradle:1.4.0")
     implementation("gradle.plugin.com.modrinth.minotaur:Minotaur:1.2.1")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
 
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     implementation("org.jetbrains.dokka:dokka-base:$dokkaVersion")
