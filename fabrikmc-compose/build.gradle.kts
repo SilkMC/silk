@@ -6,11 +6,6 @@ plugins {
     id("org.jetbrains.compose") version "1.0.0-beta1"
 }
 
-repositories {
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
-}
-
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation(project(":${rootProject.name}-core"))

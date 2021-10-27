@@ -4,6 +4,7 @@ plugins {
     `java-version-script`
     `mod-build-script`
     kotlin("plugin.serialization")
+    id("org.jetbrains.compose") version "1.0.0-beta1"
 }
 
 dependencies {
@@ -14,6 +15,8 @@ dependencies {
     implementation(project(":${rootProject.name}-igui"))
     implementation(project(":${rootProject.name}-network"))
     implementation(project(":${rootProject.name}-persistence"))
+
+    implementation(compose.desktop.currentOs)
 }
 
 val modName by extra("$projectTitle Testmod")

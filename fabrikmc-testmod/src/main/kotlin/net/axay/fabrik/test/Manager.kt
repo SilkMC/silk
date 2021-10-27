@@ -4,6 +4,7 @@ import net.axay.fabrik.commands.LiteralCommandBuilder
 import net.axay.fabrik.commands.clientCommand
 import net.axay.fabrik.commands.command
 import net.axay.fabrik.test.commands.*
+import net.axay.fabrik.test.compose.composeCommand
 import net.axay.fabrik.test.network.NetworkTest
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
@@ -21,6 +22,7 @@ object Manager : ModInitializer, ClientModInitializer {
         persistenceTestCommand
         textTestCommand
         sideboardCommand
+        composeCommand
         NetworkTest.initServer()
 
         command("testmod") {
