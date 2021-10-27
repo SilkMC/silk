@@ -5,6 +5,7 @@ import com.github.ajalt.colormath.calculate.differenceCIE2000
 import com.github.ajalt.colormath.model.LAB
 import com.github.ajalt.colormath.model.RGB
 import com.github.ajalt.colormath.model.RGBInt
+import com.github.ajalt.colormath.transform.multiplyAlpha
 import net.axay.fabrik.core.logging.logWarning
 import net.minecraft.block.MapColor
 
@@ -28,16 +29,18 @@ object MapColorUtils {
             .forEach { mapColor ->
                 repeat(4) {
                     val alpha = when (it) {
-                        0 -> 0.71
-                        1 -> 0.86
-                        2 -> 1
-                        3 -> 0.53
+                        0 -> 180
+                        1 -> 220
+                        2 -> 255
+                        3 -> 135
                         else -> {
-                            logWarning("Unsupported color shade: $it - Will use alpha of 1 as a fallback")
-                            1
+                            logWarning("Unsupported color shade: $it - Will use alpha of 255 as a fallback")
+                            255
                         }
                     }
-                    val realColor = RGBInt(mapColor.color.toUInt()).toSRGB().run { RGB(r, g, b, alpha) }
+                    val realColor = RGBInt(mapColor.color.toUInt()).toSRGB()
+                        .run { RGB(r, g, b, alpha / 255f) }
+                        .multiplyAlpha()
                     this += realColor.toLAB() to (mapColor.id * 4 + it).toByte()
                 }
             }
@@ -47,8 +50,10 @@ object MapColorUtils {
      * Scales the given [color] down to a [MapColor] using
      * [differenceCIE2000] and returns the id of that map color.
      */
-    fun toMapColorId(color: com.github.ajalt.colormath.Color) =
-        mapColorIds.minByOrNull { it.first.differenceCIE2000(color) }!!.second
+    fun toMapColorId(color: com.github.ajalt.colormath.Color): Byte {
+        val multipliedColor = color.multiplyAlpha()
+        return mapColorIds.minByOrNull { it.first.differenceCIE2000(multipliedColor) }!!.second
+    }
 }
 
 /**
