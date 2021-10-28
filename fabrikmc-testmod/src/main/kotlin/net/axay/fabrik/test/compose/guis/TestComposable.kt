@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package net.axay.fabrik.test.compose.guis
 
 import androidx.compose.foundation.background

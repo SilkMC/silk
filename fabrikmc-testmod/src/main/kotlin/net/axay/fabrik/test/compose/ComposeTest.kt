@@ -1,5 +1,3 @@
-@file:Suppress("FunctionName")
-
 package net.axay.fabrik.test.compose
 
 import net.axay.fabrik.compose.displayComposable
