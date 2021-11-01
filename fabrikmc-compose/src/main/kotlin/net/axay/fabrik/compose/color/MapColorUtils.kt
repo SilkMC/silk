@@ -5,6 +5,7 @@ import com.github.ajalt.colormath.calculate.differenceCIE2000
 import com.github.ajalt.colormath.model.LAB
 import com.github.ajalt.colormath.model.RGB
 import com.github.ajalt.colormath.model.RGBInt
+import com.github.ajalt.colormath.transform.interpolate
 import com.github.ajalt.colormath.transform.multiplyAlpha
 import net.axay.fabrik.core.logging.logWarning
 import net.minecraft.block.MapColor
@@ -13,6 +14,8 @@ import net.minecraft.block.MapColor
  * Utilities for working with [MapColor].
  */
 object MapColorUtils {
+    private val white = RGB(1f, 1f, 1f)
+
     /**
      * The [MapColor] id of pure white.
      */
@@ -28,7 +31,7 @@ object MapColorUtils {
             .filter { it != null && it.color != 0 }
             .forEach { mapColor ->
                 repeat(4) {
-                    val alpha = when (it) {
+                    val alphaFromId = when (it) {
                         0 -> 180
                         1 -> 220
                         2 -> 255
@@ -38,22 +41,36 @@ object MapColorUtils {
                             255
                         }
                     }
+
                     val realColor = RGBInt(mapColor.color.toUInt()).toSRGB()
-                        .run { RGB(r, g, b, alpha / 255f) }
+                        .run { RGB(r, g, b, alphaFromId / 255f) }
                         .multiplyAlpha()
-                    this += realColor.toLAB() to (mapColor.id * 4 + it).toByte()
+                        .toLAB()
+                    this += realColor to (mapColor.id * 4 + it).toByte()
                 }
             }
     }.toTypedArray()
+
+    /**
+     * Same as [mapColorIds], but without white. This is used by the [toMapColorId] function.
+     */
+    val mapColorIdsNoWhite = mapColorIds.filterNot { it.second == whiteMapColorId }.toTypedArray()
 
     /**
      * Scales the given [color] down to a [MapColor] using
      * [differenceCIE2000] and returns the id of that map color.
      */
     fun toMapColorId(color: com.github.ajalt.colormath.Color): Byte {
-        val multipliedColor = color.multiplyAlpha()
-        return mapColorIds.minByOrNull { it.first.differenceCIE2000(multipliedColor) }!!.second
+        val interpolatedColor = color.run {
+            if (alpha < 1f) white.interpolate(this, alpha) else this
+        }
+
+        if (interpolatedColor.isNearlyWhite) return whiteMapColorId
+
+        return mapColorIdsNoWhite.minByOrNull { it.first.differenceCIE2000(interpolatedColor) }!!.second
     }
+
+    private val com.github.ajalt.colormath.Color.isNearlyWhite get() = differenceCIE2000(white) <= 2.5f
 }
 
 /**
