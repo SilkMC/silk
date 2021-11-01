@@ -37,6 +37,8 @@ import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skiko.FrameDispatcher
 import java.util.concurrent.Executors
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Creates a new server-side gui based on composables.
@@ -111,9 +113,49 @@ class MinecraftComposeGui(
         }
     }
 
-    private class GuiChunk(val mapId: Int = MapIdGenerator.nextId(), val colors: ByteArray = ByteArray(128 * 128)) {
-        operator fun component1() = mapId
-        operator fun component2() = colors
+    private class GuiChunk(
+        val mapId: Int = MapIdGenerator.nextId(),
+        private val colors: ByteArray = ByteArray(128 * 128),
+    ) {
+        private var dirty = false
+        private var startX = 0
+        private var startY = 0
+        private var endX = 0
+        private var endY = 0
+
+        fun setColor(x: Int, y: Int, colorId: Byte) {
+            val previousColorId = colors[x + y * 128]
+            colors[x + y * 128] = colorId
+
+            if (previousColorId != colorId) {
+                if (dirty) {
+                    startX = min(startX, x); startY = min(startY, y)
+                    endX = max(endX, x); endY = max(endY, y)
+                } else {
+                    dirty = true
+                    startX = x; startY = y
+                    endX = x; endY = y
+                }
+            }
+        }
+
+        fun createPacket(): MapUpdateS2CPacket? {
+            if (!dirty) return null
+            dirty = false
+
+            val width = endX + 1 - startX
+            val height = endY + 1 - startY
+            val packetColors = ByteArray(width * height)
+
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    packetColors[x + y * width] = colors[startX + x + (startY + y) * 128]
+                }
+            }
+
+            val updateData = MapState.UpdateData(startX, startY, width, height, packetColors)
+            return MapUpdateS2CPacket(mapId, 0, false, null, updateData)
+        }
     }
 
     override val coroutineContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
@@ -188,16 +230,18 @@ class MinecraftComposeGui(
 
         for (xFrame in 0 until blockWidth) {
             for (yFrame in 0 until blockHeight) {
-                val (mapId, colors) = getGuiChunk(xFrame, yFrame)
+                val guiChunk = getGuiChunk(xFrame, yFrame)
+                val mapId = guiChunk.mapId
 
                 for (x in 0 until 128) {
                     for (y in 0 until 128) {
-                        colors[x + y * 128] = bitmapToMapColor(bitmap.getColor(xFrame * 128 + x, yFrame * 128 + y))
+                        guiChunk.setColor(x, y, bitmapToMapColor(bitmap.getColor(xFrame * 128 + x, yFrame * 128 + y)))
                     }
                 }
 
                 // send the map data
-                networkHandler.sendPacket(MapUpdateS2CPacket(mapId, 0, false, emptyList(), MapState.UpdateData(0, 0, 128, 128, colors)))
+                val updatePacket = guiChunk.createPacket()
+                if (updatePacket != null) networkHandler.sendPacket(updatePacket)
 
                 if (!placedItemFrames) {
                     val framePos = position.down(yFrame).offset(placementDirection, xFrame)
