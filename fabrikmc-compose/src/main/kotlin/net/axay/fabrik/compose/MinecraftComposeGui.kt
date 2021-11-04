@@ -21,6 +21,7 @@ import net.minecraft.entity.decoration.ItemFrameEntity
 import net.minecraft.item.Items
 import net.minecraft.item.map.MapState
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket
+import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket
 import net.minecraft.network.packet.s2c.play.MapUpdateS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
@@ -205,6 +206,7 @@ class MinecraftComposeGui(
     private fun getGuiChunk(x: Int, y: Int) = guiChunks[x + y * blockWidth]
 
     private var placedItemFrames = false
+    private val itemFrameEntityIds = ArrayList<Int>(blockWidth * blockHeight)
 
     init {
         scene.setContent {
@@ -248,6 +250,7 @@ class MinecraftComposeGui(
 
                     // spawn the fake item frame
                     val itemFrame = ItemFrameEntity(player.world, framePos, guiDirection)
+                    itemFrameEntityIds += itemFrame.id
                     itemFrame.isInvisible = true
                     networkHandler.sendPacket(itemFrame.createSpawnPacket())
 
@@ -296,6 +299,7 @@ class MinecraftComposeGui(
     }
 
     fun close() {
+        player.networkHandler.sendPacket(EntitiesDestroyS2CPacket(*itemFrameEntityIds.toIntArray()))
         MapIdGenerator.makeOldIdAvailable(guiChunks.map { it.mapId })
         coroutineContext.close()
         scene.close()
