@@ -38,6 +38,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skiko.FrameDispatcher
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import kotlin.math.max
 import kotlin.math.min
@@ -67,11 +68,12 @@ class MinecraftComposeGui(
     val position: BlockPos,
 ) : CoroutineScope {
     companion object {
-        private val playerGuis = HashMap<ServerPlayerEntity, MinecraftComposeGui>()
+        private val playerGuis = ConcurrentHashMap<ServerPlayerEntity, MinecraftComposeGui>()
 
         init {
             ServerLifecycleEvents.SERVER_STOPPING.register {
                 playerGuis.values.forEach { it.close() }
+                playerGuis.clear()
             }
         }
 
@@ -304,5 +306,6 @@ class MinecraftComposeGui(
         MapIdGenerator.makeOldIdAvailable(guiChunks.map { it.mapId })
         coroutineContext.close()
         scene.close()
+        playerGuis.remove(player, this)
     }
 }
