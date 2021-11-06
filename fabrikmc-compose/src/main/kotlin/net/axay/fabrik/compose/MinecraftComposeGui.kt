@@ -1,6 +1,7 @@
 package net.axay.fabrik.compose
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ComposeScene
@@ -51,7 +52,7 @@ import kotlin.math.min
 fun ServerPlayerEntity.displayComposable(
     blockWidth: Int, blockHeight: Int,
     position: BlockPos = blockPos.offset(horizontalFacing, 2),
-    content: @Composable () -> Unit,
+    content: @Composable BoxScope.(gui: MinecraftComposeGui) -> Unit,
 ) = MinecraftComposeGui(
     blockWidth, blockHeight,
     content,
@@ -61,7 +62,7 @@ fun ServerPlayerEntity.displayComposable(
 
 class MinecraftComposeGui(
     val blockWidth: Int, val blockHeight: Int,
-    val content: @Composable () -> Unit,
+    val content: @Composable BoxScope.(gui: MinecraftComposeGui) -> Unit,
     val player: ServerPlayerEntity,
     val position: BlockPos,
 ) : CoroutineScope {
@@ -211,7 +212,7 @@ class MinecraftComposeGui(
     init {
         scene.setContent {
             Box(Modifier.size((blockWidth * 128).dp, (blockHeight * 128).dp)) {
-                content()
+                content(this@MinecraftComposeGui)
             }
         }
 
