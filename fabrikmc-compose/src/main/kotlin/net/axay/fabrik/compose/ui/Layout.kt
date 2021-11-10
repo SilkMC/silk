@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import net.axay.fabrik.compose.MinecraftComposeGui
 
 @Composable
-fun McWindowHeader(title: String, gui: MinecraftComposeGui) {
+fun McWindowHeader(gui: MinecraftComposeGui, title: String = "") {
     Row(
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
