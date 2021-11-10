@@ -18,7 +18,7 @@ private val colorList = listOf(Color.Green, Color.Magenta, Color.Red, Color.Blue
 
 @Composable
 fun TestGuiComposable() {
-    Row(Modifier.padding(6.dp)) {
+    Row(Modifier.padding(horizontal = 6.dp)) {
         Column {
             repeat(5) {
                 Button(onClick = {}, colors = ButtonDefaults.buttonColors(colorList[it])) {
