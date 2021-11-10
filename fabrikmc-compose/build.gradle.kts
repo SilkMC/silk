@@ -3,7 +3,7 @@ import BuildConstants.projectTitle
 plugins {
     `java-version-script`
     `mod-build-script`
-    id("org.jetbrains.compose") version "1.0.0-beta1"
+    id("org.jetbrains.compose") version "1.0.0-beta5"
 }
 
 dependencies {
