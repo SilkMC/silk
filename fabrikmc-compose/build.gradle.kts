@@ -3,6 +3,7 @@ import BuildConstants.projectTitle
 plugins {
     `java-version-script`
     `mod-build-script`
+    kotlin("plugin.serialization")
     id("org.jetbrains.compose") version "1.0.0-beta5"
 }
 
