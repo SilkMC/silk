@@ -12,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import net.axay.fabrik.compose.color.toCompose
+import net.axay.fabrik.compose.ui.McImage
 import net.minecraft.block.MapColor
+import net.minecraft.item.Items
 
 private val colorList = listOf(Color.Green, Color.Magenta, Color.Red, Color.Blue, Color.Yellow)
 
@@ -27,6 +29,9 @@ fun TestGuiComposable() {
             }
         }
         Column(Modifier.padding(start = 10.dp)) {
+            @Composable
+            fun space() = Spacer(Modifier.height(5.dp))
+
             Text("Hey, this is test :)")
             Text("red background", Modifier.background(Color.Red))
 
@@ -35,14 +40,16 @@ fun TestGuiComposable() {
             Button(onClick = { clickCounter += 1 }) {
                 Text("Click me")
             }
-            Spacer(Modifier.height(5.dp))
+            space()
             Text("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.")
-            Spacer(Modifier.height(5.dp))
+            space()
             Text("Amount of clicks: $clickCounter")
-            Spacer(Modifier.height(5.dp))
+            space()
             Button(onClick = {}, colors = ButtonDefaults.buttonColors(MapColor.DARK_AQUA.toCompose())) {
                 Text("DARK_AQUA looks like this")
             }
+            space()
+            McImage(Items.EMERALD)
         }
     }
 }
