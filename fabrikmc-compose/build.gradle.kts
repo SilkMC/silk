@@ -8,8 +8,8 @@ plugins {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation(project(":${rootProject.name}-core"))
-    implementation(project(":${rootProject.name}-commands"))
+    implementation(modProject(":${rootProject.name}-core"))
+    implementation(modProject(":${rootProject.name}-commands"))
 
     api("org.jetbrains.kotlinx:multik-api:0.1.1")
     api("org.jetbrains.kotlinx:multik-default:0.1.1")

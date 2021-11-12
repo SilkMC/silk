@@ -8,8 +8,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":${rootProject.name}-core"))
-    implementation(project(":${rootProject.name}-nbt"))
+    implementation(modProject(":${rootProject.name}-core"))
+    api(modProject(":${rootProject.name}-nbt"))
 }
 
 val modName by extra("$projectTitle Persistence")

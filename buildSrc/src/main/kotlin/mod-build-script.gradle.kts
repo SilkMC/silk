@@ -109,3 +109,7 @@ tasks {
         dependsOn(modDotJsonTask)
     }
 }
+
+configurations {
+    namedElements.extendsFrom(api.get())
+}

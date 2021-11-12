@@ -4,17 +4,17 @@ plugins {
     `java-version-script`
     `mod-build-script`
     kotlin("plugin.serialization")
-    id("org.jetbrains.compose") version "1.0.0-beta1"
+    id("org.jetbrains.compose") version "1.0.0-beta5"
 }
 
 dependencies {
-    implementation(project(":${rootProject.name}-commands"))
-    implementation(project(":${rootProject.name}-compose"))
-    implementation(project(":${rootProject.name}-core"))
-    implementation(project(":${rootProject.name}-game"))
-    implementation(project(":${rootProject.name}-igui"))
-    implementation(project(":${rootProject.name}-network"))
-    implementation(project(":${rootProject.name}-persistence"))
+    implementation(modProject(":${rootProject.name}-commands"))
+    implementation(modProject(":${rootProject.name}-compose"))
+    implementation(modProject(":${rootProject.name}-core"))
+    implementation(modProject(":${rootProject.name}-game"))
+    implementation(modProject(":${rootProject.name}-igui"))
+    implementation(modProject(":${rootProject.name}-network"))
+    implementation(modProject(":${rootProject.name}-persistence"))
 
     implementation(compose.desktop.currentOs)
 }

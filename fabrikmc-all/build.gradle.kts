@@ -7,13 +7,13 @@ plugins {
 }
 
 dependencies {
-    include(project(":${rootProject.name}-commands"))
-    include(project(":${rootProject.name}-core"))
-    include(project(":${rootProject.name}-game"))
-    include(project(":${rootProject.name}-igui"))
-    include(project(":${rootProject.name}-nbt"))
-    include(project(":${rootProject.name}-network"))
-    include(project(":${rootProject.name}-persistence"))
+    include(modProject(":${rootProject.name}-commands"))
+    include(modProject(":${rootProject.name}-core"))
+    include(modProject(":${rootProject.name}-game"))
+    include(modProject(":${rootProject.name}-igui"))
+    include(modProject(":${rootProject.name}-nbt"))
+    include(modProject(":${rootProject.name}-network"))
+    include(modProject(":${rootProject.name}-persistence"))
 }
 
 val modName by extra("$projectTitle (All modules)")

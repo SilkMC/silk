@@ -8,7 +8,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":${rootProject.name}-core"))
+    implementation(modProject(":${rootProject.name}-core"))
 }
 
 val modName by extra("$projectTitle Game")
