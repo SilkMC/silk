@@ -1,5 +1,7 @@
 import BuildConstants.projectTitle
 
+description = "FabrikMC Persistence adds class based persistent storage to entities, worlds and more"
+
 plugins {
     `java-version-script`
     `mod-build-script`
@@ -8,7 +10,7 @@ plugins {
 }
 
 dependencies {
-    implementation(modProject(":${rootProject.name}-core"))
+    api(modProject(":${rootProject.name}-core"))
     api(modProject(":${rootProject.name}-nbt"))
 }
 

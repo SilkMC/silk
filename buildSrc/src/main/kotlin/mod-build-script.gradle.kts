@@ -55,6 +55,7 @@ data class FabricModConfiguration(
     val entrypoints: LinkedHashMap<String, List<Entrypoint>> = linkedMapOf(),
     val mixins: List<String> = emptyList(),
     val depends: LinkedHashMap<String, String>,
+    val icon: String? = null,
 ) {
     @Serializable
     data class Entrypoint(
@@ -85,7 +86,8 @@ tasks {
                 "fabric" to "*",
                 "fabric-language-kotlin" to ">=1.6.0+kotlin.1.5.0",
                 "minecraft" to "${majorMinecraftVersion}.x"
-            ).apply { putAll(modDepends ?: emptyMap()) }
+            ).apply { putAll(modDepends ?: emptyMap()) },
+            if (project.name.endsWith("-all")) "assets/${project.name}/icon.png" else null
         )
 
         val modDotJson = buildDir.resolve("resources/main/fabric.mod.json")

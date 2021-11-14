@@ -1,5 +1,7 @@
 import BuildConstants.projectTitle
 
+description = "FabrikMC Inventory GUI provides a high-level server-side GUI builder DSL for Kotlin"
+
 plugins {
     `java-version-script`
     `mod-build-script`
@@ -8,7 +10,7 @@ plugins {
 }
 
 dependencies {
-    implementation(modProject(":${rootProject.name}-core"))
+    api(modProject(":${rootProject.name}-core"))
 }
 
 val modName by extra("$projectTitle Inventory GUI")

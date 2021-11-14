@@ -1,5 +1,7 @@
 import BuildConstants.projectTitle
 
+description = "FabrikMC Network adds easy-to-use custom packet support with kotlinx.serialization"
+
 plugins {
     `java-version-script`
     `mod-build-script`
@@ -9,7 +11,7 @@ plugins {
 }
 
 dependencies {
-    implementation(modProject(":${rootProject.name}-core"))
+    api(modProject(":${rootProject.name}-core"))
     api("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.0")
 }
 

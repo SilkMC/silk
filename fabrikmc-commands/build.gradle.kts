@@ -1,5 +1,7 @@
 import BuildConstants.projectTitle
 
+description = "FabrikMC Commands provides a Kotlin DSL for Brigardier"
+
 plugins {
     `java-version-script`
     `mod-build-script`
@@ -9,7 +11,7 @@ plugins {
 }
 
 dependencies {
-    implementation(modProject(":${rootProject.name}-core"))
+    api(modProject(":${rootProject.name}-core"))
 }
 
 val modName by extra("$projectTitle Commands")

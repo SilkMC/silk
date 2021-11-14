@@ -1,5 +1,7 @@
 import BuildConstants.projectTitle
 
+description = "FabrikMC Compose brings Kotlin compose-jb to Minecraft"
+
 plugins {
     `java-version-script`
     `mod-build-script`
@@ -11,8 +13,7 @@ plugins {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation(modProject(":${rootProject.name}-core"))
-    implementation(modProject(":${rootProject.name}-commands"))
+    api(modProject(":${rootProject.name}-core"))
 
     api("org.jetbrains.kotlinx:multik-api:0.1.1")
     api("org.jetbrains.kotlinx:multik-default:0.1.1")

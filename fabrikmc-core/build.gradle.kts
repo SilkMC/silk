@@ -1,5 +1,7 @@
 import BuildConstants.projectTitle
 
+description = "FabrikMC Core provides a simple and stable Kotlin API for working with Minecraft"
+
 plugins {
     `java-version-script`
     `mod-build-script`
