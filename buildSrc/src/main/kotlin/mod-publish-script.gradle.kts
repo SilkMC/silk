@@ -27,15 +27,7 @@ publishing {
 
     publications {
         register<MavenPublication>(project.name) {
-            val remapJarTask = tasks.named("remapJar")
-            artifact(remapJarTask) {
-                builtBy(remapJarTask)
-            }
-            artifact(tasks.named("sourcesJar")) {
-                builtBy(tasks.named("remapSourcesJar"))
-            }
-            artifact(tasks.named("javadocJar"))
-            artifact(tasks.jar)
+            from(components["java"])
 
             this.groupId = project.group.toString()
             this.artifactId = project.name
