@@ -81,13 +81,9 @@ object AssetsLoader {
     suspend fun loadImage(item: Item): ImageBitmap {
         loadedAssets.await()
 
-        logInfo("loaded assets")
-
         val id = Registry.ITEM.getId(item)
         if (id.namespace != "minecraft")
             error("Using textures of custom Minecraft mods (in this case ${id.namespace}) for compose is not supported")
-
-        logInfo("item id $id")
 
         return withContext(Dispatchers.IO) {
             @Suppress("BlockingMethodInNonBlockingContext")
