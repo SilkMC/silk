@@ -61,6 +61,14 @@ fun ServerPlayerEntity.displayComposable(
     position
 )
 
+/**
+ * A server-side gui making use of Compose and Compose UI. You may create this gui using
+ * [displayComposable].
+ * Internally, the gui is rendered on maps, which are placed inside invisible item frames.
+ * Everything only happens through packets, therefore the gui does not really exist on
+ * the server.
+ * If you want to remove this gui, call the [close] function.
+ */
 class MinecraftComposeGui(
     val blockWidth: Int, val blockHeight: Int,
     val content: @Composable BoxScope.(gui: MinecraftComposeGui) -> Unit,
@@ -301,6 +309,10 @@ class MinecraftComposeGui(
         scene.sendPointerEvent(PointerEventType.Release, offset)
     }
 
+    /**
+     * Safely removes this gui. This function will be called automatically
+     * if the server shuts down.
+     */
     fun close() {
         player.networkHandler.sendPacket(EntitiesDestroyS2CPacket(*itemFrameEntityIds.toIntArray()))
         MapIdGenerator.makeOldIdAvailable(guiChunks.map { it.mapId })
