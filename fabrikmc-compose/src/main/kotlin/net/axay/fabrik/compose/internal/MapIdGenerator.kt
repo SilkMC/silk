@@ -6,7 +6,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import net.axay.fabrik.core.task.fabrikCoroutineScope
 
-object MapIdGenerator {
+internal object MapIdGenerator {
     private val mutex = Mutex()
 
     private var currentMaxId = Int.MAX_VALUE - 12000

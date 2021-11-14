@@ -26,7 +26,7 @@ object MapColorUtils {
      * [MapColor] id. (Pre-calculated means that they have been multiplied by 4 and
      * their shade has been added to the id.)
      */
-    val mapColorIds = ArrayList<Pair<LAB, Byte>>().apply {
+    private val mapColorIds = ArrayList<Pair<LAB, Byte>>().apply {
         MapColor.COLORS
             .filter { it != null && it.color != 0 }
             .forEach { mapColor ->
@@ -54,7 +54,7 @@ object MapColorUtils {
     /**
      * Same as [mapColorIds], but without white. This is used by the [toMapColorId] function.
      */
-    val mapColorIdsNoWhite = mapColorIds.filterNot { it.second == whiteMapColorId }.toTypedArray()
+    private val mapColorIdsNoWhite = mapColorIds.filterNot { it.second == whiteMapColorId }.toTypedArray()
 
     /**
      * Scales the given [color] down to a [MapColor] using
