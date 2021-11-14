@@ -12,7 +12,7 @@ plugins {
 }
 
 dependencies {
-    implementation(compose.desktop.currentOs)
+    compileOnly(compose.desktop.common)
     api(modProject(":${rootProject.name}-core"))
 
     api("org.jetbrains.kotlinx:multik-api:0.1.1")
