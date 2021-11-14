@@ -55,8 +55,18 @@ data class FabricModConfiguration(
     val entrypoints: LinkedHashMap<String, List<Entrypoint>> = linkedMapOf(),
     val mixins: List<String> = emptyList(),
     val depends: LinkedHashMap<String, String>,
+    val contact: Contact,
+    val license: String,
     val icon: String? = null,
 ) {
+    @Serializable
+    data class Contact(
+        val homepage: String,
+        val issues: String,
+        val sources: String,
+        val discord: String,
+    )
+
     @Serializable
     data class Entrypoint(
         val adapter: String,
@@ -87,6 +97,13 @@ tasks {
                 "fabric-language-kotlin" to ">=1.6.0+kotlin.1.5.0",
                 "minecraft" to "${majorMinecraftVersion}.x"
             ).apply { putAll(modDepends ?: emptyMap()) },
+            FabricModConfiguration.Contact(
+                "https://github.com/jakobkmar/fabrikmc",
+                "https://github.com/jakobkmar/fabrikmc/issues",
+                "https://github.com/jakobkmar/fabrikmc",
+                "https://discord.gg/CJDUVuJ"
+            ),
+            "GPL-3.0-or-later",
             if (project.name.endsWith("-all")) "assets/${project.name}/icon.png" else null
         )
 
