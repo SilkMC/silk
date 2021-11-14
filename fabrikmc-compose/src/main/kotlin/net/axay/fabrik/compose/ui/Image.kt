@@ -14,6 +14,13 @@ import androidx.compose.ui.layout.ContentScale
 import net.axay.fabrik.compose.internal.AssetsLoader
 import net.minecraft.item.Item
 
+/**
+ * Renders the icon of any [Item] to this gui as an [Image].
+ *
+ * See [Image] for a description of the parameters.
+ *
+ * @see Image
+ */
 @Composable
 fun McImage(
     item: Item,

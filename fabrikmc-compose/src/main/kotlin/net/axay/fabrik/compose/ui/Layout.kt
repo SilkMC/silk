@@ -19,6 +19,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import net.axay.fabrik.compose.MinecraftComposeGui
 
+/**
+ * Adds an opinionated window header suitable for [MinecraftComposeGui]s. This
+ * header provides a cross for closing the [gui].
+ * You may use this in a [Column], otherwise it will overlay with other components.
+ *
+ * @param gui the gui which should be closed if the player uses the top-right cross
+ * @param title the current title of the gui
+ */
 @Composable
 fun McWindowHeader(gui: MinecraftComposeGui, title: String = "") {
     Row(
