@@ -44,11 +44,14 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Creates a new server-side gui based on composables.
+ * Creates a new server-side [MinecraftComposeGui]. This allows you to use any
+ * composable functions inside the [content] lambda of this function.
  *
  * @param blockWidth the width of the gui **in blocks**
  * @param blockHeight the height of the gui **in blocks**
  * @param content define your gui using composable functions in here
+ *
+ * @see MinecraftComposeGui
  */
 fun ServerPlayerEntity.displayComposable(
     blockWidth: Int, blockHeight: Int,
