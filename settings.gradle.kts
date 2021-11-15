@@ -20,6 +20,8 @@ include("$projectName-all")
 
 include("$projectName-commands")
 include("$projectName-compose")
+include("$projectName-compose:$projectName-compose-ksp")
+include("$projectName-compose:$projectName-compose-mojang-api")
 include("$projectName-core")
 include("$projectName-game")
 include("$projectName-igui")
