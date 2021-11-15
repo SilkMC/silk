@@ -3,7 +3,7 @@ import org.jetbrains.dokka.base.DokkaBaseConfiguration
 import org.jetbrains.dokka.versioning.VersioningConfiguration
 import org.jetbrains.dokka.versioning.VersioningPlugin
 
-version = "1.6.0"
+version = "1.6.1"
 
 plugins {
     id("org.jetbrains.dokka")
