@@ -1,3 +1,4 @@
+import gradle.kotlin.dsl.accessors._a819bbffcdb721ad180221de4a453285.kotlin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -15,4 +16,8 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "16"
     }
+}
+
+kotlin.sourceSets.all {
+    languageSettings.optIn("kotlin.RequiresOptIn")
 }

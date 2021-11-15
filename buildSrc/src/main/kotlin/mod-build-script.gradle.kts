@@ -35,10 +35,6 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 }
 
-kotlin.sourceSets.all {
-    languageSettings.optIn("kotlin.RequiresOptIn")
-}
-
 java {
     withSourcesJar()
     withJavadocJar()
