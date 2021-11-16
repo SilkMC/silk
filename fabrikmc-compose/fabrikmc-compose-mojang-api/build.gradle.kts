@@ -1,6 +1,7 @@
 plugins {
     `java-version-script`
     `project-publish-script`
+    `dokka-script-noop`
     kotlin("plugin.serialization")
 }
 

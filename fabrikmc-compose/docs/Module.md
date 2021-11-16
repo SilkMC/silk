@@ -18,8 +18,13 @@ player.displayComposable(8, 6) {
 
 And that's it, you now have access to the world of Compose in Minecraft.
 
-You can now have a look at the **UI** package (below) to see custom composable functions provided by
-fabrikmc-compose.
+You can now have a look at the **UI** package (below) to see custom composable functions provided by fabrikmc-compose.
+
+## Compose docs
+
+There are docs at [Android Developer Website](https://developer.android.com/jetpack/compose/documentation) and you can
+find desktop specific documentation at the [compose-jb](https://github.com/JetBrains/compose-jb) repository.
+Additionally, there is a  [communtiy maintained playground](https://foso.github.io/Jetpack-Compose-Playground/).
 
 # Package net.axay.fabrik.compose
 
@@ -28,6 +33,10 @@ Implementation of Compose scenes for Minecraft
 # Package net.axay.fabrik.compose.color
 
 Color utilities for working with map colors
+
+# Package net.axay.fabrik.compose.icons
+
+Contains generated constants for Minecraft icons
 
 # Package net.axay.fabrik.compose.ui
 
