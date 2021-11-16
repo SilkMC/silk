@@ -18,7 +18,7 @@ plugins {
 group = "net.axay"
 version = rootProject.version
 
-description = "FabrikMC is an API for using FabricMC with Kotlin."
+description = "FabrikMC is an API for using FabricMC with Kotlin"
 
 repositories {
     mavenCentral()

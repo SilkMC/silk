@@ -5,6 +5,11 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+group = "net.axay"
+version = rootProject.version
+
+description = "FabrikMC Compose Mojang API extracts Minecraft assets from the client jar"
+
 repositories {
     mavenCentral()
 }
