@@ -5,7 +5,7 @@ description = "FabrikMC Persistence adds class based persistent storage to entit
 plugins {
     `java-version-script`
     `mod-build-script`
-    `mod-publish-script`
+    `project-publish-script`
     `dokka-script`
 }
 

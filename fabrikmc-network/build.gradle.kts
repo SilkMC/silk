@@ -5,7 +5,7 @@ description = "FabrikMC Network adds easy-to-use custom packet support with kotl
 plugins {
     `java-version-script`
     `mod-build-script`
-    `mod-publish-script`
+    `project-publish-script`
     `dokka-script`
     kotlin("plugin.serialization")
 }

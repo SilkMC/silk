@@ -5,7 +5,7 @@ description = "FabrikMC NBT adds NBT to kotlinx.serialization and provides exten
 plugins {
     `java-version-script`
     `mod-build-script`
-    `mod-publish-script`
+    `project-publish-script`
     `kotest-script`
     `dokka-script`
     kotlin("plugin.serialization")

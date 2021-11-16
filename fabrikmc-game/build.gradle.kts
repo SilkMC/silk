@@ -5,7 +5,7 @@ description = "FabrikMC Game contains utilities not fitting for the core module 
 plugins {
     `java-version-script`
     `mod-build-script`
-    `mod-publish-script`
+    `project-publish-script`
     `dokka-script`
 }
 

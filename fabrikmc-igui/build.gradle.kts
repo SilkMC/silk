@@ -5,7 +5,7 @@ description = "FabrikMC Inventory GUI provides a high-level server-side GUI buil
 plugins {
     `java-version-script`
     `mod-build-script`
-    `mod-publish-script`
+    `project-publish-script`
     `dokka-script`
 }
 

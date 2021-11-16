@@ -5,8 +5,6 @@ import BuildConstants.isSnapshot
 plugins {
     kotlin("jvm")
 
-    id("fabric-loom")
-
     `maven-publish`
     signing
 }

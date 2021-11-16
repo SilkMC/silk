@@ -5,7 +5,7 @@ description = "FabrikMC Core provides a simple and stable Kotlin API for working
 plugins {
     `java-version-script`
     `mod-build-script`
-    `mod-publish-script`
+    `project-publish-script`
     `kotest-script`
     `dokka-script`
     kotlin("plugin.serialization")

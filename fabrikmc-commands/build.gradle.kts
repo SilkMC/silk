@@ -5,7 +5,7 @@ description = "FabrikMC Commands provides a Kotlin DSL for Brigardier"
 plugins {
     `java-version-script`
     `mod-build-script`
-    `mod-publish-script`
+    `project-publish-script`
     `kotest-script`
     `dokka-script`
 }
