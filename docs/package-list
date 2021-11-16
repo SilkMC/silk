@@ -1,12 +1,13 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-
+$dokka.location:net.axay.fabrik.compose.icons////PointingToDeclaration/fabrikmc-compose/net.axay.fabrik.compose.icons.html
 module:fabrikmc-commands
 net.axay.fabrik.commands
 net.axay.fabrik.commands.registration
 module:fabrikmc-compose
 net.axay.fabrik.compose
 net.axay.fabrik.compose.color
+net.axay.fabrik.compose.icons
 net.axay.fabrik.compose.ui
 module:fabrikmc-core
 net.axay.fabrik.core
