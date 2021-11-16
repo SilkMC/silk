@@ -15,7 +15,7 @@ plugins {
 
 dependencies {
     api(modProject(":${rootProject.name}-core"))
-    api(include(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api"))!!)
+    include(api(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api"))!!)
     ksp(project(":${rootProject.name}-compose:${rootProject.name}-compose-ksp"))
 
     compileOnly(compose.desktop.common)
