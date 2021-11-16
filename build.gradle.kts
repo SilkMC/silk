@@ -14,6 +14,7 @@ repositories {
 allprojects {
     group = "net.axay"
     version = "1.6.1"
+    description = "FabrikMC is an API for using FabricMC with Kotlin"
 }
 
 tasks {

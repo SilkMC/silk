@@ -1,3 +1,4 @@
+import gradle.kotlin.dsl.accessors._a819bbffcdb721ad180221de4a453285.java
 import gradle.kotlin.dsl.accessors._a819bbffcdb721ad180221de4a453285.kotlin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -20,4 +21,9 @@ tasks {
 
 kotlin.sourceSets.all {
     languageSettings.optIn("kotlin.RequiresOptIn")
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
