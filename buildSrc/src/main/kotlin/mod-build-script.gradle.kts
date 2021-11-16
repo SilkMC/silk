@@ -11,12 +11,8 @@ import kotlinx.serialization.json.Json
 
 plugins {
     kotlin("jvm")
-
     id("fabric-loom")
 }
-
-group = "net.axay"
-version = rootProject.version
 
 description = "FabrikMC is an API for using FabricMC with Kotlin"
 
