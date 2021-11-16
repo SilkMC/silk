@@ -6,20 +6,17 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import net.axay.fabrik.compose.icons.McIcon
+import net.axay.fabrik.compose.mojangapi.LauncherMeta
 import net.axay.fabrik.core.Fabrik
+import net.axay.fabrik.core.logging.logError
 import net.axay.fabrik.core.logging.logInfo
 import net.axay.fabrik.core.task.fabrikCoroutineScope
 import net.minecraft.SharedConstants
-import net.minecraft.item.Item
-import net.minecraft.util.registry.Registry
 import java.io.File
-import java.net.URL
-import java.nio.channels.Channels
 import java.nio.file.FileSystems
 import java.nio.file.Files
+import java.nio.file.NoSuchFileException
 import kotlin.io.path.inputStream
 import kotlin.io.path.isDirectory
 import kotlin.io.path.pathString
@@ -38,23 +35,10 @@ object AssetsLoader {
             if (
                 (if (versionFile.exists()) versionFile.readText() != serverVersion else true) || !assetsStorage.resolve("assets").exists()
             ) {
-                val json = Json { ignoreUnknownKeys = true }
-
-                // request version info
-                logInfo("Requesting version info for version ${serverVersion}...")
-                val versionInfoUrl = json.decodeFromString<VersionManifest>(URL("https://launchermeta.mojang.com/mc/game/version_manifest.json").readText())
-                    .versions.find { it.id == serverVersion }?.url
-                val clientDownloadUrl = json.decodeFromString<VersionInfo>(URL(versionInfoUrl).readText())
-                    .downloads.client.url
-                logInfo("Found version info for $serverVersion")
-
-                // download client
                 val clientFile = assetsStorage.resolve("client-${serverVersion}.jar")
-                logInfo("Downloading ${clientFile.name}...")
                 clientFile.parentFile.mkdirs()
                 clientFile.createNewFile()
-                clientFile.outputStream().channel.transferFrom(Channels.newChannel(URL(clientDownloadUrl).openStream()), 0, Long.MAX_VALUE)
-                logInfo("Finished downloading the client")
+                LauncherMeta.downloadClientTo(clientFile, serverVersion)
 
                 // extract assets
                 logInfo("Extracting assets...")
@@ -78,31 +62,17 @@ object AssetsLoader {
         }
     }
 
-    suspend fun loadImage(item: Item): ImageBitmap {
+    suspend fun loadImage(icon: McIcon): ImageBitmap? {
         loadedAssets.await()
 
-        val id = Registry.ITEM.getId(item)
-        if (id.namespace != "minecraft")
-            error("Using textures of custom Minecraft mods (in this case ${id.namespace}) for compose is not supported")
-
         return withContext(Dispatchers.IO) {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            assetsPath.resolve("minecraft/textures/item/${id.path}.png").inputStream().buffered().use(::loadImageBitmap)
-        }
-    }
-
-    @Serializable
-    private data class VersionManifest(val versions: List<Link>) {
-        @Serializable
-        data class Link(val id: String, val url: String)
-    }
-
-    @Serializable
-    private data class VersionInfo(val downloads: Downloads) {
-        @Serializable
-        data class Downloads(val client: Client) {
-            @Serializable
-            data class Client(val url: String)
+            try {
+                @Suppress("BlockingMethodInNonBlockingContext")
+                assetsPath.resolve("minecraft/textures/${icon}").inputStream().buffered().use(::loadImageBitmap)
+            } catch (ignored: NoSuchFileException) {
+                logError("Cannot load or find image file for given icon: $icon")
+                null
+            }
         }
     }
 }

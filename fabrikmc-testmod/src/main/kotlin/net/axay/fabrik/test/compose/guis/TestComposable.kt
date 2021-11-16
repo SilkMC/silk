@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import net.axay.fabrik.compose.color.toCompose
+import net.axay.fabrik.compose.icons.McIcons
 import net.axay.fabrik.compose.ui.McImage
 import net.minecraft.block.MapColor
-import net.minecraft.item.Items
 
 private val colorList = listOf(Color.Green, Color.Magenta, Color.Red, Color.Blue, Color.Yellow)
 
@@ -49,7 +49,8 @@ fun TestGuiComposable() {
                 Text("DARK_AQUA looks like this")
             }
             space()
-            McImage(Items.EMERALD)
+            McImage(McIcons.Item.emerald)
+            McImage(McIcons.Block.craftingTableSide)
         }
     }
 }

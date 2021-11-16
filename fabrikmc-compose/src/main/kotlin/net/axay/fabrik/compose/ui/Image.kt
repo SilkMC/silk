@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
+import net.axay.fabrik.compose.icons.McIcon
 import net.axay.fabrik.compose.internal.AssetsLoader
 import net.minecraft.item.Item
 
@@ -23,14 +24,14 @@ import net.minecraft.item.Item
  */
 @Composable
 fun McImage(
-    item: Item,
+    icon: McIcon,
     modifier: Modifier = Modifier,
-    contentDescription: String? = item.name.string,
+    contentDescription: String? = icon,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
 ) {
     val image by produceState<ImageBitmap?>(null) {
-        value = AssetsLoader.loadImage(item)
+        value = AssetsLoader.loadImage(icon)
     }
 
     if (image != null) {
