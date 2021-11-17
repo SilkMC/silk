@@ -18,7 +18,7 @@ import net.axay.fabrik.compose.color.MapColorUtils
 import net.axay.fabrik.compose.internal.MapIdGenerator
 import net.axay.fabrik.core.logging.logError
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.minecraft.entity.decoration.ItemFrameEntity
+import net.minecraft.entity.decoration.GlowItemFrameEntity
 import net.minecraft.item.Items
 import net.minecraft.item.map.MapState
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket
@@ -263,7 +263,7 @@ class MinecraftComposeGui(
                     val framePos = position.down(yFrame).offset(placementDirection, xFrame)
 
                     // spawn the fake item frame
-                    val itemFrame = ItemFrameEntity(player.world, framePos, guiDirection)
+                    val itemFrame = GlowItemFrameEntity(player.world, framePos, guiDirection)
                     itemFrameEntityIds += itemFrame.id
                     itemFrame.isInvisible = true
                     networkHandler.sendPacket(itemFrame.createSpawnPacket())
