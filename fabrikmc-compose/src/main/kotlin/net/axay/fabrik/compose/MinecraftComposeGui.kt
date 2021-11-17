@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ComposeScene
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.mouse.MouseScrollUnit
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.unit.dp
 import com.github.ajalt.colormath.model.SRGB
@@ -22,9 +24,11 @@ import net.minecraft.entity.decoration.GlowItemFrameEntity
 import net.minecraft.item.Items
 import net.minecraft.item.map.MapState
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket
+import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket
 import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket
 import net.minecraft.network.packet.s2c.play.MapUpdateS2CPacket
+import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Hand
 import net.minecraft.util.math.*
@@ -88,11 +92,28 @@ class MinecraftComposeGui(
             }
         }
 
-        // called by the mixin to ServerPlayNetworkHandler
-        fun onLeftClick(player: ServerPlayerEntity, packet: HandSwingC2SPacket) {
+        internal fun onSwingHand(player: ServerPlayerEntity, packet: HandSwingC2SPacket) {
             if (packet.hand == Hand.MAIN_HAND) {
                 playerGuis[player]?.onLeftClick()
             }
+        }
+
+        internal fun onUpdateSelectedSlot(player: ServerPlayerEntity, packet: UpdateSelectedSlotC2SPacket): Boolean {
+            val gui = playerGuis[player] ?: return false
+
+            val slotPair = player.inventory.selectedSlot to packet.selectedSlot
+            val (prevSlot, newSlot) = slotPair
+
+            val scrollDelta = when {
+                slotPair == 8 to 0 -> 1f
+                slotPair == 0 to 8 -> -1f
+                prevSlot < newSlot -> 1f
+                prevSlot > newSlot -> -1f
+                else -> return false
+            }
+            gui.onScroll(scrollDelta * 3)
+
+            return true
         }
 
         private fun Vec3d.toMkArray() = mk.ndarray(doubleArrayOf(x, y, z))
@@ -281,7 +302,7 @@ class MinecraftComposeGui(
         if (!placedItemFrames) placedItemFrames = true
     }
 
-    private fun onLeftClick() = launch {
+    private fun calculateOffset(): Offset? {
         val intersection = rayPlaneIntersection(
             player.eyePos.toMkArray(),
             player.rotationVector.toMkArray(),
@@ -297,19 +318,33 @@ class MinecraftComposeGui(
         val planeX = when (worldX) {
             in bottomX..topX -> worldX - bottomX
             in topX..bottomX -> bottomX - worldX
-            else -> return@launch
+            else -> return null
         }
 
         val planeY = when (worldY) {
             in bottomY..topY -> worldY - bottomY
             in topY..bottomY -> bottomY - worldY
-            else -> return@launch
+            else -> return null
         }
 
-        val offset = Offset((planeX * 128).toFloat(), (planeY * 128).toFloat())
+        return Offset((planeX * 128).toFloat(), (planeY * 128).toFloat())
+    }
+
+    private fun onLeftClick() = launch {
+        val offset = calculateOffset() ?: return@launch
 
         scene.sendPointerEvent(PointerEventType.Press, offset)
         scene.sendPointerEvent(PointerEventType.Release, offset)
+    }
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    private fun onScroll(delta: Float) = launch {
+        val offset = calculateOffset() ?: return@launch
+
+        // only reset the slot if the player is directly looking at the gui
+        player.networkHandler.sendPacket(UpdateSelectedSlotS2CPacket(4))
+
+        scene.sendPointerScrollEvent(offset, MouseScrollUnit.Line(delta))
     }
 
     /**

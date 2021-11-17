@@ -4,6 +4,8 @@ package net.axay.fabrik.test.compose.guis
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -49,8 +51,20 @@ fun TestGuiComposable() {
                 Text("DARK_AQUA looks like this")
             }
             space()
-            McImage(McIcons.Item.emerald)
-            McImage(McIcons.Block.craftingTableSide)
+            LazyColumn {
+                items(
+                    listOf(
+                        McIcons.Item.emerald,
+                        McIcons.Block.craftingTableSide,
+                        McIcons.Block.allium,
+                        McIcons.Block.bambooLargeLeaves,
+                        McIcons.Block.beeNestFrontHoney
+                    )
+                ) { McImage(it) }
+                items(10) {
+                    Text("This is line number $it")
+                }
+            }
         }
     }
 }
