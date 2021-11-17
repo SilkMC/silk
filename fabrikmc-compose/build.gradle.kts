@@ -15,7 +15,9 @@ plugins {
 
 dependencies {
     api(modProject(":${rootProject.name}-core"))
-    include(api(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api"))!!)
+    include(api(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api")) {
+        exclude("org.apache.logging.log4j", "log4j-api")
+    })
     ksp(project(":${rootProject.name}-compose:${rootProject.name}-compose-ksp"))
 
     compileOnly(compose.desktop.common)
