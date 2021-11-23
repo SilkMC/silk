@@ -12,7 +12,7 @@ plugins {
 
 dependencies {
     api(modProject(":${rootProject.name}-core"))
-    api("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.0")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.1")
 }
 
 val modName by extra("$projectTitle Network")

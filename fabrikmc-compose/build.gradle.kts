@@ -10,7 +10,7 @@ plugins {
     `dokka-script`
     kotlin("plugin.serialization")
     id("org.jetbrains.compose") version "1.0.0-beta5"
-    id("com.google.devtools.ksp") version "1.5.31-1.0.1"
+    id("com.google.devtools.ksp") version "1.6.0-1.0.1"
 }
 
 dependencies {

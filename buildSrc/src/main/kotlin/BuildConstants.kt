@@ -21,7 +21,7 @@ object BuildConstants {
     const val yarnMappingsVersion = "1.17.1+build.63:v2"
     const val fabricLoaderVersion = "0.12.5"
     const val fabricApiVersion = "0.42.1+1.17"
-    const val fabricLanguageKotlinVersion = "1.6.5+kotlin.1.5.31"
+    const val fabricLanguageKotlinVersion = "1.7.0+kotlin.1.6.0"
 
     const val kotestVersion = "4.6.3"
 }
