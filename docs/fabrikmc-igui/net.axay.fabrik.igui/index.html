@@ -2,25 +2,29 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>net.axay.fabrik.igui</title>
-</head><body><link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script><script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../scripts/main.js" async></script>
+</head><body><link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
+    <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><link href="../../styles/prism.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../scripts/main.js" async></script><script type="text/javascript" src="../../scripts/prism.js" async></script><script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+
   
+    <div class="navigation-wrapper" id="navigation-wrapper">
+      <div id="leftToggler"><span class="icon-toggler"></span></div>
+      <div class="library-name"><a href="../../index.html"><span>fabrikmc</span></a></div>
+      <div>1.6.2</div>
+      <div class="pull-right d-flex"><button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+      </div>
+    </div>
     <div id="container">
-      <div id="leftColumn"><a href="../../index.html">
-            <div id="logo"></div>
-          </a>
-        <div id="paneSearch"></div>
+      <div id="leftColumn">
         <div id="sideMenu"></div>
       </div>
-      <div id="main">
-        <script type="text/javascript" src="../../scripts/main.js"></script><div id="leftToggler"><span class="icon-toggler"></span></div>
-
+      <div id="main"><script type="text/javascript" src="../../scripts/main.js"></script>
         <div class="main-content" id="content" pageids="fabrikmc-igui::net.axay.fabrik.igui////PointingToDeclaration//358577822">
-          <div class="navigation-wrapper" id="navigation-wrapper">
-            <div class="breadcrumbs"><a href="../index.html">fabrikmc-igui</a>/<a href="index.html">net.axay.fabrik.igui</a></div>
-            <div class="pull-right d-flex">
-              <div id="searchBar"></div>
-            </div>
-          </div>
+          <div class="breadcrumbs"><a href="../index.html">fabrikmc-igui</a>/<a href="index.html">net.axay.fabrik.igui</a></div>
           <div class="cover ">
             <h1 class="cover"><span><span>Package</span></span> <span>net.</span><wbr><span>axay.</span><wbr><span>fabrik.</span><wbr><span>igui</span></h1>
             <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><p class="paragraph">Contains the GUI builder and all GUI implementation classes</p></div></div>
@@ -36,13 +40,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">class <a href="-gui/index.html">Gui</a>(guiType: <a href="-gui-type/index.html">GuiType</a>, title: <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/text/LiteralText.html">LiteralText</a>, pagesByKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="-gui-page/index.html">GuiPage</a>&gt;, pagesByNumber: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, <a href="-gui-page/index.html">GuiPage</a>&gt;, defaultPageKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, eventHandler: <a href="-gui-event-handler/index.html">GuiEventHandler</a>) : <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/inventory/SimpleInventory.html">SimpleInventory</a>, <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/screen/NamedScreenHandlerFactory.html">NamedScreenHandlerFactory</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-gui/index.html">Gui</a><span class="token punctuation">(</span>guiType<span class="token operator">: </span><a href="-gui-type/index.html">GuiType</a><span class="token punctuation">, </span>title<span class="token operator">: </span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/text/LiteralText.html">LiteralText</a><span class="token punctuation">, </span>pagesByKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-gui-page/index.html">GuiPage</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>pagesByNumber<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-gui-page/index.html">GuiPage</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>defaultPageKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span>eventHandler<span class="token operator">: </span><a href="-gui-event-handler/index.html">GuiEventHandler</a><span class="token punctuation">)</span> : <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/inventory/SimpleInventory.html">SimpleInventory</a>, <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/screen/NamedScreenHandlerFactory.html">NamedScreenHandlerFactory</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -53,13 +53,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">enum <a href="-gui-action-type/index.html">GuiActionType</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a>&lt;<a href="-gui-action-type/index.html">GuiActionType</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-gui-action-type/index.html">GuiActionType</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-gui-action-type/index.html">GuiActionType</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -70,13 +66,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">class <a href="-gui-builder/index.html">GuiBuilder</a>(type: <a href="-gui-type/index.html">GuiType</a>, title: <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/text/LiteralText.html">LiteralText</a>, defaultPageKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-gui-builder/index.html">GuiBuilder</a><span class="token punctuation">(</span>type<span class="token operator">: </span><a href="-gui-type/index.html">GuiType</a><span class="token punctuation">, </span>title<span class="token operator">: </span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/text/LiteralText.html">LiteralText</a><span class="token punctuation">, </span>defaultPageKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -87,13 +79,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">class <a href="-gui-compound/index.html">GuiCompound</a>&lt;<a href="-gui-compound/index.html">E</a>&gt;(guiType: <a href="-gui-type/index.html">GuiType</a>, slots: <a href="-gui-slot-compound/-slot-range/-rectangle/index.html">GuiSlotCompound.SlotRange.Rectangle</a>, content: <a href="../net.axay.fabrik.igui.observable/-abstract-gui-list/index.html">AbstractGuiList</a>&lt;<a href="-gui-compound/index.html">E</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="-gui-compound/index.html">E</a>&gt;&gt;, iconGenerator: suspend (<a href="-gui-compound/index.html">E</a>) -&gt; <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/item/ItemStack.html">ItemStack</a>, onClick: suspend (event: <a href="../net.axay.fabrik.igui.events/-gui-click-event/index.html">GuiClickEvent</a>, <a href="-gui-compound/index.html">E</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>?) : <a href="-gui-useable/index.html">GuiUseable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-gui-compound/index.html">GuiCompound</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-gui-compound/index.html">E</a><span class="token operator">&gt;</span><span class="token punctuation">(</span>guiType<span class="token operator">: </span><a href="-gui-type/index.html">GuiType</a><span class="token punctuation">, </span>slots<span class="token operator">: </span><a href="-gui-slot-compound/-slot-range/-rectangle/index.html">GuiSlotCompound.SlotRange.Rectangle</a><span class="token punctuation">, </span>content<span class="token operator">: </span><a href="../net.axay.fabrik.igui.observable/-abstract-gui-list/index.html">AbstractGuiList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-gui-compound/index.html">E</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-gui-compound/index.html">E</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span>iconGenerator<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="-gui-compound/index.html">E</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/item/ItemStack.html">ItemStack</a><span class="token punctuation">, </span>onClick<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token keyword"></span>event<span class="token operator">: </span><a href="../net.axay.fabrik.igui.events/-gui-click-event/index.html">GuiClickEvent</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-gui-compound/index.html">E</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span><span class="token punctuation">)</span> : <a href="-gui-useable/index.html">GuiUseable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -104,13 +92,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">data class <a href="-gui-dimensions/index.html">GuiDimensions</a>(width: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, height: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-gui-dimensions/index.html">GuiDimensions</a><span class="token punctuation">(</span>width<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>height<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -121,13 +105,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">interface <a href="-gui-element/index.html">GuiElement</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-gui-element/index.html">GuiElement</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -138,13 +118,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">interface <a href="-gui-event/index.html">GuiEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-gui-event/index.html">GuiEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -155,13 +131,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">class <a href="-gui-event-handler/index.html">GuiEventHandler</a>(onClick: suspend (<a href="../net.axay.fabrik.igui.events/-gui-click-event/index.html">GuiClickEvent</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>?, onClose: suspend (<a href="../net.axay.fabrik.igui.events/-gui-close-event/index.html">GuiCloseEvent</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>?)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-gui-event-handler/index.html">GuiEventHandler</a><span class="token punctuation">(</span>onClick<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../net.axay.fabrik.igui.events/-gui-click-event/index.html">GuiClickEvent</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span><span class="token punctuation">, </span>onClose<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../net.axay.fabrik.igui.events/-gui-close-event/index.html">GuiCloseEvent</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -172,13 +144,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">abstract class <a href="-gui-icon/index.html">GuiIcon</a> : <a href="-gui-useable/index.html">GuiUseable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-gui-icon/index.html">GuiIcon</a> : <a href="-gui-useable/index.html">GuiUseable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -189,13 +157,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">class <a href="-gui-page/index.html">GuiPage</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, number: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, content: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, <a href="-gui-element/index.html">GuiElement</a>&gt;, effectTo: <a href="-gui-page/-change-effect/index.html">GuiPage.ChangeEffect</a>?, effectFrom: <a href="-gui-page/-change-effect/index.html">GuiPage.ChangeEffect</a>?) : <a href="-gui-useable/index.html">GuiUseable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-gui-page/index.html">GuiPage</a><span class="token punctuation">(</span>key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span>number<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>content<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-gui-element/index.html">GuiElement</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>effectTo<span class="token operator">: </span><a href="-gui-page/-change-effect/index.html">GuiPage.ChangeEffect</a><span class="token operator">?</span><span class="token punctuation">, </span>effectFrom<span class="token operator">: </span><a href="-gui-page/-change-effect/index.html">GuiPage.ChangeEffect</a><span class="token operator">?</span><span class="token punctuation">)</span> : <a href="-gui-useable/index.html">GuiUseable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -206,13 +170,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">interface <a href="-gui-player-event/index.html">GuiPlayerEvent</a> : <a href="-gui-event/index.html">GuiEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-gui-player-event/index.html">GuiPlayerEvent</a> : <a href="-gui-event/index.html">GuiEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -223,13 +183,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">class <a href="-gui-screen-handler/index.html">GuiScreenHandler</a>(gui: <a href="-gui/index.html">Gui</a>, syncId: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, playerInv: <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/entity/player/PlayerInventory.html">PlayerInventory</a>, inv: <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/inventory/Inventory.html">Inventory</a>) : <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/screen/GenericContainerScreenHandler.html">GenericContainerScreenHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-gui-screen-handler/index.html">GuiScreenHandler</a><span class="token punctuation">(</span>gui<span class="token operator">: </span><a href="-gui/index.html">Gui</a><span class="token punctuation">, </span>syncId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>playerInv<span class="token operator">: </span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/entity/player/PlayerInventory.html">PlayerInventory</a><span class="token punctuation">, </span>inv<span class="token operator">: </span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/inventory/Inventory.html">Inventory</a><span class="token punctuation">)</span> : <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/screen/GenericContainerScreenHandler.html">GenericContainerScreenHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -240,13 +196,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">data class <a href="-gui-slot/index.html">GuiSlot</a>(row: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, slotInRow: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>) : <a href="-gui-slot-compound/index.html">GuiSlotCompound</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-comparable/index.html">Comparable</a>&lt;<a href="-gui-slot/index.html">GuiSlot</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-gui-slot/index.html">GuiSlot</a><span class="token punctuation">(</span>row<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>slotInRow<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span> : <a href="-gui-slot-compound/index.html">GuiSlotCompound</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-comparable/index.html">Comparable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-gui-slot/index.html">GuiSlot</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -257,13 +209,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">interface <a href="-gui-slot-compound/index.html">GuiSlotCompound</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-gui-slot-compound/index.html">GuiSlotCompound</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -274,13 +222,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">enum <a href="-gui-type/index.html">GuiType</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a>&lt;<a href="-gui-type/index.html">GuiType</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-gui-type/index.html">GuiType</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-gui-type/index.html">GuiType</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -291,13 +235,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">abstract class <a href="-gui-useable/index.html">GuiUseable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-gui-useable/index.html">GuiUseable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -308,13 +248,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">object <a href="-slots/index.html">Slots</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-slots/index.html">Slots</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -327,13 +263,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">fun <a href="-gui/index.html">Gui</a>.<a href="change-page.html">changePage</a>(fromPage: <a href="-gui-page/index.html">GuiPage</a>, toPage: <a href="-gui-page/index.html">GuiPage</a>, overrideEffect: <a href="-gui-page/-change-effect/index.html">GuiPage.ChangeEffect</a>? = null): <span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-gui/index.html">Gui</a><span class="token punctuation">.</span><a href="change-page.html"><span class="token function">changePage</span></a><span class="token punctuation">(</span>fromPage<span class="token operator">: </span><a href="-gui-page/index.html">GuiPage</a><span class="token punctuation">, </span>toPage<span class="token operator">: </span><a href="-gui-page/index.html">GuiPage</a><span class="token punctuation">, </span>overrideEffect<span class="token operator">: </span><a href="-gui-page/-change-effect/index.html">GuiPage.ChangeEffect</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -344,13 +276,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">fun &lt;<a href="gui-icon.html">E</a>&gt; <a href="../net.axay.fabrik.igui.observable/-gui-property/index.html">GuiProperty</a>&lt;<a href="gui-icon.html">E</a>&gt;.<a href="gui-icon.html">guiIcon</a>(iconGenerator: (<a href="gui-icon.html">E</a>) -&gt; <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/item/ItemStack.html">ItemStack</a>): <a href="-gui-icon/-variable-icon/index.html">GuiIcon.VariableIcon</a>&lt;<a href="gui-icon.html">E</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">Creates a gui icon which automatically updates itself if the value of the property changes.</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="gui-icon.html">E</a><span class="token operator">&gt; </span><a href="../net.axay.fabrik.igui.observable/-gui-property/index.html">GuiProperty</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="gui-icon.html">E</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="gui-icon.html"><span class="token function">guiIcon</span></a><span class="token punctuation">(</span>iconGenerator<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="gui-icon.html">E</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/item/ItemStack.html">ItemStack</a><span class="token punctuation">)</span><span class="token operator">: </span><a href="-gui-icon/-variable-icon/index.html">GuiIcon.VariableIcon</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="gui-icon.html">E</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a gui icon which automatically updates itself if the value of the property changes.</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -361,13 +289,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">infix fun <a href="-gui-slot/index.html">GuiSlot</a>.<a href="hrect-to.html">hrectTo</a>(slot: <a href="-gui-slot/index.html">GuiSlot</a>): <a href="-gui-slot-compound/-slot-range/-hollow-rectangle/index.html">GuiSlotCompound.SlotRange.HollowRectangle</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">Creates a new slot range.</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">infix </span><span class="token keyword">fun </span><a href="-gui-slot/index.html">GuiSlot</a><span class="token punctuation">.</span><a href="hrect-to.html"><span class="token function">hrectTo</span></a><span class="token punctuation">(</span>slot<span class="token operator">: </span><a href="-gui-slot/index.html">GuiSlot</a><span class="token punctuation">)</span><span class="token operator">: </span><a href="-gui-slot-compound/-slot-range/-hollow-rectangle/index.html">GuiSlotCompound.SlotRange.HollowRectangle</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a new slot range.</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -378,13 +302,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">inline fun <a href="igui.html">igui</a>(type: <a href="-gui-type/index.html">GuiType</a>, title: <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/text/LiteralText.html">LiteralText</a>, defaultPageKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, builder: <a href="-gui-builder/index.html">GuiBuilder</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="-gui/index.html">Gui</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">Creates a new gui.</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="igui.html"><span class="token function">igui</span></a><span class="token punctuation">(</span>type<span class="token operator">: </span><a href="-gui-type/index.html">GuiType</a><span class="token punctuation">, </span>title<span class="token operator">: </span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/text/LiteralText.html">LiteralText</a><span class="token punctuation">, </span>defaultPageKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span>builder<span class="token operator">: </span><span class="token keyword"></span><a href="-gui-builder/index.html">GuiBuilder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">)</span><span class="token operator">: </span><a href="-gui/index.html">Gui</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a new gui.</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -395,13 +315,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">infix fun <a href="-gui-slot/index.html">GuiSlot</a>.<a href="line-to.html">lineTo</a>(slot: <a href="-gui-slot/index.html">GuiSlot</a>): <a href="-gui-slot-compound/-slot-range/-line/index.html">GuiSlotCompound.SlotRange.Line</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">Creates a new slot range.</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">infix </span><span class="token keyword">fun </span><a href="-gui-slot/index.html">GuiSlot</a><span class="token punctuation">.</span><a href="line-to.html"><span class="token function">lineTo</span></a><span class="token punctuation">(</span>slot<span class="token operator">: </span><a href="-gui-slot/index.html">GuiSlot</a><span class="token punctuation">)</span><span class="token operator">: </span><a href="-gui-slot-compound/-slot-range/-line/index.html">GuiSlotCompound.SlotRange.Line</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a new slot range.</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -412,13 +328,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">fun <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/entity/player/PlayerEntity.html">PlayerEntity</a>.<a href="open-gui.html">openGui</a>(gui: <a href="-gui/index.html">Gui</a>, pageKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>? = null): <span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">Opens the given gui.</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/entity/player/PlayerEntity.html">PlayerEntity</a><span class="token punctuation">.</span><a href="open-gui.html"><span class="token function">openGui</span></a><span class="token punctuation">(</span>gui<span class="token operator">: </span><a href="-gui/index.html">Gui</a><span class="token punctuation">, </span>pageKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Opens the given gui.</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -429,13 +341,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">infix fun <a href="-gui-slot/index.html">GuiSlot</a>.<a href="rect-to.html">rectTo</a>(slot: <a href="-gui-slot/index.html">GuiSlot</a>): <a href="-gui-slot-compound/-slot-range/-rectangle/index.html">GuiSlotCompound.SlotRange.Rectangle</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">Creates a new slot range.</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">infix </span><span class="token keyword">fun </span><a href="-gui-slot/index.html">GuiSlot</a><span class="token punctuation">.</span><a href="rect-to.html"><span class="token function">rectTo</span></a><span class="token punctuation">(</span>slot<span class="token operator">: </span><a href="-gui-slot/index.html">GuiSlot</a><span class="token punctuation">)</span><span class="token operator">: </span><a href="-gui-slot-compound/-slot-range/-rectangle/index.html">GuiSlotCompound.SlotRange.Rectangle</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a new slot range.</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -446,13 +354,9 @@
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":fabrikmc-igui:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace">infix fun <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>.<a href="sl.html">sl</a>(slotInRow: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="-gui-slot/index.html">GuiSlot</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">Creates a new gui slot.</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">infix </span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">.</span><a href="sl.html"><span class="token function">sl</span></a><span class="token punctuation">(</span>slotInRow<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator">: </span><a href="-gui-slot/index.html">GuiSlot</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a new gui slot.</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -466,7 +370,7 @@
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><a data-name="2058528346%2FProperties%2F358577822" anchor-label="guiIcon" id="2058528346%2FProperties%2F358577822" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"></a><div class="symbol monospace">val <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/item/ItemStack.html">ItemStack</a>.<a href="gui-icon.html">guiIcon</a>: <a href="-gui-icon/-static-icon/index.html">GuiIcon.StaticIcon</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="2058528346%2FProperties%2F358577822" anchor-label="guiIcon" id="2058528346%2FProperties%2F358577822" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"></a><p class="paragraph">Creates a static gui icon.</p></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><a data-name="2058528346%2FProperties%2F358577822" anchor-label="guiIcon" id="2058528346%2FProperties%2F358577822" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/item/ItemStack.html">ItemStack</a><span class="token punctuation">.</span><a href="gui-icon.html">guiIcon</a><span class="token operator">: </span><a href="-gui-icon/-static-icon/index.html">GuiIcon.StaticIcon</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="2058528346%2FProperties%2F358577822" anchor-label="guiIcon" id="2058528346%2FProperties%2F358577822" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"></a><p class="paragraph">Creates a static gui icon.</p></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -479,7 +383,7 @@
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><a data-name="-1991711062%2FProperties%2F358577822" anchor-label="guiIcon" id="-1991711062%2FProperties%2F358577822" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"></a><div class="symbol monospace">val <a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/item/Item.html">Item</a>.<a href="gui-icon.html">guiIcon</a>: <a href="-gui-icon/-static-icon/index.html">GuiIcon.StaticIcon</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1991711062%2FProperties%2F358577822" anchor-label="guiIcon" id="-1991711062%2FProperties%2F358577822" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"></a><p class="paragraph">Creates a static gui icon.</p></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-igui:dokkaHtmlPartial/main"><a data-name="-1991711062%2FProperties%2F358577822" anchor-label="guiIcon" id="-1991711062%2FProperties%2F358577822" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="https://maven.fabricmc.net/docs/yarn-1.17.1+build.63/net/minecraft/item/Item.html">Item</a><span class="token punctuation">.</span><a href="gui-icon.html">guiIcon</a><span class="token operator">: </span><a href="-gui-icon/-static-icon/index.html">GuiIcon.StaticIcon</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1991711062%2FProperties%2F358577822" anchor-label="guiIcon" id="-1991711062%2FProperties%2F358577822" data-filterable-set=":fabrikmc-igui:dokkaHtmlPartial/main"></a><p class="paragraph">Creates a static gui icon.</p></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -488,7 +392,7 @@
             </div>
           </div>
         </div>
-        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
       </div>
     </div>
   
