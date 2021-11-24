@@ -10,10 +10,24 @@ ${dependencyNotice}
 
 ## Using the igui builder
 
-The [net.axay.fabrik.igui.igui] function opens up a new GUI builder.
+### Create a new gui
 
-Use the [net.axay.fabrik.igui.GuiBuilder.page] to add a new page to this GUI.
-See [net.axay.fabrik.igui.GuiBuilder.PageBuilder] for details on how to build a page.
+The [igui][net.axay.fabrik.igui.igui] function opens up a new gui builder. Use
+the [page][net.axay.fabrik.igui.GuiBuilder.page] function to add a new page to this gui, you can that function as often
+as you want.
+
+```kotlin
+igui(GuiType.NINE_BY_SIX, "My cool gui".literal, defaultPageKey = 1) {
+    page(1) {
+        // access to the page builder inside here
+    }
+}
+```
+
+### The page builder
+
+The [page builder][net.axay.fabrik.igui.GuiBuilder.PageBuilder] is the most important part of the gui dsl. Inside this
+builder, you have access [all functions adding elements to the gui][net.axay.fabrik.igui.GuiBuilder.PageBuilder].
 
 # Package net.axay.fabrik.igui
 
