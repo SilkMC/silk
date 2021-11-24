@@ -1,6 +1,6 @@
 # Module fabrikmc-nbt
 
-Provides NBT serialization and deserialization using kotlinx.serialization. Additionally, this module contains some NBT
+Provides [NBT](https://wiki.vg/NBT) serialization and deserialization using kotlinx.serialization. Additionally, this module contains some NBT
 utilities, like simple conversion extensions.
 
 ${dependencyNotice}

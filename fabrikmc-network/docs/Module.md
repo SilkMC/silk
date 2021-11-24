@@ -19,12 +19,12 @@ Now annotate that class with `@Serializable`.
 
 ### Packet definition instance
 
-Create a packet definition instance, this class holds information about the packet type and the packet id, and
-provides you with functions for sending and receiving packets.
+Create a packet definition instance, this class holds information about the packet type and the packet id, and provides
+you with functions for sending and receiving packets.
 
 #### Server to client
 
-Use the [net.axay.fabrik.network.packet.s2cPacket] function.
+Use the [s2cPacket][net.axay.fabrik.network.packet.s2cPacket] function.
 
 ```kt
 val personPacket = s2cPacket<Person>(Identifier("mymod", "personpacket"))
@@ -32,7 +32,7 @@ val personPacket = s2cPacket<Person>(Identifier("mymod", "personpacket"))
 
 #### Client to server
 
-Use the [net.axay.fabrik.network.packet.c2sPacket] function.
+Use the [c2sPacket][net.axay.fabrik.network.packet.c2sPacket] function.
 
 ```kt
 val personPacket = c2sPacket<Person>(Identifier("mymod", "personpacket"))
@@ -66,8 +66,9 @@ personPacket.send(Person("Holger", 52))
 
 Using the packet instance, you can also register a packet receiver.
 
-This can be done using the [net.axay.fabrik.network.packet.ServerToClientPacketDefinition.receiveOnClient] or
-[net.axay.fabrik.network.packet.ClientToServerPacketDefinition.receiveOnServer] function.
+This can be done using
+the [receiveOnClient][net.axay.fabrik.network.packet.ServerToClientPacketDefinition.receiveOnClient] or
+[receiveOnServer][net.axay.fabrik.network.packet.ClientToServerPacketDefinition.receiveOnServer] function.
 
 ### Server to client
 

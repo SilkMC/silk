@@ -23,12 +23,16 @@ Note: `Person` must be serializable here
 
 There are other compound key types:
 
-- [net.axay.fabrik.persistence.nbtElementCompoundKey] for storing NbtElements, as they don't have to (and cannot) be serialized
-- [net.axay.fabrik.persistence.customCompoundKey] for defining custom serialization logic (object to `NbtElement`), for example if the class you are storing is not serializable, or if it is significantly faster than the built in NBT serialization of fabrikmc-nbt
+- [nbtElementCompoundKey][net.axay.fabrik.persistence.nbtElementCompoundKey] for storing NbtElements, as they don't have
+  to (and cannot) be serialized
+- [customCompoundKey][net.axay.fabrik.persistence.customCompoundKey] for defining custom serialization logic (object
+  to [NbtElement][net.minecraft.nbt.NbtElement]), for example if the class you are storing is not serializable, or if it
+  is significantly faster than the built in NBT serialization of fabrikmc-nbt
 
 ## Retrieve a persistent compound
 
-A compound can be retrieved from any compound provider, currently these are `Chunk`, `Entity` and `World`.
+A compound can be retrieved from any compound provider, currently these are [Chunk][net.minecraft.world.chunk.Chunk],
+[Entity][net.minecraft.entity.Entity] and [World][net.minecraft.world.World].
 
 For easy access, use the `provider.persistentCompound` extension value:
 
@@ -46,7 +50,7 @@ Currently, persistent compounds are not thread safe, you should only modify them
 
 ### Write operations
 
-YOu can write to a compound using the index operator.
+You can write to a compound using the index operator.
 
 ```kt
 with(chunk.persistentCompound) {
@@ -68,8 +72,8 @@ with(chunk.persistentCompound) {
 
 ### More functions
 
-Compounds offer more functions for more specific operations, see [net.axay.fabrik.persistence.PersistentCompound] for a
-list of these functions.
+Compounds offer more functions for more specific operations,
+see [PersistentCompound][net.axay.fabrik.persistence.PersistentCompound] for a list of these functions.
 
 # Package net.axay.fabrik.persistence
 
