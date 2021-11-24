@@ -1,9 +1,14 @@
-import gradle.kotlin.dsl.accessors._a819bbffcdb721ad180221de4a453285.java
-import gradle.kotlin.dsl.accessors._a819bbffcdb721ad180221de4a453285.kotlin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+}
+
+repositories {
+    mavenCentral()
+    maven("https://maven.fabricmc.net/")
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    google()
 }
 
 tasks {
@@ -15,7 +20,9 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "16"
+        kotlinOptions {
+            jvmTarget = "16"
+        }
     }
 }
 
