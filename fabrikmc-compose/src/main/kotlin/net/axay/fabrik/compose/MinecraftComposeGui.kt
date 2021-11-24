@@ -9,7 +9,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.mouse.MouseScrollUnit
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.unit.dp
 import com.github.ajalt.colormath.model.SRGB
@@ -344,7 +343,7 @@ class MinecraftComposeGui(
         // only reset the slot if the player is directly looking at the gui
         player.networkHandler.sendPacket(UpdateSelectedSlotS2CPacket(4))
 
-        scene.sendPointerScrollEvent(offset, MouseScrollUnit.Line(delta))
+        scene.sendPointerEvent(PointerEventType.Scroll, offset, Offset(0f, delta))
     }
 
     /**
