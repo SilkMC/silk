@@ -7,4 +7,9 @@ ${dependencyNotice}
 
 ## Usage
 
-Click on the modules below to see how to create and register commands.
+You first have to create a command instance using the [command][net.axay.fabrik.commands.command]
+or [clientCommand][net.axay.fabrik.commands.clientCommand] function. <br>
+Have a look at the `commands` package below for more information.
+
+After that, you can register that command instance. <br>
+Have a look at the `commands.registration` package below to see if you have to do it manually, and if yes, how.
