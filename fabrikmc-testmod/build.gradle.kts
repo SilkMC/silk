@@ -6,7 +6,7 @@ plugins {
     `java-version-script`
     `mod-build-script`
     kotlin("plugin.serialization")
-    id("org.jetbrains.compose") version "1.0.0-rc2"
+    id("org.jetbrains.compose") version "1.0.0-rc3"
 }
 
 dependencies {

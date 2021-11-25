@@ -20,7 +20,7 @@ object BuildConstants {
     const val minecraftVersion = "1.18-rc1"
     const val yarnMappingsVersion = "1.18-rc1+build.1:v2"
     const val fabricLoaderVersion = "0.12.5"
-    const val fabricApiVersion = "0.43.0+1.18"
+    const val fabricApiVersion = "0.43.1+1.18"
     const val fabricLanguageKotlinVersion = "1.6.5+kotlin.1.5.31"
 
     const val kotestVersion = "4.6.3"

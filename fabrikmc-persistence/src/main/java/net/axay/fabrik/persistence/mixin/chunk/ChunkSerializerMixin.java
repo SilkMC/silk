@@ -26,9 +26,8 @@ public class ChunkSerializerMixin {
 
     @Inject(method = "deserialize", at = @At("RETURN"))
     private static void onDeserialize(ServerWorld world,
-                                      StructureManager structureManager,
                                       PointOfInterestStorage poiStorage,
-                                      ChunkPos pos,
+                                      ChunkPos chunkPos,
                                       NbtCompound nbt,
                                       CallbackInfoReturnable<ProtoChunk> cir) {
         ((CompoundProvider) cir.getReturnValue()).getCompound()

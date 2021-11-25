@@ -53,12 +53,12 @@ inline fun PlayerEntity.sendText(baseText: String = "", builder: LiteralTextBuil
  * @see [literalText]
  */
 inline fun MinecraftServer.broadcastText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit= { }) {
-    playerManager.broadcastChatMessage(literalText(baseText, builder), MessageType.CHAT, Util.NIL_UUID)
+    playerManager.broadcast(literalText(baseText, builder), MessageType.CHAT, Util.NIL_UUID)
 }
 
 /**
  * Sends the given [LiteralText] to each player on the server.
  */
 fun MinecraftServer.sendText(text: Text) {
-    playerManager.broadcastChatMessage(text, MessageType.CHAT, Util.NIL_UUID)
+    playerManager.broadcast(text, MessageType.CHAT, Util.NIL_UUID)
 }

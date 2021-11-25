@@ -9,7 +9,7 @@ plugins {
     `project-publish-script`
     `dokka-script`
     kotlin("plugin.serialization")
-    id("org.jetbrains.compose") version "1.0.0-rc2"
+    id("org.jetbrains.compose") version "1.0.0-rc3"
     id("com.google.devtools.ksp") version "1.5.31-1.0.1"
 }
 

@@ -3,6 +3,7 @@
   "required": true,
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "MapColorAccessor",
     "ServerPlayNetworkHandlerMixin"
   ]
 }

@@ -7,6 +7,7 @@ import com.github.ajalt.colormath.model.RGB
 import com.github.ajalt.colormath.model.RGBInt
 import com.github.ajalt.colormath.transform.interpolate
 import com.github.ajalt.colormath.transform.multiplyAlpha
+import net.axay.fabrik.compose.mixin.MapColorAccessor
 import net.axay.fabrik.core.logging.logWarning
 import net.minecraft.block.MapColor
 
@@ -27,7 +28,7 @@ object MapColorUtils {
      * their shade has been added to the id.)
      */
     private val mapColorIds = ArrayList<Pair<LAB, Byte>>().apply {
-        MapColor.COLORS
+        MapColorAccessor.getColors()
             .filter { it != null && it.color != 0 }
             .forEach { mapColor ->
                 repeat(4) {

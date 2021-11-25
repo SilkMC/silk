@@ -13,20 +13,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.Consumer;
-
 @Mixin(WorldChunk.class)
 public class WorldChunkMixin implements CompoundProvider {
     @Unique
     private PersistentCompound compound = new PersistentCompoundImpl();
 
+    // this targets the constructor which creates a WorldChunk from a ProtoChunk
     @Inject(
-            method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Ljava/util/function/Consumer;)V",
+            method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;)V",
             at = @At("RETURN")
     )
-    private void initFromProtoChunk(ServerWorld serverWorld,
+    private void initFromProtoChunk(ServerWorld world,
                                     ProtoChunk protoChunk,
-                                    Consumer<WorldChunk> consumer,
+                                    WorldChunk.EntityLoader entityLoader,
                                     CallbackInfo ci) {
         compound = ((CompoundProvider) protoChunk).getCompound();
     }
