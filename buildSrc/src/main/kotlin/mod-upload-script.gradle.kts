@@ -1,4 +1,5 @@
 import BuildConstants.curseforgeId
+import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.modrinthId
 import BuildConstants.projectState
@@ -68,7 +69,7 @@ curseforge {
 
         id = curseforgeId
         releaseType = projectState
-        addGameVersion(minecraftVersion.split('-').first())
+        addGameVersion(if (minecraftVersion.split('-').size <= 1) minecraftVersion else "$majorMinecraftVersion-Snapshot")
 
         relations(closureOf<CurseRelation> {
             requiredDependency("fabric-api")
