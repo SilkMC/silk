@@ -68,7 +68,7 @@ curseforge {
 
         id = curseforgeId
         releaseType = projectState
-        addGameVersion(minecraftVersion)
+        addGameVersion(minecraftVersion.split('-').first())
 
         relations(closureOf<CurseRelation> {
             requiredDependency("fabric-api")
