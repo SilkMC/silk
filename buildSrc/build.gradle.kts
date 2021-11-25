@@ -24,5 +24,4 @@ dependencies {
 
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     implementation("org.jetbrains.dokka:dokka-base:$dokkaVersion")
-    implementation("org.jetbrains.dokka:versioning-plugin:$dokkaVersion")
 }

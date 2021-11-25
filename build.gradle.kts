@@ -1,7 +1,5 @@
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
-import org.jetbrains.dokka.versioning.VersioningConfiguration
-import org.jetbrains.dokka.versioning.VersioningPlugin
 
 plugins {
     id("org.jetbrains.dokka")
@@ -13,7 +11,7 @@ repositories {
 
 allprojects {
     group = "net.axay"
-    version = "1.6.2"
+    version = "1.7.0"
     if (this.name.startsWith("fabrikmc")) {
         description = "FabrikMC is an API for using FabricMC with Kotlin"
     }
@@ -33,11 +31,6 @@ tasks {
         outputDirectory.set(projectDir.resolve("docs"))
 
         includes.from("dokka/includes/main.md")
-
-        pluginConfiguration<VersioningPlugin, VersioningConfiguration> {
-            version = project.version.toString()
-            olderVersionsDir = projectDir.resolve("dokka/old-builds")
-        }
 
         pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
             customStyleSheets = listOf(*(rootDir.resolve("dokka/stylesheets").listFiles() ?: emptyArray()))
