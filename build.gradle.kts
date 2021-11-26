@@ -3,6 +3,7 @@ import org.jetbrains.dokka.base.DokkaBaseConfiguration
 
 plugins {
     id("org.jetbrains.dokka")
+    idea
 }
 
 repositories {
@@ -35,5 +36,10 @@ tasks {
         pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
             customStyleSheets = listOf(*(rootDir.resolve("dokka/stylesheets").listFiles() ?: emptyArray()))
         }
+    }
+}
+idea {
+    module {
+        excludeDirs.add(file("docs"))
     }
 }
