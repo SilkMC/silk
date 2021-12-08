@@ -23,7 +23,7 @@ val fabrikCoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
  */
 inline fun coroutineTask(
     sync: Boolean = true,
-    howOften: Long = 1,
+    howOften: Long = Long.MAX_VALUE,
     period: Long = 0,
     delay: Long = 0,
     crossinline task: suspend CoroutineScope.(task: CoroutineTask) -> Unit
