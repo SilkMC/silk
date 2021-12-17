@@ -12,7 +12,7 @@ repositories {
 
 allprojects {
     group = "net.axay"
-    version = "1.7.0"
+    version = "1.7.1"
     if (this.name.startsWith("fabrikmc")) {
         description = "FabrikMC is an API for using FabricMC with Kotlin"
     }
@@ -38,6 +38,7 @@ tasks {
         }
     }
 }
+
 idea {
     module {
         excludeDirs.add(file("docs"))

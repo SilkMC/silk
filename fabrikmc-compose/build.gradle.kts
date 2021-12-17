@@ -9,8 +9,8 @@ plugins {
     `project-publish-script`
     `dokka-script`
     kotlin("plugin.serialization")
-    id("org.jetbrains.compose") version "1.0.0-rc3"
-    id("com.google.devtools.ksp") version "1.5.31-1.0.1"
+    id("org.jetbrains.compose") version "1.0.1-rc2"
+    id("com.google.devtools.ksp") version "1.6.10-1.0.2"
 }
 
 dependencies {
@@ -25,7 +25,7 @@ dependencies {
     api("org.jetbrains.kotlinx:multik-api:0.1.1")
     api("org.jetbrains.kotlinx:multik-default:0.1.1")
 
-    api("com.github.ajalt.colormath:colormath:3.1.1")
+    api("com.github.ajalt.colormath:colormath:3.2.0")
 }
 
 val modName by extra("$projectTitle Compose")
