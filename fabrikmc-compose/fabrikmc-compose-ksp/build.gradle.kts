@@ -8,8 +8,11 @@ repositories {
     mavenCentral()
 }
 
+apply(from = "${rootDir}/shared.properties.gradle.kts")
+val kspVersion: String by extra
+
 dependencies {
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.6.10-1.0.2")
+    implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
     implementation("com.squareup:kotlinpoet-ksp:1.10.2")
     implementation(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api"))
 }
