@@ -25,12 +25,12 @@ import net.minecraft.item.Item
 @Composable
 fun McImage(
     icon: McIcon,
-    modifier: Modifier = Modifier,
     contentDescription: String? = icon,
+    modifier: Modifier = Modifier,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
 ) {
-    val image by produceState<ImageBitmap?>(null) {
+    val image by produceState<ImageBitmap?>(null, key1 = icon) {
         value = AssetsLoader.loadImage(icon)
     }
 
