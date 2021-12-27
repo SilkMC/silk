@@ -18,10 +18,10 @@ object BuildConstants {
 
     // check these values here: https://axay.net/fabric/gradlekts/latest
     const val minecraftVersion = "1.18.1"
-    const val yarnMappingsVersion = "1.18.1+build.5:v2"
+    const val yarnMappingsVersion = "1.18.1+build.12:v2"
     const val fabricLoaderVersion = "0.12.12"
-    const val fabricApiVersion = "0.44.0+1.18"
-    const val fabricLanguageKotlinVersion = "1.7.0+kotlin.1.6.0"
+    const val fabricApiVersion = "0.45.0+1.18"
+    const val fabricLanguageKotlinVersion = "1.7.1+kotlin.1.6.10"
 
     const val kotestVersion = "5.0.2"
 }
