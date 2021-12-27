@@ -106,9 +106,9 @@ as `reified T` to the `argument` function.
 argument<String>("myargument")
 ```
 
-##### Brigardier argument types
+##### Brigadier argument types
 
-This variant of the argument function allows you to specify the argument type in the classical Brigardier way.
+This variant of the argument function allows you to specify the argument type in the classical Brigadier way.
 
 ```kt
 argument("myargument", StringArgumentType.string())
