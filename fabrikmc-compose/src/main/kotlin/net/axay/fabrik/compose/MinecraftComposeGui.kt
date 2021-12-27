@@ -18,7 +18,9 @@ import kotlinx.coroutines.launch
 import net.axay.fabrik.compose.color.MapColorUtils
 import net.axay.fabrik.compose.internal.MapIdGenerator
 import net.axay.fabrik.core.logging.logError
+import net.axay.fabrik.core.logging.logInfo
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.entity.decoration.GlowItemFrameEntity
 import net.minecraft.item.Items
 import net.minecraft.item.map.MapState
@@ -41,6 +43,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skiko.FrameDispatcher
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import kotlin.math.max
@@ -82,23 +85,27 @@ class MinecraftComposeGui(
     val position: BlockPos,
 ) : CoroutineScope {
     companion object {
-        private val playerGuis = ConcurrentHashMap<ServerPlayerEntity, MinecraftComposeGui>()
+        private val playerGuis = ConcurrentHashMap<UUID, MinecraftComposeGui>()
 
         init {
             ServerLifecycleEvents.SERVER_STOPPING.register {
                 playerGuis.values.forEach { it.close() }
                 playerGuis.clear()
             }
+
+            ServerPlayConnectionEvents.DISCONNECT.register { handler, server ->
+                playerGuis[handler.player.uuid]?.close()
+            }
         }
 
         internal fun onSwingHand(player: ServerPlayerEntity, packet: HandSwingC2SPacket) {
             if (packet.hand == Hand.MAIN_HAND) {
-                playerGuis[player]?.onLeftClick()
+                playerGuis[player.uuid]?.onLeftClick()
             }
         }
 
         internal fun onUpdateSelectedSlot(player: ServerPlayerEntity, packet: UpdateSelectedSlotC2SPacket): Boolean {
-            val gui = playerGuis[player] ?: return false
+            val gui = playerGuis[player.uuid] ?: return false
 
             val slotPair = player.inventory.selectedSlot to packet.selectedSlot
             val (prevSlot, newSlot) = slotPair
@@ -110,9 +117,9 @@ class MinecraftComposeGui(
                 prevSlot > newSlot -> -1f
                 else -> return false
             }
-            gui.onScroll(scrollDelta * 3)
+            logInfo("($prevSlot -> $newSlot) = $scrollDelta")
 
-            return true
+            return gui.onScroll(scrollDelta * 3)
         }
 
         private fun Vec3d.toMkArray() = mk.ndarray(doubleArrayOf(x, y, z))
@@ -249,8 +256,8 @@ class MinecraftComposeGui(
             }
         }
 
-        playerGuis[player]?.close()
-        playerGuis[player] = this
+        playerGuis[player.uuid]?.close()
+        playerGuis[player.uuid] = this
     }
 
     private fun updateMinecraftMaps() {
@@ -339,14 +346,18 @@ class MinecraftComposeGui(
         scene.sendPointerEvent(PointerEventType.Release, offset)
     }
 
-    @OptIn(ExperimentalComposeUiApi::class)
-    private fun onScroll(delta: Float) = launch {
-        val offset = calculateOffset() ?: return@launch
+    private fun onScroll(delta: Float): Boolean {
+        val offset = calculateOffset() ?: return false
 
         // only reset the slot if the player is directly looking at the gui
         player.networkHandler.sendPacket(UpdateSelectedSlotS2CPacket(4))
+        player.inventory.selectedSlot = 4
 
-        scene.sendPointerEvent(PointerEventType.Scroll, offset, Offset(0f, delta))
+        launch {
+            @OptIn(ExperimentalComposeUiApi::class)
+            scene.sendPointerEvent(PointerEventType.Scroll, offset, Offset(0f, delta))
+        }
+        return true
     }
 
     /**
@@ -358,6 +369,6 @@ class MinecraftComposeGui(
         MapIdGenerator.makeOldIdAvailable(guiChunks.map { it.mapId })
         coroutineContext.close()
         scene.close()
-        playerGuis.remove(player, this)
+        playerGuis.remove(player.uuid, this)
     }
 }
