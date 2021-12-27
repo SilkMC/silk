@@ -21,7 +21,7 @@ import net.minecraft.block.MapColor
 private val colorList = listOf(Color.Green, Color.Magenta, Color.Red, Color.Blue, Color.Yellow)
 
 @Composable
-fun TestGuiComposable() {
+fun GeneralTestComposable() {
     Row(Modifier.padding(horizontal = 6.dp)) {
         Column {
             repeat(5) {

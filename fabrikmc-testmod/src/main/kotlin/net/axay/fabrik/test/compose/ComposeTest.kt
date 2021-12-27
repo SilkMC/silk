@@ -5,14 +5,15 @@ import net.axay.fabrik.compose.displayComposable
 import net.axay.fabrik.compose.ui.McWindowHeader
 import net.axay.fabrik.test.commands.testCommand
 import net.axay.fabrik.test.compose.game.FallingBallsGameComposable
-import net.axay.fabrik.test.compose.guis.TestGuiComposable
+import net.axay.fabrik.test.compose.guis.ScrollTestComposable
+import net.axay.fabrik.test.compose.guis.GeneralTestComposable
 
 val composeCommand = testCommand("compose") {
-    literal("testcomposable") runs {
+    literal("general_test") runs {
         source.player.displayComposable(4, 3) {
             Column {
                 McWindowHeader(it, "Test Window")
-                TestGuiComposable()
+                GeneralTestComposable()
             }
         }
     }
@@ -21,6 +22,12 @@ val composeCommand = testCommand("compose") {
         source.player.displayComposable(8, 6) {
             McWindowHeader(it)
             FallingBallsGameComposable()
+        }
+    }
+
+    literal("scroll") runs {
+        source.player.displayComposable(5, 4) {
+            ScrollTestComposable()
         }
     }
 }
