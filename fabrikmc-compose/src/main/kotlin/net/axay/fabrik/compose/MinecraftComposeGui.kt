@@ -332,6 +332,9 @@ class MinecraftComposeGui(
     private fun onLeftClick() = launch {
         val offset = calculateOffset() ?: return@launch
 
+        // ensure that the following press-release combo is in correct order, therefore release
+        scene.sendPointerEvent(PointerEventType.Release, offset)
+
         scene.sendPointerEvent(PointerEventType.Press, offset)
         scene.sendPointerEvent(PointerEventType.Release, offset)
     }
