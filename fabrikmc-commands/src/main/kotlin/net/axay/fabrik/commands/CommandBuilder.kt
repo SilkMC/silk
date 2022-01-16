@@ -1,6 +1,5 @@
 package net.axay.fabrik.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.Message
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
@@ -8,7 +7,6 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -58,8 +56,10 @@ typealias SimpleArgumentBuilder<Source, T> = ArgumentCommandBuilder<Source, T>.(
 
 @NodeDsl
 abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<Source, Builder>> {
+
+    @Suppress("LeakingThis")
     @PublishedApi
-    internal var command: Command<Source>? = null
+    internal val builder = createBrigadierBuilder()
 
     @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *>>()
@@ -90,7 +90,9 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      */
     @RunsDsl
     inline infix fun runs(crossinline block: CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
-        command = Command {
+        val previousCommand = builder.command
+        builder.executes {
+            previousCommand?.run(it)
             block(it)
             1
         }
@@ -104,15 +106,12 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * @see runs
      */
     @RunsDsl
-    inline infix fun runsAsync(crossinline block: suspend CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
-        command = Command {
+    inline infix fun runsAsync(crossinline block: suspend CommandContext<Source>.() -> Unit) =
+        runs {
             fabrikCoroutineScope.launch {
-                block(it)
+                block(this@runs)
             }
-            1
         }
-        return this
-    }
 
     /**
      * Adds custom execution logic to this command. **DEPRECATED** Use [runs] instead.
@@ -122,7 +121,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
         ReplaceWith("runs { executor.invoke() }")
     )
     inline infix fun simpleExecutes(
-        crossinline executor: CommandContext<Source>.() -> Unit
+        crossinline executor: CommandContext<Source>.() -> Unit,
     ) = runs(executor)
 
     /**
@@ -189,20 +188,31 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
             .also { children += it }
 
     /**
-     * Specifies that the given permission [level] is required to execute this part of the command tree. Use
+     * Specifies that the given predicate must return true for the [Source]
+     * in order for it to be able to execute this part of the command tree. Use
      * this function on the root command node to secure the whole command.
      */
-    fun requiresPermissionLevel(level: Int?) {
-        permissionLevel = level
+    @RunsDsl
+    fun requires(predicate: (source: Source) -> Boolean): CommandBuilder<Source, Builder> {
+        builder.requires(builder.requirement.and(predicate))
+        return this
     }
 
     /**
-     * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree. Use
-     * this function on the root command node to secure the whole command.
+     * Specifies that the given permission [level] is required to execute this part of the command tree.
+     * A shortcut delegating to [requires].
      */
-    fun requiresPermissionLevel(level: PermissionLevel?) {
-        permissionLevel = level?.level
-    }
+    @RunsDsl
+    fun requiresPermissionLevel(level: Int) =
+        requires { it.hasPermissionLevel(level) }
+
+    /**
+     * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree.
+     * A shortcut delegating to [requires].
+     */
+    @RunsDsl
+    fun requiresPermissionLevel(level: PermissionLevel) =
+        requires { it.hasPermissionLevel(level.level) }
 
     /**
      * This function allows you to access the regular Brigadier builder. The type of
@@ -221,17 +231,11 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
 
     protected abstract fun createBrigadierBuilder(): Builder
 
-    protected open fun Builder.onToBrigadier() = Unit
-
     /**
      * Converts this Kotlin command builder abstraction to an [ArgumentBuilder] of Brigadier.
      * Note that even though this function is public, you probably won't need it in most cases.
      */
     fun toBrigadier(): Builder = createBrigadierBuilder().also { builder ->
-        command?.let { builder.executes(it) }
-        permissionLevel?.let { level -> builder.requires { it.hasPermissionLevel(level) } }
-        builder.onToBrigadier()
-
         onToBrigadierBuilders.forEach { it(builder) }
 
         children.forEach {
@@ -244,6 +248,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
 class LiteralCommandBuilder<Source : CommandSource>(
     private val name: String,
 ) : CommandBuilder<Source, LiteralArgumentBuilder<Source>>() {
+
     override fun createBrigadierBuilder(): LiteralArgumentBuilder<Source> =
         LiteralArgumentBuilder.literal(name)
 }
@@ -252,31 +257,29 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     private val name: String,
     private val type: ArgumentType<T>,
 ) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>>() {
-    @PublishedApi
-    internal var suggestionProvider: SuggestionProvider<Source>? = null
 
     override fun createBrigadierBuilder(): RequiredArgumentBuilder<Source, T> =
         RequiredArgumentBuilder.argument(name, type)
 
-    override fun RequiredArgumentBuilder<Source, T>.onToBrigadier() {
-        suggestionProvider?.let { suggests(it) }
-    }
-
     @PublishedApi
-    internal inline fun suggests(crossinline block: (context: CommandContext<Source>, builder: SuggestionsBuilder) -> CompletableFuture<Suggestions>) {
-        suggestionProvider = SuggestionProvider { context, builder -> block(context, builder) }
+    internal inline fun suggests(
+        crossinline block: (context: CommandContext<Source>, builder: SuggestionsBuilder) -> CompletableFuture<Suggestions>,
+    ): ArgumentCommandBuilder<Source, T> {
+        builder.suggests { context, builder ->
+            block(context, builder)
+        }
+        return this
     }
 
     /**
      * Suggest the value which is the result of the [suggestionBuilder].
      */
     @SuggestsDsl
-    inline fun suggestSingle(crossinline suggestionBuilder: (CommandContext<Source>) -> Any?) {
+    inline fun suggestSingle(crossinline suggestionBuilder: (CommandContext<Source>) -> Any?) =
         suggests { context, builder ->
             builder.applyAny(suggestionBuilder(context))
             builder.buildFuture()
         }
-    }
 
     /**
      * Suggest the value which is the result of the [suggestionBuilder].
@@ -284,12 +287,11 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * will be shown as well.
      */
     @SuggestsDsl
-    inline fun suggestSingleWithTooltip(crossinline suggestionBuilder: (CommandContext<Source>) -> Pair<Any, Message>?) {
+    inline fun suggestSingleWithTooltip(crossinline suggestionBuilder: (CommandContext<Source>) -> Pair<Any, Message>?) =
         suggests { context, builder ->
             builder.applyAnyWithTooltip(suggestionBuilder(context))
             builder.buildFuture()
         }
-    }
 
     /**
      * Suggest the value which is the result of the [suggestionBuilder].
@@ -300,14 +302,12 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @SuggestsDsl
     inline fun suggestSingleSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Any?
-    ) {
-        suggests { context, builder ->
-            coroutineScope.async {
-                builder.applyAny(suggestionBuilder(context))
-                builder.build()
-            }.asCompletableFuture()
-        }
+        crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Any?,
+    ) = suggests { context, builder ->
+        coroutineScope.async {
+            builder.applyAny(suggestionBuilder(context))
+            builder.build()
+        }.asCompletableFuture()
     }
 
     /**
@@ -321,14 +321,12 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @SuggestsDsl
     inline fun suggestSingleWithTooltipSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Pair<Any?, Message>?
-    ) {
-        suggests { context, builder ->
-            coroutineScope.async {
-                builder.applyAnyWithTooltip(suggestionBuilder(context))
-                builder.build()
-            }.asCompletableFuture()
-        }
+        crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Pair<Any?, Message>?,
+    ) = suggests { context, builder ->
+        coroutineScope.async {
+            builder.applyAnyWithTooltip(suggestionBuilder(context))
+            builder.build()
+        }.asCompletableFuture()
     }
 
     /**
@@ -336,12 +334,11 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * [suggestionsBuilder].
      */
     @SuggestsDsl
-    inline fun suggestList(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Any?>?) {
+    inline fun suggestList(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Any?>?) =
         suggests { context, builder ->
             builder.applyIterable(suggestionsBuilder(context))
             builder.buildFuture()
         }
-    }
 
     /**
      * Suggest the entries of the iterable which is the result of the
@@ -350,12 +347,11 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * will be shown as well.
      */
     @SuggestsDsl
-    inline fun suggestListWithTooltips(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?) {
+    inline fun suggestListWithTooltips(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?) =
         suggests { context, builder ->
             builder.applyIterableWithTooltips(suggestionsBuilder(context))
             builder.buildFuture()
         }
-    }
 
     /**
      * Suggest the entries of the iterable which is the result of the
@@ -367,14 +363,12 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @SuggestsDsl
     inline fun suggestListSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        crossinline suggestionsBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?
-    ) {
-        suggests { context, builder ->
-            coroutineScope.async {
-                builder.applyIterable(suggestionsBuilder(context))
-                builder.build()
-            }.asCompletableFuture()
-        }
+        crossinline suggestionsBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?,
+    ) = suggests { context, builder ->
+        coroutineScope.async {
+            builder.applyIterable(suggestionsBuilder(context))
+            builder.build()
+        }.asCompletableFuture()
     }
 
     /**
@@ -389,14 +383,12 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @SuggestsDsl
     inline fun suggestListWithTooltipsSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?
-    ) {
-        suggests { context, builder ->
-            coroutineScope.async {
-                builder.applyIterableWithTooltips(suggestionsBuilder(context))
-                builder.build()
-            }.asCompletableFuture()
-        }
+        crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?,
+    ) = suggests { context, builder ->
+        coroutineScope.async {
+            builder.applyIterableWithTooltips(suggestionsBuilder(context))
+            builder.build()
+        }.asCompletableFuture()
     }
 
     @PublishedApi
@@ -440,7 +432,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     )
     fun simpleSuggests(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        suggestionBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?
+        suggestionBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?,
     ) = suggestListSuspending(coroutineScope, suggestionBuilder)
 }
 
