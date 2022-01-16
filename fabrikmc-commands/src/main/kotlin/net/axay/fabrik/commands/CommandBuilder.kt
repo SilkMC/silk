@@ -66,7 +66,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
 
     private var permissionLevel: Int? = null
 
-    private val onToBrigardierBuilders = ArrayList<Builder.() -> Unit>()
+    private val onToBrigadierBuilders = ArrayList<Builder.() -> Unit>()
 
     /**
      * Adds execution logic to this command. The place where this function
@@ -145,7 +145,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
 
     /**
      * Adds a new argument to this command. This variant of the argument function allows you to specify
-     * the [ArgumentType] in the classical Brigardier way.
+     * the [ArgumentType] in the classical Brigadier way.
      *
      * @param name the name of the argument - This will be displayed to the player, if there is enough room for the
      * tooltip.
@@ -205,32 +205,38 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
     }
 
     /**
-     * This function allows you to access the regular Brigardier builder. The type of
+     * This function allows you to access the regular Brigadier builder. The type of
      * `this` in its context will equal the type of [Builder].
      */
-    fun brigardier(block: (@NodeDsl Builder).() -> Unit): CommandBuilder<Source, Builder> {
-        onToBrigardierBuilders += block
+    fun brigadier(block: (@NodeDsl Builder).() -> Unit): CommandBuilder<Source, Builder> {
+        onToBrigadierBuilders += block
         return this
     }
 
-    protected abstract fun createBrigardierBuilder(): Builder
+    @Deprecated(
+        "This function name has a spelling mistake in it, use the brigadier function instead.",
+        ReplaceWith("brigadier { block() }")
+    )
+    fun brigardier(block: (@NodeDsl Builder).() -> Unit) = brigadier(block)
 
-    protected open fun Builder.onToBrigardier() = Unit
+    protected abstract fun createBrigadierBuilder(): Builder
+
+    protected open fun Builder.onToBrigadier() = Unit
 
     /**
-     * Converts this Kotlin command builder abstraction to an [ArgumentBuilder] of Brigardier.
+     * Converts this Kotlin command builder abstraction to an [ArgumentBuilder] of Brigadier.
      * Note that even though this function is public, you probably won't need it in most cases.
      */
-    fun toBrigardier(): Builder = createBrigardierBuilder().also { builder ->
+    fun toBrigadier(): Builder = createBrigadierBuilder().also { builder ->
         command?.let { builder.executes(it) }
         permissionLevel?.let { level -> builder.requires { it.hasPermissionLevel(level) } }
-        builder.onToBrigardier()
+        builder.onToBrigadier()
 
-        onToBrigardierBuilders.forEach { it(builder) }
+        onToBrigadierBuilders.forEach { it(builder) }
 
         children.forEach {
             @Suppress("UNCHECKED_CAST")
-            builder.then(it.toBrigardier() as ArgumentBuilder<Source, *>)
+            builder.then(it.toBrigadier() as ArgumentBuilder<Source, *>)
         }
     }
 }
@@ -238,7 +244,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
 class LiteralCommandBuilder<Source : CommandSource>(
     private val name: String,
 ) : CommandBuilder<Source, LiteralArgumentBuilder<Source>>() {
-    override fun createBrigardierBuilder(): LiteralArgumentBuilder<Source> =
+    override fun createBrigadierBuilder(): LiteralArgumentBuilder<Source> =
         LiteralArgumentBuilder.literal(name)
 }
 
@@ -249,10 +255,10 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @PublishedApi
     internal var suggestionProvider: SuggestionProvider<Source>? = null
 
-    override fun createBrigardierBuilder(): RequiredArgumentBuilder<Source, T> =
+    override fun createBrigadierBuilder(): RequiredArgumentBuilder<Source, T> =
         RequiredArgumentBuilder.argument(name, type)
 
-    override fun RequiredArgumentBuilder<Source, T>.onToBrigardier() {
+    override fun RequiredArgumentBuilder<Source, T>.onToBrigadier() {
         suggestionProvider?.let { suggests(it) }
     }
 
@@ -449,7 +455,7 @@ inline fun command(
     register: Boolean = true,
     builder: LiteralCommandBuilder<ServerCommandSource>.() -> Unit = {},
 ): LiteralArgumentBuilder<ServerCommandSource> =
-    LiteralCommandBuilder<ServerCommandSource>(name).apply(builder).toBrigardier().apply {
+    LiteralCommandBuilder<ServerCommandSource>(name).apply(builder).toBrigadier().apply {
         if (register)
             setupRegistrationCallback()
     }
@@ -468,6 +474,6 @@ inline fun clientCommand(
     register: Boolean = true,
     builder: LiteralCommandBuilder<FabricClientCommandSource>.() -> Unit = {},
 ): LiteralArgumentBuilder<FabricClientCommandSource> =
-    LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder).toBrigardier().apply {
+    LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder).toBrigadier().apply {
         if (register) register()
     }
