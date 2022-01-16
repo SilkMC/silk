@@ -57,9 +57,8 @@ typealias SimpleArgumentBuilder<Source, T> = ArgumentCommandBuilder<Source, T>.(
 @NodeDsl
 abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<Source, Builder>> {
 
-    @Suppress("LeakingThis")
     @PublishedApi
-    internal val builder = createBrigadierBuilder()
+    internal abstract val builder: Builder
 
     @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *>>()
@@ -227,19 +226,19 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
     )
     fun brigardier(block: (@NodeDsl Builder).() -> Unit) = brigadier(block)
 
-    protected abstract fun createBrigadierBuilder(): Builder
-
     /**
      * Converts this Kotlin command builder abstraction to an [ArgumentBuilder] of Brigadier.
      * Note that even though this function is public, you probably won't need it in most cases.
      */
-    fun toBrigadier(): Builder = createBrigadierBuilder().also { builder ->
+    @PublishedApi
+    internal fun toBrigadier(): Builder {
         onToBrigadierBuilders.forEach { it(builder) }
 
         children.forEach {
             @Suppress("UNCHECKED_CAST")
             builder.then(it.toBrigadier() as ArgumentBuilder<Source, *>)
         }
+        return builder
     }
 }
 
@@ -247,8 +246,7 @@ class LiteralCommandBuilder<Source : CommandSource>(
     private val name: String,
 ) : CommandBuilder<Source, LiteralArgumentBuilder<Source>>() {
 
-    override fun createBrigadierBuilder(): LiteralArgumentBuilder<Source> =
-        LiteralArgumentBuilder.literal(name)
+    override val builder = LiteralArgumentBuilder.literal<Source>(name)
 }
 
 class ArgumentCommandBuilder<Source : CommandSource, T>(
@@ -256,8 +254,8 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     private val type: ArgumentType<T>,
 ) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>>() {
 
-    override fun createBrigadierBuilder(): RequiredArgumentBuilder<Source, T> =
-        RequiredArgumentBuilder.argument(name, type)
+    @PublishedApi
+    override val builder = RequiredArgumentBuilder.argument<Source, T>(name, type)
 
     @PublishedApi
     internal inline fun suggests(
