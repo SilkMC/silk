@@ -64,8 +64,6 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
     @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *>>()
 
-    private var permissionLevel: Int? = null
-
     private val onToBrigadierBuilders = ArrayList<Builder.() -> Unit>()
 
     /**
