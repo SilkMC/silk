@@ -12,6 +12,7 @@ repositories {
     mavenCentral()
     maven("https://maven.fabricmc.net/")
     gradlePluginPortal()
+    maven("https://server.bbkr.space/artifactory/libs-release/")
 }
 
 dependencies {
@@ -23,11 +24,12 @@ dependencies {
     implementation(pluginDep("com.google.devtools.ksp", kspVersion))
 
     implementation(pluginDep("fabric-loom", "0.10-SNAPSHOT"))
+    implementation(pluginDep("io.github.juuxel.loom-quiltflower-mini", "1.2.1"))
     implementation(pluginDep("com.matthewprenger.cursegradle", "1.4.0"))
     implementation(pluginDep("com.modrinth.minotaur", "1.2.1"))
 
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     implementation("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 }

@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 plugins {
     kotlin("jvm")
     id("fabric-loom")
+    id("io.github.juuxel.loom-quiltflower-mini")
 }
 
 dependencies {
