@@ -17,7 +17,7 @@ player.displayComposable(8, 6) {
     YourComposableFunction()
 }
 
-@Composable
+\\@Composable
 fun YourComposableFunction() {
     Button(
         onClick = { logInfo("clicked button") }
