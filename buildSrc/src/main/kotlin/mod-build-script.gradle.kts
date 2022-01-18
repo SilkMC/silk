@@ -37,6 +37,7 @@ data class FabricModConfiguration(
     val contact: Contact,
     val license: String,
     val icon: String? = null,
+    val custom: Custom? = null,
 ) {
     @Serializable
     data class Contact(
@@ -51,12 +52,23 @@ data class FabricModConfiguration(
         val adapter: String,
         val value: String,
     )
+
+    @Serializable
+    data class Custom(
+        val modmenu: ModMenu? = null,
+    ) {
+        @Serializable
+        data class ModMenu(
+            val parent: String,
+        )
+    }
 }
 
 val modName: String by extra
 val modEntrypoints: LinkedHashMap<String, List<String>>? by extra(null)
 val modMixinFiles: List<String>? by extra(null)
 val modDepends: LinkedHashMap<String, String>? by extra(null)
+val isModParent by extra(false)
 
 tasks {
     val modDotJsonTask = register("modDotJson") {
@@ -83,7 +95,8 @@ tasks {
                 "https://discord.gg/CJDUVuJ"
             ),
             "GPL-3.0-or-later",
-            if (project.name.endsWith("-all")) "assets/${project.name}/icon.png" else null
+            if (project.name.endsWith("-all")) "assets/${project.name}/icon.png" else null,
+            if (isModParent) null else FabricModConfiguration.Custom(FabricModConfiguration.Custom.ModMenu("fabrikmc-all")),
         )
 
         val modDotJson = buildDir.resolve("resources/main/fabric.mod.json")

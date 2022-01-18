@@ -45,8 +45,8 @@ publishing {
 
                 licenses {
                     license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        name.set("GNU General Public License 3")
+                        url.set("https://www.gnu.org/licenses/gpl-3.0.txt")
                     }
                 }
 
