@@ -12,58 +12,56 @@ import net.minecraft.util.registry.Registry
 import java.util.*
 
 object SimpleTestGui {
-    val gui = {
-        igui(GuiType.NINE_BY_SIX, "Moincraft".literal, 1) {
-            page(1) {
-                effectFrom = GuiPage.ChangeEffect.SLIDE_HORIZONTALLY
-                effectTo = GuiPage.ChangeEffect.SLIDE_HORIZONTALLY
+    fun create() = igui(GuiType.NINE_BY_SIX, "Moincraft".literal, 1) {
+        page(1) {
+            effectFrom = GuiPage.ChangeEffect.SLIDE_HORIZONTALLY
+            effectTo = GuiPage.ChangeEffect.SLIDE_HORIZONTALLY
 
-                placeholder(Slots.All, Items.WHITE_STAINED_GLASS_PANE.guiIcon)
+            placeholder(Slots.All, Items.WHITE_STAINED_GLASS_PANE.guiIcon)
 
-                val changingName = GuiProperty("Ausgangsstring")
+            val changingName = GuiProperty("Ausgangsstring")
 
-                placeholder(2 sl 5, changingName.guiIcon {
-                    listOf(Items.ACACIA_SIGN, Items.BIRCH_SIGN, Items.DARK_OAK_SIGN)
-                        .random().defaultStack.setCustomName(it.literal)
-                })
+            placeholder(2 sl 5, changingName.guiIcon {
+                listOf(Items.ACACIA_SIGN, Items.BIRCH_SIGN, Items.DARK_OAK_SIGN)
+                    .random().defaultStack.setCustomName(it.literal)
+            })
 
-                fabrikCoroutineScope.launch {
-                    repeat(30) {
-                        delay(500)
-                        changingName.set(UUID.randomUUID().toString())
-                    }
+            fabrikCoroutineScope.launch {
+                repeat(30) {
+                    delay(500)
+                    changingName.set(UUID.randomUUID().toString())
                 }
-
-                nextPage(2 sl 9, Items.PAPER.guiIcon)
             }
 
-            page {
-                effectFrom = GuiPage.ChangeEffect.SLIDE_VERTICALLY
+            nextPage(2 sl 9, Items.PAPER.guiIcon)
+        }
 
-                placeholder(Slots.All, Items.BLACK_STAINED_GLASS_PANE.guiIcon)
+        page {
+            effectFrom = GuiPage.ChangeEffect.SLIDE_VERTICALLY
 
-                previousPage(2 sl 1, Items.PAPER.guiIcon)
+            placeholder(Slots.All, Items.BLACK_STAINED_GLASS_PANE.guiIcon)
 
-                nextPage(3 sl 5, Items.STICK.guiIcon)
-            }
+            previousPage(2 sl 1, Items.PAPER.guiIcon)
 
-            page {
-                effectFrom = GuiPage.ChangeEffect.SLIDE_VERTICALLY
+            nextPage(3 sl 5, Items.STICK.guiIcon)
+        }
 
-                placeholder(Slots.ColumnOne, Items.POLISHED_ANDESITE.guiIcon)
-                placeholder(Slots.ColumnNine, Items.POLISHED_ANDESITE.guiIcon)
+        page {
+            effectFrom = GuiPage.ChangeEffect.SLIDE_VERTICALLY
 
-                previousPage(1 sl 1, Items.STICK.guiIcon)
+            placeholder(Slots.ColumnOne, Items.POLISHED_ANDESITE.guiIcon)
+            placeholder(Slots.ColumnNine, Items.POLISHED_ANDESITE.guiIcon)
 
-                val compound = compound(
-                    (1 sl 2) rectTo (6 sl 8),
-                    Registry.ITEM.filter { it != Items.AIR }.toGuiList(),
-                    iconGenerator = { it.defaultStack }
-                )
+            previousPage(1 sl 1, Items.STICK.guiIcon)
 
-                compoundScrollForwards(1 sl 9, Items.NETHERITE_BLOCK.guiIcon, compound)
-                compoundScrollBackwards(6 sl 9, Items.NETHERITE_BLOCK.guiIcon, compound)
-            }
+            val compound = compound(
+                (1 sl 2) rectTo (6 sl 8),
+                Registry.ITEM.filter { it != Items.AIR }.toGuiList(),
+                iconGenerator = { it.defaultStack }
+            )
+
+            compoundScrollForwards(1 sl 9, Items.NETHERITE_BLOCK.guiIcon, compound)
+            compoundScrollBackwards(6 sl 9, Items.NETHERITE_BLOCK.guiIcon, compound)
         }
     }
 }

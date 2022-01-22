@@ -5,7 +5,7 @@ import net.axay.fabrik.igui.openGui
 import net.axay.fabrik.test.igui.SimpleTestGui
 
 private val guis = mapOf(
-    "simpletestgui" to SimpleTestGui.gui
+    "simpletestgui" to SimpleTestGui::create
 )
 
 val guiCommand = testCommand("gui") {
@@ -15,7 +15,7 @@ val guiCommand = testCommand("gui") {
             runs {
                 val gui = guis[guiname()]
                 if (gui != null)
-                    source.player.openGui(gui.invoke(), 1)
+                    source.player.openGui(gui(), 1)
                 else source.sendError("This GUI does not exist!".literal)
             }
         }
