@@ -20,7 +20,7 @@ import net.minecraft.text.LiteralText
  *
  * @return the job of opening the gui and displaying it to the player
  */
-fun PlayerEntity.openGui(gui: Gui, pageKey: Any? = null): Job {
+fun ServerPlayerEntity.openGui(gui: Gui, pageKey: Any? = null): Job {
     return mcCoroutineScope.launch {
         if (pageKey != null)
             gui.pagesByKey[pageKey.toString()]?.let { gui.loadPage(it) }
