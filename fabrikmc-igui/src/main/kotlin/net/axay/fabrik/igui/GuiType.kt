@@ -17,7 +17,7 @@ enum class GuiType(
     NINE_BY_FIVE(ScreenHandlerType.GENERIC_9X5, GuiDimensions(9, 5)),
     NINE_BY_SIX(ScreenHandlerType.GENERIC_9X6, GuiDimensions(9, 6)),
 
-    THREE_BY_SIX(ScreenHandlerType.GENERIC_3X3, GuiDimensions(3, 3)),
+    THREE_BY_THREE(ScreenHandlerType.GENERIC_3X3, GuiDimensions(3, 3)),
     ;
 
     fun createScreenHandler(gui: Gui, syncId: Int, playerInv: PlayerInventory, inv: Inventory) =
