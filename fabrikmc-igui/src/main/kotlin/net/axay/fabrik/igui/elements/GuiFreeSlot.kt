@@ -2,7 +2,7 @@ package net.axay.fabrik.igui.elements
 
 import net.axay.fabrik.igui.GuiElement
 import net.axay.fabrik.igui.events.GuiClickEvent
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 class GuiFreeSlot(
     private val onClick: (suspend (GuiClickEvent) -> Unit)?,

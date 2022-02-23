@@ -3,8 +3,8 @@
 package net.axay.fabrik.core.math.geometry
 
 import net.axay.fabrik.core.world.pos.Pos3i
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3i
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Vec3i
 
 /**
  * Contains the core sphere generator functions.

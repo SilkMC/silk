@@ -1,10 +1,10 @@
 package net.axay.fabrik.core.world.pos
 
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.ChunkPos
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.ChunkPos
 
 data class PosInChunk(val x: Int, val y: Int, val z: Int) {
     constructor(blockPos: BlockPos) : this(blockPos.x and 15, blockPos.y, blockPos.z and 15)
 
-    fun getBlockPos(chunkPos: ChunkPos) = BlockPos(chunkPos.startX + x, y, chunkPos.startZ + z)
+    fun getBlockPos(chunkPos: ChunkPos) = BlockPos(chunkPos.minBlockX + x, y, chunkPos.minBlockZ + z)
 }

@@ -3,14 +3,14 @@ package net.axay.fabrik.igui
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import net.axay.fabrik.core.task.mcCoroutineScope
-import net.axay.fabrik.igui.mixin.SimpleInventoryAccessor
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.inventory.SimpleInventory
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.NamedScreenHandlerFactory
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.LiteralText
+import net.axay.fabrik.igui.mixin.SimpleContainerAccessor
+import net.minecraft.network.chat.TextComponent
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.MenuProvider
+import net.minecraft.world.SimpleContainer
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 
 /**
  * Opens the given gui.
@@ -20,24 +20,24 @@ import net.minecraft.text.LiteralText
  *
  * @return the job of opening the gui and displaying it to the player
  */
-fun ServerPlayerEntity.openGui(gui: Gui, pageKey: Any? = null): Job {
+fun ServerPlayer.openGui(gui: Gui, pageKey: Any? = null): Job {
     return mcCoroutineScope.launch {
         if (pageKey != null)
             gui.pagesByKey[pageKey.toString()]?.let { gui.loadPage(it) }
 
-        openHandledScreen(gui)
+        openMenu(gui)
     }
 }
 
 class Gui(
     val guiType: GuiType,
-    val title: LiteralText,
+    val title: TextComponent,
     val pagesByKey: Map<String, GuiPage>,
     val pagesByNumber: Map<Int, GuiPage>,
     val defaultPageKey: String,
     val eventHandler: GuiEventHandler,
-) : SimpleInventory(guiType.dimensions.slotAmount), NamedScreenHandlerFactory {
-    val views = HashMap<PlayerEntity, GuiScreenHandler>()
+) : SimpleContainer(guiType.dimensions.slotAmount), MenuProvider {
+    val views = HashMap<Player, GuiScreenHandler>()
 
     var isOffset = false
         private set
@@ -49,7 +49,7 @@ class Gui(
     }
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    val accessor = this as SimpleInventoryAccessor
+    val accessor = this as SimpleContainerAccessor
 
     /**
      * Loads the specified page with the specified offset.
@@ -80,8 +80,8 @@ class Gui(
                     GuiSlot(it.row + offsetVertically, it.slotInRow + offsetHorizontally)
                         .slotIndexIn(guiType.dimensions)
                 }
-                .forEach { accessor.stacks[it] = ItemStack.EMPTY }
-        } else accessor.stacks.clear()
+                .forEach { accessor.items[it] = ItemStack.EMPTY }
+        } else accessor.items.clear()
 
         page.content.forEach { (slotIndex, element) ->
             if (isOffset) {
@@ -91,12 +91,12 @@ class Gui(
                         GuiSlot(guiSlot.row + offsetVertically, guiSlot.slotInRow + offsetHorizontally)
                             .slotIndexIn(guiType.dimensions)
                     if (offsetIndex != null)
-                        accessor.stacks[offsetIndex] = element.getItemStack(offsetIndex)
+                        accessor.items[offsetIndex] = element.getItemStack(offsetIndex)
                 }
-            } else accessor.stacks[slotIndex] = element.getItemStack(slotIndex)
+            } else accessor.items[slotIndex] = element.getItemStack(slotIndex)
         }
 
-        markDirty()
+        setChanged()
     }
 
     /**
@@ -110,8 +110,8 @@ class Gui(
             loadPage(currentPage)
     }
 
-    override fun createMenu(syncId: Int, playerInv: PlayerInventory, player: PlayerEntity) =
-        guiType.createScreenHandler(this, syncId, playerInv, this).apply {
+    override fun createMenu(syncId: Int, inventory: Inventory, player: Player) =
+        guiType.createScreenHandler(this, syncId, inventory, this).apply {
             if (views.isEmpty())
                 currentPage.startUsing(this@Gui)
             views[player] = this
@@ -119,7 +119,9 @@ class Gui(
 
     override fun getDisplayName() = title
 
-    override fun onClose(player: PlayerEntity) {
+    override fun stopOpen(player: Player) {
+        super.stopOpen(player)
+
         views -= player
         if (views.isEmpty())
             currentPage.stopUsing(this)
@@ -130,7 +132,7 @@ class Gui(
      */
     fun closeForViewers() {
         views.keys.forEach {
-            (it as ServerPlayerEntity).closeHandledScreen()
+            (it as ServerPlayer).closeContainer()
         }
     }
 }

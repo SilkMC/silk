@@ -2,9 +2,12 @@ package net.axay.fabrik.core.entity
 
 import net.axay.fabrik.core.world.block.BlockInfo
 import net.axay.fabrik.core.world.block.isCollidable
-import net.minecraft.block.Blocks
-import net.minecraft.entity.Entity
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.phys.Vec3
+
+val Entity.pos: Vec3 get() = position()
 
 /**
  * Returns the pos under the entities "feet".
@@ -22,30 +25,30 @@ val Entity.touchedBlock: BlockInfo
         if (isOnGround) {
             val posBelow = posUnder
 
-            val stateBelow = world.getBlockState(posBelow)
+            val stateBelow = level.getBlockState(posBelow)
             if (stateBelow.block.isCollidable) {
                 return BlockInfo(stateBelow, posBelow)
             } else {
-                val posDown = posBelow.down()
-                val stateDown = world.getBlockState(posDown)
-                val collisionShape = stateDown.getCollisionShape(world, posDown)
-                if (!collisionShape.isEmpty && collisionShape.boundingBox.yLength > 1) {
+                val posDown = posBelow.below()
+                val stateDown = level.getBlockState(posDown)
+                val collisionShape = stateDown.getCollisionShape(level, posDown)
+                if (!collisionShape.isEmpty && collisionShape.bounds().ysize > 1) {
                     return BlockInfo(stateDown, posDown)
                 }
 
-                return landingPos.let { BlockInfo(world.getBlockState(it), it) }
+                return onPos.let { BlockInfo(level.getBlockState(it), it) }
             }
         } else {
-            val posHere = blockPos
+            val posHere = blockPosition()
 
-            if (isTouchingWater || isInLava) {
-                val stateHere = world.getBlockState(posHere)
+            if (isInWater || isInLava) {
+                val stateHere = level.getBlockState(posHere)
                 if (!stateHere.fluidState.isEmpty) {
                     return BlockInfo(stateHere, posHere)
                 }
             }
 
-            return BlockInfo(Blocks.AIR.defaultState, posHere)
+            return BlockInfo(Blocks.AIR.defaultBlockState(), posHere)
         }
     }
 

@@ -9,10 +9,10 @@ import net.axay.fabrik.test.network.NetworkTest
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
-import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.commands.CommandSourceStack
 
 object Manager : ModInitializer, ClientModInitializer {
-    internal val testmodCommandBuilders = HashMap<String, LiteralCommandBuilder<ServerCommandSource>.() -> Unit>()
+    internal val testmodCommandBuilders = HashMap<String, LiteralCommandBuilder<CommandSourceStack>.() -> Unit>()
     internal val clientTestmodCommandBuilders = HashMap<String, LiteralCommandBuilder<FabricClientCommandSource>.() -> Unit>()
 
     override fun onInitialize() {

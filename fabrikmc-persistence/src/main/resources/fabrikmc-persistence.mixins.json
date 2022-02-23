@@ -4,10 +4,10 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "chunk.ChunkSerializerMixin",
-    "chunk.EmptyChunkMixin",
+    "chunk.EmptyLevelChunkMixin",
     "chunk.ProtoChunkMixin",
-    "chunk.ReadOnlyChunkMixin",
-    "chunk.WorldChunkMixin",
+    "chunk.ImposterProtoChunkMixin",
+    "chunk.LevelChunkMixin",
     "entity.EntityMixin",
     "world.ServerWorldMixin"
   ]

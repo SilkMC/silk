@@ -2,18 +2,18 @@ package net.axay.fabrik.core.item
 
 import net.axay.fabrik.core.text.LiteralTextBuilder
 import net.axay.fabrik.core.text.literalText
-import net.minecraft.item.ItemConvertible
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtList
-import net.minecraft.nbt.NbtString
-import net.minecraft.text.Text
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.StringTag
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.ItemLike
 
 /**
  * A utility to function for building more complex
  * item stacks.
  */
 inline fun itemStack(
-    item: ItemConvertible,
+    item: ItemLike,
     amount: Int = 1,
     builder: ItemStack.() -> Unit,
 ) = ItemStack(item, amount).apply(builder)
@@ -22,10 +22,10 @@ inline fun itemStack(
  * Sets the item lore, which is displayed below the display
  * name of the item stack.
  */
-fun ItemStack.setLore(text: Collection<Text>) {
-    getOrCreateSubNbt("display").put(
+fun ItemStack.setLore(text: Collection<Component>) {
+    getOrCreateTagElement("display").put(
         "Lore",
-        text.mapTo(NbtList()) { NbtString.of(Text.Serializer.toJson(it)) }
+        text.mapTo(ListTag()) { StringTag.valueOf(Component.Serializer.toJson(it)) }
     )
 }
 
@@ -34,4 +34,4 @@ fun ItemStack.setLore(text: Collection<Text>) {
  * the item stack.
  */
 inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack =
-    setCustomName(literalText(baseText, builder))
+    setHoverName(literalText(baseText, builder))

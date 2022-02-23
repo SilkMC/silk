@@ -1,21 +1,21 @@
 package net.axay.fabrik.core.entity
 
-import net.minecraft.entity.Entity
-import net.minecraft.entity.LivingEntity
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.math.Vec3d
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.phys.Vec3
 
 /**
- * Correctly handles teleports for all kinds of entities. Differentiates between [ServerPlayerEntity],
- * [LivingEntity] and [Entity] and calls the correct function for each of them. Handles [ServerWorld]
+ * Correctly handles teleports for all kinds of entities. Differentiates between [ServerPlayer],
+ * [LivingEntity] and [Entity] and calls the correct function for each of them. Handles [ServerLevel]
  * and direction changes.
  */
 fun Entity.changePos(
-    x: Number = this.pos.x,
-    y: Number = this.pos.y,
-    z: Number = this.pos.z,
-    world: ServerWorld? = null,
+    x: Number = this.position().x,
+    y: Number = this.position().y,
+    z: Number = this.position().z,
+    world: ServerLevel? = null,
     yaw: Float? = null,
     pitch: Float? = null,
 ) {
@@ -23,23 +23,19 @@ fun Entity.changePos(
     val yD = y.toDouble()
     val zD = z.toDouble()
 
-    if (world != null && this is ServerPlayerEntity) {
-        teleport(world, xD, yD, zD, yaw ?: this.yaw, pitch ?: this.pitch)
+    if (world != null && this is ServerPlayer) {
+        teleportTo(world, xD, yD, zD, yaw ?: this.yRot, pitch ?: this.xRot)
         return
     }
 
-    if (world != null && world != this.world) {
-        moveToWorld(world)
+    if (world != null && world != this.level) {
+        changeDimension(world)
     }
 
-    if (yaw != null) this.yaw = yaw
-    if (pitch != null) this.pitch = pitch
+    if (yaw != null) this.yRot = yaw
+    if (pitch != null) this.xRot = pitch
 
-    if (this is LivingEntity) {
-        teleport(xD, yD, zD, false)
-    } else {
-        teleport(xD, yD, zD)
-    }
+    teleportTo(xD, yD, zD)
 }
 
 /**
@@ -47,8 +43,7 @@ fun Entity.changePos(
  * them about the new velocity.
  */
 fun Entity.markVelocityDirty() {
-    velocityDirty = true
-    velocityModified = true
+    hasImpulse = true
 }
 
 /**
@@ -58,10 +53,10 @@ fun Entity.markVelocityDirty() {
  * if you want to overwrite the previous velocity.
  */
 fun Entity.modifyVelocity(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0, add: Boolean = true) {
-    velocity = if (add) {
-        velocity.add(x.toDouble(), y.toDouble(), z.toDouble())
+    deltaMovement = if (add) {
+        deltaMovement.add(x.toDouble(), y.toDouble(), z.toDouble())
     } else {
-        Vec3d(x.toDouble(), y.toDouble(), z.toDouble())
+        Vec3(x.toDouble(), y.toDouble(), z.toDouble())
     }
 
     markVelocityDirty()
@@ -71,7 +66,7 @@ fun Entity.modifyVelocity(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0, add
  * Changes the velocity of this [Entity] using the given mutation logic in [block].
  * After that, [markVelocityDirty] is called.
  */
-inline fun Entity.modifyVelocity(block: (Vec3d) -> Vec3d) {
-    velocity = block(velocity)
+inline fun Entity.modifyVelocity(block: (Vec3) -> Vec3) {
+    deltaMovement = block(deltaMovement)
     markVelocityDirty()
 }

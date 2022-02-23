@@ -15,8 +15,8 @@ val guiCommand = testCommand("gui") {
             runs {
                 val gui = guis[guiname()]
                 if (gui != null)
-                    source.player.openGui(gui(), 1)
-                else source.sendError("This GUI does not exist!".literal)
+                    source.playerOrException.openGui(gui(), 1)
+                else source.sendFailure("This GUI does not exist!".literal)
             }
         }
     }

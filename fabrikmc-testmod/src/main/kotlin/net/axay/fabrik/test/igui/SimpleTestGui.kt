@@ -7,8 +7,8 @@ import net.axay.fabrik.core.text.literal
 import net.axay.fabrik.igui.*
 import net.axay.fabrik.igui.observable.GuiProperty
 import net.axay.fabrik.igui.observable.toGuiList
-import net.minecraft.item.Items
-import net.minecraft.util.registry.Registry
+import net.minecraft.core.Registry
+import net.minecraft.world.item.Items
 import java.util.*
 
 object SimpleTestGui {
@@ -23,7 +23,7 @@ object SimpleTestGui {
 
             placeholder(2 sl 5, changingName.guiIcon {
                 listOf(Items.ACACIA_SIGN, Items.BIRCH_SIGN, Items.DARK_OAK_SIGN)
-                    .random().defaultStack.setCustomName(it.literal)
+                    .random().defaultInstance.setHoverName(it.literal)
             })
 
             fabrikCoroutineScope.launch {
@@ -57,7 +57,7 @@ object SimpleTestGui {
             val compound = compound(
                 (1 sl 2) rectTo (6 sl 8),
                 Registry.ITEM.filter { it != Items.AIR }.toGuiList(),
-                iconGenerator = { it.defaultStack }
+                iconGenerator = { it.defaultInstance }
             )
 
             compoundScrollForwards(1 sl 9, Items.NETHERITE_BLOCK.guiIcon, compound)

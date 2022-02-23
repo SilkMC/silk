@@ -26,30 +26,30 @@ class NbtEncodingTest : StringSpec({
             null,
         )
         val element = Nbt.encodeToNbtElement(value)
-        element.shouldBeInstanceOf<NbtCompound>()
-        element.size shouldBe 7
+        element.shouldBeInstanceOf<CompoundTag>()
+        element.size() shouldBe 7
         element.getInt("x") shouldBe value.x
         element.getLong("y") shouldBe value.y
         element.getString("name") shouldBe value.name
-        element.getList("stringList", NbtElement.STRING_TYPE.toInt()).map { it.asString() } shouldBe value.stringList
+        element.getList("stringList", Tag.TAG_STRING.toInt()).map { it.asString } shouldBe value.stringList
         element.getLongArray("longSet") shouldBe value.longSet.toLongArray()
         with(element.getCompound("inner")) {
-            size shouldBe 1
+            size() shouldBe 1
             getBoolean("test") shouldBe value.inner.test
         }
         with(element.get("nullable")) {
-            shouldBeInstanceOf<NbtList>()
+            shouldBeInstanceOf<ListTag>()
             shouldBeEmpty()
         }
     }
 
     "nullable types should encode to lists" {
         with(Nbt.encodeToNbtElement<Int?>(null)) {
-            shouldBeInstanceOf<NbtList>()
+            shouldBeInstanceOf<ListTag>()
             shouldBeEmpty()
         }
         with(Nbt.encodeToNbtElement<Int?>(5)) {
-            shouldBeInstanceOf<NbtList>()
+            shouldBeInstanceOf<ListTag>()
             shouldHaveSize(1)
             this[0] shouldBe 5.toNbt()
         }
@@ -58,18 +58,18 @@ class NbtEncodingTest : StringSpec({
     "byte collections should encode to byte array" {
         checkAll(Arb.byteArrays(Arb.int(0..0x1000), Arb.byte())) {
             val element = Nbt.encodeToNbtElement(it)
-            element.shouldBeInstanceOf<NbtByteArray>()
-            element.byteArray shouldBe it
+            element.shouldBeInstanceOf<ByteArrayTag>()
+            element.asByteArray shouldBe it
         }
         checkAll(Arb.list(Arb.byte(), 0..0x1000)) {
             val element = Nbt.encodeToNbtElement(it)
-            element.shouldBeInstanceOf<NbtByteArray>()
-            element.byteArray shouldBe it
+            element.shouldBeInstanceOf<ByteArrayTag>()
+            element.asByteArray shouldBe it
         }
         checkAll(Arb.set(Arb.byte(), 0..Byte.MAX_VALUE)) {
             val element = Nbt.encodeToNbtElement(it)
-            element.shouldBeInstanceOf<NbtByteArray>()
-            element.byteArray shouldBe it.toByteArray()
+            element.shouldBeInstanceOf<ByteArrayTag>()
+            element.asByteArray shouldBe it.toByteArray()
         }
     }
 
@@ -78,14 +78,14 @@ class NbtEncodingTest : StringSpec({
             val array = it.toIntArray()
             val elements = listOf(Nbt.encodeToNbtElement(it), Nbt.encodeToNbtElement(array))
             for (element in elements) {
-                element.shouldBeInstanceOf<NbtIntArray>()
-                element.intArray shouldBe array
+                element.shouldBeInstanceOf<IntArrayTag>()
+                element.asIntArray shouldBe array
             }
         }
         checkAll(Arb.set(Arb.int(), 0..0x1000)) {
             val element = Nbt.encodeToNbtElement(it)
-            element.shouldBeInstanceOf<NbtIntArray>()
-            element.intArray shouldBe it.toIntArray()
+            element.shouldBeInstanceOf<IntArrayTag>()
+            element.asIntArray shouldBe it.toIntArray()
         }
     }
 
@@ -94,29 +94,29 @@ class NbtEncodingTest : StringSpec({
             val array = it.toLongArray()
             val elements = listOf(Nbt.encodeToNbtElement(it), Nbt.encodeToNbtElement(array))
             for (element in elements) {
-                element.shouldBeInstanceOf<NbtLongArray>()
-                element.longArray shouldBe array
+                element.shouldBeInstanceOf<LongArrayTag>()
+                element.asLongArray shouldBe array
             }
         }
         checkAll(Arb.set(Arb.long(), 0..0x1000)) {
             val element = Nbt.encodeToNbtElement(it)
-            element.shouldBeInstanceOf<NbtLongArray>()
-            element.longArray shouldBe it.toLongArray()
+            element.shouldBeInstanceOf<LongArrayTag>()
+            element.asLongArray shouldBe it.toLongArray()
         }
     }
 
     "enums should encode to strings" {
         checkAll(Exhaustive.enum<TestEnum>()) {
             val element = Nbt.encodeToNbtElement(it)
-            element.shouldBeInstanceOf<NbtString>()
-            element.asString() shouldBe it.name
+            element.shouldBeInstanceOf<StringTag>()
+            element.asString shouldBe it.name
         }
     }
 
     "closed polymorphism should encode correctly" {
         val value = SealedChild1(1f, 2.5)
         val element = Nbt.encodeToNbtElement<SealedBase>(value)
-        element.shouldBeInstanceOf<NbtCompound>()
+        element.shouldBeInstanceOf<CompoundTag>()
         element.getString("type") shouldBe "child1"
         with(element.getCompound("value")) {
             getFloat("baseVal") shouldBe value.baseVal
@@ -127,13 +127,13 @@ class NbtEncodingTest : StringSpec({
     "defaults should only be encoded when the config value is set" {
         val value = TestClassWithDefault()
         with(Nbt.encodeToNbtElement(value)) {
-            shouldBeInstanceOf<NbtCompound>()
+            shouldBeInstanceOf<CompoundTag>()
             isEmpty shouldBe true
         }
 
         with(Nbt { encodeDefaults = true }.encodeToNbtElement(value)) {
-            shouldBeInstanceOf<NbtCompound>()
-            size shouldBe 2
+            shouldBeInstanceOf<CompoundTag>()
+            size() shouldBe 2
             getInt("one") shouldBe value.one
             getBoolean("tru") shouldBe value.tru
         }

@@ -15,7 +15,7 @@ private val personKey = compoundKey<Person>("person".testmodId)
 val persistenceTestCommand = testCommand("persistence") {
     literal("player") {
         literal("set") runs {
-            source.player.persistentCompound.let {
+            source.playerOrException.persistentCompound.let {
                 it[simpleIntKey] = 1234
 
                 it[personKey] = Person(
@@ -27,11 +27,11 @@ val persistenceTestCommand = testCommand("persistence") {
         }
 
         literal("get") runs {
-            source.player.persistentCompound.let {
+            source.playerOrException.persistentCompound.let {
                 val simpleInt = it[simpleIntKey]
                 val complexClass = it[personKey]
 
-                source.player.sendText {
+                source.playerOrException.sendText {
                     text("simple_int = ")
                     text("$simpleInt") {
                         bold = true
@@ -46,7 +46,7 @@ val persistenceTestCommand = testCommand("persistence") {
         }
 
         literal("remove") runs {
-            source.player.persistentCompound.let {
+            source.playerOrException.persistentCompound.let {
                 it -= simpleIntKey
                 it -= personKey
             }

@@ -23,8 +23,8 @@ import net.axay.fabrik.core.task.fabrikCoroutineScope
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
-import net.minecraft.command.CommandSource
-import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.SharedSuggestionProvider
 import java.util.concurrent.CompletableFuture
 
 private class DslAnnotations {
@@ -55,7 +55,7 @@ typealias ArgumentResolver<S, T> = CommandContext<S>.() -> T
 typealias SimpleArgumentBuilder<Source, T> = ArgumentCommandBuilder<Source, T>.(argument: ArgumentResolver<Source, T>) -> Unit
 
 @NodeDsl
-abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<Source, Builder>> {
+abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : ArgumentBuilder<Source, Builder>> {
 
     @PublishedApi
     internal abstract val builder: Builder
@@ -201,7 +201,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      */
     @RunsDsl
     fun requiresPermissionLevel(level: Int) =
-        requires { it.hasPermissionLevel(level) }
+        requires { it.hasPermission(level) }
 
     /**
      * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree.
@@ -209,7 +209,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      */
     @RunsDsl
     fun requiresPermissionLevel(level: PermissionLevel) =
-        requires { it.hasPermissionLevel(level.level) }
+        requires { it.hasPermission(level.level) }
 
     /**
      * This function allows you to access the regular Brigadier builder. The type of
@@ -242,14 +242,14 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
     }
 }
 
-class LiteralCommandBuilder<Source : CommandSource>(
+class LiteralCommandBuilder<Source : SharedSuggestionProvider>(
     private val name: String,
 ) : CommandBuilder<Source, LiteralArgumentBuilder<Source>>() {
 
     override val builder = LiteralArgumentBuilder.literal<Source>(name)
 }
 
-class ArgumentCommandBuilder<Source : CommandSource, T>(
+class ArgumentCommandBuilder<Source : SharedSuggestionProvider, T>(
     private val name: String,
     private val type: ArgumentType<T>,
 ) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>>() {
@@ -441,9 +441,9 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
 inline fun command(
     name: String,
     register: Boolean = true,
-    builder: LiteralCommandBuilder<ServerCommandSource>.() -> Unit = {},
-): LiteralArgumentBuilder<ServerCommandSource> =
-    LiteralCommandBuilder<ServerCommandSource>(name).apply(builder).toBrigadier().apply {
+    builder: LiteralCommandBuilder<CommandSourceStack>.() -> Unit = {},
+): LiteralArgumentBuilder<CommandSourceStack> =
+    LiteralCommandBuilder<CommandSourceStack>(name).apply(builder).toBrigadier().apply {
         if (register)
             setupRegistrationCallback()
     }

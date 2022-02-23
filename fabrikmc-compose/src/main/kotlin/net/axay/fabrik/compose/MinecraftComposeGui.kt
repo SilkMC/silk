@@ -15,24 +15,22 @@ import com.github.ajalt.colormath.model.SRGB
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
-import net.axay.fabrik.compose.color.MapColorUtils
+import net.axay.fabrik.compose.color.MaterialColorUtils
 import net.axay.fabrik.compose.internal.MapIdGenerator
 import net.axay.fabrik.core.logging.logError
 import net.axay.fabrik.core.logging.logInfo
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
-import net.minecraft.entity.decoration.GlowItemFrameEntity
-import net.minecraft.item.Items
-import net.minecraft.item.map.MapState
-import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket
-import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket
-import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket
-import net.minecraft.network.packet.s2c.play.MapUpdateS2CPacket
-import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.Hand
-import net.minecraft.util.math.*
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.core.Vec3i
+import net.minecraft.network.protocol.game.*
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.entity.decoration.GlowItemFrame
+import net.minecraft.world.item.Items
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData
+import net.minecraft.world.phys.Vec3
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
@@ -59,9 +57,9 @@ import kotlin.math.min
  *
  * @see MinecraftComposeGui
  */
-fun ServerPlayerEntity.displayComposable(
+fun ServerPlayer.displayComposable(
     blockWidth: Int, blockHeight: Int,
-    position: BlockPos = blockPos.offset(horizontalFacing, 2),
+    position: BlockPos = blockPosition().relative(direction, 2),
     content: @Composable BoxScope.(gui: MinecraftComposeGui) -> Unit,
 ) = MinecraftComposeGui(
     blockWidth, blockHeight,
@@ -81,7 +79,7 @@ fun ServerPlayerEntity.displayComposable(
 class MinecraftComposeGui(
     val blockWidth: Int, val blockHeight: Int,
     val content: @Composable BoxScope.(gui: MinecraftComposeGui) -> Unit,
-    val player: ServerPlayerEntity,
+    val player: ServerPlayer,
     val position: BlockPos,
 ) : CoroutineScope {
     companion object {
@@ -98,16 +96,16 @@ class MinecraftComposeGui(
             }
         }
 
-        internal fun onSwingHand(player: ServerPlayerEntity, packet: HandSwingC2SPacket) {
-            if (packet.hand == Hand.MAIN_HAND) {
+        internal fun onSwingHand(player: ServerPlayer, packet: ServerboundSwingPacket) {
+            if (packet.hand == InteractionHand.MAIN_HAND) {
                 playerGuis[player.uuid]?.onLeftClick()
             }
         }
 
-        internal fun onUpdateSelectedSlot(player: ServerPlayerEntity, packet: UpdateSelectedSlotC2SPacket): Boolean {
+        internal fun onUpdateSelectedSlot(player: ServerPlayer, packet: ServerboundSetCarriedItemPacket): Boolean {
             val gui = playerGuis[player.uuid] ?: return false
 
-            val slotPair = player.inventory.selectedSlot to packet.selectedSlot
+            val slotPair = player.inventory.selected to packet.slot
             val (prevSlot, newSlot) = slotPair
 
             val scrollDelta = when {
@@ -122,9 +120,8 @@ class MinecraftComposeGui(
             return gui.onScroll(scrollDelta * 3)
         }
 
-        private fun Vec3d.toMkArray() = mk.ndarray(doubleArrayOf(x, y, z))
+        private fun Vec3.toMkArray() = mk.ndarray(doubleArrayOf(x, y, z))
         private fun Vec3i.toMkArray() = mk.ndarray(doubleArrayOf(x.toDouble(), y.toDouble(), z.toDouble()))
-        private fun Vec3f.toMkArray() = mk.ndarray(doubleArrayOf(x.toDouble(), y.toDouble(), z.toDouble()))
 
         // taken from http://rosettacode.org/wiki/Find_the_intersection_of_a_line_with_a_plane#Kotlin
         private fun rayPlaneIntersection(
@@ -181,7 +178,7 @@ class MinecraftComposeGui(
             }
         }
 
-        fun createPacket(): MapUpdateS2CPacket? {
+        fun createPacket(): ClientboundMapItemDataPacket? {
             if (!dirty) return null
             dirty = false
 
@@ -195,8 +192,8 @@ class MinecraftComposeGui(
                 }
             }
 
-            val updateData = MapState.UpdateData(startX, startY, width, height, packetColors)
-            return MapUpdateS2CPacket(mapId, 0, false, null, updateData)
+            val updateData = MapItemSavedData.MapPatch(startX, startY, width, height, packetColors)
+            return ClientboundMapItemDataPacket(mapId, 0, false, null, updateData)
         }
     }
 
@@ -204,24 +201,24 @@ class MinecraftComposeGui(
 
     // values for geometry
 
-    private val guiDirection = player.horizontalFacing.opposite
-    private val placementDirection = guiDirection.rotateCounterclockwise(Direction.Axis.Y)
+    private val guiDirection = player.direction.opposite
+    private val placementDirection = guiDirection.getCounterClockWise(Direction.Axis.Y)
 
     // the perceived position of the display is one behind the actual item frame position
     private val displayPosition = when (guiDirection) {
         Direction.EAST, Direction.SOUTH -> position
-        Direction.WEST, Direction.NORTH -> position.offset(guiDirection.opposite)
+        Direction.WEST, Direction.NORTH -> position.relative(guiDirection.opposite)
         else -> position
     }
 
     private val planePoint = displayPosition.toMkArray()
-    private val planeNormal = guiDirection.unitVector.toMkArray()
+    private val planeNormal = guiDirection.normal.toMkArray()
 
-    private val topCorner = displayPosition.down(blockHeight - 1).offset(
+    private val topCorner = displayPosition.below(blockHeight - 1).relative(
         placementDirection,
         blockWidth - (if (guiDirection == Direction.WEST || guiDirection == Direction.SOUTH) 0 else 1)
     ).withoutAxis(guiDirection.axis)
-    private val bottomCorner = displayPosition.offset(placementDirection.opposite).up().offset(
+    private val bottomCorner = displayPosition.relative(placementDirection.opposite).above().relative(
         placementDirection,
         if (guiDirection == Direction.WEST || guiDirection == Direction.SOUTH) 1 else 0
     ).withoutAxis(guiDirection.axis)
@@ -232,8 +229,8 @@ class MinecraftComposeGui(
     private fun bitmapToMapColor(bitmapColor: Int) = bitmapToMapColorCache.getOrPut(bitmapColor) {
         Color(bitmapColor).run { SRGB(red, green, blue, alpha) }.let { color ->
             when (color.alpha) {
-                0f -> MapColorUtils.whiteMapColorId
-                else -> MapColorUtils.toMapColorId(color)
+                0f -> MaterialColorUtils.whiteMaterialColorId
+                else -> MaterialColorUtils.toMaterialColorId(color)
             }
         }
     }
@@ -269,7 +266,7 @@ class MinecraftComposeGui(
 
         scene.render(canvas, System.nanoTime())
 
-        val networkHandler = player.networkHandler
+        val networkHandler = player.connection
 
         for (xFrame in 0 until blockWidth) {
             for (yFrame in 0 until blockHeight) {
@@ -284,23 +281,23 @@ class MinecraftComposeGui(
 
                 // send the map data
                 val updatePacket = guiChunk.createPacket()
-                if (updatePacket != null) networkHandler.sendPacket(updatePacket)
+                if (updatePacket != null) networkHandler.send(updatePacket)
 
                 if (!placedItemFrames) {
-                    val framePos = position.down(yFrame).offset(placementDirection, xFrame)
+                    val framePos = position.below(yFrame).relative(placementDirection, xFrame)
 
                     // spawn the fake item frame
-                    val itemFrame = GlowItemFrameEntity(player.world, framePos, guiDirection)
+                    val itemFrame = GlowItemFrame(player.level, framePos, guiDirection)
                     itemFrameEntityIds += itemFrame.id
                     itemFrame.isInvisible = true
-                    networkHandler.sendPacket(itemFrame.createSpawnPacket())
+                    networkHandler.send(itemFrame.addEntityPacket)
 
                     // put the map in the item frame
-                    val composeStack = Items.FILLED_MAP.defaultStack.apply {
-                        orCreateNbt.putInt("map", mapId)
+                    val composeStack = Items.FILLED_MAP.defaultInstance.apply {
+                        orCreateTag.putInt("map", mapId)
                     }
-                    itemFrame.setHeldItemStack(composeStack, false)
-                    networkHandler.sendPacket(EntityTrackerUpdateS2CPacket(itemFrame.id, itemFrame.dataTracker, true))
+                    itemFrame.setItem(composeStack, false)
+                    networkHandler.send(ClientboundSetEntityDataPacket(itemFrame.id, itemFrame.entityData, true))
                 }
             }
         }
@@ -310,8 +307,8 @@ class MinecraftComposeGui(
 
     private fun calculateOffset(): Offset? {
         val intersection = rayPlaneIntersection(
-            player.eyePos.toMkArray(),
-            player.rotationVector.toMkArray(),
+            player.eyePosition.toMkArray(),
+            player.lookAngle.toMkArray(),
             planePoint,
             planeNormal
         )
@@ -350,8 +347,8 @@ class MinecraftComposeGui(
         val offset = calculateOffset() ?: return false
 
         // only reset the slot if the player is directly looking at the gui
-        player.networkHandler.sendPacket(UpdateSelectedSlotS2CPacket(4))
-        player.inventory.selectedSlot = 4
+        player.connection.send(ClientboundSetCarriedItemPacket(4))
+        player.inventory.selected = 4
 
         launch {
             @OptIn(ExperimentalComposeUiApi::class)
@@ -365,7 +362,7 @@ class MinecraftComposeGui(
      * if the server shuts down.
      */
     fun close() {
-        player.networkHandler.sendPacket(EntitiesDestroyS2CPacket(*itemFrameEntityIds.toIntArray()))
+        player.connection.send(ClientboundRemoveEntitiesPacket(*itemFrameEntityIds.toIntArray()))
         MapIdGenerator.makeOldIdAvailable(guiChunks.map { it.mapId })
         coroutineContext.close()
         scene.close()

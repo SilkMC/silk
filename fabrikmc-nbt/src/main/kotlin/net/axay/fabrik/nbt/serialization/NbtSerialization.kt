@@ -5,21 +5,21 @@ import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import net.axay.fabrik.nbt.serialization.decoder.NbtRootDecoder
 import net.axay.fabrik.nbt.serialization.encoder.NbtRootEncoder
-import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.Tag
 
 /**
- * Instances of this class can encode values to [NbtElement]s and decode
- * [NbtElement]s to values.
+ * Instances of this class can encode values to [Tag]s and decode
+ * [Tag]s to values.
  */
 @OptIn(ExperimentalSerializationApi::class)
 sealed class Nbt(val config: NbtConfig, val serializersModule: SerializersModule) {
     companion object Default : Nbt(NbtConfig(), EmptySerializersModule)
 
-    fun <T> encodeToNbtElement(serializer: SerializationStrategy<T>, value: T): NbtElement =
+    fun <T> encodeToNbtElement(serializer: SerializationStrategy<T>, value: T): Tag =
         NbtRootEncoder(this).apply { encodeSerializableValue(serializer, value) }.element
             ?: throw SerializationException("Serializer did not encode any element")
 
-    fun <T> decodeFromNbtElement(deserializer: DeserializationStrategy<T>, element: NbtElement): T =
+    fun <T> decodeFromNbtElement(deserializer: DeserializationStrategy<T>, element: Tag): T =
         NbtRootDecoder(this, element).decodeSerializableValue(deserializer)
 }
 
@@ -47,9 +47,9 @@ class NbtBuilder(from: Nbt) {
 }
 
 /**
- * Encodes the given [value] to an [NbtElement]. If the given value of the type [T]
+ * Encodes the given [value] to an [Tag]. If the given value of the type [T]
  * can be represented by a primitive NbtElement, such an element will be the result of this
- * function. Otherwise, an [net.minecraft.nbt.NbtCompound] will be created.
+ * function. Otherwise, an [net.minecraft.nbt.CompoundTag] will be created.
  */
 inline fun <reified T> Nbt.encodeToNbtElement(value: T) =
     encodeToNbtElement(serializer(), value)
@@ -60,7 +60,7 @@ inline fun <reified T> Nbt.encodeToNbtElement(value: T) =
  * If the [element] does not contain all necessary entries, an exception
  * will be thrown.
  */
-inline fun <reified T> Nbt.decodeFromNbtElement(element: NbtElement) =
+inline fun <reified T> Nbt.decodeFromNbtElement(element: Tag) =
     decodeFromNbtElement(serializer<T>(), element)
 
 /**

@@ -4,7 +4,7 @@ import BuildConstants.fabricLanguageKotlinVersion
 import BuildConstants.fabricLoaderVersion
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
-import BuildConstants.yarnMappingsVersion
+import BuildConstants.quiltMappingsVersion
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -12,12 +12,17 @@ import kotlinx.serialization.json.Json
 plugins {
     kotlin("jvm")
     id("fabric-loom")
-    id("io.github.juuxel.loom-quiltflower-mini")
+    id("io.github.juuxel.loom-quiltflower")
+    id("org.quiltmc.quilt-mappings-on-loom")
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("net.fabricmc:yarn:$yarnMappingsVersion")
+    mappings(loom.layered {
+        addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:$quiltMappingsVersion"))
+        officialMojangMappings()
+    })
+
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")

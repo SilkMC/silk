@@ -1,7 +1,7 @@
 package net.axay.fabrik.igui
 
 import net.axay.fabrik.igui.events.GuiClickEvent
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 interface GuiElement {
     suspend fun getItemStack(slotIndex: Int): ItemStack

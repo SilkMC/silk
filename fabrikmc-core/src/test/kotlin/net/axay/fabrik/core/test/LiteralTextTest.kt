@@ -22,7 +22,7 @@ class LiteralTextTest : FunSpec({
                     }
 
                     text.string shouldBe baseText
-                    text.rawString shouldBe baseText
+                    text.contents shouldBe baseText
                 }
             }
         }
@@ -41,7 +41,7 @@ class LiteralTextTest : FunSpec({
                     }
 
                     text.string shouldBe "$baseText$additionalText"
-                    text.rawString shouldBe baseText
+                    text.contents shouldBe baseText
                 }
             }
         }
@@ -57,7 +57,7 @@ class LiteralTextTest : FunSpec({
                 bold = true
             }
 
-            text.style.color?.rgb shouldBe redColor
+            text.style.color?.value shouldBe redColor
             text.style.isBold shouldBe true
         }
 
@@ -99,15 +99,15 @@ class LiteralTextTest : FunSpec({
                 siblings[0].style.isBold shouldBe true
             }
             test("check inheritance override") {
-                siblings[1].style.color?.rgb shouldBe blueColor
+                siblings[1].style.color?.value shouldBe blueColor
             }
             test("check disabled inheritance") {
                 siblings[2].style.isBold shouldBe false
-                siblings[2].style.color?.rgb shouldNotBe redColor
+                siblings[2].style.color?.value shouldNotBe redColor
             }
             test("check disabled inheritance and new color") {
                 siblings[3].style.isBold shouldBe false
-                siblings[3].style.color?.rgb shouldBe blueColor
+                siblings[3].style.color?.value shouldBe blueColor
             }
 
             test("nested sub texts should work") {
@@ -115,10 +115,10 @@ class LiteralTextTest : FunSpec({
                 siblings[4].siblings.first().siblings.size shouldBe 1
 
                 val nestedSubText = siblings[4].siblings.first().siblings.first()
-                nestedSubText.asString() shouldBe nestedSubString
+                nestedSubText.contents shouldBe nestedSubString
 
                 nestedSubText.style.isBold shouldBe true
-                nestedSubText.style.color?.rgb shouldBe redColor
+                nestedSubText.style.color?.value shouldBe redColor
             }
         }
     }

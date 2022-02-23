@@ -2,7 +2,7 @@ package net.axay.fabrik.igui
 
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.observable.AbstractGuiList
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 class GuiCompound<E>(
     val guiType: GuiType,

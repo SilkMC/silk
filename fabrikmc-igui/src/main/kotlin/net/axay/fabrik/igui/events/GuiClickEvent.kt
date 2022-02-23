@@ -4,12 +4,12 @@ import net.axay.fabrik.igui.Gui
 import net.axay.fabrik.igui.GuiActionType
 import net.axay.fabrik.igui.GuiPlayerEvent
 import net.axay.fabrik.igui.GuiSlot
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.screen.slot.Slot
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.Slot
 
 class GuiClickEvent(
     override val gui: Gui,
-    override val player: PlayerEntity,
+    override val player: Player,
     val type: GuiActionType,
     val slotIndex: Int,
     val slot: Slot?,

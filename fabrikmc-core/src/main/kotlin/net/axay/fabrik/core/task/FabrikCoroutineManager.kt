@@ -18,8 +18,7 @@ internal object FabrikCoroutineManager {
     }
 
     fun initClient() {
-        // explicit import required, avoid mentioning this class in a server environment
-        mcClientCoroutineDispatcher = net.minecraft.client.MinecraftClient.getInstance().asCoroutineDispatcher()
+        mcClientCoroutineDispatcher = net.minecraft.client.Minecraft.getInstance().asCoroutineDispatcher()
         mcClientCoroutineScope = CoroutineScope(SupervisorJob() + mcClientCoroutineDispatcher)
         log.info("Initialized mcClientCoroutineScope (MinecraftClient as executor)")
     }

@@ -1,7 +1,7 @@
 package net.axay.fabrik.core.world.block
 
 import net.axay.fabrik.core.mixin.block.AbstractBlockAccessor
-import net.minecraft.block.Block
+import net.minecraft.world.level.block.Block
 
 /**
  * Returns true, if the block settings of this block say that this block

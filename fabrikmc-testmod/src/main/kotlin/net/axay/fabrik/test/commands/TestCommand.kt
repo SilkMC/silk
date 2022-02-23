@@ -3,11 +3,11 @@ package net.axay.fabrik.test.commands
 import net.axay.fabrik.commands.LiteralCommandBuilder
 import net.axay.fabrik.test.Manager
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
-import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.commands.CommandSourceStack
 
 fun testCommand(
     name: String,
-    builder: LiteralCommandBuilder<ServerCommandSource>.() -> Unit,
+    builder: LiteralCommandBuilder<CommandSourceStack>.() -> Unit,
 ) {
     Manager.testmodCommandBuilders[name] = builder
 }

@@ -4,21 +4,21 @@ import net.axay.fabrik.commands.LiteralCommandBuilder
 import net.axay.fabrik.core.math.geometry.produceCirclePositions
 import net.axay.fabrik.core.math.geometry.produceFilledCirclePositions
 import net.axay.fabrik.core.math.geometry.produceFilledSpherePositions
-import net.minecraft.block.BlockState
-import net.minecraft.command.argument.BlockStateArgument
-import net.minecraft.server.command.ServerCommandSource
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.arguments.blocks.BlockInput
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.level.block.state.BlockState
 
 val circleCommand = testCommand("circle") {
     literal("hollow") {
         buildCircleLikeLogic { radius, blockState ->
-            blockPos.produceCirclePositions(radius) { world.setBlockState(it, blockState) }
+            blockPosition().produceCirclePositions(radius) { level.setBlockAndUpdate(it, blockState) }
         }
     }
 
     literal("filled") {
         buildCircleLikeLogic { radius, blockState ->
-            blockPos.produceFilledCirclePositions(radius) { world.setBlockState(it, blockState) }
+            blockPosition().produceFilledCirclePositions(radius) { level.setBlockAndUpdate(it, blockState) }
         }
     }
 }
@@ -26,18 +26,18 @@ val circleCommand = testCommand("circle") {
 val sphereCommand = testCommand("sphere") {
     literal("filled") {
         buildCircleLikeLogic { radius, blockState ->
-            blockPos.produceFilledSpherePositions(radius) { world.setBlockState(it, blockState) }
+            blockPosition().produceFilledSpherePositions(radius) { level.setBlockAndUpdate(it, blockState) }
         }
     }
 }
 
-inline fun LiteralCommandBuilder<ServerCommandSource>.buildCircleLikeLogic(
-    crossinline logic: ServerPlayerEntity.(radius: Int, blockState: BlockState) -> Unit
+inline fun LiteralCommandBuilder<CommandSourceStack>.buildCircleLikeLogic(
+    crossinline logic: ServerPlayer.(radius: Int, blockState: BlockState) -> Unit
 ) {
     argument<Int>("radius") { radiusArg ->
-        argument<BlockStateArgument>("block") { blockStateArg ->
+        argument<BlockInput>("block") { blockStateArg ->
             runs {
-                source.player.logic(radiusArg(), blockStateArg().blockState)
+                source.playerOrException.logic(radiusArg(), blockStateArg().state)
             }
         }
     }

@@ -1,5 +1,5 @@
 package net.axay.fabrik.test
 
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 
-val String.testmodId get() = Identifier("fabrikmc-testmod", this)
+val String.testmodId get() = ResourceLocation("fabrikmc-testmod", this)

@@ -1,7 +1,7 @@
 package net.axay.fabrik.core.world.pos
 
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3i
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Vec3i
 
 /**
  * A simple class representing **a pair of x and z**. As y would be the height

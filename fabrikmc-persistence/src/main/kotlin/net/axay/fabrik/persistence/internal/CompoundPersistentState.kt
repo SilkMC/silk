@@ -1,15 +1,15 @@
 package net.axay.fabrik.persistence.internal
 
 import net.axay.fabrik.persistence.PersistentCompound
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.world.PersistentState
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.level.saveddata.SavedData
 
-class CompoundPersistentState(private val compound: PersistentCompound) : PersistentState() {
-    override fun writeNbt(nbt: NbtCompound) =
+class CompoundPersistentState(private val compound: PersistentCompound) : SavedData() {
+    override fun save(nbt: CompoundTag) =
         nbt.also { compound.putInCompound(it, true) }
 
     companion object {
-        fun fromNbt(nbt: NbtCompound, targetCompound: PersistentCompound) =
+        fun load(nbt: CompoundTag, targetCompound: PersistentCompound) =
             CompoundPersistentState(targetCompound.apply { loadFromCompound(nbt, true) })
     }
 }
