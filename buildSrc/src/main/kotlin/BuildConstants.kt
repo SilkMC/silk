@@ -17,10 +17,10 @@ object BuildConstants {
     const val majorMinecraftVersion = "1.18"
 
     // check these values here: https://axay.net/fabric/gradlekts/latest
-    const val minecraftVersion = "1.18.1"
-    const val quiltMappingsVersion = "${minecraftVersion}+build.6:v2"
-    const val fabricLoaderVersion = "0.13.1"
-    const val fabricApiVersion = "0.46.4+1.18"
+    const val minecraftVersion = "1.18.2-rc1"
+    const val quiltMappingsVersion = "${minecraftVersion}+build.1:v2"
+    const val fabricLoaderVersion = "0.13.3"
+    const val fabricApiVersion = "0.47.8+1.18.2"
     const val fabricLanguageKotlinVersion = "1.7.1+kotlin.1.6.10"
 
     const val kotestVersion = "5.0.2"

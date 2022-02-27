@@ -21,7 +21,7 @@ dependencies {
 
     implementation(kotlin("gradle-plugin", kotlinVersion))
 
-    implementation(pluginDep("org.jetbrains.compose", "1.0.1"))
+    implementation(pluginDep("org.jetbrains.compose", "1.1.0"))
     implementation(pluginDep("com.google.devtools.ksp", kspVersion))
 
     implementation(pluginDep("fabric-loom", "0.11-SNAPSHOT"))
