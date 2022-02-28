@@ -16,7 +16,7 @@ object BuildConstants {
 
     const val majorMinecraftVersion = "1.18"
 
-    // check these values here: https://axay.net/fabric/gradlekts/latest
+    // check these values here: https://axay.net/fabric
     const val minecraftVersion = "1.18.2-rc1"
     const val quiltMappingsVersion = "${minecraftVersion}+build.1:v2"
     const val fabricLoaderVersion = "0.13.3"
