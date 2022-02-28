@@ -12,7 +12,7 @@ repositories {
 
 allprojects {
     group = "net.axay"
-    version = "1.7.1"
+    version = "1.7.2"
     if (this.name.startsWith("fabrikmc")) {
         description = "FabrikMC is an API for using FabricMC with Kotlin"
     }
