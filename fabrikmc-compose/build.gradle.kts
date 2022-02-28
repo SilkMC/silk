@@ -17,9 +17,7 @@ val includeTransitive: Configuration by configurations.creating
 
 dependencies {
     api(modProject(":${rootProject.name}-core"))
-    include(api(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api")) {
-        exclude("org.apache.logging.log4j", "log4j-api")
-    })
+    include(api(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api"))!!)
     ksp(project(":${rootProject.name}-compose:${rootProject.name}-compose-ksp"))
 
     includeTransitive(api("org.jetbrains.kotlinx:multik-api:0.1.1")!!)
