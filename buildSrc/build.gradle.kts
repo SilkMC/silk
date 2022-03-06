@@ -14,6 +14,7 @@ repositories {
     maven("https://maven.fabricmc.net/")
     maven("https://maven.quiltmc.org/repository/release")
     maven("https://server.bbkr.space/artifactory/libs-release/")
+    maven("https://papermc.io/repo/repository/maven-public/")
 }
 
 dependencies {
@@ -29,6 +30,9 @@ dependencies {
     implementation(pluginDep("org.quiltmc.quilt-mappings-on-loom", "4.0.0"))
     implementation(pluginDep("com.matthewprenger.cursegradle", "1.4.0"))
     implementation(pluginDep("com.modrinth.minotaur", "2.0.0"))
+
+    implementation(pluginDep("io.papermc.paperweight.userdev", "1.3.5"))
+    implementation(pluginDep("xyz.jpenilla.run-paper", "1.0.6"))
 
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     implementation("org.jetbrains.dokka:dokka-base:$dokkaVersion")
