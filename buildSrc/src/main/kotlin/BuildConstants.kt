@@ -16,12 +16,12 @@ object BuildConstants {
 
     const val majorMinecraftVersion = "1.18"
 
-    // check these values here: https://axay.net/fabric
+    // check these values here: https://axay.net/mcdev
     const val minecraftVersion = "1.18.2"
-    const val quiltMappingsVersion = "${minecraftVersion}+build.3:v2"
+    const val quiltMappingsVersion = "${minecraftVersion}+build.22:v2"
     const val fabricLoaderVersion = "0.13.3"
-    const val fabricApiVersion = "0.47.9+1.18.2"
-    const val fabricLanguageKotlinVersion = "1.7.1+kotlin.1.6.10"
+    const val fabricApiVersion = "0.51.0+1.18.2"
+    const val fabricLanguageKotlinVersion = "1.7.2+kotlin.1.6.20"
 
-    const val kotestVersion = "5.0.2"
+    const val kotestVersion = "5.2.3"
 }
