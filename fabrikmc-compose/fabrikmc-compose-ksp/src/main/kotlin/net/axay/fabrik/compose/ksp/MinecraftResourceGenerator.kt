@@ -53,7 +53,7 @@ class MinecraftResourceGenerator(
 
         @OptIn(KotlinPoetKspPreview::class)
         FileSpec.builder(packageName, fileName)
-            .addComment("this file has been generated based on the client jar file of Minecraft $version")
+            .addFileComment("this file has been generated based on the client jar file of Minecraft $version")
             .addTypeAlias(TypeAliasSpec.builder("McIcon", String::class).build())
             .addType(TypeSpec.objectBuilder(fileName)
                 .apply {
