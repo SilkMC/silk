@@ -25,8 +25,8 @@ val Entity.directionVector: Vec3
     get() {
         val rotY = Math.toRadians(yRot.toDouble())
         val rotX = Math.toRadians(xRot.toDouble())
-        val xz = cos(rotY)
-        return Vec3(-xz * sin(rotX), -sin(rotY), xz * cos(rotX))
+        val xz = cos(rotX)
+        return Vec3(-xz * sin(rotY), -sin(rotX), xz * cos(rotY))
     }
 
 /**
