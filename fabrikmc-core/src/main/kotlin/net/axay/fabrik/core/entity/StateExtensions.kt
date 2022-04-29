@@ -6,6 +6,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
+import kotlin.math.cos
+import kotlin.math.sin
 
 val Entity.pos: Vec3 get() = position()
 
@@ -14,6 +16,18 @@ val Entity.pos: Vec3 get() = position()
  */
 val Entity.posUnder: BlockPos
     get() = pos.run { BlockPos(x, y - 0.05, z) }
+
+/**
+ * Returns a unit-vector pointing in the direction the entity
+ * is looking.
+ */
+val Entity.directionVector: Vec3
+    get() {
+        val rotY = Math.toRadians(yRot.toDouble())
+        val rotX = Math.toRadians(xRot.toDouble())
+        val xz = cos(rotY)
+        return Vec3(-xz * sin(rotX), -sin(rotY), xz * cos(rotX))
+    }
 
 /**
  * Returns an instance of [BlockInfo] of the block the entity is currently standing on
