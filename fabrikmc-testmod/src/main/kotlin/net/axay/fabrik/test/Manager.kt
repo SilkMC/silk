@@ -17,6 +17,7 @@ object Manager : ModInitializer, ClientModInitializer {
 
     override fun onInitialize() {
         circleCommand
+        commandTestCommand
         sphereCommand
         guiCommand
         persistenceTestCommand
