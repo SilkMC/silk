@@ -44,6 +44,7 @@ fun Entity.changePos(
  */
 fun Entity.markVelocityDirty() {
     hasImpulse = true
+    hurtMarked = true
 }
 
 /**
