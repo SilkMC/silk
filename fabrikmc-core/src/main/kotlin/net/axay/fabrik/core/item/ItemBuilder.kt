@@ -6,6 +6,8 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.alchemy.Potion
+import net.minecraft.world.item.alchemy.PotionUtils
 import net.minecraft.world.level.ItemLike
 
 /**
@@ -35,3 +37,20 @@ fun ItemStack.setLore(text: Collection<Component>) {
  */
 inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack =
     setHoverName(literalText(baseText, builder))
+
+/**
+ * Sets the given potion for this [ItemStack].
+ *
+ * If you want to pass a custom potion,
+ * make sure to register it in the potion registry first.
+ *
+ * Example usage:
+ * ```kotlin
+ * itemStack(Items.POTION) {
+ *     setPotion(Potions.HEALING)
+ * }
+ * ```
+ */
+fun ItemStack.setPotion(potion: Potion) {
+    PotionUtils.setPotion(this, potion)
+}
