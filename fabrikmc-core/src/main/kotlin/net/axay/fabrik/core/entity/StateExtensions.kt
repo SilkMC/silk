@@ -11,6 +11,8 @@ import kotlin.math.sin
 
 val Entity.pos: Vec3 get() = position()
 
+val Entity.blockPos: BlockPos get() = blockPosition()
+
 /**
  * Returns the pos under the entities "feet".
  */
