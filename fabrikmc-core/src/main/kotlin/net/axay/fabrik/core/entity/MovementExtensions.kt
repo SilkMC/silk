@@ -71,3 +71,11 @@ inline fun Entity.modifyVelocity(block: (Vec3) -> Vec3) {
     deltaMovement = block(deltaMovement)
     markVelocityDirty()
 }
+
+/**
+ * Sets the [Entity]s velocity to [vec] and calls [markVelocityDirty].
+ */
+fun Entity.modifyVelocity(vec: Vec3) {
+    deltaMovement = vec
+    markVelocityDirty()
+}
