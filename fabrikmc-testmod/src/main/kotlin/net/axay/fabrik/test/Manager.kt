@@ -20,6 +20,7 @@ object Manager : ModInitializer, ClientModInitializer {
         commandTestCommand
         sphereCommand
         guiCommand
+        itemTestCommand
         persistenceTestCommand
         textTestCommand
         sideboardCommand
