@@ -1,6 +1,7 @@
 package net.axay.fabrik.nbt
 
 import net.minecraft.nbt.*
+import java.util.*
 
 fun Boolean.toNbt(): ByteTag = ByteTag.valueOf(this)
 fun Byte.toNbt(): ByteTag = ByteTag.valueOf(this)
@@ -18,3 +19,5 @@ fun IntArray.toNbt() = IntArrayTag(this)
 fun List<Int>.toNbt() = IntArrayTag(this)
 fun LongArray.toNbt() = LongArrayTag(this)
 fun List<Long>.toNbt() = LongArrayTag(this)
+
+fun UUID.toNbt(): IntArrayTag = NbtUtils.createUUID(this)
