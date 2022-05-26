@@ -5,10 +5,10 @@ import com.mojang.brigadier.tree.CommandNode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import net.axay.fabrik.commands.command
-import net.minecraft.command.CommandSource
+import net.minecraft.commands.SharedSuggestionProvider
 
 class CommandStructureTest : FunSpec({
-    fun <S : CommandSource> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
+    fun <S : SharedSuggestionProvider> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
         fun printWithDepth(message: Any) = println((" ".repeat(depth * 2) + message).also { stringBuilder.appendLine(it) })
 
         printWithDepth("-> ${commandNode.name}")

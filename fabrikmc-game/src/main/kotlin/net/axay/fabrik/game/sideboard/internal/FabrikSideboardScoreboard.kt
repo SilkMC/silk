@@ -2,14 +2,18 @@ package net.axay.fabrik.game.sideboard.internal
 
 import net.axay.fabrik.core.packet.sendPacket
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
-import net.minecraft.network.Packet
-import net.minecraft.network.packet.s2c.play.ScoreboardDisplayS2CPacket
-import net.minecraft.network.packet.s2c.play.ScoreboardObjectiveUpdateS2CPacket
-import net.minecraft.network.packet.s2c.play.ScoreboardPlayerUpdateS2CPacket
-import net.minecraft.network.packet.s2c.play.TeamS2CPacket
-import net.minecraft.scoreboard.*
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientboundSetDisplayObjectivePacket
+import net.minecraft.network.protocol.game.ClientboundSetObjectivePacket
+import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket
+import net.minecraft.network.protocol.game.ClientboundSetScorePacket
+import net.minecraft.server.ServerScoreboard
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.scores.PlayerTeam
+import net.minecraft.world.scores.Score
+import net.minecraft.world.scores.Scoreboard
+import net.minecraft.world.scores.criteria.ObjectiveCriteria
 
 /**
  * A server side scoreboard which is only displayed to
@@ -25,10 +29,10 @@ import net.minecraft.text.Text
  */
 internal class FabrikSideboardScoreboard(
     name: String,
-    displayName: Text,
+    displayName: Component,
 ) : Scoreboard() {
     companion object {
-        private val sidebarId = getDisplaySlotId("sidebar")
+        private val sidebarId = getDisplaySlotByName("sidebar")
 
         private val scoreboards = HashSet<FabrikSideboardScoreboard>().also { boards ->
             ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
@@ -37,68 +41,68 @@ internal class FabrikSideboardScoreboard(
         }
     }
 
-    private val players = HashSet<ServerPlayerEntity>()
+    private val players = HashSet<ServerPlayer>()
 
     private val dummyObjective =
-        addObjective(name, ScoreboardCriterion.DUMMY, displayName, ScoreboardCriterion.RenderType.INTEGER)
+        addObjective(name, ObjectiveCriteria.DUMMY, displayName, ObjectiveCriteria.RenderType.INTEGER)
 
     init {
-        setObjectiveSlot(sidebarId, dummyObjective)
+        setDisplayObjective(sidebarId, dummyObjective)
     }
 
-    fun displayToPlayer(player: ServerPlayerEntity) {
+    fun displayToPlayer(player: ServerPlayer) {
         players += player
         scoreboards.add(this)
 
         val updatePackets = ArrayList<Packet<*>>()
 
-        updatePackets += ScoreboardObjectiveUpdateS2CPacket(dummyObjective, ScoreboardObjectiveUpdateS2CPacket.ADD_MODE)
-        updatePackets += ScoreboardDisplayS2CPacket(sidebarId, dummyObjective)
-        getAllPlayerScores(dummyObjective).mapTo(updatePackets) {
-            ScoreboardPlayerUpdateS2CPacket(
-                ServerScoreboard.UpdateMode.CHANGE, it.objective!!.name, it.playerName, it.score
+        updatePackets += ClientboundSetObjectivePacket(dummyObjective, ClientboundSetObjectivePacket.METHOD_ADD)
+        updatePackets += ClientboundSetDisplayObjectivePacket(sidebarId, dummyObjective)
+        getPlayerScores(dummyObjective).mapTo(updatePackets) {
+            ClientboundSetScorePacket(
+                ServerScoreboard.Method.CHANGE, it.objective!!.name, it.owner, it.score
             )
         }
-        teams.mapTo(updatePackets) { TeamS2CPacket.updateTeam(it, true) }
+        playerTeams.mapTo(updatePackets) { ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(it, true) }
 
-        updatePackets.forEach(player.networkHandler::sendPacket)
+        updatePackets.forEach(player.connection::send)
     }
 
     fun setPlayerScore(player: String, score: Int) {
-        getPlayerScore(player, dummyObjective).score = score
+        getOrCreatePlayerScore(player, dummyObjective).score = score
     }
 
-    override fun updateScore(score: ScoreboardPlayerScore) {
-        super.updateScore(score)
+    override fun onScoreChanged(score: Score) {
+        super.onScoreChanged(score)
 
         if (dummyObjective == score.objective) {
             players.sendPacket(
-                ScoreboardPlayerUpdateS2CPacket(
-                    ServerScoreboard.UpdateMode.CHANGE, score.objective!!.name, score.playerName, score.score
+                ClientboundSetScorePacket(
+                    ServerScoreboard.Method.CHANGE, score.objective!!.name, score.owner, score.score
                 )
             )
         }
     }
 
-    override fun addPlayerToTeam(playerName: String, team: Team): Boolean {
+    override fun addPlayerToTeam(playerName: String, team: PlayerTeam): Boolean {
         return if (super.addPlayerToTeam(playerName, team)) {
-            players.sendPacket(TeamS2CPacket.changePlayerTeam(team, playerName, TeamS2CPacket.Operation.ADD))
+            players.sendPacket(ClientboundSetPlayerTeamPacket.createPlayerPacket(team, playerName, ClientboundSetPlayerTeamPacket.Action.ADD))
             true
         } else false
     }
 
-    override fun removePlayerFromTeam(playerName: String, team: Team) {
+    override fun removePlayerFromTeam(playerName: String, team: PlayerTeam) {
         super.removePlayerFromTeam(playerName, team)
-        players.sendPacket(TeamS2CPacket.changePlayerTeam(team, playerName, TeamS2CPacket.Operation.REMOVE))
+        players.sendPacket(ClientboundSetPlayerTeamPacket.createPlayerPacket(team, playerName, ClientboundSetPlayerTeamPacket.Action.REMOVE))
     }
 
-    override fun updateScoreboardTeamAndPlayers(team: Team) {
-        super.updateScoreboardTeamAndPlayers(team)
-        players.sendPacket(TeamS2CPacket.updateTeam(team, true))
+    override fun onTeamAdded(team: PlayerTeam) {
+        super.onTeamAdded(team)
+        players.sendPacket(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true))
     }
 
-    override fun updateScoreboardTeam(team: Team) {
-        super.updateScoreboardTeam(team)
-        players.sendPacket(TeamS2CPacket.updateTeam(team, false))
+    override fun onTeamChanged(team: PlayerTeam) {
+        super.onTeamChanged(team)
+        players.sendPacket(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false))
     }
 }

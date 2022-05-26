@@ -13,19 +13,19 @@ import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.serializer
 import net.axay.fabrik.core.kotlin.ReadWriteMutex
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
-import net.minecraft.network.PacketByteBuf
-import net.minecraft.util.Identifier
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.resources.ResourceLocation
 
 /**
  * Creates a new [ServerToClientPacketDefinition]. This packet can only be sent
  * from the server to one or multiple clients. The packet can only be sent
  * in a typesafe way. The type is specified by [T].
  *
- * @param id the [Identifier] allowing communication between server and client as they
+ * @param id the [ResourceLocation] allowing communication between server and client as they
  * both know this identifier
  * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
  */
-inline fun <reified T : Any> s2cPacket(id: Identifier, cbor: Cbor = Cbor) =
+inline fun <reified T : Any> s2cPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
     ServerToClientPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
 
 /**
@@ -33,11 +33,11 @@ inline fun <reified T : Any> s2cPacket(id: Identifier, cbor: Cbor = Cbor) =
  * from the client to the current server. The packet can only be sent
  * in a typesafe way. The type is specified by [T].
  *
- * @param id the [Identifier] allowing communication between server and client as they
+ * @param id the [ResourceLocation] allowing communication between server and client as they
  * both know this identifier
  * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
  */
-inline fun <reified T : Any> c2sPacket(id: Identifier, cbor: Cbor = Cbor) =
+inline fun <reified T : Any> c2sPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
     ClientToServerPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
 
 /**
@@ -46,11 +46,11 @@ inline fun <reified T : Any> c2sPacket(id: Identifier, cbor: Cbor = Cbor) =
  * responsible for forwarding this packet. The packet can only be sent
  * in a typesafe way. The type is specified by [T].
  *
- * @param id the [Identifier] allowing communication between server and client as they
+ * @param id the [ResourceLocation] allowing communication between server and client as they
  * both know this identifier
  * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
  */
-inline fun <reified T : Any> c2cPacket(id: Identifier, cbor: Cbor = Cbor) =
+inline fun <reified T : Any> c2cPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
     ClientToClientPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
 
 /**
@@ -58,7 +58,7 @@ inline fun <reified T : Any> c2cPacket(id: Identifier, cbor: Cbor = Cbor) =
  * and [ClientToServerPacketDefinition].
  */
 abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
-    id: Identifier,
+    id: ResourceLocation,
     val cbor: Cbor,
     private val deserializer: DeserializationStrategy<T>,
 ) {
@@ -88,7 +88,7 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
     }
 
     /**
-     * The stored [Identifier] of this packet in its string representation.
+     * The stored [ResourceLocation] of this packet in its string representation.
      */
     val idString = id.toString()
 
@@ -121,10 +121,10 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
     }
 
     @PublishedApi
-    internal inline fun <reified TPacket : T> createBuffer(value: TPacket): PacketByteBuf {
+    internal inline fun <reified TPacket : T> createBuffer(value: TPacket): FriendlyByteBuf {
         val buffer = PacketByteBufs.create()
         buffer.writeByteArray(cbor.encodeToByteArray(value))
-        buffer.writeString(idString)
+        buffer.writeUtf(idString)
         return buffer
     }
 }

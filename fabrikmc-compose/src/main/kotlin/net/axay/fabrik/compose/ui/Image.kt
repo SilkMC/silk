@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import net.axay.fabrik.compose.icons.McIcon
 import net.axay.fabrik.compose.internal.AssetsLoader
-import net.minecraft.item.Item
 
 /**
  * Renders the icon of any [Item] to this gui as an [Image].

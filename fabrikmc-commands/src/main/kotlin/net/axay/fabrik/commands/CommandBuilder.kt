@@ -1,6 +1,5 @@
 package net.axay.fabrik.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.Message
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
@@ -8,7 +7,6 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -25,8 +23,8 @@ import net.axay.fabrik.core.task.fabrikCoroutineScope
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
-import net.minecraft.command.CommandSource
-import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.SharedSuggestionProvider
 import java.util.concurrent.CompletableFuture
 
 private class DslAnnotations {
@@ -57,16 +55,15 @@ typealias ArgumentResolver<S, T> = CommandContext<S>.() -> T
 typealias SimpleArgumentBuilder<Source, T> = ArgumentCommandBuilder<Source, T>.(argument: ArgumentResolver<Source, T>) -> Unit
 
 @NodeDsl
-abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<Source, Builder>> {
+abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : ArgumentBuilder<Source, Builder>> {
+
     @PublishedApi
-    internal var command: Command<Source>? = null
+    internal abstract val builder: Builder
 
     @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *>>()
 
-    private var permissionLevel: Int? = null
-
-    private val onToBrigardierBuilders = ArrayList<Builder.() -> Unit>()
+    private val onToBrigadierBuilders = ArrayList<Builder.() -> Unit>()
 
     /**
      * Adds execution logic to this command. The place where this function
@@ -90,7 +87,9 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      */
     @RunsDsl
     inline infix fun runs(crossinline block: CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
-        command = Command {
+        val previousCommand = builder.command
+        builder.executes {
+            previousCommand?.run(it)
             block(it)
             1
         }
@@ -104,15 +103,12 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
      * @see runs
      */
     @RunsDsl
-    inline infix fun runsAsync(crossinline block: suspend CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
-        command = Command {
+    inline infix fun runsAsync(crossinline block: suspend CommandContext<Source>.() -> Unit) =
+        runs {
             fabrikCoroutineScope.launch {
-                block(it)
+                block(this@runs)
             }
-            1
         }
-        return this
-    }
 
     /**
      * Adds custom execution logic to this command. **DEPRECATED** Use [runs] instead.
@@ -122,7 +118,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
         ReplaceWith("runs { executor.invoke() }")
     )
     inline infix fun simpleExecutes(
-        crossinline executor: CommandContext<Source>.() -> Unit
+        crossinline executor: CommandContext<Source>.() -> Unit,
     ) = runs(executor)
 
     /**
@@ -145,7 +141,7 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
 
     /**
      * Adds a new argument to this command. This variant of the argument function allows you to specify
-     * the [ArgumentType] in the classical Brigardier way.
+     * the [ArgumentType] in the classical Brigadier way.
      *
      * @param name the name of the argument - This will be displayed to the player, if there is enough room for the
      * tooltip.
@@ -189,88 +185,97 @@ abstract class CommandBuilder<Source : CommandSource, Builder : ArgumentBuilder<
             .also { children += it }
 
     /**
-     * Specifies that the given permission [level] is required to execute this part of the command tree. Use
+     * Specifies that the given predicate must return true for the [Source]
+     * in order for it to be able to execute this part of the command tree. Use
      * this function on the root command node to secure the whole command.
      */
-    fun requiresPermissionLevel(level: Int?) {
-        permissionLevel = level
-    }
-
-    /**
-     * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree. Use
-     * this function on the root command node to secure the whole command.
-     */
-    fun requiresPermissionLevel(level: PermissionLevel?) {
-        permissionLevel = level?.level
-    }
-
-    /**
-     * This function allows you to access the regular Brigardier builder. The type of
-     * `this` in its context will equal the type of [Builder].
-     */
-    fun brigardier(block: (@NodeDsl Builder).() -> Unit): CommandBuilder<Source, Builder> {
-        onToBrigardierBuilders += block
+    @RunsDsl
+    fun requires(predicate: (source: Source) -> Boolean): CommandBuilder<Source, Builder> {
+        builder.requires(builder.requirement.and(predicate))
         return this
     }
 
-    protected abstract fun createBrigardierBuilder(): Builder
-
-    protected open fun Builder.onToBrigardier() = Unit
+    /**
+     * Specifies that the given permission [level] is required to execute this part of the command tree.
+     * A shortcut delegating to [requires].
+     */
+    @RunsDsl
+    fun requiresPermissionLevel(level: Int) =
+        requires { it.hasPermission(level) }
 
     /**
-     * Converts this Kotlin command builder abstraction to an [ArgumentBuilder] of Brigardier.
+     * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree.
+     * A shortcut delegating to [requires].
+     */
+    @RunsDsl
+    fun requiresPermissionLevel(level: PermissionLevel) =
+        requires { it.hasPermission(level.level) }
+
+    /**
+     * This function allows you to access the regular Brigadier builder. The type of
+     * `this` in its context will equal the type of [Builder].
+     */
+    fun brigadier(block: (@NodeDsl Builder).() -> Unit): CommandBuilder<Source, Builder> {
+        onToBrigadierBuilders += block
+        return this
+    }
+
+    @Deprecated(
+        "This function name has a spelling mistake in it, use the brigadier function instead.",
+        ReplaceWith("brigadier { block() }")
+    )
+    fun brigardier(block: (@NodeDsl Builder).() -> Unit) = brigadier(block)
+
+    /**
+     * Converts this Kotlin command builder abstraction to an [ArgumentBuilder] of Brigadier.
      * Note that even though this function is public, you probably won't need it in most cases.
      */
-    fun toBrigardier(): Builder = createBrigardierBuilder().also { builder ->
-        command?.let { builder.executes(it) }
-        permissionLevel?.let { level -> builder.requires { it.hasPermissionLevel(level) } }
-        builder.onToBrigardier()
-
-        onToBrigardierBuilders.forEach { it(builder) }
+    @PublishedApi
+    internal fun toBrigadier(): Builder {
+        onToBrigadierBuilders.forEach { it(builder) }
 
         children.forEach {
             @Suppress("UNCHECKED_CAST")
-            builder.then(it.toBrigardier() as ArgumentBuilder<Source, *>)
+            builder.then(it.toBrigadier() as ArgumentBuilder<Source, *>)
         }
+        return builder
     }
 }
 
-class LiteralCommandBuilder<Source : CommandSource>(
+class LiteralCommandBuilder<Source : SharedSuggestionProvider>(
     private val name: String,
 ) : CommandBuilder<Source, LiteralArgumentBuilder<Source>>() {
-    override fun createBrigardierBuilder(): LiteralArgumentBuilder<Source> =
-        LiteralArgumentBuilder.literal(name)
+
+    override val builder = LiteralArgumentBuilder.literal<Source>(name)
 }
 
-class ArgumentCommandBuilder<Source : CommandSource, T>(
+class ArgumentCommandBuilder<Source : SharedSuggestionProvider, T>(
     private val name: String,
     private val type: ArgumentType<T>,
 ) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>>() {
-    @PublishedApi
-    internal var suggestionProvider: SuggestionProvider<Source>? = null
-
-    override fun createBrigardierBuilder(): RequiredArgumentBuilder<Source, T> =
-        RequiredArgumentBuilder.argument(name, type)
-
-    override fun RequiredArgumentBuilder<Source, T>.onToBrigardier() {
-        suggestionProvider?.let { suggests(it) }
-    }
 
     @PublishedApi
-    internal inline fun suggests(crossinline block: (context: CommandContext<Source>, builder: SuggestionsBuilder) -> CompletableFuture<Suggestions>) {
-        suggestionProvider = SuggestionProvider { context, builder -> block(context, builder) }
+    override val builder = RequiredArgumentBuilder.argument<Source, T>(name, type)
+
+    @PublishedApi
+    internal inline fun suggests(
+        crossinline block: (context: CommandContext<Source>, builder: SuggestionsBuilder) -> CompletableFuture<Suggestions>,
+    ): ArgumentCommandBuilder<Source, T> {
+        builder.suggests { context, builder ->
+            block(context, builder)
+        }
+        return this
     }
 
     /**
      * Suggest the value which is the result of the [suggestionBuilder].
      */
     @SuggestsDsl
-    inline fun suggestSingle(crossinline suggestionBuilder: (CommandContext<Source>) -> Any?) {
+    inline fun suggestSingle(crossinline suggestionBuilder: (CommandContext<Source>) -> Any?) =
         suggests { context, builder ->
             builder.applyAny(suggestionBuilder(context))
             builder.buildFuture()
         }
-    }
 
     /**
      * Suggest the value which is the result of the [suggestionBuilder].
@@ -278,12 +283,11 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * will be shown as well.
      */
     @SuggestsDsl
-    inline fun suggestSingleWithTooltip(crossinline suggestionBuilder: (CommandContext<Source>) -> Pair<Any, Message>?) {
+    inline fun suggestSingleWithTooltip(crossinline suggestionBuilder: (CommandContext<Source>) -> Pair<Any, Message>?) =
         suggests { context, builder ->
             builder.applyAnyWithTooltip(suggestionBuilder(context))
             builder.buildFuture()
         }
-    }
 
     /**
      * Suggest the value which is the result of the [suggestionBuilder].
@@ -294,14 +298,12 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @SuggestsDsl
     inline fun suggestSingleSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Any?
-    ) {
-        suggests { context, builder ->
-            coroutineScope.async {
-                builder.applyAny(suggestionBuilder(context))
-                builder.build()
-            }.asCompletableFuture()
-        }
+        crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Any?,
+    ) = suggests { context, builder ->
+        coroutineScope.async {
+            builder.applyAny(suggestionBuilder(context))
+            builder.build()
+        }.asCompletableFuture()
     }
 
     /**
@@ -315,14 +317,12 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @SuggestsDsl
     inline fun suggestSingleWithTooltipSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Pair<Any?, Message>?
-    ) {
-        suggests { context, builder ->
-            coroutineScope.async {
-                builder.applyAnyWithTooltip(suggestionBuilder(context))
-                builder.build()
-            }.asCompletableFuture()
-        }
+        crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Pair<Any?, Message>?,
+    ) = suggests { context, builder ->
+        coroutineScope.async {
+            builder.applyAnyWithTooltip(suggestionBuilder(context))
+            builder.build()
+        }.asCompletableFuture()
     }
 
     /**
@@ -330,12 +330,11 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * [suggestionsBuilder].
      */
     @SuggestsDsl
-    inline fun suggestList(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Any?>?) {
+    inline fun suggestList(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Any?>?) =
         suggests { context, builder ->
             builder.applyIterable(suggestionsBuilder(context))
             builder.buildFuture()
         }
-    }
 
     /**
      * Suggest the entries of the iterable which is the result of the
@@ -344,12 +343,11 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
      * will be shown as well.
      */
     @SuggestsDsl
-    inline fun suggestListWithTooltips(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?) {
+    inline fun suggestListWithTooltips(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?) =
         suggests { context, builder ->
             builder.applyIterableWithTooltips(suggestionsBuilder(context))
             builder.buildFuture()
         }
-    }
 
     /**
      * Suggest the entries of the iterable which is the result of the
@@ -361,14 +359,12 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @SuggestsDsl
     inline fun suggestListSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        crossinline suggestionsBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?
-    ) {
-        suggests { context, builder ->
-            coroutineScope.async {
-                builder.applyIterable(suggestionsBuilder(context))
-                builder.build()
-            }.asCompletableFuture()
-        }
+        crossinline suggestionsBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?,
+    ) = suggests { context, builder ->
+        coroutineScope.async {
+            builder.applyIterable(suggestionsBuilder(context))
+            builder.build()
+        }.asCompletableFuture()
     }
 
     /**
@@ -383,14 +379,12 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     @SuggestsDsl
     inline fun suggestListWithTooltipsSuspending(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?
-    ) {
-        suggests { context, builder ->
-            coroutineScope.async {
-                builder.applyIterableWithTooltips(suggestionsBuilder(context))
-                builder.build()
-            }.asCompletableFuture()
-        }
+        crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?,
+    ) = suggests { context, builder ->
+        coroutineScope.async {
+            builder.applyIterableWithTooltips(suggestionsBuilder(context))
+            builder.build()
+        }.asCompletableFuture()
     }
 
     @PublishedApi
@@ -434,7 +428,7 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
     )
     fun simpleSuggests(
         coroutineScope: CoroutineScope = fabrikCoroutineScope,
-        suggestionBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?
+        suggestionBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?,
     ) = suggestListSuspending(coroutineScope, suggestionBuilder)
 }
 
@@ -447,9 +441,9 @@ class ArgumentCommandBuilder<Source : CommandSource, T>(
 inline fun command(
     name: String,
     register: Boolean = true,
-    builder: LiteralCommandBuilder<ServerCommandSource>.() -> Unit = {},
-): LiteralArgumentBuilder<ServerCommandSource> =
-    LiteralCommandBuilder<ServerCommandSource>(name).apply(builder).toBrigardier().apply {
+    builder: LiteralCommandBuilder<CommandSourceStack>.() -> Unit = {},
+): LiteralArgumentBuilder<CommandSourceStack> =
+    LiteralCommandBuilder<CommandSourceStack>(name).apply(builder).toBrigadier().apply {
         if (register)
             setupRegistrationCallback()
     }
@@ -468,6 +462,6 @@ inline fun clientCommand(
     register: Boolean = true,
     builder: LiteralCommandBuilder<FabricClientCommandSource>.() -> Unit = {},
 ): LiteralArgumentBuilder<FabricClientCommandSource> =
-    LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder).toBrigardier().apply {
+    LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder).toBrigadier().apply {
         if (register) register()
     }

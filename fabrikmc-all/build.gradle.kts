@@ -18,3 +18,4 @@ dependencies {
 }
 
 val modName by extra("$projectTitle (All modules)")
+val isModParent by extra(true)

@@ -5,22 +5,22 @@ import kotlinx.serialization.cbor.Cbor
 import net.axay.fabrik.core.Fabrik
 import net.axay.fabrik.network.internal.FabrikNetwork
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
-import net.minecraft.network.PacketByteBuf
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.Identifier
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 
 /**
  * See [s2cPacket] function, which constructs this packet definition class.
  */
 class ServerToClientPacketDefinition<T : Any>(
-    id: Identifier,
+    id: ResourceLocation,
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T, ClientPacketContext>(id, cbor, deserializer) {
     internal companion object : DefinitionRegistry<ClientPacketContext>()
 
     @PublishedApi
-    internal fun push(buffer: PacketByteBuf, player: ServerPlayerEntity) {
+    internal fun push(buffer: FriendlyByteBuf, player: ServerPlayer) {
         ServerPlayNetworking.send(player, FabrikNetwork.packetId, buffer)
     }
 
@@ -28,7 +28,7 @@ class ServerToClientPacketDefinition<T : Any>(
      * Sends the given [value] to the given [player]. This will result in the
      * serialization of the given value.
      */
-    inline fun <reified TPacket : T> send(value: TPacket, player: ServerPlayerEntity) =
+    inline fun <reified TPacket : T> send(value: TPacket, player: ServerPlayer) =
         push(createBuffer(value), player)
 
     /**
@@ -37,7 +37,7 @@ class ServerToClientPacketDefinition<T : Any>(
      */
     inline fun <reified TPacket : T> sendToAll(value: TPacket) {
         val buffer = createBuffer(value)
-        Fabrik.currentServer?.playerManager?.playerList?.forEach { push(buffer, it) }
+        Fabrik.currentServer?.playerList?.players?.forEach { push(buffer, it) }
     }
 
     /**

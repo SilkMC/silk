@@ -2,8 +2,8 @@
 
 package net.axay.fabrik.core.text
 
-import net.minecraft.text.*
-import net.minecraft.util.Formatting
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.*
 
 /**
  * Opens a [LiteralTextBuilder].
@@ -14,15 +14,15 @@ import net.minecraft.util.Formatting
 inline fun literalText(
     baseText: String = "",
     builder: LiteralTextBuilder.() -> Unit = { }
-) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build() as LiteralText
+) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build() as TextComponent
 
 class LiteralTextBuilder(
-    private val text: BaseText,
+    private val text: BaseComponent,
     private val parentStyle: Style,
     private val inheritStyle: Boolean
 ) {
     constructor(text: String, parentStyle: Style, inheritStyle: Boolean) :
-            this(LiteralText(text), parentStyle, inheritStyle)
+            this(TextComponent(text), parentStyle, inheritStyle)
 
     var bold: Boolean? = null
     var italic: Boolean? = null
@@ -50,14 +50,14 @@ class LiteralTextBuilder(
         get() = Style.EMPTY
             .withBold(bold)
             .withItalic(italic)
-            .let { if (underline == true) it.withFormatting(Formatting.UNDERLINE) else it }
-            .let { if (strikethrough == true) it.withFormatting(Formatting.STRIKETHROUGH) else it }
+            .let { if (underline == true) it.applyFormat(ChatFormatting.UNDERLINE) else it }
+            .let { if (strikethrough == true) it.applyFormat(ChatFormatting.STRIKETHROUGH) else it }
             .let { if (color != null) it.withColor(TextColor.fromRgb(color ?: 0xFFFFFF)) else it }
             .withClickEvent(clickEvent)
             .withHoverEvent(hoverEvent)
-            .let { if (inheritStyle) it.withParent(parentStyle) else it }
+            .let { if (inheritStyle) it.applyTo(parentStyle) else it }
 
-    val siblingText = LiteralText("")
+    val siblingText = TextComponent("")
 
     /**
      * Append text to the parent.
@@ -82,11 +82,11 @@ class LiteralTextBuilder(
      * @param builder the builder which can be used to set the style and add child text components
      */
     inline fun text(
-        text: Text,
+        text: Component,
         inheritStyle: Boolean = true,
         builder: LiteralTextBuilder.() -> Unit = { }
     ) {
-        if (text is BaseText) {
+        if (text is BaseComponent) {
             siblingText.append(LiteralTextBuilder(text, currentStyle, inheritStyle).apply(builder).build())
         } else {
             siblingText.append(text)
@@ -97,7 +97,7 @@ class LiteralTextBuilder(
      * Adds a line break.
      */
     fun newLine() {
-        siblingText.append(LiteralText("\n"))
+        siblingText.append(TextComponent("\n"))
     }
 
     /**

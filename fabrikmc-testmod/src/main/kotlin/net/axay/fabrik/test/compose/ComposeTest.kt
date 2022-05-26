@@ -10,7 +10,7 @@ import net.axay.fabrik.test.compose.guis.GeneralTestComposable
 
 val composeCommand = testCommand("compose") {
     literal("general_test") runs {
-        source.player.displayComposable(4, 3) {
+        source.playerOrException.displayComposable(4, 3) {
             Column {
                 McWindowHeader(it, "Test Window")
                 GeneralTestComposable()
@@ -19,14 +19,14 @@ val composeCommand = testCommand("compose") {
     }
 
     literal("falling_balls") runs {
-        source.player.displayComposable(8, 6) {
+        source.playerOrException.displayComposable(8, 6) {
             McWindowHeader(it)
             FallingBallsGameComposable()
         }
     }
 
     literal("scroll") runs {
-        source.player.displayComposable(5, 4) {
+        source.playerOrException.displayComposable(5, 4) {
             ScrollTestComposable()
         }
     }

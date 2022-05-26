@@ -4,21 +4,21 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.cbor.Cbor
 import net.axay.fabrik.network.internal.FabrikNetwork
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-import net.minecraft.network.PacketByteBuf
-import net.minecraft.util.Identifier
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.resources.ResourceLocation
 
 /**
  * See [c2sPacket] function, which constructs this packet definition class.
  */
 class ClientToServerPacketDefinition<T : Any>(
-    id: Identifier,
+    id: ResourceLocation,
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T, ServerPacketContext>(id, cbor, deserializer) {
     internal companion object : DefinitionRegistry<ServerPacketContext>()
 
     @PublishedApi
-    internal fun push(buffer: PacketByteBuf) {
+    internal fun push(buffer: FriendlyByteBuf) {
         ClientPlayNetworking.send(FabrikNetwork.packetId, buffer)
     }
 

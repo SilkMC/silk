@@ -3,8 +3,8 @@ package net.axay.fabrik.igui
 import kotlinx.coroutines.runBlocking
 import net.axay.fabrik.core.text.literal
 import net.axay.fabrik.igui.observable.GuiProperty
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 
 abstract class GuiIcon : GuiUseable() {
     abstract val itemStack: ItemStack
@@ -37,14 +37,14 @@ abstract class GuiIcon : GuiUseable() {
  * Creates a static gui icon.
  */
 val ItemStack.guiIcon get() = GuiIcon.StaticIcon(this.apply {
-    if (!hasCustomName())
-        setCustomName("".literal)
+    if (!hasCustomHoverName())
+        setHoverName("".literal)
 })
 
 /**
  * Creates a static gui icon.
  */
-val Item.guiIcon get() = this.defaultStack.guiIcon
+val Item.guiIcon get() = this.defaultInstance.guiIcon
 
 /**
  * Creates a gui icon which automatically updates itself

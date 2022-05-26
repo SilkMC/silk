@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.flow
 import net.axay.fabrik.core.Fabrik
 import net.axay.fabrik.core.text.LiteralTextBuilder
 import net.axay.fabrik.core.text.literalText
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
 
 /**
  * Displays the given [sideboard] to the player.
@@ -16,7 +16,7 @@ import net.minecraft.text.Text
  * If the player leaves and then reconnects, you have to call this function again
  * if you wish to show the player the same sideboard.
  */
-fun ServerPlayerEntity.showSideboard(sideboard: Sideboard) {
+fun ServerPlayer.showSideboard(sideboard: Sideboard) {
     sideboard.displayToPlayer(this)
 }
 
@@ -34,7 +34,7 @@ fun ServerPlayerEntity.showSideboard(sideboard: Sideboard) {
  * @return the final instance of [Sideboard]
  */
 inline fun sideboard(
-    displayName: Text,
+    displayName: Component,
     name: String = displayName.string.filter { it.isLetter() }.take(16),
     builder: SideboardBuilder.() -> Unit
 ) = Sideboard(name, displayName, SideboardBuilder().apply(builder).lines)
@@ -51,7 +51,7 @@ class SideboardBuilder {
     /**
      * Adds a simple and static line of text.
      */
-    fun line(text: Text) {
+    fun line(text: Component) {
         lines += SimpleSideboardLine(text)
     }
 
@@ -59,7 +59,7 @@ class SideboardBuilder {
      * Adds a simple and static line of text.
      * The [block] parameter can be used to add some additional logic.
      */
-    inline fun line(block: () -> Text) {
+    inline fun line(block: () -> Component) {
         lines += SimpleSideboardLine(block())
     }
 
@@ -75,7 +75,7 @@ class SideboardBuilder {
      *
      * See [flow] documention to learn more about flows.
      */
-    inline fun lineChanging(crossinline flowBuilder: suspend FlowCollector<Text>.() -> Unit) {
+    inline fun lineChanging(crossinline flowBuilder: suspend FlowCollector<Component>.() -> Unit) {
         lines += ChangingSideboardLine(flow { this.flowBuilder() })
     }
 
@@ -86,7 +86,7 @@ class SideboardBuilder {
      * @param block the callback which is executed each time to get the content
      * of the line
      */
-    inline fun lineChangingPeriodically(period: Long, crossinline block: suspend () -> Text) {
+    inline fun lineChangingPeriodically(period: Long, crossinline block: suspend () -> Component) {
         lines += ChangingSideboardLine(flow {
             while (Fabrik.currentServer?.isRunning == true) {
                 emit(block())
@@ -109,7 +109,7 @@ class SideboardBuilder {
      * A utility function, allowing you to emit a [Text] to the flow, which is
      * built by an easy to use [literalText] builder.
      */
-    suspend inline fun FlowCollector<Text>.emitLiteralText(
+    suspend inline fun FlowCollector<Component>.emitLiteralText(
         baseText: String = "",
         crossinline builder: LiteralTextBuilder.() -> Unit = {}
     ) = emit(literalText(baseText, builder))

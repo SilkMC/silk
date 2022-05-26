@@ -4,28 +4,27 @@ import kotlinx.coroutines.launch
 import net.axay.fabrik.core.task.mcCoroutineScope
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.events.GuiCloseEvent
-import net.axay.fabrik.igui.mixin.ServerPlayerEntityAccessor
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.inventory.Inventory
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.GenericContainerScreenHandler
-import net.minecraft.screen.slot.Slot
-import net.minecraft.screen.slot.SlotActionType
+import net.minecraft.world.Container
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.ChestMenu
+import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.inventory.Slot
+import net.minecraft.world.item.ItemStack
 
 class GuiScreenHandler(
     val gui: Gui,
     syncId: Int,
-    private val playerInv: PlayerInventory,
-    inv: Inventory,
-) : GenericContainerScreenHandler(
+    private val inventory: Inventory,
+    container: Container,
+) : ChestMenu(
     gui.guiType.screenHandlerType,
     syncId,
-    playerInv,
-    inv,
+    inventory,
+    container,
     gui.guiType.dimensions.height
 ) {
-    override fun insertItem(
+    override fun moveItemStackTo(
         stack: ItemStack,
         startIndex: Int,
         endIndex: Int,
@@ -39,7 +38,7 @@ class GuiScreenHandler(
             gui.currentPage.content[it]?.shouldCancel(
                 GuiClickEvent(
                     gui,
-                    playerInv.player,
+                    inventory.player,
                     GuiActionType.INSERT,
                     slotIndex,
                     slots.getOrNull(slotIndex),
@@ -49,16 +48,11 @@ class GuiScreenHandler(
         }
 
         return if (!shouldCancel)
-            super.insertItem(stack, startIndex, endIndex, fromLast)
+            super.moveItemStackTo(stack, startIndex, endIndex, fromLast)
         else false
     }
 
-    override fun onSlotClick(
-        slotIndex: Int,
-        clickData: Int,
-        actionType: SlotActionType,
-        player: PlayerEntity,
-    ) {
+    override fun clicked(slotIndex: Int, button: Int, actionType: ClickType, player: Player) {
         if (gui.isOffset) return
 
         var shouldCancel = true
@@ -68,7 +62,7 @@ class GuiScreenHandler(
             val event = GuiClickEvent(
                 gui,
                 player,
-                GuiActionType.fromSlotActionType(actionType, clickData),
+                GuiActionType.fromSlotActionType(actionType, button),
                 slotIndex,
                 slots.getOrNull(slotIndex),
                 gui.guiType.dimensions.slotMap[slotIndex]
@@ -83,20 +77,20 @@ class GuiScreenHandler(
         }
 
         if (!shouldCancel)
-            super.onSlotClick(slotIndex, clickData, actionType, player)
+            super.clicked(slotIndex, button, actionType, player)
         else {
-            updateSyncHandler((player as? ServerPlayerEntityAccessor)?.screenHandlerSyncHandler)
+            sendAllDataToRemote()
         }
     }
 
-    override fun close(player: PlayerEntity) {
-        super.close(player)
+    override fun removed(player: Player) {
+        super.removed(player)
         mcCoroutineScope.launch {
             gui.eventHandler.onClose?.invoke(GuiCloseEvent(gui, player))
         }
     }
 
-    override fun canInsertIntoSlot(slot: Slot): Boolean {
+    private fun isActionValid(slot: Slot, guiActionType: GuiActionType): Boolean {
         if (gui.isOffset) return false
 
         val slotIndex = slots.indexOf(slot)
@@ -104,8 +98,8 @@ class GuiScreenHandler(
         return gui.currentPage.content[slotIndex]?.shouldCancel(
             GuiClickEvent(
                 gui,
-                playerInv.player,
-                GuiActionType.INSERT,
+                inventory.player,
+                guiActionType,
                 slotIndex,
                 slot,
                 gui.guiType.dimensions.slotMap[slotIndex]
@@ -113,6 +107,9 @@ class GuiScreenHandler(
         ) == false
     }
 
-    override fun canInsertIntoSlot(stack: ItemStack, slot: Slot) =
-        canInsertIntoSlot(slot)
+    override fun canDragTo(slot: Slot) =
+        isActionValid(slot, GuiActionType.DRAG)
+
+    override fun canTakeItemForPickAll(stack: ItemStack, slot: Slot) =
+        isActionValid(slot, GuiActionType.PICKUP_ALL)
 }

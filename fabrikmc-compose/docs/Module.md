@@ -5,18 +5,29 @@ using a modern UI toolkit.
 
 ${dependencyNotice}
 
+The Compose dependency is bundled with fabrikmc-compose, you don't have to include it yourself.
+
 ## Usage
 
-You can open a server-side compose gui and show it to a player using the [net.axay.fabrik.compose.displayComposable]
-function:
+You can open a server-side compose gui and show it to a player using
+the [player.displayComposable][net.axay.fabrik.compose.displayComposable] function:
 
 ```kotlin
 player.displayComposable(8, 6) {
     YourComposableFunction()
 }
+
+\\@Composable
+fun YourComposableFunction() {
+    Button(
+        onClick = { logInfo("clicked button") }
+    ) {
+        Text("Click me")
+    }
+}
 ```
 
-And that's it, you now have access to the world of Compose in Minecraft.
+and that's it, you now have access to the world of Compose in Minecraft.
 
 You can now have a look at the **UI** package (below) to see custom composable functions provided by fabrikmc-compose.
 

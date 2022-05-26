@@ -1,20 +1,23 @@
 package net.axay.fabrik.nbt
 
 import net.minecraft.nbt.*
+import java.util.*
 
-fun Boolean.toNbt(): NbtByte = NbtByte.of(this)
-fun Byte.toNbt(): NbtByte = NbtByte.of(this)
-fun Short.toNbt(): NbtShort = NbtShort.of(this)
-fun Int.toNbt(): NbtInt = NbtInt.of(this)
-fun Long.toNbt(): NbtLong = NbtLong.of(this)
-fun Float.toNbt(): NbtFloat = NbtFloat.of(this)
-fun Double.toNbt(): NbtDouble = NbtDouble.of(this)
-fun Char.toNbt(): NbtInt = NbtInt.of(code)
-fun String.toNbt(): NbtString = NbtString.of(this)
+fun Boolean.toNbt(): ByteTag = ByteTag.valueOf(this)
+fun Byte.toNbt(): ByteTag = ByteTag.valueOf(this)
+fun Short.toNbt(): ShortTag = ShortTag.valueOf(this)
+fun Int.toNbt(): IntTag = IntTag.valueOf(this)
+fun Long.toNbt(): LongTag = LongTag.valueOf(this)
+fun Float.toNbt(): FloatTag = FloatTag.valueOf(this)
+fun Double.toNbt(): DoubleTag = DoubleTag.valueOf(this)
+fun Char.toNbt(): IntTag = IntTag.valueOf(code)
+fun String.toNbt(): StringTag = StringTag.valueOf(this)
 
-fun ByteArray.toNbt() = NbtByteArray(this)
-fun List<Byte>.toNbt() = NbtByteArray(this)
-fun IntArray.toNbt() = NbtIntArray(this)
-fun List<Int>.toNbt() = NbtIntArray(this)
-fun LongArray.toNbt() = NbtLongArray(this)
-fun List<Long>.toNbt() = NbtLongArray(this)
+fun ByteArray.toNbt() = ByteArrayTag(this)
+fun List<Byte>.toNbt() = ByteArrayTag(this)
+fun IntArray.toNbt() = IntArrayTag(this)
+fun List<Int>.toNbt() = IntArrayTag(this)
+fun LongArray.toNbt() = LongArrayTag(this)
+fun List<Long>.toNbt() = LongArrayTag(this)
+
+fun UUID.toNbt(): IntArrayTag = NbtUtils.createUUID(this)

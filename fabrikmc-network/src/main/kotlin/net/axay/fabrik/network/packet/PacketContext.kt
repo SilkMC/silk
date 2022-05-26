@@ -1,21 +1,21 @@
 package net.axay.fabrik.network.packet
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.network.ClientPlayNetworkHandler
+import net.minecraft.client.Minecraft
+import net.minecraft.network.protocol.game.ClientGamePacketListener
+import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.MinecraftServer
-import net.minecraft.server.network.ServerPlayNetworkHandler
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.level.ServerPlayer
 
 class ServerPacketContext(
     val server: MinecraftServer,
-    val player: ServerPlayerEntity,
-    val handler: ServerPlayNetworkHandler,
+    val player: ServerPlayer,
+    val handler: ServerGamePacketListener,
     val responseSender: PacketSender,
 )
 
 class ClientPacketContext(
-    val client: MinecraftClient,
-    val handler: ClientPlayNetworkHandler,
+    val client: Minecraft,
+    val handler: ClientGamePacketListener,
     val responseSender: PacketSender,
 )

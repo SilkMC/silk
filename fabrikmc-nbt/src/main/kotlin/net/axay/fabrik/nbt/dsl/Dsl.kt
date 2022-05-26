@@ -1,9 +1,7 @@
 package net.axay.fabrik.nbt.dsl
 
 import net.axay.fabrik.nbt.toNbt
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtElement
-import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.*
 
 /**
  * Build an NBT compound.
@@ -20,9 +18,9 @@ inline fun nbtList(build: NbtListBuilder.() -> Unit) =
     NbtListBuilder().apply(build).build()
 
 class NbtCompoundBuilder {
-    private val compound = NbtCompound()
+    private val compound = CompoundTag()
 
-    fun put(key: String, value: NbtElement) {
+    fun put(key: String, value: Tag) {
         compound.put(key, value)
     }
 
@@ -118,14 +116,14 @@ class NbtCompoundBuilder {
 /**
  * Builder class for an NBT list.
  *
- * [NbtList] determines its type from the first element added, all following
+ * [ListTag] determines its type from the first element added, all following
  * elements are required to have the same type, otherwise an
  * [UnsupportedOperationException] is thrown.
  */
 class NbtListBuilder {
-    private val list = NbtList()
+    private val list = ListTag()
 
-    fun add(value: NbtElement) {
+    fun add(value: Tag) {
         list.add(value)
     }
 

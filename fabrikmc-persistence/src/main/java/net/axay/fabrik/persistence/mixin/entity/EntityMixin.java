@@ -3,8 +3,8 @@ package net.axay.fabrik.persistence.mixin.entity;
 import net.axay.fabrik.persistence.CompoundProvider;
 import net.axay.fabrik.persistence.PersistentCompound;
 import net.axay.fabrik.persistence.PersistentCompoundImpl;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,20 +18,20 @@ public class EntityMixin implements CompoundProvider {
     @Unique
     private final PersistentCompound compound = new PersistentCompoundImpl();
 
-    @Inject(method = "writeNbt", at = @At("RETURN"))
-    private void onWriteNbt(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir) {
+    @Inject(method = "saveWithoutId", at = @At("RETURN"))
+    private void onWriteNbt(CompoundTag nbt, CallbackInfoReturnable<CompoundTag> cir) {
         compound.putInCompound(cir.getReturnValue());
     }
 
     @Inject(
-            method = "readNbt",
+            method = "load",
             at = @At( // the entity is valid if the following function is called
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/Entity;readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V",
+                    target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V",
                     shift = At.Shift.AFTER
             )
     )
-    private void onReadNbt(NbtCompound nbt, CallbackInfo ci) {
+    private void onReadNbt(CompoundTag nbt, CallbackInfo ci) {
         compound.loadFromCompound(nbt);
     }
 

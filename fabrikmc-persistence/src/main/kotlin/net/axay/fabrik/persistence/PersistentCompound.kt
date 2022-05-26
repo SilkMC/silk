@@ -1,7 +1,6 @@
 package net.axay.fabrik.persistence
 
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.CompoundTag
 
 /**
  * Holds data which can be accessed fast because it is stored in memory. Additionally, the data
@@ -9,7 +8,7 @@ import net.minecraft.nbt.NbtElement
  */
 abstract class PersistentCompound {
     @PublishedApi
-    internal abstract var data: NbtCompound?
+    internal abstract var data: CompoundTag?
 
     @PublishedApi
     internal val values = HashMap<CompoundKey<*>, Any>()
@@ -89,7 +88,7 @@ abstract class PersistentCompound {
         if (data == null) return
 
         values.clear()
-        data = NbtCompound()
+        data = CompoundTag()
     }
 
     /**
@@ -122,13 +121,13 @@ abstract class PersistentCompound {
 
     // the following to functions are there for calling from java
     @PublishedApi
-    internal fun loadFromCompound(nbtCompound: NbtCompound) = loadFromCompound(nbtCompound, false)
+    internal fun loadFromCompound(nbtCompound: CompoundTag) = loadFromCompound(nbtCompound, false)
     @PublishedApi
-    internal fun putInCompound(nbtCompound: NbtCompound) = putInCompound(nbtCompound, false)
+    internal fun putInCompound(nbtCompound: CompoundTag) = putInCompound(nbtCompound, false)
 
-    internal abstract fun loadFromCompound(nbtCompound: NbtCompound, loadRaw: Boolean)
+    internal abstract fun loadFromCompound(nbtCompound: CompoundTag, loadRaw: Boolean)
     
-    internal abstract fun putInCompound(nbtCompound: NbtCompound, writeRaw: Boolean)
+    internal abstract fun putInCompound(nbtCompound: CompoundTag, writeRaw: Boolean)
 }
 
 /**
@@ -136,10 +135,10 @@ abstract class PersistentCompound {
  * Needed for empty holders such as [net.minecraft.world.chunk.EmptyChunk] for example.
  */
 object EmptyPersistentCompound : PersistentCompound() {
-    override var data: NbtCompound? = null
+    override var data: CompoundTag? = null
 
-    override fun loadFromCompound(nbtCompound: NbtCompound, loadRaw: Boolean) = Unit
-    override fun putInCompound(nbtCompound: NbtCompound, writeRaw: Boolean) = Unit
+    override fun loadFromCompound(nbtCompound: CompoundTag, loadRaw: Boolean) = Unit
+    override fun putInCompound(nbtCompound: CompoundTag, writeRaw: Boolean) = Unit
 }
 
 /**
@@ -151,25 +150,27 @@ internal class PersistentCompoundImpl : PersistentCompound() {
         const val CUSTOM_DATA_KEY = "fabrikmcData"
     }
 
-    override var data: NbtCompound? = NbtCompound()
+    override var data: CompoundTag? = CompoundTag()
 
-    override fun loadFromCompound(nbtCompound: NbtCompound, loadRaw: Boolean) {
+    override fun loadFromCompound(nbtCompound: CompoundTag, loadRaw: Boolean) {
         data = if (loadRaw) nbtCompound else nbtCompound.getCompound(CUSTOM_DATA_KEY)
     }
 
-    override fun putInCompound(nbtCompound: NbtCompound, writeRaw: Boolean) {
+    override fun putInCompound(nbtCompound: CompoundTag, writeRaw: Boolean) {
+        val currentData = data!!
+
         for ((untypedKey, value) in values) {
             @Suppress("UNCHECKED_CAST")
             val typedKey = untypedKey as CompoundKey<Any>
 
-            data!!.put(typedKey.name, typedKey.convertValueToNbtElement(value))
+            currentData.put(typedKey.name, typedKey.convertValueToNbtElement(value))
         }
 
-        if (!data!!.isEmpty) {
+        if (!currentData.isEmpty) {
             if (writeRaw)
-                nbtCompound.copyFrom(data)
+                nbtCompound.merge(currentData)
             else
-                nbtCompound.put(CUSTOM_DATA_KEY, data)
+                nbtCompound.put(CUSTOM_DATA_KEY, currentData)
         }
     }
 }

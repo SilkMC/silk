@@ -3,8 +3,8 @@ package net.axay.fabrik.game.cooldown
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.axay.fabrik.core.task.mcCoroutineScope
-import net.minecraft.entity.Entity
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.Entity
 import java.util.*
 
 /**
@@ -16,7 +16,7 @@ import java.util.*
  */
 class Cooldown private constructor(val key: String, val defaultLength: Long) {
     constructor(defaultLength: Long = 50L) : this(UUID.randomUUID().toString(), defaultLength)
-    constructor(id: Identifier, defaultLength: Long = 50L) : this(id.toString(), defaultLength)
+    constructor(id: ResourceLocation, defaultLength: Long = 50L) : this(id.toString(), defaultLength)
 
     private val entities = HashSet<Int>()
 

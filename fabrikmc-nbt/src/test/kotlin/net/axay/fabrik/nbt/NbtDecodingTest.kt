@@ -13,7 +13,7 @@ import net.axay.fabrik.nbt.dsl.nbtCompound
 import net.axay.fabrik.nbt.serialization.Nbt
 import net.axay.fabrik.nbt.serialization.UnknownKeyException
 import net.axay.fabrik.nbt.serialization.decodeFromNbtElement
-import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.ListTag
 
 class NbtDecodingTest : StringSpec({
     "compound should decode to class" {
@@ -41,12 +41,12 @@ class NbtDecodingTest : StringSpec({
     }
 
     "lists should decode to nullable types" {
-        Nbt.decodeFromNbtElement<Int?>(NbtList()) shouldBe null
-        Nbt.decodeFromNbtElement<Int?>(NbtList().apply { add(5.toNbt()) }) shouldBe 5
+        Nbt.decodeFromNbtElement<Int?>(ListTag()) shouldBe null
+        Nbt.decodeFromNbtElement<Int?>(ListTag().apply { add(5.toNbt()) }) shouldBe 5
     }
 
     "byte array should decode to collections" {
-        checkAll(Arb.byteArrays(Arb.int(0..0x1000), Arb.byte())) {
+        checkAll(Arb.byteArray(Arb.int(0..0x1000), Arb.byte())) {
             val nbt = it.toNbt()
             val list = it.toList()
             Nbt.decodeFromNbtElement<ByteArray>(nbt) shouldBe it

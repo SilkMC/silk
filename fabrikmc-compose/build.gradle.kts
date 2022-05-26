@@ -13,19 +13,26 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+val includeTransitive: Configuration by configurations.creating
+
 dependencies {
     api(modProject(":${rootProject.name}-core"))
-    include(api(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api")) {
-        exclude("org.apache.logging.log4j", "log4j-api")
-    })
+    include(api(project(":${rootProject.name}-compose:${rootProject.name}-compose-mojang-api"))!!)
     ksp(project(":${rootProject.name}-compose:${rootProject.name}-compose-ksp"))
 
-    compileOnly(compose.desktop.common)
+    includeTransitive(api("org.jetbrains.kotlinx:multik-api:0.1.1")!!)
+    includeTransitive(api("org.jetbrains.kotlinx:multik-jvm:0.1.1")!!)
 
-    api("org.jetbrains.kotlinx:multik-api:0.1.1")
-    api("org.jetbrains.kotlinx:multik-default:0.1.1")
+    includeTransitive(api("com.github.ajalt.colormath:colormath:3.2.0")!!)
 
-    api("com.github.ajalt.colormath:colormath:3.2.0")
+    includeTransitive(api(compose.desktop.common)!!)
+    includeTransitive(compose.desktop.linux_x64)
+    includeTransitive(compose.desktop.linux_arm64)
+    includeTransitive(compose.desktop.windows_x64)
+    includeTransitive(compose.desktop.macos_x64)
+    includeTransitive(compose.desktop.macos_arm64)
+
+    handleIncludes(project, includeTransitive)
 }
 
 val modName by extra("$projectTitle Compose")

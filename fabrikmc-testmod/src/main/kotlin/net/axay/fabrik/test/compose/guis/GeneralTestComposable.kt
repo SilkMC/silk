@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import net.axay.fabrik.compose.color.toCompose
 import net.axay.fabrik.compose.icons.McIcons
 import net.axay.fabrik.compose.ui.McImage
-import net.minecraft.block.MapColor
+import net.minecraft.world.level.material.MaterialColor
 
 private val colorList = listOf(Color.Green, Color.Magenta, Color.Red, Color.Blue, Color.Yellow)
 
@@ -47,8 +47,8 @@ fun GeneralTestComposable() {
             space()
             Text("Amount of clicks: $clickCounter")
             space()
-            Button(onClick = {}, colors = ButtonDefaults.buttonColors(MapColor.DARK_AQUA.toCompose())) {
-                Text("DARK_AQUA looks like this")
+            Button(onClick = {}, colors = ButtonDefaults.buttonColors(MaterialColor.WARPED_NYLIUM.toCompose())) {
+                Text("DARK_AQUA / WARPED_NYLIUM looks like this")
             }
             space()
             LazyColumn {

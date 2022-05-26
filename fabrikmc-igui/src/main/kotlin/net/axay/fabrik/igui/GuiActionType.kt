@@ -1,6 +1,6 @@
 package net.axay.fabrik.igui
 
-import net.minecraft.screen.slot.SlotActionType
+import net.minecraft.world.inventory.ClickType
 
 enum class GuiActionType {
     /**
@@ -54,16 +54,16 @@ enum class GuiActionType {
 
     companion object {
         fun fromSlotActionType(
-            slotActionType: SlotActionType,
-            clickData: Int
+            slotActionType: ClickType,
+            button: Int
         ) = when (slotActionType) {
-            SlotActionType.PICKUP -> PICKUP
-            SlotActionType.PICKUP_ALL -> PICKUP_ALL
-            SlotActionType.QUICK_MOVE -> SHIFT_CLICK
-            SlotActionType.SWAP -> HOTKEY_SWAP
-            SlotActionType.CLONE -> MIDDLE_CLICK
-            SlotActionType.THROW -> if (clickData == 1) THROW_ALL else THROW_ONE
-            SlotActionType.QUICK_CRAFT -> when (clickData) {
+            ClickType.PICKUP -> PICKUP
+            ClickType.PICKUP_ALL -> PICKUP_ALL
+            ClickType.QUICK_MOVE -> SHIFT_CLICK
+            ClickType.SWAP -> HOTKEY_SWAP
+            ClickType.CLONE -> MIDDLE_CLICK
+            ClickType.THROW -> if (button == 1) THROW_ALL else THROW_ONE
+            ClickType.QUICK_CRAFT -> when (button) {
                 0 -> DRAG_START
                 2 -> DRAG_END
                 else -> DRAG

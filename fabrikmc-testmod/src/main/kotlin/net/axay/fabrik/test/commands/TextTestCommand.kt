@@ -1,8 +1,8 @@
 package net.axay.fabrik.test.commands
 
 import net.axay.fabrik.core.text.literalText
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.HoverEvent
+import net.minecraft.network.chat.ClickEvent
+import net.minecraft.network.chat.HoverEvent
 
 private val textExamples = mapOf(
     "welcome" to literalText {
@@ -38,7 +38,8 @@ val textTestCommand = testCommand("text") {
     argument<String>("textexample") { example ->
         suggestList { textExamples.keys }
         runs {
-            source.sendFeedback(textExamples[example()], false)
+            val exampleText = textExamples[example()] ?: return@runs
+            source.sendSuccess(exampleText, false)
         }
     }
 }

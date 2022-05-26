@@ -10,8 +10,8 @@ import net.axay.fabrik.network.internal.FabrikNetwork
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 
 /**
  * Used by the [ClientToClientPacketDefinition], which requires a server-side forwarder.
@@ -19,13 +19,13 @@ import net.minecraft.util.Identifier
 typealias ServerPacketForwarder<T> = suspend ClientToClientPacketDefinition<T>.(
     packet: ClientToClientPacketDefinition.SerializedPacket,
     context: ServerPacketContext,
-) -> ServerPlayerEntity?
+) -> ServerPlayer?
 
 /**
  * See [c2cPacket] function, which constructs this packet definition class.
  */
 class ClientToClientPacketDefinition<T : Any>(
-    id: Identifier,
+    id: ResourceLocation,
     cbor: Cbor,
     deserializer: DeserializationStrategy<T>,
 ) : AbstractPacketDefinition<T, ClientPacketContext>(id, cbor, deserializer) {
@@ -48,7 +48,7 @@ class ClientToClientPacketDefinition<T : Any>(
         if (receiver != null) {
             val buffer = PacketByteBufs.create()
             buffer.writeByteArray(bytes)
-            buffer.writeString(idString)
+            buffer.writeUtf(idString)
             ServerPlayNetworking.send(receiver, FabrikNetwork.packetId, buffer)
         }
     }

@@ -22,14 +22,14 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.pathString
 
 object AssetsLoader {
-    private val assetsStorage = (Fabrik.currentServer?.runDirectory ?: File(".")).resolve("server-assets/")
+    private val assetsStorage = (Fabrik.currentServer?.serverDirectory ?: File(".")).resolve("server-assets/")
     private val assetsPath = assetsStorage.toPath().resolve("assets")
 
     private val loadedAssets = CompletableDeferred<Boolean>()
 
     init {
         fabrikCoroutineScope.launch(Dispatchers.IO) {
-            val serverVersion = SharedConstants.getGameVersion().name
+            val serverVersion = SharedConstants.getCurrentVersion().name
             val versionFile = assetsStorage.resolve("version.txt")
 
             if (

@@ -10,10 +10,10 @@ import kotlinx.serialization.modules.SerializersModule
 import net.axay.fabrik.nbt.serialization.Nbt
 import net.axay.fabrik.nbt.serialization.internal.*
 import net.axay.fabrik.nbt.toNbt
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtElement
-import net.minecraft.nbt.NbtList
-import net.minecraft.nbt.NbtString
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.StringTag
+import net.minecraft.nbt.Tag
 
 @ExperimentalSerializationApi
 abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
@@ -37,19 +37,19 @@ abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
         }
     }
 
-    private fun encodeMaybeNullable(element: NbtElement) {
+    private fun encodeMaybeNullable(element: Tag) {
         encodeElement(if (isNextNullable) {
             isNextNullable = false
             // Always use a list because we cannot know whether a null value would be one of the primitives
-            NbtList().apply { add(element) }
+            ListTag().apply { add(element) }
         } else {
             element
         })
     }
 
-    abstract fun encodeElement(element: NbtElement)
+    abstract fun encodeElement(element: Tag)
 
-    abstract fun consumeStructure(element: NbtElement)
+    abstract fun consumeStructure(element: Tag)
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
         when (descriptor.kind) {
@@ -62,7 +62,7 @@ abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
     }
 
     override fun encodeNull() {
-        encodeElement(NbtList())
+        encodeElement(ListTag())
     }
 
     override fun encodeBoolean(value: Boolean) {
@@ -102,7 +102,7 @@ abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
     }
 
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
-        encodeMaybeNullable(NbtString.of(enumDescriptor.getElementName(index)))
+        encodeMaybeNullable(StringTag.valueOf(enumDescriptor.getElementName(index)))
     }
 
     private fun encodeByteArray(value: ByteArray) {
@@ -120,14 +120,14 @@ abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
 
 @ExperimentalSerializationApi
 class NbtRootEncoder(nbt: Nbt) : NbtTagEncoder(nbt) {
-    var element: NbtElement? = null
+    var element: Tag? = null
         private set
 
-    override fun encodeElement(element: NbtElement) {
+    override fun encodeElement(element: Tag) {
         this.element = element
     }
 
-    override fun consumeStructure(element: NbtElement) {
+    override fun consumeStructure(element: Tag) {
         this.element = element
     }
 }
@@ -135,9 +135,9 @@ class NbtRootEncoder(nbt: Nbt) : NbtTagEncoder(nbt) {
 @ExperimentalSerializationApi
 class NbtCompoundEncoder(
     nbt: Nbt,
-    private val consumer: (NbtCompound) -> Unit
+    private val consumer: (CompoundTag) -> Unit
 ) : NbtTagEncoder(nbt) {
-    private val compound = NbtCompound()
+    private val compound = CompoundTag()
     private val tags = ArrayDeque<String>()
 
     override fun encodeElement(descriptor: SerialDescriptor, index: Int): Boolean {
@@ -145,11 +145,11 @@ class NbtCompoundEncoder(
         return true
     }
 
-    override fun encodeElement(element: NbtElement) {
+    override fun encodeElement(element: Tag) {
         compound.put(popTag(), element)
     }
 
-    override fun consumeStructure(element: NbtElement) {
+    override fun consumeStructure(element: Tag) {
         compound.put(popTag(), element)
     }
 
@@ -166,15 +166,15 @@ class NbtCompoundEncoder(
 @ExperimentalSerializationApi
 class NbtListEncoder(
     nbt: Nbt,
-    private val consumer: (NbtList) -> Unit
+    private val consumer: (ListTag) -> Unit
 ) : NbtTagEncoder(nbt) {
-    private val list = NbtList()
+    private val list = ListTag()
 
-    override fun encodeElement(element: NbtElement) {
+    override fun encodeElement(element: Tag) {
         list.add(element)
     }
 
-    override fun consumeStructure(element: NbtElement) {
+    override fun consumeStructure(element: Tag) {
         list.add(element)
     }
 

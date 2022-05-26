@@ -1,20 +1,20 @@
 package net.axay.fabrik.core.text
 
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.network.MessageType
+import net.minecraft.Util
+import net.minecraft.network.chat.ChatType
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextComponent
 import net.minecraft.server.MinecraftServer
-import net.minecraft.text.LiteralText
-import net.minecraft.text.Text
-import net.minecraft.util.Util
+import net.minecraft.world.entity.player.Player
 import org.apache.commons.lang3.text.WordUtils
 
 /**
  * Converts this string to a [LiteralText] instance.
  */
-val String.literal get() = LiteralText(this)
+val String.literal get() = TextComponent(this)
 
 /**
- * Returns a list of [Text] elements which all do not exceed
+ * Returns a list of [Component] elements which all do not exceed
  * the given width.
  *
  * @param width the maximum width of one line
@@ -25,40 +25,40 @@ val String.literal get() = LiteralText(this)
 inline fun String.literalLines(
     width: Int = 40,
     cutLongWords: Boolean = true,
-    lineBuilder: (line: String) -> Text = { it.literal }
-): List<Text> = WordUtils.wrap(this, width, System.lineSeparator(), cutLongWords).split(System.lineSeparator())
+    lineBuilder: (line: String) -> Component = { it.literal }
+): List<Component> = WordUtils.wrap(this, width, System.lineSeparator(), cutLongWords).split(System.lineSeparator())
     .map(lineBuilder)
 
 /**
- * Sends the given [LiteralText] to the player.
+ * Sends the given [Component] to the player.
  */
-fun PlayerEntity.sendText(text: Text) {
-    sendMessage(text, false)
+fun Player.sendText(text: Component) {
+    displayClientMessage(text, false)
 }
 
 /**
- * Opens a [LiteralTextBuilder] and sends the resulting [LiteralText]
+ * Opens a [LiteralTextBuilder] and sends the resulting [TextComponent]
  * to the player.
  *
  * @see [literalText]
  */
-inline fun PlayerEntity.sendText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = { }) {
-    sendMessage(literalText(baseText, builder), false)
+inline fun Player.sendText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = { }) {
+    displayClientMessage(literalText(baseText, builder), false)
 }
 
 /**
- * Opens a [LiteralTextBuilder] and sends the resulting [LiteralText]
+ * Opens a [LiteralTextBuilder] and sends the resulting [TextComponent]
  * to each player on the server.
  *
  * @see [literalText]
  */
 inline fun MinecraftServer.broadcastText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit= { }) {
-    playerManager.broadcast(literalText(baseText, builder), MessageType.CHAT, Util.NIL_UUID)
+    playerList.broadcastMessage(literalText(baseText, builder), ChatType.CHAT, Util.NIL_UUID)
 }
 
 /**
- * Sends the given [LiteralText] to each player on the server.
+ * Sends the given [Component] to each player on the server.
  */
-fun MinecraftServer.sendText(text: Text) {
-    playerManager.broadcast(text, MessageType.CHAT, Util.NIL_UUID)
+fun MinecraftServer.sendText(text: Component) {
+    playerList.broadcastMessage(text, ChatType.CHAT, Util.NIL_UUID)
 }

@@ -1,8 +1,8 @@
 package net.axay.fabrik.persistence
 
-import net.minecraft.entity.Entity
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.world.chunk.Chunk
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.chunk.ChunkAccess
 
 /**
  * Returns a persistent [PersistentCompound].
@@ -10,7 +10,7 @@ import net.minecraft.world.chunk.Chunk
  * @see CompoundProvider.compound
  * @see CompoundProvider
  */
-val Chunk.persistentCompound get() = (this as CompoundProvider).compound
+val ChunkAccess.persistentCompound get() = (this as CompoundProvider).compound
 
 /**
  * Returns a persistent [PersistentCompound].
@@ -26,4 +26,4 @@ val Entity.persistentCompound get() = (this as CompoundProvider).compound
  * @see CompoundProvider.compound
  * @see CompoundProvider
  */
-val ServerWorld.persistentCompound get() = (this as CompoundProvider).compound
+val ServerLevel.persistentCompound get() = (this as CompoundProvider).compound

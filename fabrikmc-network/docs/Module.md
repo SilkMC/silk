@@ -12,10 +12,9 @@ ${dependencyNotice}
 You have to create a serializable class representing your packet first.
 
 ```kt
+\\@Serializable
 data class Person(val name: String, val age: Int)
 ```
-
-Now annotate that class with `@Serializable`.
 
 ### Packet definition instance
 

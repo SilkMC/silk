@@ -29,4 +29,6 @@ include("$projectName-nbt")
 include("$projectName-network")
 include("$projectName-persistence")
 
+include("$projectName-paper")
+
 include("$projectName-testmod")

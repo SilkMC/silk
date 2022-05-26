@@ -3,7 +3,7 @@ package net.axay.fabrik.compose.mojangapi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.apache.logging.log4j.LogManager
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URL
 import java.nio.channels.Channels
@@ -26,7 +26,7 @@ object LauncherMeta {
         logInfo("Finished downloading the client")
     }
 
-    private fun logInfo(message: String) = LogManager.getLogger().info(message)
+    private fun logInfo(message: String) = LoggerFactory.getLogger("LauncherMeta").info(message)
 
     @Serializable
     private data class VersionManifest(val versions: List<Link>) {

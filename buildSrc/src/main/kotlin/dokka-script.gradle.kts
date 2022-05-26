@@ -1,5 +1,5 @@
 import BuildConstants.fabricApiVersion
-import BuildConstants.yarnMappingsVersion
+import BuildConstants.quiltMappingsVersion
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URL
 
@@ -55,7 +55,7 @@ tasks {
                 }
 
                 externalDocumentationLink {
-                    val yarnJavadocVersion = yarnMappingsVersion.removeSuffix(":v2")
+                    val yarnJavadocVersion = quiltMappingsVersion.removeSuffix(":v2")
                     url.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/"))
                     packageListUrl.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/element-list"))
                 }

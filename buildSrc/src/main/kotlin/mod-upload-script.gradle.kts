@@ -7,8 +7,8 @@ import BuildConstants.projectStateType
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
-import com.modrinth.minotaur.TaskModrinthUpload
-import com.modrinth.minotaur.request.Dependency
+import com.modrinth.minotaur.dependencies.DependencyType
+import com.modrinth.minotaur.dependencies.ModDependency
 
 plugins {
     kotlin("jvm")
@@ -30,35 +30,31 @@ val fabrikModules = listOf(
 )
 
 tasks {
-    register<TaskModrinthUpload>("uploadModrinth") {
-        group = "upload"
-        onlyIf {
-            findProperty("modrinth.token") != null
-        }
-
-        token = findProperty("modrinth.token").toString()
-
-        projectId = modrinthId
-        versionNumber = rootProject.version.toString()
-        addGameVersion(minecraftVersion)
-        addLoader("fabric")
-        versionType = projectStateType
-
-        uploadFile = remapJar.get()
-        fabrikModules.forEach {
-            addFile(it.tasks.named("remapJar").get())
-        }
-
-        addDependency("gjN9CB30", Dependency.DependencyType.REQUIRED)
-        addDependency("1qsZV7U7", Dependency.DependencyType.REQUIRED)
-    }
-
     named("curseforge") {
         onlyIf {
             findProperty("curseforge.token") != null
         }
         dependsOn(tasks.named("remapJar"))
     }
+}
+
+modrinth {
+    token.set(findProperty("modrinth.token").toString())
+
+    projectId.set(modrinthId)
+    versionNumber.set(rootProject.version.toString())
+    versionType.set(projectStateType.name)
+    gameVersions.set(listOf(minecraftVersion))
+    loaders.set(listOf("fabric"))
+
+    uploadFile.set(tasks.remapJar.get())
+
+    dependencies.set(
+        listOf(
+            ModDependency("P7dR8mSH", DependencyType.REQUIRED),
+            ModDependency("Ha28R6CL", DependencyType.REQUIRED),
+        )
+    )
 }
 
 curseforge {

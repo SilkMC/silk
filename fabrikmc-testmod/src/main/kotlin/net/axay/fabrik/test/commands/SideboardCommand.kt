@@ -9,7 +9,7 @@ val sideboardCommand = testCommand("sideboard") {
         suggestList { sideboardExamples.keys }
         runs {
             val sideboard = sideboardExamples[example()] ?: return@runs
-            source.player.showSideboard(sideboard)
+            source.playerOrException.showSideboard(sideboard)
         }
     }
 }

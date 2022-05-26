@@ -1,14 +1,20 @@
 package net.axay.fabrik.core.world.pos
 
+import com.mojang.math.Vector3f
 import kotlinx.serialization.Serializable
 import net.axay.fabrik.core.Fabrik
-import net.axay.fabrik.core.serialization.serializers.IdentifierSerializer
-import net.minecraft.entity.Entity
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.*
-import net.minecraft.util.registry.Registry
-import net.minecraft.util.registry.RegistryKey
-import net.minecraft.world.World
+import net.axay.fabrik.core.entity.pos
+import net.axay.fabrik.core.serialization.serializers.ResourceLocationSerializer
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Registry
+import net.minecraft.core.SectionPos
+import net.minecraft.core.Vec3i
+import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.ChunkPos
+import net.minecraft.world.level.Level
+import net.minecraft.world.phys.Vec3
 import kotlin.math.roundToInt
 
 /**
@@ -21,44 +27,56 @@ import kotlin.math.roundToInt
 @Serializable
 data class FabrikPosition(
     val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0,
-    @Serializable(with = IdentifierSerializer::class) val worldIdentifier: Identifier? = null,
+    @Serializable(with = ResourceLocationSerializer::class) val worldIdentifier: ResourceLocation? = null,
     val pitch: Float = 0f, val yaw: Float = 0f,
 ) {
-    constructor(blockPos: BlockPos, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
-            : this(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble(), worldIdentifier, pitch, yaw)
+    constructor(blockPos: BlockPos, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f)
+        : this(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble(), worldIdentifier, pitch, yaw)
 
-    constructor(vec3i: Vec3i, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
-            : this(vec3i.x.toDouble(), vec3i.y.toDouble(), vec3i.z.toDouble(), worldIdentifier, pitch, yaw)
+    constructor(vec3i: Vec3i, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f)
+        : this(vec3i.x.toDouble(), vec3i.y.toDouble(), vec3i.z.toDouble(), worldIdentifier, pitch, yaw)
 
-    constructor(vec3f: Vec3f, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
-            : this(vec3f.x.toDouble(), vec3f.y.toDouble(), vec3f.z.toDouble(), worldIdentifier, pitch, yaw)
+    constructor(vec3f: Vector3f, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f)
+        : this(vec3f.x().toDouble(), vec3f.y().toDouble(), vec3f.z().toDouble(), worldIdentifier, pitch, yaw)
 
-    constructor(vec3d: Vec3d, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
-            : this(vec3d.x, vec3d.y, vec3d.z, worldIdentifier, pitch, yaw)
+    constructor(vec3d: Vec3, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f)
+        : this(vec3d.x, vec3d.y, vec3d.z, worldIdentifier, pitch, yaw)
 
     constructor(entity: Entity)
-            : this(entity.pos, entity.world.registryKey.value, entity.pitch, entity.yaw)
+        : this(entity.pos, entity.level.dimension().location(), entity.xRot, entity.yRot)
 
-    constructor(chunkPos: ChunkPos, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
-        ChunkSectionPos.getBlockCoord(chunkPos.x).toDouble(), 0.0, ChunkSectionPos.getBlockCoord(chunkPos.z).toDouble(),
+    constructor(chunkPos: ChunkPos, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
+        chunkPos.minBlockX.toDouble(), 0.0, chunkPos.minBlockZ.toDouble(),
         worldIdentifier,
         pitch, yaw
     )
 
-    constructor(chunkSectionPos: ChunkSectionPos, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
-        ChunkSectionPos.getBlockCoord(chunkSectionPos.x).toDouble(), ChunkSectionPos.getBlockCoord(chunkSectionPos.y).toDouble(), ChunkSectionPos.getBlockCoord(chunkSectionPos.z).toDouble(),
+    constructor(chunkSectionPos: SectionPos, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
+        chunkSectionPos.minBlockX().toDouble(), chunkSectionPos.minBlockY().toDouble(), chunkSectionPos.minBlockZ().toDouble(),
         worldIdentifier,
         pitch, yaw
     )
 
-    val worldKey: RegistryKey<World> get() = RegistryKey.of(Registry.WORLD_KEY, worldIdentifier)
-    val world get() = if (worldIdentifier != null) Fabrik.currentServer?.getWorld(worldKey) else null
-    val blockPos get() = BlockPos(x.toInt(), y.toInt(), z.toInt())
-    val roundedBlockPos get() = BlockPos(x.roundToInt(), y.roundToInt(), z.roundToInt())
-    val posInChunk get() = PosInChunk(blockPos)
-    val chunkPos get() = ChunkPos(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z))
-    val chunkSectionPos: ChunkSectionPos get() = ChunkSectionPos.from(blockPos)
-    val vec3i get() = Vec3i(x, y, z)
-    val vec3f get() = Vec3f(x.toFloat(), y.toFloat(), z.toFloat())
-    val vec3d get() = Vec3d(x, y, z)
+    val blockPos: BlockPos
+        get() = BlockPos(x.toInt(), y.toInt(), z.toInt())
+    val roundedBlockPos: BlockPos
+        get() = BlockPos(x.roundToInt(), y.roundToInt(), z.roundToInt())
+    val posInChunk: PosInChunk
+        get() = PosInChunk(blockPos)
+    val chunkPos: ChunkPos
+        get() = ChunkPos(SectionPos.posToSectionCoord(x), SectionPos.posToSectionCoord(z))
+    val chunkSectionPos: SectionPos
+        get() = SectionPos.of(blockPos)
+
+    val vec3i: Vec3i
+        get() = Vec3i(x, y, z)
+    val vec3f: Vector3f
+        get() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
+    val vec3d: Vec3
+        get() = Vec3(x, y, z)
+
+    val worldKey: ResourceKey<Level>?
+        get() = if (worldIdentifier != null) ResourceKey.create(Registry.DIMENSION_REGISTRY, worldIdentifier) else null
+    val world: Level?
+        get() = worldKey?.let { Fabrik.currentServer?.getLevel(it) }
 }

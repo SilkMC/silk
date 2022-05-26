@@ -11,7 +11,7 @@ FabrikMC is an API for using FabricMC with Kotlin
 It offers:
 
 - an inventory GUI API
-- a Kotlin wrapper for Brigardier
+- a Kotlin wrapper for Brigadier
 - a Kotlin DSL for creating complex `Text` objects
 - coroutine utilities
 - kotlinx.serialization support for Minecraft classes

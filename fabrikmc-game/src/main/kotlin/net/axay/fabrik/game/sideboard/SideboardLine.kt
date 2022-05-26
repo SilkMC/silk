@@ -2,20 +2,20 @@ package net.axay.fabrik.game.sideboard
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * This interface represents one line in a [Sideboard].
  */
 interface SideboardLine {
-    val textFlow: Flow<Text>
+    val textFlow: Flow<Component>
 }
 
 /**
  * A sideboard line which does not change and always displays the
  * same [Text].
  */
-class SimpleSideboardLine(text: Text) : SideboardLine {
+class SimpleSideboardLine(text: Component) : SideboardLine {
     override val textFlow = flowOf(text)
 }
 
@@ -24,4 +24,4 @@ class SimpleSideboardLine(text: Text) : SideboardLine {
  * a new [Text], the sideboard line will be updated for all players currently
  * seeing the [Sideboard].
  */
-class ChangingSideboardLine(override val textFlow: Flow<Text>) : SideboardLine
+class ChangingSideboardLine(override val textFlow: Flow<Component>) : SideboardLine

@@ -14,14 +14,14 @@ repositories {
 tasks {
     withType<JavaCompile> {
         options.apply {
-            release.set(16)
+            release.set(11)
             encoding = "UTF-8"
         }
     }
 
     withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = "16"
+            jvmTarget = "11"
         }
     }
 }
