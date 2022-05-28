@@ -1,9 +1,8 @@
 package net.axay.fabrik.core.text
 
-import net.minecraft.Util
 import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.TextComponent
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.MinecraftServer
 import net.minecraft.world.entity.player.Player
 import org.apache.commons.lang3.text.WordUtils
@@ -11,7 +10,7 @@ import org.apache.commons.lang3.text.WordUtils
 /**
  * Converts this string to a [LiteralText] instance.
  */
-val String.literal get() = TextComponent(this)
+val String.literal: MutableComponent get() = Component.literal(this)
 
 /**
  * Returns a list of [Component] elements which all do not exceed
@@ -53,12 +52,12 @@ inline fun Player.sendText(baseText: String = "", builder: LiteralTextBuilder.()
  * @see [literalText]
  */
 inline fun MinecraftServer.broadcastText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit= { }) {
-    playerList.broadcastMessage(literalText(baseText, builder), ChatType.CHAT, Util.NIL_UUID)
+    playerList.broadcastSystemMessage(literalText(baseText, builder), ChatType.CHAT)
 }
 
 /**
  * Sends the given [Component] to each player on the server.
  */
 fun MinecraftServer.sendText(text: Component) {
-    playerList.broadcastMessage(text, ChatType.CHAT, Util.NIL_UUID)
+    playerList.broadcastSystemMessage(text, ChatType.CHAT)
 }

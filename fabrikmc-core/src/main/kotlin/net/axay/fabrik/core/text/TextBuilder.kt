@@ -14,15 +14,15 @@ import net.minecraft.network.chat.*
 inline fun literalText(
     baseText: String = "",
     builder: LiteralTextBuilder.() -> Unit = { }
-) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build() as TextComponent
+) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build()
 
 class LiteralTextBuilder(
-    private val text: BaseComponent,
+    private val text: MutableComponent,
     private val parentStyle: Style,
     private val inheritStyle: Boolean
 ) {
     constructor(text: String, parentStyle: Style, inheritStyle: Boolean) :
-            this(TextComponent(text), parentStyle, inheritStyle)
+            this(Component.literal(text), parentStyle, inheritStyle)
 
     var bold: Boolean? = null
     var italic: Boolean? = null
@@ -57,7 +57,7 @@ class LiteralTextBuilder(
             .withHoverEvent(hoverEvent)
             .let { if (inheritStyle) it.applyTo(parentStyle) else it }
 
-    val siblingText = TextComponent("")
+    val siblingText: MutableComponent = Component.literal("")
 
     /**
      * Append text to the parent.
@@ -86,7 +86,7 @@ class LiteralTextBuilder(
         inheritStyle: Boolean = true,
         builder: LiteralTextBuilder.() -> Unit = { }
     ) {
-        if (text is BaseComponent) {
+        if (text is MutableComponent) {
             siblingText.append(LiteralTextBuilder(text, currentStyle, inheritStyle).apply(builder).build())
         } else {
             siblingText.append(text)
@@ -97,7 +97,7 @@ class LiteralTextBuilder(
      * Adds a line break.
      */
     fun newLine() {
-        siblingText.append(TextComponent("\n"))
+        siblingText.append(Component.literal("\n"))
     }
 
     /**
