@@ -17,11 +17,11 @@ object BuildConstants {
     const val majorMinecraftVersion = "1.18"
 
     // check these values here: https://axay.net/mcdev
-    const val minecraftVersion = "1.18.2"
-    const val quiltMappingsVersion = "${minecraftVersion}+build.22:v2"
-    const val fabricLoaderVersion = "0.13.3"
-    const val fabricApiVersion = "0.51.0+1.18.2"
-    const val fabricLanguageKotlinVersion = "1.7.2+kotlin.1.6.20"
+    const val minecraftVersion = "1.19-pre3"
+    const val quiltMappingsVersion = "${minecraftVersion}+build.2:v2"
+    const val fabricLoaderVersion = "0.14.6"
+    const val fabricApiVersion = "0.53.4+1.19"
+    const val fabricLanguageKotlinVersion = "1.7.4+kotlin.1.6.21"
 
-    const val kotestVersion = "5.2.3"
+    const val kotestVersion = "5.3.0"
 }

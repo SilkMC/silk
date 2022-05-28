@@ -8,7 +8,6 @@ plugins {
 
 dependencies {
     include(modProject(":${rootProject.name}-commands"))
-    include(modProject(":${rootProject.name}-compose"))
     include(modProject(":${rootProject.name}-core"))
     include(modProject(":${rootProject.name}-game"))
     include(modProject(":${rootProject.name}-igui"))

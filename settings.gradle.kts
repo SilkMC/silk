@@ -8,20 +8,17 @@ pluginManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 
-    apply(from = "shared.properties.gradle.kts")
-    val kotlinVersion: String by settings
-
+    val kotlinVersion = "1.6.21"
     plugins {
+        kotlin("jvm") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion
+        id("org.jetbrains.dokka") version kotlinVersion
     }
 }
 
 include("$projectName-all")
 
 include("$projectName-commands")
-include("$projectName-compose")
-include("$projectName-compose:$projectName-compose-ksp")
-include("$projectName-compose:$projectName-compose-mojang-api")
 include("$projectName-core")
 include("$projectName-game")
 include("$projectName-igui")
@@ -29,6 +26,6 @@ include("$projectName-nbt")
 include("$projectName-network")
 include("$projectName-persistence")
 
-include("$projectName-paper")
+//include("$projectName-paper")
 
 include("$projectName-testmod")
