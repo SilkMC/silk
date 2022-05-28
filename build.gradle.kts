@@ -1,9 +1,6 @@
-import org.jetbrains.dokka.base.DokkaBase
-import org.jetbrains.dokka.base.DokkaBaseConfiguration
-
 plugins {
-    id("org.jetbrains.dokka")
     idea
+    `dokka-script-root`
 }
 
 repositories {
@@ -15,18 +12,6 @@ allprojects {
     version = "1.7.5"
     if (this.name.startsWith("fabrikmc")) {
         description = "FabrikMC is an API for using FabricMC with Kotlin"
-    }
-}
-
-tasks {
-    dokkaHtmlMultiModule {
-        outputDirectory.set(projectDir.resolve("docs"))
-
-        includes.from("dokka/includes/main.md")
-
-        pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-            customStyleSheets = listOf(*(rootDir.resolve("dokka/stylesheets").listFiles() ?: emptyArray()))
-        }
     }
 }
 
