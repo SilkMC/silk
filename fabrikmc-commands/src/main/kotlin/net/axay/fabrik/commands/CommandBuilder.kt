@@ -19,29 +19,15 @@ import net.axay.fabrik.commands.DslAnnotations.TopLevel.NodeDsl
 import net.axay.fabrik.commands.internal.ArgumentTypeUtils
 import net.axay.fabrik.commands.registration.register
 import net.axay.fabrik.commands.registration.setupRegistrationCallback
+import net.axay.fabrik.core.annotations.InternalFabrikApi
 import net.axay.fabrik.core.task.fabrikCoroutineScope
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.SharedSuggestionProvider
 import java.util.concurrent.CompletableFuture
-
-private class DslAnnotations {
-    class TopLevel {
-        @Target(AnnotationTarget.FUNCTION, AnnotationTarget.TYPE, AnnotationTarget.CLASS)
-        @DslMarker
-        annotation class NodeDsl
-    }
-
-    class NodeLevel {
-        @DslMarker
-        annotation class RunsDsl
-
-        @DslMarker
-        annotation class SuggestsDsl
-    }
-}
 
 /**
  * An argument resolver extracts the argument value out of the current [CommandContext].
@@ -54,16 +40,17 @@ typealias ArgumentResolver<S, T> = CommandContext<S>.() -> T
  */
 typealias SimpleArgumentBuilder<Source, T> = ArgumentCommandBuilder<Source, T>.(argument: ArgumentResolver<Source, T>) -> Unit
 
+@InternalFabrikApi
+typealias BrigadierBuilder<Builder> = Builder.(context: CommandBuildContext) -> Unit
+
 @NodeDsl
 abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : ArgumentBuilder<Source, Builder>> {
 
     @PublishedApi
-    internal abstract val builder: Builder
-
-    @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *>>()
 
-    private val onToBrigadierBuilders = ArrayList<Builder.() -> Unit>()
+    @PublishedApi
+    internal val brigadierBuilders = ArrayList<BrigadierBuilder<Builder>>()
 
     /**
      * Adds execution logic to this command. The place where this function
@@ -87,11 +74,13 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      */
     @RunsDsl
     inline infix fun runs(crossinline block: CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
-        val previousCommand = builder.command
-        builder.executes {
-            previousCommand?.run(it)
-            block(it)
-            1
+        brigadierBuilders += {
+            val previousCommand = this.command
+            this.executes {
+                previousCommand?.run(it)
+                block(it)
+                1
+            }
         }
         return this
     }
@@ -150,8 +139,32 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      * interface. For simple types, consider using the `inline reified` version of this function instead.
      */
     @NodeDsl
-    inline fun <reified T> argument(name: String, type: ArgumentType<T>, builder: SimpleArgumentBuilder<Source, T> = {}) =
-        ArgumentCommandBuilder<Source, T>(name, type)
+    inline fun <reified T> argument(
+        name: String,
+        type: ArgumentType<T>,
+        builder: SimpleArgumentBuilder<Source, T> = {},
+    ) =
+        ArgumentCommandBuilder<Source, T>(name) { type }
+            .apply { builder { getArgument(name, T::class.java) } }
+            .also { children += it }
+
+    /**
+     * Adds a new argument to this command. This variant of the argument function allows you to pass and argument
+     * which depends on the [CommandBuildContext].
+     *
+     * @param name the name of the argument - This will be displayed to the player, if there is enough room for the
+     * tooltip.
+     * @param typeProvider the provider for the [ArgumentType] - there are predefined types like
+     * `BlockStateArgument.block(context)` and `ItemArgument.item(context)` or you can pass your own
+     */
+    @JvmName("argumentWithContextualType")
+    @NodeDsl
+    inline fun <reified T> argument(
+        name: String,
+        noinline typeProvider: (CommandBuildContext) -> ArgumentType<T>,
+        builder: SimpleArgumentBuilder<Source, T> = {},
+    ) =
+        ArgumentCommandBuilder<Source, T>(name, typeProvider)
             .apply { builder { getArgument(name, T::class.java) } }
             .also { children += it }
 
@@ -164,9 +177,14 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      * @param parser gives you a [StringReader], which allows you to parse the input of the user - you should return a
      * value of the given type [T], which will be the argument value
      */
+    @JvmName("argumentWithCustomParser")
     @NodeDsl
-    inline fun <reified T> argument(name: String, crossinline parser: (StringReader) -> T, builder: SimpleArgumentBuilder<Source, T> = {}) =
-        ArgumentCommandBuilder<Source, T>(name) { parser(it) }
+    inline fun <reified T> argument(
+        name: String,
+        crossinline parser: (StringReader) -> T,
+        builder: SimpleArgumentBuilder<Source, T> = {},
+    ) =
+        ArgumentCommandBuilder<Source, T>(name) { ArgumentType { parser(it) } }
             .apply { builder { getArgument(name, T::class.java) } }
             .also { children += it }
 
@@ -180,7 +198,7 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      */
     @NodeDsl
     inline fun <reified T> argument(name: String, builder: SimpleArgumentBuilder<Source, T> = {}) =
-        ArgumentCommandBuilder<Source, T>(name, ArgumentTypeUtils.fromReifiedType())
+        ArgumentCommandBuilder<Source, T>(name) { ArgumentTypeUtils.fromReifiedType(it) }
             .apply { builder { getArgument(name, T::class.java) } }
             .also { children += it }
 
@@ -191,7 +209,9 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      */
     @RunsDsl
     fun requires(predicate: (source: Source) -> Boolean): CommandBuilder<Source, Builder> {
-        builder.requires(builder.requirement.and(predicate))
+        brigadierBuilders += {
+            this.requires(this.requirement.and(predicate))
+        }
         return this
     }
 
@@ -215,29 +235,28 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      * This function allows you to access the regular Brigadier builder. The type of
      * `this` in its context will equal the type of [Builder].
      */
-    fun brigadier(block: (@NodeDsl Builder).() -> Unit): CommandBuilder<Source, Builder> {
-        onToBrigadierBuilders += block
+    fun brigadier(block: (@NodeDsl Builder).(context: CommandBuildContext) -> Unit): CommandBuilder<Source, Builder> {
+        brigadierBuilders += block
         return this
     }
 
-    @Deprecated(
-        "This function name has a spelling mistake in it, use the brigadier function instead.",
-        ReplaceWith("brigadier { block() }")
-    )
-    fun brigardier(block: (@NodeDsl Builder).() -> Unit) = brigadier(block)
+    protected abstract fun createBuilder(context: CommandBuildContext): Builder
 
     /**
      * Converts this Kotlin command builder abstraction to an [ArgumentBuilder] of Brigadier.
      * Note that even though this function is public, you probably won't need it in most cases.
      */
     @PublishedApi
-    internal fun toBrigadier(): Builder {
-        onToBrigadierBuilders.forEach { it(builder) }
+    internal fun toBrigadier(context: CommandBuildContext): Builder {
+        val builder = createBuilder(context)
+
+        brigadierBuilders.forEach { it(builder, context) }
 
         children.forEach {
             @Suppress("UNCHECKED_CAST")
-            builder.then(it.toBrigadier() as ArgumentBuilder<Source, *>)
+            builder.then(it.toBrigadier(context) as ArgumentBuilder<Source, *>)
         }
+
         return builder
     }
 }
@@ -246,23 +265,26 @@ class LiteralCommandBuilder<Source : SharedSuggestionProvider>(
     private val name: String,
 ) : CommandBuilder<Source, LiteralArgumentBuilder<Source>>() {
 
-    override val builder = LiteralArgumentBuilder.literal<Source>(name)
+    override fun createBuilder(context: CommandBuildContext): LiteralArgumentBuilder<Source> =
+        LiteralArgumentBuilder.literal(name)
 }
 
 class ArgumentCommandBuilder<Source : SharedSuggestionProvider, T>(
     private val name: String,
-    private val type: ArgumentType<T>,
+    private val typeProvider: (CommandBuildContext) -> ArgumentType<T>,
 ) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>>() {
 
-    @PublishedApi
-    override val builder = RequiredArgumentBuilder.argument<Source, T>(name, type)
+    override fun createBuilder(context: CommandBuildContext): RequiredArgumentBuilder<Source, T> =
+        RequiredArgumentBuilder.argument(name, typeProvider(context))
 
     @PublishedApi
     internal inline fun suggests(
         crossinline block: (context: CommandContext<Source>, builder: SuggestionsBuilder) -> CompletableFuture<Suggestions>,
     ): ArgumentCommandBuilder<Source, T> {
-        builder.suggests { context, builder ->
-            block(context, builder)
+        brigadierBuilders += {
+            this.suggests { context, builder ->
+                block(context, builder)
+            }
         }
         return this
     }
@@ -433,6 +455,15 @@ class ArgumentCommandBuilder<Source : SharedSuggestionProvider, T>(
 }
 
 /**
+ * A wrapper around mutable command builders, which makes sure they don't get mutated anymore
+ * and can be registered.
+ */
+class RegistrableCommand<Source : SharedSuggestionProvider>(
+    @InternalFabrikApi
+    val commandBuilder: LiteralCommandBuilder<Source>,
+)
+
+/**
  * Creates a new command. Opens a [LiteralCommandBuilder].
  *
  * @param name the name of the root command
@@ -442,8 +473,8 @@ inline fun command(
     name: String,
     register: Boolean = true,
     builder: LiteralCommandBuilder<CommandSourceStack>.() -> Unit = {},
-): LiteralArgumentBuilder<CommandSourceStack> =
-    LiteralCommandBuilder<CommandSourceStack>(name).apply(builder).toBrigadier().apply {
+): RegistrableCommand<CommandSourceStack> =
+    RegistrableCommand(LiteralCommandBuilder<CommandSourceStack>(name).apply(builder)).apply {
         if (register)
             setupRegistrationCallback()
     }
@@ -461,7 +492,24 @@ inline fun clientCommand(
     name: String,
     register: Boolean = true,
     builder: LiteralCommandBuilder<FabricClientCommandSource>.() -> Unit = {},
-): LiteralArgumentBuilder<FabricClientCommandSource> =
-    LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder).toBrigadier().apply {
-        if (register) register()
+): RegistrableCommand<FabricClientCommandSource> =
+    RegistrableCommand(LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder)).apply {
+        if (register)
+            register()
     }
+
+private class DslAnnotations {
+    class TopLevel {
+        @Target(AnnotationTarget.FUNCTION, AnnotationTarget.TYPE, AnnotationTarget.CLASS)
+        @DslMarker
+        annotation class NodeDsl
+    }
+
+    class NodeLevel {
+        @DslMarker
+        annotation class RunsDsl
+
+        @DslMarker
+        annotation class SuggestsDsl
+    }
+}

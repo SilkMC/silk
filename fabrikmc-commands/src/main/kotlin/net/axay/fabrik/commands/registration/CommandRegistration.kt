@@ -1,27 +1,46 @@
 package net.axay.fabrik.commands.registration
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import net.axay.fabrik.commands.RegistrableCommand
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.core.RegistryAccess
 
 /**
- * Set up a callback which automatically registers
- * this command (serverside).
+ * Set up a callback which automatically registers this command on server startup.
  */
 fun LiteralArgumentBuilder<CommandSourceStack>.setupRegistrationCallback() {
-    CommandRegistrationCallback.EVENT.register { dispatcher, _ ->
+    CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
         dispatcher.register(this)
     }
 }
 
 /**
- * Register this command (clientside).
+ * Set up a callback which automatically registers this command on server startup.
+ */
+fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
+    CommandRegistrationCallback.EVENT.register { dispatcher, context, _ ->
+        dispatcher.register(this.commandBuilder.toBrigadier(context))
+    }
+}
+
+/**
+ * Register this command (client-side).
  */
 @Environment(EnvType.CLIENT)
 fun LiteralArgumentBuilder<FabricClientCommandSource>.register() {
     ClientCommandManager.DISPATCHER.register(this)
+}
+
+/**
+ * Register this command (client-side).
+ */
+@Environment(EnvType.CLIENT)
+fun RegistrableCommand<FabricClientCommandSource>.register() {
+    ClientCommandManager.DISPATCHER.register(this.commandBuilder.toBrigadier(CommandBuildContext(RegistryAccess.BUILTIN.get())))
 }
