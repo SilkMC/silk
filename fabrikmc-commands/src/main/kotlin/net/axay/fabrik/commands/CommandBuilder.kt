@@ -143,8 +143,7 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
         name: String,
         type: ArgumentType<T>,
         builder: SimpleArgumentBuilder<Source, T> = {},
-    ) =
-        ArgumentCommandBuilder<Source, T>(name) { type }
+    ) = ArgumentCommandBuilder<Source, T>(name) { type }
             .apply { builder { getArgument(name, T::class.java) } }
             .also { children += it }
 
@@ -163,8 +162,7 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
         name: String,
         noinline typeProvider: (CommandBuildContext) -> ArgumentType<T>,
         builder: SimpleArgumentBuilder<Source, T> = {},
-    ) =
-        ArgumentCommandBuilder<Source, T>(name, typeProvider)
+    ) = ArgumentCommandBuilder<Source, T>(name, typeProvider)
             .apply { builder { getArgument(name, T::class.java) } }
             .also { children += it }
 
@@ -183,8 +181,7 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
         name: String,
         crossinline parser: (StringReader) -> T,
         builder: SimpleArgumentBuilder<Source, T> = {},
-    ) =
-        ArgumentCommandBuilder<Source, T>(name) { ArgumentType { parser(it) } }
+    ) = ArgumentCommandBuilder<Source, T>(name) { ArgumentType { parser(it) } }
             .apply { builder { getArgument(name, T::class.java) } }
             .also { children += it }
 
