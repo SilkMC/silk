@@ -27,7 +27,13 @@ tasks {
 }
 
 kotlin.sourceSets.all {
-    languageSettings.optIn("kotlin.RequiresOptIn")
+    languageSettings {
+        optIn("kotlin.RequiresOptIn")
+
+        listOf("InternalFabrikApi", "DelicateFabrikApi").forEach {
+            optIn("net.axay.fabrik.core.annotations.${it}")
+        }
+    }
 }
 
 java {
