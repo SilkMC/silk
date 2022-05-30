@@ -22,6 +22,17 @@ internal object LifecycleTasksManager {
  * Returns a `Deferred<T>` which will be completed as soon as the server is
  * starting.
  */
+@Suppress("DeferredIsResult")
+inline fun <T> initWithServerSync(crossinline block: suspend CoroutineScope.(MinecraftServer) -> T) =
+    mcCoroutineScope.async {
+        LifecycleTasksManager.uninitializedServerDeferred.await()
+        block(Fabrik.currentServer!!)
+    }
+
+/**
+ * Returns a `Deferred<T>` which will be completed as soon as the server is
+ * starting.
+ */
 inline fun <T> initWithServerAsync(crossinline block: suspend CoroutineScope.(MinecraftServer) -> T) =
     fabrikCoroutineScope.async {
         LifecycleTasksManager.uninitializedServerDeferred.await()
