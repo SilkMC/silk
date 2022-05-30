@@ -1,6 +1,6 @@
 package net.axay.fabrik.persistence
 
-import net.axay.fabrik.core.logging.logFatal
+import net.axay.fabrik.core.logging.logWarning
 import net.axay.fabrik.nbt.serialization.Nbt
 import net.axay.fabrik.nbt.serialization.decodeFromNbtElement
 import net.axay.fabrik.nbt.serialization.encodeToNbtElement
@@ -18,7 +18,7 @@ inline fun <reified T : Any> compoundKey(id: ResourceLocation) =
     object : CompoundKey<T>(id) {
         init {
             if (T::class.isSubclassOf(Tag::class))
-                logFatal("Usage of compoundKey function with NbtElement as type detected! You probably want to use nbtElementCompoundKey instead.")
+                logWarning("Usage of compoundKey function with NbtElement / Tag as type detected! You probably want to use nbtElementCompoundKey instead.")
         }
 
         override fun convertValueToNbtElement(value: T) =
