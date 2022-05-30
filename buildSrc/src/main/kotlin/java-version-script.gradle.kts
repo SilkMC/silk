@@ -30,8 +30,10 @@ kotlin.sourceSets.all {
     languageSettings {
         optIn("kotlin.RequiresOptIn")
 
-        listOf("InternalFabrikApi", "DelicateFabrikApi").forEach {
-            optIn("net.axay.fabrik.core.annotations.${it}")
+        if (project.name.removePrefix(rootProject.name + "-") in BuildConstants.uploadModules) {
+            listOf("InternalFabrikApi", "DelicateFabrikApi").forEach {
+                optIn("net.axay.fabrik.core.annotations.${it}")
+            }
         }
     }
 }
