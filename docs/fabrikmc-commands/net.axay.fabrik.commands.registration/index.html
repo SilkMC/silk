@@ -1,76 +1,91 @@
+<!doctype html>
 <html>
-  <head>
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>net.axay.fabrik.commands.registration</title>
-</head><body><link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
-    <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><link href="../../styles/prism.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../scripts/main.js" defer></script><script type="text/javascript" src="../../scripts/prism.js" async></script><script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
 const savedDarkMode = storage ? JSON.parse(storage) : false
 if(savedDarkMode === true){
     document.getElementsByTagName("html")[0].classList.add("theme-dark")
 }</script>
-
-  
-    <div class="navigation-wrapper" id="navigation-wrapper">
-      <div id="leftToggler"><span class="icon-toggler"></span></div>
-      <div class="library-name"><a href="../../index.html"><span>fabrikmc</span></a></div>
-      <div>1.7.2</div>
-      <div class="pull-right d-flex"><button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
-      </div>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../index.html">
+<span>fabrikmc</span>            </a>    </div>
+    <div>
     </div>
-    <div id="container">
-      <div id="leftColumn">
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
         <div id="sideMenu"></div>
-      </div>
-      <div id="main">
-        <div class="main-content" id="content" pageids="fabrikmc-commands::net.axay.fabrik.commands.registration////PointingToDeclaration//1397106568">
-          <div class="breadcrumbs"><a href="../index.html">fabrikmc-commands</a>/<a href="index.html">net.axay.fabrik.commands.registration</a></div>
-          <div class="cover ">
-            <h1 class="cover"><span><span>Package</span></span> <span>net.</span><wbr><span>axay.</span><wbr><span>fabrik.</span><wbr><span>commands.</span><wbr><span><span>registration</span></span></h1>
-            <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-commands:dokkaHtmlPartial/main"><p class="paragraph">Utilities for command registration</p><h2 class=""> Command registration</h2><h3 class=""> Automatic registration (Recommended)</h3><p class="paragraph">Commands created using the <a href="../net.axay.fabrik.commands/command.html">command</a> or <a href="../net.axay.fabrik.commands/client-command.html">clientCommand</a> builder function <strong>will be registered automatically</strong> if called during initialization of your mod.</p><p class="paragraph">Note: this is only the case if the <code class="lang-kotlin">register</code> parameter is set to <code class="lang-kotlin">true</code>, which is the default</p><h4 class=""> Example for automatic registration</h4><p class="paragraph">First create the command somewhere</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val myCommand = command("mycommand") { }</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">If this value will be initialized during the startup phase of your mod, you are done.</p><p class="paragraph"><i>Otherwise</i>, you can register the command by mentioning it in the entrypoint of your mod</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">fun init() {<br>    myCommand // not needed, if the value is initialized anyways<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h3 class=""> Manual registration</h3><p class="paragraph">If you need to register it manually, call the <a href="setup-registration-callback.html">setupRegistrationCallback</a> (server-side) or <a href="register.html">register</a> (client-side) function by yourself.</p><h4 class=""> Example for manual registration</h4><p class="paragraph">First create the command somewhere</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">// note that register is set to false<br>val myCommand = command("mycommand", register = false) { }</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">After that, you can register the command by manually calling the registration function</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">fun init() {<br>    // on the server-side this has to be done using a callback<br>    myCommand.setupRegistrationCallback()<br>    // on the client-side this can be done immediately<br>    myCommand.register()<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-          </div>
-          <div class="tabbedcontent">
-            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
-            <div class="tabs-section-body">
-              <h2 class="">Functions</h2>
-              <div class="table" data-togglable="Functions"><a data-name="-1576505122%2FFunctions%2F1397106568" anchor-label="register" id="-1576505122%2FFunctions%2F1397106568" data-filterable-set=":fabrikmc-commands:dokkaHtmlPartial/main"></a>
-                <div class="table-row" data-filterable-current=":fabrikmc-commands:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-commands:dokkaHtmlPartial/main">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex">
-                        <div><a href="register.html"><span><span>register</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1576505122%2FFunctions%2F1397106568"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-commands:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><span data-unresolved-link="net.fabricmc.api/Environment///PointingToDeclaration/"><span class="token annotation">Environment</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span data-unresolved-link="net.fabricmc.api/EnvType.CLIENT///PointingToDeclaration/">EnvType.CLIENT</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword"></span><span class="token keyword">fun </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://maven.fabricmc.net/docs/fabric-api-0.47.8+1.18.2/net/fabricmc/fabric/api/client/command/v1/FabricClientCommandSource.html">FabricClientCommandSource</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Register this command (clientside).</p></div></div></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="-1012816202%2FFunctions%2F1397106568" anchor-label="setupRegistrationCallback" id="-1012816202%2FFunctions%2F1397106568" data-filterable-set=":fabrikmc-commands:dokkaHtmlPartial/main"></a>
-                <div class="table-row" data-filterable-current=":fabrikmc-commands:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-commands:dokkaHtmlPartial/main">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex">
-                        <div><a href="setup-registration-callback.html"><span>setup</span><wbr><span>Registration</span><wbr><span><span>Callback</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1012816202%2FFunctions%2F1397106568"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-commands:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="net.minecraft.commands/CommandSourceStack///PointingToDeclaration/">CommandSourceStack</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="setup-registration-callback.html"><span class="token function">setupRegistrationCallback</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Set up a callback which automatically registers this command (serverside).</p></div></div></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="fabrikmc-commands::net.axay.fabrik.commands.registration////PointingToDeclaration//1397106568">
+  <div class="breadcrumbs"><a href="../index.html">fabrikmc-commands</a><span class="delimiter">/</span><a href="index.html">net.axay.fabrik.commands.registration</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package</span></span> <span>net.</span><wbr><span>axay.</span><wbr><span>fabrik.</span><wbr><span>commands.</span><wbr><span><span>registration</span></span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-commands:dokkaHtmlPartial/main"><p class="paragraph">Utilities for command registration</p><h2 class=""> Command registration</h2><h3 class=""> Automatic registration (Recommended)</h3><p class="paragraph">Commands created using the <a href="../net.axay.fabrik.commands/command.html">command</a> or <a href="../net.axay.fabrik.commands/client-command.html">clientCommand</a> builder function <strong>will be registered automatically</strong> if called during initialization of your mod.</p><p class="paragraph">Note: this is only the case if the <code class="lang-kotlin">register</code> parameter is set to <code class="lang-kotlin">true</code>, which is the default</p><h4 class=""> Example for automatic registration</h4><p class="paragraph">First create the command somewhere</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val myCommand = command("mycommand") { }</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">If this value will be initialized during the startup phase of your mod, you are done.</p><p class="paragraph"><i>Otherwise</i>, you can register the command by mentioning it in the entrypoint of your mod</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">fun init() {<br>    myCommand // not needed, if the value is initialized anyways<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h3 class=""> Manual registration</h3><p class="paragraph">If you need to register it manually, call the <a href="setup-registration-callback.html">setupRegistrationCallback</a> (server-side) or <a href="register.html">register</a> (client-side) function by yourself.</p><h4 class=""> Example for manual registration</h4><p class="paragraph">First create the command somewhere</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">// note that register is set to false<br>val myCommand = command("mycommand", register = false) { }</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">After that, you can register the command by manually calling the registration function</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">fun init() {<br>    // on the server-side this has to be done using a callback<br>    myCommand.setupRegistrationCallback()<br>    // on the client-side this can be done immediately<br>    myCommand.register()<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="407342240%2FFunctions%2F1397106568" anchor-label="register" id="407342240%2FFunctions%2F1397106568" data-filterable-set=":fabrikmc-commands:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":fabrikmc-commands:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-commands:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="register.html"><span><span>register</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="407342240%2FFunctions%2F1397106568"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-commands:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><span data-unresolved-link="net.fabricmc.api/Environment///PointingToDeclaration/"><span class="token annotation">Environment</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span data-unresolved-link="net.fabricmc.api/EnvType.CLIENT///PointingToDeclaration/">EnvType.CLIENT</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword"></span><span class="token keyword">fun </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://maven.fabricmc.net/docs/fabric-api-0.53.4+1.19/net/fabricmc/fabric/api/client/command/v2/FabricClientCommandSource.html">FabricClientCommandSource</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><span data-unresolved-link="net.fabricmc.api/Environment///PointingToDeclaration/"><span class="token annotation">Environment</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span data-unresolved-link="net.fabricmc.api/EnvType.CLIENT///PointingToDeclaration/">EnvType.CLIENT</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="../net.axay.fabrik.commands/-registrable-command/index.html">RegistrableCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://maven.fabricmc.net/docs/fabric-api-0.53.4+1.19/net/fabricmc/fabric/api/client/command/v2/FabricClientCommandSource.html">FabricClientCommandSource</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Register this command (client-side).</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
-        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+<a data-name="705256510%2FFunctions%2F1397106568" anchor-label="setupRegistrationCallback" id="705256510%2FFunctions%2F1397106568" data-filterable-set=":fabrikmc-commands:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":fabrikmc-commands:dokkaHtmlPartial/main" data-filterable-set=":fabrikmc-commands:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="setup-registration-callback.html"><span>setup</span><wbr><span>Registration</span><wbr><span><span>Callback</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="705256510%2FFunctions%2F1397106568"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":fabrikmc-commands:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="net.minecraft.commands/CommandSourceStack///PointingToDeclaration/">CommandSourceStack</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="setup-registration-callback.html"><span class="token function">setupRegistrationCallback</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../net.axay.fabrik.commands/-registrable-command/index.html">RegistrableCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="net.minecraft.commands/CommandSourceStack///PointingToDeclaration/">CommandSourceStack</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="setup-registration-callback.html"><span class="token function">setupRegistrationCallback</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Set up a callback which automatically registers this command on server startup.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  
-</body></html>
+  </div>
+</div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        </div>
+    </div>
+</div>
 
+</body></html>
 
