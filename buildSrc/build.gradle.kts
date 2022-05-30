@@ -15,7 +15,13 @@ repositories {
 dependencies {
     fun pluginDep(id: String, version: String) = "${id}:${id}.gradle.plugin:${version}"
 
-    implementation(kotlin("gradle-plugin", embeddedKotlinVersion))
+    val kotlinVersion = "1.6.21"
+    val dokkaVersion = "1.6.21"
+
+    compileOnly(kotlin("gradle-plugin", embeddedKotlinVersion))
+    runtimeOnly(kotlin("gradle-plugin", kotlinVersion))
+    compileOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
+    runtimeOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
 
     implementation(pluginDep("fabric-loom", "0.12-SNAPSHOT"))
     implementation(pluginDep("io.github.juuxel.loom-quiltflower", "1.7.2"))
@@ -26,7 +32,6 @@ dependencies {
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.3.6"))
     implementation(pluginDep("xyz.jpenilla.run-paper", "1.0.6"))
 
-    val dokkaVersion = "1.6.21"
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     implementation("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
