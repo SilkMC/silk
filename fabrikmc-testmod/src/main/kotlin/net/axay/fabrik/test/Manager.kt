@@ -4,11 +4,10 @@ import net.axay.fabrik.commands.LiteralCommandBuilder
 import net.axay.fabrik.commands.clientCommand
 import net.axay.fabrik.commands.command
 import net.axay.fabrik.test.commands.*
-import net.axay.fabrik.test.compose.composeCommand
 import net.axay.fabrik.test.network.NetworkTest
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.commands.CommandSourceStack
 
 object Manager : ModInitializer, ClientModInitializer {
@@ -24,7 +23,6 @@ object Manager : ModInitializer, ClientModInitializer {
         persistenceTestCommand
         textTestCommand
         sideboardCommand
-        composeCommand
         NetworkTest.initServer()
 
         command("testmod") {
