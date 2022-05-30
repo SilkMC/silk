@@ -9,7 +9,7 @@ import net.axay.fabrik.igui.elements.*
 import net.axay.fabrik.igui.events.GuiClickEvent
 import net.axay.fabrik.igui.events.GuiCloseEvent
 import net.axay.fabrik.igui.observable.AbstractGuiList
-import net.minecraft.network.chat.TextComponent
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import java.util.*
 import kotlin.random.Random
@@ -47,7 +47,7 @@ private class DslAnnotations {
  */
 inline fun igui(
     type: GuiType,
-    title: TextComponent,
+    title: Component,
     defaultPageKey: Any,
     builder: GuiBuilder.() -> Unit,
 ) = GuiBuilder(type, title, defaultPageKey).apply(builder).build()
@@ -55,7 +55,7 @@ inline fun igui(
 @GuiDsl
 class GuiBuilder(
     val type: GuiType,
-    val title: TextComponent,
+    val title: Component,
     val defaultPageKey: Any,
 ) {
     @PublishedApi

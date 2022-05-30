@@ -4,7 +4,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import net.axay.fabrik.core.task.mcCoroutineScope
 import net.axay.fabrik.igui.mixin.SimpleContainerAccessor
-import net.minecraft.network.chat.TextComponent
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.MenuProvider
 import net.minecraft.world.SimpleContainer
@@ -31,7 +31,7 @@ fun ServerPlayer.openGui(gui: Gui, pageKey: Any? = null): Job {
 
 class Gui(
     val guiType: GuiType,
-    val title: TextComponent,
+    val title: Component,
     val pagesByKey: Map<String, GuiPage>,
     val pagesByNumber: Map<Int, GuiPage>,
     val defaultPageKey: String,
