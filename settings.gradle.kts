@@ -7,13 +7,6 @@ pluginManagement {
         gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
-
-    val kotlinVersion = "1.6.21"
-    plugins {
-        kotlin("jvm") version kotlinVersion
-        kotlin("plugin.serialization") version kotlinVersion
-        id("org.jetbrains.dokka") version kotlinVersion
-    }
 }
 
 include("$projectName-all")
