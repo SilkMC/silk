@@ -4,11 +4,10 @@ import com.mojang.brigadier.tree.ArgumentCommandNode
 import com.mojang.brigadier.tree.CommandNode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.mockk
 import net.axay.fabrik.commands.RegistrableCommand
 import net.axay.fabrik.commands.command
-import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.SharedSuggestionProvider
-import net.minecraft.core.RegistryAccess
 
 class CommandStructureTest : FunSpec({
     context("built command should have correct structure") {
@@ -87,10 +86,10 @@ class CommandStructureTest : FunSpec({
     }
 })
 
-private fun RegistrableCommand<*>.extract() =
-    commandBuilder.toBrigadier(CommandBuildContext(RegistryAccess.ImmutableRegistryAccess(emptyMap())))
+fun RegistrableCommand<*>.extract() =
+    commandBuilder.toBrigadier(mockk())
 
-private fun <S : SharedSuggestionProvider> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
+fun <S : SharedSuggestionProvider> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
     fun printWithDepth(message: Any) = println((" ".repeat(depth * 2) + message).also { stringBuilder.appendLine(it) })
 
     printWithDepth("-> ${commandNode.name}")
@@ -107,4 +106,4 @@ private fun <S : SharedSuggestionProvider> printCommand(commandNode: CommandNode
     return stringBuilder.toString().trim()
 }
 
-private fun doNothing() = Unit
+fun doNothing() = Unit

@@ -22,7 +22,6 @@ class LiteralTextTest : FunSpec({
                     }
 
                     text.string shouldBe baseText
-                    text.contents shouldBe baseText
                 }
             }
         }
@@ -41,7 +40,6 @@ class LiteralTextTest : FunSpec({
                     }
 
                     text.string shouldBe "$baseText$additionalText"
-                    text.contents shouldBe baseText
                 }
             }
         }
@@ -115,7 +113,7 @@ class LiteralTextTest : FunSpec({
                 siblings[4].siblings.first().siblings.size shouldBe 1
 
                 val nestedSubText = siblings[4].siblings.first().siblings.first()
-                nestedSubText.contents shouldBe nestedSubString
+                nestedSubText.string shouldBe nestedSubString
 
                 nestedSubText.style.isBold shouldBe true
                 nestedSubText.style.color?.value shouldBe redColor
