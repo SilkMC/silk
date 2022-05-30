@@ -4,36 +4,20 @@ import com.mojang.brigadier.tree.ArgumentCommandNode
 import com.mojang.brigadier.tree.CommandNode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import net.axay.fabrik.commands.RegistrableCommand
 import net.axay.fabrik.commands.command
+import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.SharedSuggestionProvider
+import net.minecraft.core.RegistryAccess
 
 class CommandStructureTest : FunSpec({
-    fun <S : SharedSuggestionProvider> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
-        fun printWithDepth(message: Any) = println((" ".repeat(depth * 2) + message).also { stringBuilder.appendLine(it) })
-
-        printWithDepth("-> ${commandNode.name}")
-        commandNode.command?.let { printWithDepth(" |- has executor") }
-        if (commandNode is ArgumentCommandNode<S, *>) {
-            commandNode.customSuggestions?.let { printWithDepth(" |- argument type of ${commandNode.type::class.simpleName}") }
-            commandNode.customSuggestions?.let { printWithDepth(" |- has suggestions") }
-        }
-
-        commandNode.children.forEach {
-            printCommand(it, depth + 1, stringBuilder)
-        }
-
-        return stringBuilder.toString().trim()
-    }
-
-    fun doNothing() = Unit
-
     context("built command should have correct structure") {
         context("scoped declaration style") {
             context("simple command") {
                 test("command without subcommands") {
                     val command = command("testcommand") {
                         runs { doNothing() }
-                    }
+                    }.extract()
                     printCommand(command.build()) shouldBe """
                         -> testcommand
                          |- has executor
@@ -48,7 +32,7 @@ class CommandStructureTest : FunSpec({
                         literal("subcommandtwo") {
                             runs { doNothing() }
                         }
-                    }
+                    }.extract()
                     printCommand(command.build()) shouldBe """
                         -> testcommand
                           -> subcommandone
@@ -72,7 +56,7 @@ class CommandStructureTest : FunSpec({
                     literal("subcommandtwo") {
                         runs { doNothing() }
                     }
-                }
+                }.extract()
                 printCommand(command.build()) shouldBe """
                     -> testcommand
                       -> subcommandone
@@ -91,7 +75,7 @@ class CommandStructureTest : FunSpec({
             val command = command("testcommand") {
                 literal("subcommandone") runs { doNothing() }
                 literal("subcommandtwo") runs { doNothing() }
-            }
+            }.extract()
             printCommand(command.build()) shouldBe """
                 -> testcommand
                   -> subcommandone
@@ -102,3 +86,25 @@ class CommandStructureTest : FunSpec({
         }
     }
 })
+
+private fun RegistrableCommand<*>.extract() =
+    commandBuilder.toBrigadier(CommandBuildContext(RegistryAccess.ImmutableRegistryAccess(emptyMap())))
+
+private fun <S : SharedSuggestionProvider> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
+    fun printWithDepth(message: Any) = println((" ".repeat(depth * 2) + message).also { stringBuilder.appendLine(it) })
+
+    printWithDepth("-> ${commandNode.name}")
+    commandNode.command?.let { printWithDepth(" |- has executor") }
+    if (commandNode is ArgumentCommandNode<S, *>) {
+        commandNode.customSuggestions?.let { printWithDepth(" |- argument type of ${commandNode.type::class.simpleName}") }
+        commandNode.customSuggestions?.let { printWithDepth(" |- has suggestions") }
+    }
+
+    commandNode.children.forEach {
+        printCommand(it, depth + 1, stringBuilder)
+    }
+
+    return stringBuilder.toString().trim()
+}
+
+private fun doNothing() = Unit
