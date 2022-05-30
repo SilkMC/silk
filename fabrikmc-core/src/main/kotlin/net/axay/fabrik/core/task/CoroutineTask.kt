@@ -1,11 +1,13 @@
 package net.axay.fabrik.core.task
 
 import kotlinx.coroutines.*
+import net.axay.fabrik.core.annotations.DelicateFabrikApi
 
 /**
  * A CoroutineScope using the "Default" dispatcher
  * of kotlinx.coroutines.
  */
+@DelicateFabrikApi
 val fabrikCoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
 /**
