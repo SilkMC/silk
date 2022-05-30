@@ -1,15 +1,16 @@
 package net.axay.fabrik.igui.elements
 
 import kotlinx.coroutines.cancel
-import net.axay.fabrik.core.task.coroutineTask
+import net.axay.fabrik.core.task.mcCoroutineTask
 import net.axay.fabrik.igui.GuiCompound
 import net.axay.fabrik.igui.GuiIcon
+import kotlin.time.Duration
 
 class GuiButtonCompoundScroll(
     icon: GuiIcon,
     val compound: GuiCompound<*>,
     val reverse: Boolean,
-    val speed: Long,
+    val speed: Duration,
     val scrollDistance: Int,
     val scrollTimes: Int,
 ) : GuiButton(
@@ -18,9 +19,9 @@ class GuiButtonCompoundScroll(
         suspend fun scroll() = if (reverse) compound.scroll(-scrollDistance) else compound.scroll(scrollDistance)
 
         if (scrollTimes > 1) {
-            coroutineTask(
+            mcCoroutineTask(
                 period = speed,
-                howOften = scrollTimes.toLong()
+                howOften = scrollTimes.toLong(),
             ) {
                 if (!scroll()) cancel()
             }

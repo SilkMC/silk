@@ -1,5 +1,6 @@
 package net.axay.fabrik.igui
 
+import net.axay.fabrik.core.kotlin.ticks
 import net.axay.fabrik.igui.DslAnnotations.EventLevel.GuiEventDsl
 import net.axay.fabrik.igui.DslAnnotations.PageLevel.GuiCompoundDsl
 import net.axay.fabrik.igui.DslAnnotations.PageLevel.GuiPageDsl
@@ -12,6 +13,7 @@ import net.minecraft.network.chat.TextComponent
 import net.minecraft.world.item.ItemStack
 import java.util.*
 import kotlin.random.Random
+import kotlin.time.Duration
 
 private class DslAnnotations {
     class TopLevel {
@@ -222,12 +224,12 @@ class GuiBuilder(
             icon: GuiIcon,
             compound: GuiCompound<*>,
             reverse: Boolean,
-            speed: Int = 50,
+            speed: Duration = 1.ticks,
             scrollDistance: Int = compound.compoundWidth,
             scrollTimes: Int = compound.compoundHeight,
         ) {
             element(slots, GuiButtonCompoundScroll(
-                icon, compound, reverse, speed.toLong(), scrollDistance, scrollTimes
+                icon, compound, reverse, speed, scrollDistance, scrollTimes
             ))
         }
 
@@ -241,11 +243,11 @@ class GuiBuilder(
             slots: GuiSlotCompound,
             icon: GuiIcon,
             compound: GuiCompound<*>,
-            speed: Int = 50,
+            speed: Duration = 1.ticks,
             scrollTimes: Int = compound.compoundHeight,
         ) {
             element(slots, GuiButtonCompoundScroll(
-                icon, compound, false, speed.toLong(), compound.compoundWidth, scrollTimes
+                icon, compound, false, speed, compound.compoundWidth, scrollTimes
             ))
         }
 
@@ -259,11 +261,11 @@ class GuiBuilder(
             slots: GuiSlotCompound,
             icon: GuiIcon,
             compound: GuiCompound<*>,
-            speed: Int = 50,
+            speed: Duration = 1.ticks,
             scrollTimes: Int = compound.compoundHeight,
         ) {
             element(slots, GuiButtonCompoundScroll(
-                icon, compound, true, speed.toLong(), compound.compoundWidth, scrollTimes
+                icon, compound, true, speed, compound.compoundWidth, scrollTimes
             ))
         }
 
