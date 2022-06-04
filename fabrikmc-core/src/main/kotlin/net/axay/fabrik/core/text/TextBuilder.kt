@@ -28,6 +28,7 @@ class LiteralTextBuilder(
     var italic: Boolean? = null
     var underline: Boolean? = null
     var strikethrough: Boolean? = null
+    var obfuscated: Boolean? = null
 
     /**
      * The text color.
@@ -52,6 +53,7 @@ class LiteralTextBuilder(
             .withItalic(italic)
             .let { if (underline == true) it.applyFormat(ChatFormatting.UNDERLINE) else it }
             .let { if (strikethrough == true) it.applyFormat(ChatFormatting.STRIKETHROUGH) else it }
+            .let { if (obfuscated == true) it.applyFormat(ChatFormatting.OBFUSCATED) else it }
             .let { if (color != null) it.withColor(TextColor.fromRgb(color ?: 0xFFFFFF)) else it }
             .withClickEvent(clickEvent)
             .withHoverEvent(hoverEvent)
