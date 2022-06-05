@@ -38,6 +38,17 @@ fun ItemStack.setLore(text: Collection<Component>) {
 inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack =
     setHoverName(literalText(baseText, builder))
 
+fun ItemStack.setSkullTexture(texture: String) {
+    orCreateTag.put("SkullOwner", nbtCompound {
+        put("Id", UUID.randomUUID().toString())
+        compound("Properties"){
+            compound("textures"){
+                put("Value", texture)
+            }
+        }
+    })
+}
+    
 /**
  * Sets the given potion for this [ItemStack].
  *
