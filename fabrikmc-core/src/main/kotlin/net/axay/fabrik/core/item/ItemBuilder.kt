@@ -9,6 +9,13 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.alchemy.Potion
 import net.minecraft.world.item.alchemy.PotionUtils
 import net.minecraft.world.level.ItemLike
+import net.axay.fabrik.nbt.dsl.nbtCompound
+import net.axay.fabrik.nbt.dsl.nbtList
+import net.axay.fabrik.nbt.toNbt
+import net.axay.fabrik.core.item.itemStack
+import net.minecraft.world.item.Items
+import net.minecraft.world.item.ItemStack
+import java.util.UUID
 
 /**
  * A utility to function for building more complex
@@ -36,8 +43,21 @@ fun ItemStack.setLore(text: Collection<Component>) {
  * the item stack.
  */
 inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack =
-    setHoverName(literalText(baseText, builder))
-
+    setHoverName(literalText(baseText, builder))    
+    
+fun ItemStack.setSkullTexture(texture: String) {  
+    orCreateTag.put("SkullOwner", nbtCompound {
+        put("Id", UUID.randomUUID().toNbt())
+        put("Properties", nbtCompound {
+            put("textures", nbtList {
+                add(nbtCompound {
+                    put("Value", base64)
+                })
+            })
+        })
+    })
+}
+    
 /**
  * Sets the given potion for this [ItemStack].
  *
