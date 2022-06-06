@@ -11,6 +11,10 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+dependencies{
+    api(modProject(":${rootProject.name}-nbt"))
+}
+
 val modName by extra("$projectTitle Core")
 val modEntrypoints by extra(linkedMapOf(
     "main" to listOf("net.axay.fabrik.core.internal.FabrikKt::init"),
