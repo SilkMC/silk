@@ -17,7 +17,6 @@ import net.axay.fabrik.commands.DslAnnotations.NodeLevel.RunsDsl
 import net.axay.fabrik.commands.DslAnnotations.NodeLevel.SuggestsDsl
 import net.axay.fabrik.commands.DslAnnotations.TopLevel.NodeDsl
 import net.axay.fabrik.commands.internal.ArgumentTypeUtils
-import net.axay.fabrik.commands.registration.register
 import net.axay.fabrik.commands.registration.setupRegistrationCallback
 import net.axay.fabrik.core.annotations.InternalFabrikApi
 import net.axay.fabrik.core.task.fabrikCoroutineScope
@@ -492,7 +491,7 @@ inline fun clientCommand(
 ): RegistrableCommand<FabricClientCommandSource> =
     RegistrableCommand(LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder)).apply {
         if (register)
-            register()
+            setupRegistrationCallback()
     }
 
 private class DslAnnotations {

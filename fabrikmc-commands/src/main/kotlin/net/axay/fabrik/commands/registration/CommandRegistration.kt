@@ -4,12 +4,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.axay.fabrik.commands.RegistrableCommand
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
-import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
-import net.minecraft.core.RegistryAccess
 
 /**
  * Set up a callback which automatically registers this command on server startup.
@@ -29,18 +27,33 @@ fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
     }
 }
 
-/**
- * Register this command (client-side).
- */
 @Environment(EnvType.CLIENT)
-fun LiteralArgumentBuilder<FabricClientCommandSource>.register() {
-    ClientCommandManager.DISPATCHER.register(this)
+@JvmName("setupRegistrationCallbackClient")
+fun LiteralArgumentBuilder<FabricClientCommandSource>.setupRegistrationCallback() {
+    ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
+        dispatcher.register(this)
+    }
 }
 
 /**
  * Register this command (client-side).
  */
 @Environment(EnvType.CLIENT)
-fun RegistrableCommand<FabricClientCommandSource>.register() {
-    ClientCommandManager.DISPATCHER.register(this.commandBuilder.toBrigadier(CommandBuildContext(RegistryAccess.BUILTIN.get())))
+@JvmName("setupRegistrationCallbackClient")
+fun RegistrableCommand<FabricClientCommandSource>.setupRegistrationCallback() {
+    ClientCommandRegistrationCallback.EVENT.register { dispatcher, context ->
+        dispatcher.register(this.commandBuilder.toBrigadier(context))
+    }
 }
+
+@Deprecated(
+    message = "Registering client commands is now callback based as well.",
+    replaceWith = ReplaceWith("setupRegistrationCallback()")
+)
+fun LiteralArgumentBuilder<FabricClientCommandSource>.register() = setupRegistrationCallback()
+
+@Deprecated(
+    message = "Registering client commands is now callback based as well.",
+    replaceWith = ReplaceWith("setupRegistrationCallback()")
+)
+fun RegistrableCommand<FabricClientCommandSource>.register() = setupRegistrationCallback()
