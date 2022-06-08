@@ -20,8 +20,8 @@ dependencies {
 
     compileOnly(kotlin("gradle-plugin", embeddedKotlinVersion))
     runtimeOnly(kotlin("gradle-plugin", kotlinVersion))
-    compileOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
-    runtimeOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
+    compileOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
+    runtimeOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
 
     implementation(pluginDep("fabric-loom", "0.12-SNAPSHOT"))
     implementation(pluginDep("io.github.juuxel.loom-quiltflower", "1.7.2"))
