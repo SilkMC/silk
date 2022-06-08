@@ -14,13 +14,13 @@ object BuildConstants {
 
     val authors = listOf("jakobkmar", "_F0X")
 
-    const val majorMinecraftVersion = "1.18"
+    const val majorMinecraftVersion = "1.19"
 
     // check these values here: https://axay.net/mcdev
-    const val minecraftVersion = "1.19-pre3"
-    const val quiltMappingsVersion = "${minecraftVersion}+build.2:v2"
-    const val fabricLoaderVersion = "0.14.6"
-    const val fabricApiVersion = "0.53.4+1.19"
+    const val minecraftVersion = "1.19"
+    const val quiltMappingsVersion = "${minecraftVersion}+build.1:v2"
+    const val fabricLoaderVersion = "0.14.7"
+    const val fabricApiVersion = "0.55.2+1.19"
     const val fabricLanguageKotlinVersion = "1.7.4+kotlin.1.6.21"
 
     const val kotestVersion = "5.3.0"
