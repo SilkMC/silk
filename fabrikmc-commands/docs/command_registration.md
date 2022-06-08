@@ -49,9 +49,6 @@ After that, you can register the command by manually calling the registration fu
 
 ```kotlin
 fun init() {
-    // on the server-side this has to be done using a callback
     myCommand.setupRegistrationCallback()
-    // on the client-side this can be done immediately
-    myCommand.register()
 }
 ```
