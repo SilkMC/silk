@@ -8,7 +8,6 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.Potions
 import net.minecraft.world.item.enchantment.Enchantments
 
-
 private val items = listOf(
     itemStack(Items.NETHERITE_SWORD) {
         enchant(Enchantments.SHARPNESS, 2)
