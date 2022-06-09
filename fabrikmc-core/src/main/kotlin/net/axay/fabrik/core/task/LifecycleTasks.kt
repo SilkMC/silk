@@ -3,6 +3,7 @@ package net.axay.fabrik.core.task
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import net.axay.fabrik.core.Fabrik
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.MinecraftServer
@@ -24,9 +25,11 @@ internal object LifecycleTasksManager {
  */
 @Suppress("DeferredIsResult")
 inline fun <T> initWithServerSync(crossinline block: suspend CoroutineScope.(MinecraftServer) -> T) =
-    mcCoroutineScope.async {
+    fabrikCoroutineScope.async {
         LifecycleTasksManager.uninitializedServerDeferred.await()
-        block(Fabrik.currentServer!!)
+        mcCoroutineScope.launch {
+            block(Fabrik.currentServer!!)
+        }
     }
 
 /**
