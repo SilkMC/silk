@@ -1,7 +1,7 @@
 import BuildConstants.projectTitle
 
 plugins {
-    `java-version-script`
+    `kotlin-project-script`
     `mod-build-script`
     `mod-upload-script`
 }

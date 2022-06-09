@@ -14,22 +14,20 @@ repositories {
 tasks {
     withType<JavaCompile> {
         options.apply {
-            release.set(11)
+            release.set(17)
             encoding = "UTF-8"
         }
     }
 
     withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = "11"
+            jvmTarget = "17"
         }
     }
 }
 
 kotlin.sourceSets.all {
     languageSettings {
-        optIn("kotlin.RequiresOptIn")
-
         if (project.name.removePrefix(rootProject.name + "-") in BuildConstants.uploadModules) {
             listOf("InternalFabrikApi", "DelicateFabrikApi").forEach {
                 optIn("net.axay.fabrik.core.annotations.${it}")

@@ -3,7 +3,7 @@ import BuildConstants.projectTitle
 description = "FabrikMC Commands provides a Kotlin DSL for Brigadier"
 
 plugins {
-    `java-version-script`
+    `kotlin-project-script`
     `mod-build-script`
     `project-publish-script`
     `kotest-script`

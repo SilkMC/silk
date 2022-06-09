@@ -3,7 +3,7 @@ import BuildConstants.projectTitle
 description = "FabrikMC Persistence adds class based persistent storage to entities, worlds and more"
 
 plugins {
-    `java-version-script`
+    `kotlin-project-script`
     `mod-build-script`
     `project-publish-script`
     `dokka-script`

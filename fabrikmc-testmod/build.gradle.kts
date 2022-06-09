@@ -3,7 +3,7 @@ import BuildConstants.projectTitle
 description = "FabrikMC Testmod provides examples usages of FabrikMC features"
 
 plugins {
-    `java-version-script`
+    `kotlin-project-script`
     `mod-build-script`
     kotlin("plugin.serialization")
 }

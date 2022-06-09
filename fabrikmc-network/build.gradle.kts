@@ -3,7 +3,7 @@ import BuildConstants.projectTitle
 description = "FabrikMC Network adds easy-to-use custom packet support with kotlinx.serialization"
 
 plugins {
-    `java-version-script`
+    `kotlin-project-script`
     `mod-build-script`
     `project-publish-script`
     `dokka-script`

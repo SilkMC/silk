@@ -3,7 +3,7 @@ import BuildConstants.projectTitle
 description = "FabrikMC Inventory GUI provides a high-level server-side GUI builder DSL for Kotlin"
 
 plugins {
-    `java-version-script`
+    `kotlin-project-script`
     `mod-build-script`
     `project-publish-script`
     `dokka-script`
