@@ -100,5 +100,18 @@ fun ItemStack.setSkullTexture(
     })
 }
 
+/**
+ * Configures the `SkullOwner` nbt tag to represent the given player
+ * (specified via [uuid]). The [name] can be anything, but it *should* match
+ * the actual player name.
+ *
+ * ```kotlin
+ * skullStack.setSkullPlayer(server.playerList.getPlayerByName("Notch"))
+ * ```
+ */
+fun ItemStack.setSkullPlayer(player: ServerPlayer) {
+    val gameProfile = player.gameProfile
+    orCreateTag.put("SkullOwner", CompoundTag().apply {
+        NbtUtils.writeGameProfile(this, gameProfile)
     })
 }
