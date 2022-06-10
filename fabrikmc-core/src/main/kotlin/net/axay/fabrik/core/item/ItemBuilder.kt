@@ -4,7 +4,6 @@ import net.axay.fabrik.core.text.LiteralTextBuilder
 import net.axay.fabrik.core.text.literalText
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
-import net.minecraft.nbt.NbtUtils
 import net.minecraft.nbt.StringTag
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
@@ -90,13 +89,17 @@ fun ItemStack.setSkullTexture(
 ) {
     orCreateTag.put("SkullOwner", CompoundTag().apply {
         putUUID("Id", uuid)
-        getCompound("Properties").apply {
-            put("textures", ListTag().apply {
-                add(CompoundTag().apply {
-                    putString("Value", texture)
-                })
+
+        val propsCompound = if (this.contains("Properties"))
+            this.getCompound("Properties")
+        else
+            CompoundTag().also { put("Properties", it) }
+
+        propsCompound.put("textures", ListTag().apply {
+            add(CompoundTag().apply {
+                putString("Value", texture)
             })
-        }
+        })
     })
 }
 
@@ -110,8 +113,7 @@ fun ItemStack.setSkullTexture(
  * ```
  */
 fun ItemStack.setSkullPlayer(player: ServerPlayer) {
-    val gameProfile = player.gameProfile
-    orCreateTag.put("SkullOwner", CompoundTag().apply {
-        NbtUtils.writeGameProfile(this, gameProfile)
-    })
+    player.gameProfile.properties.get("textures")
+        .map { it.value }
+        .forEach(::setSkullTexture)
 }
