@@ -37,6 +37,8 @@ object ArgumentTypeUtils {
             Double::class -> DoubleArgumentType.doubleArg()
             String::class -> StringArgumentType.string()
 
+            UUID::class -> UuidArgument.uuid()
+
             Coordinates::class -> BlockPosArgument.blockPos()
             BlockInput::class -> BlockStateArgument.block(context)
             ChatFormatting::class -> ColorArgument.color()
@@ -48,7 +50,7 @@ object ArgumentTypeUtils {
             ParticleOptions::class -> ParticleArgument.particle()
             MobEffect::class -> MobEffectArgument.effect()
             Component::class -> ComponentArgument.textComponent()
-            UUID::class -> UuidArgument.uuid()
+            GameProfileArgument.Result::class -> GameProfileArgument.gameProfile()
 
             else -> throw IllegalArgumentException("The specified type '${T::class.qualifiedName}' does not have corresponding default argument type")
         }
