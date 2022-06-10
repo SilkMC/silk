@@ -23,6 +23,7 @@ object BuildConstants {
     const val fabricApiVersion = "0.55.3+1.19"
     const val fabricLanguageKotlinVersion = "1.8.0+kotlin.1.7.0"
 
+    // TODO: update to 5.4 when released for compatiblity with Kotlin 1.7
     const val kotestVersion = "5.3.0"
     const val mockkVersion = "1.12.4"
 

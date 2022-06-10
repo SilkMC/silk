@@ -13,16 +13,16 @@ internal val byteSerializer = serializer<Byte>()
 internal val intSerializer = serializer<Int>()
 internal val longSerializer = serializer<Long>()
 
-private val listLikeSerializerClass = Class.forName("kotlinx.serialization.internal.ListLikeSerializer").kotlin
+private val collectionLikeSerializerClass = Class.forName("kotlinx.serialization.internal.CollectionLikeSerializer").kotlin
 
 @Suppress("unchecked_cast")
-private val listLikeElementSerializerField = listLikeSerializerClass.declaredMemberProperties
+private val collectionLikeElementSerializerField = collectionLikeSerializerClass.declaredMemberProperties
     .first { it.name == "elementSerializer" }
     .apply { isAccessible = true } as KProperty1<Any, KSerializer<*>>
 
 internal val Any.elementSerializer: KSerializer<*>?
-    get() = if (listLikeSerializerClass.isInstance(this)) {
-        listLikeElementSerializerField.get(this)
+    get() = if (collectionLikeSerializerClass.isInstance(this)) {
+        collectionLikeElementSerializerField.get(this)
     } else {
         null
     }
