@@ -1,7 +1,7 @@
 package net.axay.silk.core.annotations
 
 @Retention(value = AnnotationRetention.BINARY)
-@Target(AnnotationTarget.TYPEALIAS, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS, AnnotationTarget.VALUE_PARAMETER)
+@Target(AnnotationTarget.TYPEALIAS, AnnotationTarget.CLASS, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
 @RequiresOptIn(
     message = "This is an internal Silk API that " +
             "should not be used from the outside. No compatibility guarantees are provided. " +

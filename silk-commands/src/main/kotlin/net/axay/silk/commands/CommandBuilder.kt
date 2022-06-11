@@ -143,8 +143,8 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
         type: ArgumentType<T>,
         builder: SimpleArgumentBuilder<Source, T> = {},
     ) = ArgumentCommandBuilder<Source, T>(name) { type }
-            .apply { builder { getArgument(name, T::class.java) } }
-            .also { children += it }
+        .apply { builder { getArgument(name, T::class.java) } }
+        .also { children += it }
 
     /**
      * Adds a new argument to this command. This variant of the argument function allows you to pass and argument
@@ -162,8 +162,8 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
         noinline typeProvider: (CommandBuildContext) -> ArgumentType<T>,
         builder: SimpleArgumentBuilder<Source, T> = {},
     ) = ArgumentCommandBuilder<Source, T>(name, typeProvider)
-            .apply { builder { getArgument(name, T::class.java) } }
-            .also { children += it }
+        .apply { builder { getArgument(name, T::class.java) } }
+        .also { children += it }
 
     /**
      * Adds a new argument to this command. This variant of the argument function you to specifiy the
@@ -181,8 +181,8 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
         crossinline parser: (StringReader) -> T,
         builder: SimpleArgumentBuilder<Source, T> = {},
     ) = ArgumentCommandBuilder<Source, T>(name) { ArgumentType { parser(it) } }
-            .apply { builder { getArgument(name, T::class.java) } }
-            .also { children += it }
+        .apply { builder { getArgument(name, T::class.java) } }
+        .also { children += it }
 
     /**
      * Adds a new argument to this command. The [ArgumentType] will be resolved using the reified
@@ -455,7 +455,7 @@ class ArgumentCommandBuilder<Source : SharedSuggestionProvider, T>(
  * and can be registered.
  */
 class RegistrableCommand<Source : SharedSuggestionProvider>(
-    @InternalSilkApi
+    @property:InternalSilkApi
     val commandBuilder: LiteralCommandBuilder<Source>,
 )
 
