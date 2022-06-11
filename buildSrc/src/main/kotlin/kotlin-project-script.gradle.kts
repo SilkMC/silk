@@ -29,8 +29,8 @@ tasks {
 kotlin.sourceSets.all {
     languageSettings {
         if (project.name.removePrefix(rootProject.name + "-") in BuildConstants.uploadModules) {
-            listOf("InternalFabrikApi", "DelicateFabrikApi").forEach {
-                optIn("net.axay.fabrik.core.annotations.${it}")
+            listOf("InternalSilkApi", "DelicateSilkApi").forEach {
+                optIn("net.axay.silk.core.annotations.${it}")
             }
         }
     }

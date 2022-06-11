@@ -1,96 +1,35 @@
-<img src="https://user-images.githubusercontent.com/52456572/130886519-1a54dda3-aed7-4aa2-8bac-32ddefef2f9d.png" width="600">
+Silk [*[sɪlk]*](https://www.oxfordlearnersdictionaries.com/media/english/us_pron_ogg/s/sil/silk_/silk__us_1.ogg)
+is a Minecraft API for [Kotlin](https://kotlinlang.org/) - targetting [Fabric](https://fabricmc.net/), [Quilt](https://quiltmc.org/) and
+[Paper](https://papermc.io/). <br>
 
-*Fabrik [[faˈbriːk]](https://cdn.duden.de/_media_/audio/ID4108073_10393000.mp3) (German for factory) is the place where fabrics and quilts are produced.*
+[Join our Discord](https://discord.gg/CJDUVuJ) or [Matrix Space](https://matrix.to/#/#kotlinmc:axay.net)
 
 _____
 
-[Join our Discord](https://discord.gg/CJDUVuJ)
-
-FabrikMC is an API for using FabricMC with Kotlin
-
-It offers:
+Features of the API:
 
 - an inventory GUI API
 - a Kotlin wrapper for Brigadier
 - a Kotlin DSL for creating complex `Text` objects
-- coroutine utilities
+- coroutine utilities and tasks
 - kotlinx.serialization support for Minecraft classes
 - a scoreboard (sideboard) API
-- `ItemStack` utils
+- `ItemStack` utilities
 - serialization of any class to NBT with kotlinx.serialization
 - an NBT builder
 - an API for storing persistent data on Chunks, Entities etc
+- kotlinx.serialization based networking (packets c2s, s2c and c2c)
+- Kotlin Compose UI support
+- general extensions for Entities, Worlds and more
+- geometry utilities
 
-This is not Fabric, this is just a Kotlin extension for Fabric - called Fabri<ins>k</ins>.
+## Docs
 
-## Dependency
+The docs are located at [**silkmc.github.io/silk**](https://silkmc.github.io/silk/).
 
-### Add it to your Gradle project
-
-The core module:
-
-```kotlin
-// Kotlin DSL
-modImplementation("net.axay:fabrikmc-core:version")
-// Groovy DSL
-modImplementation 'net.axay:fabrikmc-core:version'
-```
-
-#### Available modules
-
-You can find all **available modules**, and the **current version**,
-on [Maven Central](https://repo1.maven.org/maven2/net/axay/).
-
-Currently, these are:
-- fabrikmc-core
-- fabrikmc-commands
-- fabrikmc-igui
-- fabrikmc-nbt
-- fabrikmc-persistence
-
-### Add it to your `fabric.mod.json`
-
-Make sure that you mod correctly depends on FabrikMC, by adding it to the list of dependencies.
-
-e.g.:
-
-```json
-{
-  "depends": {
-    "fabrikmc-core": "*",
-    "fabrikmc-commands": "*",
-    "fabrikmc-nbt": "*"
-  },
-  "suggests": {
-    "fabrikmc-igui": "*",
-    "fabrikmc-persistence": "*"
-  }
-}
-```
-
-### Provide it at runtime
-
-*(recommended)* You can download the final mod (which you have to provide in
-production) [on Modrinth](https://modrinth.com/mod/fabrik/versions).
-
-To keep it simple, you can download the `-all` jar, which includes all modules.
-
-*(alternative)* The mod can also be
-downloaded [from Curseforge](https://www.curseforge.com/minecraft/mc-mods/fabrik/files).
-
-Also, make sure that you
-provide [fabric-language-kotlin](https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files) and
-the [fabric-api](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files) at runtime.
-
-### Lightweight and Stable
-
-Fabrik does not put a whole new API on top of Mojang's code, instead it provides utilities which make high use of the
-possibilites Kotlin gives you. You decide where to use Fabrik, Fabric or just the Vanilla Code. Additionally, Fabrik is
-structured in modules, meaning that you can just take what you need.
-
-Fabrik tries to use Minecraft functions and classes which are likely to stay the same / be stable.
+Read them to get started with each module and see how to add it to your Gradle project.
 
 ## License
 
-Current versions of FabrikMC are available under the [**GPL-3.0**](https://www.gnu.org/licenses/gpl-3.0), while older versions below 1.5.1 have been shared under
-the [Apache-2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
+Current versions of Silk are available under the [**GPL-3.0**](https://www.gnu.org/licenses/gpl-3.0), while older
+versions below 1.5.1 of (at that time FabrikMC) have been shared under the [Apache-2.0 License](https://www.apache.org/licenses/LICENSE-2.0).

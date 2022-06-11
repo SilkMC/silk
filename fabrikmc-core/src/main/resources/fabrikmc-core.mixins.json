@@ -1,8 +1,0 @@
-{
-  "package": "net.axay.fabrik.core.mixin",
-  "required": true,
-  "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "block.AbstractBlockAccessor"
-  ]
-}

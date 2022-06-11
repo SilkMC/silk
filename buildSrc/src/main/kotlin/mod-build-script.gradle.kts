@@ -2,6 +2,7 @@ import BuildConstants.authors
 import BuildConstants.fabricApiVersion
 import BuildConstants.fabricLanguageKotlinVersion
 import BuildConstants.fabricLoaderVersion
+import BuildConstants.githubRepo
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.quiltMappingsVersion
@@ -94,14 +95,14 @@ tasks {
                 "minecraft" to "${majorMinecraftVersion}.x"
             ).apply { putAll(modDepends ?: emptyMap()) },
             FabricModConfiguration.Contact(
-                "https://github.com/jakobkmar/fabrikmc",
-                "https://github.com/jakobkmar/fabrikmc/issues",
-                "https://github.com/jakobkmar/fabrikmc",
+                "https://github.com/$githubRepo",
+                "https://github.com/$githubRepo/issues",
+                "https://github.com/$githubRepo",
                 "https://discord.gg/CJDUVuJ"
             ),
             "GPL-3.0-or-later",
             if (project.name.endsWith("-all")) "assets/${project.name}/icon.png" else null,
-            if (isModParent) null else FabricModConfiguration.Custom(FabricModConfiguration.Custom.ModMenu("fabrikmc-all")),
+            if (isModParent) null else FabricModConfiguration.Custom(FabricModConfiguration.Custom.ModMenu("silk-all")),
         )
 
         val modDotJson = buildDir.resolve("resources/main/fabric.mod.json")

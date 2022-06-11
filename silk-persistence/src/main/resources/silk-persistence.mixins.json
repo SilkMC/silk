@@ -1,0 +1,14 @@
+{
+  "package": "net.axay.silk.persistence.mixin",
+  "required": true,
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "chunk.ChunkSerializerMixin",
+    "chunk.EmptyLevelChunkMixin",
+    "chunk.ProtoChunkMixin",
+    "chunk.ImposterProtoChunkMixin",
+    "chunk.LevelChunkMixin",
+    "entity.EntityMixin",
+    "world.ServerWorldMixin"
+  ]
+}

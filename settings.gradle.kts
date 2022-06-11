@@ -1,4 +1,4 @@
-val projectName = "fabrikmc"
+val projectName = "silk"
 rootProject.name = projectName
 
 pluginManagement {

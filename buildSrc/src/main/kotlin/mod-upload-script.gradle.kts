@@ -18,16 +18,6 @@ plugins {
     id("com.modrinth.minotaur")
 }
 
-val fabrikModules = listOf(
-    project(":${rootProject.name}-commands"),
-    project(":${rootProject.name}-core"),
-    project(":${rootProject.name}-game"),
-    project(":${rootProject.name}-igui"),
-    project(":${rootProject.name}-nbt"),
-    project(":${rootProject.name}-network"),
-    project(":${rootProject.name}-persistence")
-)
-
 tasks {
     named("curseforge") {
         onlyIf {

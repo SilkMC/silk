@@ -10,8 +10,8 @@ repositories {
 allprojects {
     group = "net.axay"
     version = "1.9.0"
-    if (this.name.startsWith("fabrikmc")) {
-        description = "FabrikMC is an API for using FabricMC with Kotlin"
+    if (this.name.startsWith("silk")) {
+        description = "Silk is a Minecraft API for Kotlin"
     }
 }
 

@@ -1,0 +1,8 @@
+{
+  "package": "net.axay.silk.core.mixin",
+  "required": true,
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "block.AbstractBlockAccessor"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "package": "net.axay.silk.igui.mixin",
+  "required": true,
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "SimpleContainerAccessor"
+  ]
+}

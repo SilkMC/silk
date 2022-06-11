@@ -1,4 +1,5 @@
 import BuildConstants.fabricApiVersion
+import BuildConstants.githubRepo
 import BuildConstants.quiltMappingsVersion
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URL
@@ -41,7 +42,7 @@ tasks {
                     localDirectory.set(file("src/main/kotlin"))
                     remoteUrl.set(
                         URL(
-                            "https://github.com/jakobkmar/fabrikmc/tree/main/${project.name}/src/main/kotlin"
+                            "https://github.com/$githubRepo/tree/main/${project.name}/src/main/kotlin"
                         )
                     )
                     remoteLineSuffix.set("#L")
