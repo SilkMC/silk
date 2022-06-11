@@ -2,6 +2,7 @@ package net.axay.silk.nbt.serialization.internal
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
@@ -13,7 +14,20 @@ internal val byteSerializer = serializer<Byte>()
 internal val intSerializer = serializer<Int>()
 internal val longSerializer = serializer<Long>()
 
-private val collectionLikeSerializerClass = Class.forName("kotlinx.serialization.internal.CollectionLikeSerializer").kotlin
+private val collectionLikeSerializerClass: KClass<*> = run {
+    for (name in arrayOf(
+        "kotlinx.serialization.internal.CollectionLikeSerializer",
+        "kotlinx.serialization.internal.ListLikeSerializer"
+    )) {
+        try {
+            return@run Class.forName(name).kotlin
+        } catch (_: ClassNotFoundException) {
+        }
+    }
+    throw AssertionError(
+        "fabrikmc-nbt is incompatible with this version of kotlinx.serialization. Please report this issue together with the fabric-language-kotlin version used."
+    )
+}
 
 @Suppress("unchecked_cast")
 private val collectionLikeElementSerializerField = collectionLikeSerializerClass.declaredMemberProperties
