@@ -9,6 +9,9 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import com.mojang.brigadier.tree.ArgumentCommandNode
+import com.mojang.brigadier.tree.CommandNode
+import com.mojang.brigadier.tree.LiteralCommandNode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
@@ -43,10 +46,13 @@ typealias SimpleArgumentBuilder<Source, T> = ArgumentCommandBuilder<Source, T>.(
 typealias BrigadierBuilder<Builder> = Builder.(context: CommandBuildContext) -> Unit
 
 @NodeDsl
-abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : ArgumentBuilder<Source, Builder>> {
+abstract class CommandBuilder<Source, Builder, Node>
+    where Source : SharedSuggestionProvider,
+          Builder : ArgumentBuilder<Source, Builder>,
+          Node : CommandNode<Source> {
 
     @PublishedApi
-    internal val children = ArrayList<CommandBuilder<Source, *>>()
+    internal val children = ArrayList<CommandBuilder<Source, *, *>>()
 
     @PublishedApi
     internal val brigadierBuilders = ArrayList<BrigadierBuilder<Builder>>()
@@ -72,7 +78,7 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      * @see com.mojang.brigadier.builder.ArgumentBuilder.executes
      */
     @RunsDsl
-    inline infix fun runs(crossinline block: CommandContext<Source>.() -> Unit): CommandBuilder<Source, Builder> {
+    inline infix fun runs(crossinline block: CommandContext<Source>.() -> Unit) = this.also {
         brigadierBuilders += {
             val previousCommand = this.command
             this.executes {
@@ -81,7 +87,6 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
                 1
             }
         }
-        return this
     }
 
     /**
@@ -103,7 +108,8 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      */
     @Deprecated(
         "The name 'simpleExecutes' has been superseded by 'runs'.",
-        ReplaceWith("runs { executor.invoke() }")
+        replaceWith = ReplaceWith("runs { executor.invoke() }"),
+        level = DeprecationLevel.ERROR
     )
     inline infix fun simpleExecutes(
         crossinline executor: CommandContext<Source>.() -> Unit,
@@ -204,11 +210,10 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      * this function on the root command node to secure the whole command.
      */
     @RunsDsl
-    fun requires(predicate: (source: Source) -> Boolean): CommandBuilder<Source, Builder> {
+    fun requires(predicate: (source: Source) -> Boolean) = this.also {
         brigadierBuilders += {
             this.requires(this.requirement.and(predicate))
         }
-        return this
     }
 
     /**
@@ -231,44 +236,68 @@ abstract class CommandBuilder<Source : SharedSuggestionProvider, Builder : Argum
      * This function allows you to access the regular Brigadier builder. The type of
      * `this` in its context will equal the type of [Builder].
      */
-    fun brigadier(block: (@NodeDsl Builder).(context: CommandBuildContext) -> Unit): CommandBuilder<Source, Builder> {
+    fun brigadier(block: (@NodeDsl Builder).(context: CommandBuildContext) -> Unit) = this.also {
         brigadierBuilders += block
-        return this
     }
 
     protected abstract fun createBuilder(context: CommandBuildContext): Builder
 
     /**
      * Converts this Kotlin command builder abstraction to an [ArgumentBuilder] of Brigadier.
-     * Note that even though this function is public, you probably won't need it in most cases.
      */
-    @PublishedApi
-    internal fun toBrigadier(context: CommandBuildContext): Builder {
+    @InternalSilkApi
+    open fun toBrigadier(context: CommandBuildContext): List<Node> {
         val builder = createBuilder(context)
 
         brigadierBuilders.forEach { it(builder, context) }
 
-        children.forEach {
-            @Suppress("UNCHECKED_CAST")
-            builder.then(it.toBrigadier(context) as ArgumentBuilder<Source, *>)
+        children.forEach { child ->
+            child.toBrigadier(context).forEach {
+                @Suppress("UNCHECKED_CAST")
+                builder.then(it as CommandNode<Source>)
+            }
         }
 
-        return builder
+        @Suppress("UNCHECKED_CAST")
+        return listOf(builder.build() as Node)
     }
 }
 
 class LiteralCommandBuilder<Source : SharedSuggestionProvider>(
     private val name: String,
-) : CommandBuilder<Source, LiteralArgumentBuilder<Source>>() {
+) : CommandBuilder<Source, LiteralArgumentBuilder<Source>, LiteralCommandNode<Source>>() {
 
     override fun createBuilder(context: CommandBuildContext): LiteralArgumentBuilder<Source> =
         LiteralArgumentBuilder.literal(name)
+
+    private val aliases = mutableListOf<String>()
+
+    /**
+     * Adds an alias for this literal command node, which can be used
+     * instead of the main [LiteralCommandBuilder.name].
+     */
+    fun alias(vararg name: String) {
+        aliases += name
+    }
+
+    override fun toBrigadier(context: CommandBuildContext): List<LiteralCommandNode<Source>> {
+        return super.toBrigadier(context).let { mainNodes ->
+            if (aliases.isEmpty()) mainNodes else {
+                mainNodes + aliases.map { alias ->
+                    LiteralArgumentBuilder
+                        .literal<Source>(alias)
+                        .apply { mainNodes.singleOrNull()?.let { redirect(it) } }
+                        .build()
+                }
+            }
+        }
+    }
 }
 
 class ArgumentCommandBuilder<Source : SharedSuggestionProvider, T>(
     private val name: String,
     private val typeProvider: (CommandBuildContext) -> ArgumentType<T>,
-) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>>() {
+) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>, ArgumentCommandNode<Source, T>>() {
 
     override fun createBuilder(context: CommandBuildContext): RequiredArgumentBuilder<Source, T> =
         RequiredArgumentBuilder.argument(name, typeProvider(context))

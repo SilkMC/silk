@@ -23,7 +23,9 @@ fun LiteralArgumentBuilder<CommandSourceStack>.setupRegistrationCallback() {
  */
 fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
     CommandRegistrationCallback.EVENT.register { dispatcher, context, _ ->
-        dispatcher.register(this.commandBuilder.toBrigadier(context))
+        this.commandBuilder.toBrigadier(context).forEach {
+            dispatcher.root.addChild(it)
+        }
     }
 }
 
@@ -42,7 +44,9 @@ fun LiteralArgumentBuilder<FabricClientCommandSource>.setupRegistrationCallback(
 @JvmName("setupRegistrationCallbackClient")
 fun RegistrableCommand<FabricClientCommandSource>.setupRegistrationCallback() {
     ClientCommandRegistrationCallback.EVENT.register { dispatcher, context ->
-        dispatcher.register(this.commandBuilder.toBrigadier(context))
+        this.commandBuilder.toBrigadier(context).forEach {
+            dispatcher.root.addChild(it)
+        }
     }
 }
 
