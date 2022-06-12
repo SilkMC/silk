@@ -276,6 +276,7 @@ class LiteralCommandBuilder<Source : SharedSuggestionProvider>(
      * Adds an alias for this literal command node, which can be used
      * instead of the main [LiteralCommandBuilder.name].
      */
+    @NodeDsl
     fun alias(vararg name: String) {
         aliases += name
     }
