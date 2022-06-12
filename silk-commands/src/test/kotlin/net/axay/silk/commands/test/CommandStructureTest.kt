@@ -17,7 +17,7 @@ class CommandStructureTest : FunSpec({
                     val command = command("testcommand") {
                         runs { doNothing() }
                     }.extract()
-                    printCommand(command.build()) shouldBe """
+                    printCommand(command) shouldBe """
                         -> testcommand
                          |- has executor
                     """.trimIndent()
@@ -32,7 +32,7 @@ class CommandStructureTest : FunSpec({
                             runs { doNothing() }
                         }
                     }.extract()
-                    printCommand(command.build()) shouldBe """
+                    printCommand(command) shouldBe """
                         -> testcommand
                           -> subcommandone
                            |- has executor
@@ -56,7 +56,7 @@ class CommandStructureTest : FunSpec({
                         runs { doNothing() }
                     }
                 }.extract()
-                printCommand(command.build()) shouldBe """
+                printCommand(command) shouldBe """
                     -> testcommand
                       -> subcommandone
                        |- has executor
@@ -75,7 +75,7 @@ class CommandStructureTest : FunSpec({
                 literal("subcommandone") runs { doNothing() }
                 literal("subcommandtwo") runs { doNothing() }
             }.extract()
-            printCommand(command.build()) shouldBe """
+            printCommand(command) shouldBe """
                 -> testcommand
                   -> subcommandone
                    |- has executor
@@ -87,7 +87,7 @@ class CommandStructureTest : FunSpec({
 })
 
 fun RegistrableCommand<*>.extract() =
-    commandBuilder.toBrigadier(mockk())
+    commandBuilder.toBrigadier(mockk()).first()
 
 fun <S : SharedSuggestionProvider> printCommand(commandNode: CommandNode<S>, depth: Int = 0, stringBuilder: StringBuilder = StringBuilder()): String {
     fun printWithDepth(message: Any) = println((" ".repeat(depth * 2) + message).also { stringBuilder.appendLine(it) })
