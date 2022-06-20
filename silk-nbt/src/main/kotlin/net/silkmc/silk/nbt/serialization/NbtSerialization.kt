@@ -3,9 +3,9 @@ package net.silkmc.silk.nbt.serialization
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import net.minecraft.nbt.Tag
 import net.silkmc.silk.nbt.serialization.decoder.NbtRootDecoder
 import net.silkmc.silk.nbt.serialization.encoder.NbtRootEncoder
-import net.minecraft.nbt.Tag
 
 /**
  * Instances of this class can encode values to [Tag]s and decode

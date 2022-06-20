@@ -1,7 +1,7 @@
 package net.silkmc.silk.igui
 
-import net.silkmc.silk.igui.events.GuiClickEvent
 import net.minecraft.world.item.ItemStack
+import net.silkmc.silk.igui.events.GuiClickEvent
 
 interface GuiElement {
     suspend fun getItemStack(slotIndex: Int): ItemStack

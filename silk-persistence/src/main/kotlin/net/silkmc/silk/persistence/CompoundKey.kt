@@ -1,11 +1,11 @@
 package net.silkmc.silk.persistence
 
+import net.minecraft.nbt.Tag
+import net.minecraft.resources.ResourceLocation
 import net.silkmc.silk.core.logging.logWarning
 import net.silkmc.silk.nbt.serialization.Nbt
 import net.silkmc.silk.nbt.serialization.decodeFromNbtElement
 import net.silkmc.silk.nbt.serialization.encodeToNbtElement
-import net.minecraft.nbt.Tag
-import net.minecraft.resources.ResourceLocation
 import kotlin.reflect.full.isSubclassOf
 
 /**

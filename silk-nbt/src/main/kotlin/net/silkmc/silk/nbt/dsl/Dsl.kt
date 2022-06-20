@@ -1,7 +1,9 @@
 package net.silkmc.silk.nbt.dsl
 
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.Tag
 import net.silkmc.silk.nbt.toNbt
-import net.minecraft.nbt.*
 
 /**
  * Build an NBT compound.

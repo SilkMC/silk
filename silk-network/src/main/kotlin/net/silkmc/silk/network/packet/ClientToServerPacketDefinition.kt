@@ -2,10 +2,10 @@ package net.silkmc.silk.network.packet
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.cbor.Cbor
-import net.silkmc.silk.network.internal.SilkNetwork
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
+import net.silkmc.silk.network.internal.SilkNetwork
 
 /**
  * See [c2sPacket] function, which constructs this packet definition class.

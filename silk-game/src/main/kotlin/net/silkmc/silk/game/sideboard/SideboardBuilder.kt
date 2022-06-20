@@ -3,11 +3,11 @@ package net.silkmc.silk.game.sideboard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.text.LiteralTextBuilder
 import net.silkmc.silk.core.text.literalText
-import net.minecraft.network.chat.Component
-import net.minecraft.server.level.ServerPlayer
 
 /**
  * Displays the given [sideboard] to the player.

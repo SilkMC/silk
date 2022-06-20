@@ -1,13 +1,13 @@
 package net.silkmc.silk.test.commands
 
-import net.silkmc.silk.commands.LiteralCommandBuilder
-import net.silkmc.silk.core.math.geometry.produceCirclePositions
-import net.silkmc.silk.core.math.geometry.produceFilledCirclePositions
-import net.silkmc.silk.core.math.geometry.produceFilledSpherePositions
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.arguments.blocks.BlockInput
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.block.state.BlockState
+import net.silkmc.silk.commands.LiteralCommandBuilder
+import net.silkmc.silk.core.math.geometry.produceCirclePositions
+import net.silkmc.silk.core.math.geometry.produceFilledCirclePositions
+import net.silkmc.silk.core.math.geometry.produceFilledSpherePositions
 
 val circleCommand = testCommand("circle") {
     literal("hollow") {

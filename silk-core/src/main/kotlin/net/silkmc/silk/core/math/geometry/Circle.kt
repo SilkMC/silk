@@ -2,9 +2,9 @@
 
 package net.silkmc.silk.core.math.geometry
 
-import net.silkmc.silk.core.world.pos.Pos2i
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
+import net.silkmc.silk.core.world.pos.Pos2i
 
 /**
  * Contains the core circle generator functions.

@@ -9,11 +9,11 @@ import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.enum
 import io.kotest.property.forAll
+import net.minecraft.nbt.ListTag
 import net.silkmc.silk.nbt.dsl.nbtCompound
 import net.silkmc.silk.nbt.serialization.Nbt
 import net.silkmc.silk.nbt.serialization.UnknownKeyException
 import net.silkmc.silk.nbt.serialization.decodeFromNbtElement
-import net.minecraft.nbt.ListTag
 
 class NbtDecodingTest : StringSpec({
     "compound should decode to class" {

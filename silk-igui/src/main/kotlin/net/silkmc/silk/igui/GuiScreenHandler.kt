@@ -1,9 +1,6 @@
 package net.silkmc.silk.igui
 
 import kotlinx.coroutines.launch
-import net.silkmc.silk.core.task.mcCoroutineScope
-import net.silkmc.silk.igui.events.GuiClickEvent
-import net.silkmc.silk.igui.events.GuiCloseEvent
 import net.minecraft.world.Container
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
@@ -11,6 +8,9 @@ import net.minecraft.world.inventory.ChestMenu
 import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.ItemStack
+import net.silkmc.silk.core.task.mcCoroutineScope
+import net.silkmc.silk.igui.events.GuiClickEvent
+import net.silkmc.silk.igui.events.GuiCloseEvent
 
 class GuiScreenHandler(
     val gui: Gui,

@@ -11,10 +11,10 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.serializer
-import net.silkmc.silk.core.kotlin.ReadWriteMutex
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
+import net.silkmc.silk.core.kotlin.ReadWriteMutex
 
 /**
  * Creates a new [ServerToClientPacketDefinition]. This packet can only be sent

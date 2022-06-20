@@ -1,11 +1,11 @@
 package net.silkmc.silk.network.internal
 
-import net.silkmc.silk.network.packet.*
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.resources.ResourceLocation
+import net.silkmc.silk.network.packet.*
 
 @PublishedApi
 internal class SilkNetwork : ModInitializer, ClientModInitializer {

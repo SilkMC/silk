@@ -2,9 +2,9 @@ package net.silkmc.silk.game.cooldown
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.silkmc.silk.core.task.mcCoroutineScope
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.Entity
+import net.silkmc.silk.core.task.mcCoroutineScope
 import java.util.*
 
 /**

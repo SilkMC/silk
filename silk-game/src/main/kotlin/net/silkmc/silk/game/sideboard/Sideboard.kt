@@ -2,12 +2,12 @@ package net.silkmc.silk.game.sideboard
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.task.initWithServerAsync
 import net.silkmc.silk.core.task.silkCoroutineScope
 import net.silkmc.silk.game.sideboard.internal.SilkSideboardScoreboard
-import net.minecraft.network.chat.Component
-import net.minecraft.server.level.ServerPlayer
 
 /**
  * A sideboard which can be displayed to a variable collection of players

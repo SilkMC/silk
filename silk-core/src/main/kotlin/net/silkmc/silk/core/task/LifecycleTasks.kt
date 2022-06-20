@@ -4,9 +4,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import net.silkmc.silk.core.Silk
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.MinecraftServer
+import net.silkmc.silk.core.Silk
 
 @PublishedApi
 internal object LifecycleTasksManager {

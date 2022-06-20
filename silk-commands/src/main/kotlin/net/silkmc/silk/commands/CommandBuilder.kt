@@ -16,6 +16,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.minecraft.commands.CommandBuildContext
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.SharedSuggestionProvider
 import net.silkmc.silk.commands.DslAnnotations.NodeLevel.RunsDsl
 import net.silkmc.silk.commands.DslAnnotations.NodeLevel.SuggestsDsl
 import net.silkmc.silk.commands.DslAnnotations.TopLevel.NodeDsl
@@ -23,12 +29,6 @@ import net.silkmc.silk.commands.internal.ArgumentTypeUtils
 import net.silkmc.silk.commands.registration.setupRegistrationCallback
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.task.silkCoroutineScope
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.commands.CommandBuildContext
-import net.minecraft.commands.CommandSourceStack
-import net.minecraft.commands.SharedSuggestionProvider
 import java.util.concurrent.CompletableFuture
 
 /**

@@ -1,6 +1,5 @@
 package net.silkmc.silk.game.sideboard.internal
 
-import net.silkmc.silk.core.packet.sendPacket
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
@@ -14,6 +13,7 @@ import net.minecraft.world.scores.PlayerTeam
 import net.minecraft.world.scores.Score
 import net.minecraft.world.scores.Scoreboard
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
+import net.silkmc.silk.core.packet.sendPacket
 
 /**
  * A server side scoreboard which is only displayed to

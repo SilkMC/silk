@@ -1,5 +1,7 @@
 package net.silkmc.silk.igui
 
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
 import net.silkmc.silk.core.kotlin.ticks
 import net.silkmc.silk.igui.DslAnnotations.EventLevel.GuiEventDsl
 import net.silkmc.silk.igui.DslAnnotations.PageLevel.GuiCompoundDsl
@@ -9,8 +11,6 @@ import net.silkmc.silk.igui.elements.*
 import net.silkmc.silk.igui.events.GuiClickEvent
 import net.silkmc.silk.igui.events.GuiCloseEvent
 import net.silkmc.silk.igui.observable.AbstractGuiList
-import net.minecraft.network.chat.Component
-import net.minecraft.world.item.ItemStack
 import java.util.*
 import kotlin.random.Random
 import kotlin.time.Duration

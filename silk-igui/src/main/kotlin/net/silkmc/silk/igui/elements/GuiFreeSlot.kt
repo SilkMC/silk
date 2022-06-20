@@ -1,8 +1,8 @@
 package net.silkmc.silk.igui.elements
 
+import net.minecraft.world.item.ItemStack
 import net.silkmc.silk.igui.GuiElement
 import net.silkmc.silk.igui.events.GuiClickEvent
-import net.minecraft.world.item.ItemStack
 
 class GuiFreeSlot(
     private val onClick: (suspend (GuiClickEvent) -> Unit)?,

@@ -1,7 +1,5 @@
 package net.silkmc.silk.core.item
 
-import net.silkmc.silk.core.text.LiteralTextBuilder
-import net.silkmc.silk.core.text.literalText
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
@@ -11,6 +9,8 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.alchemy.Potion
 import net.minecraft.world.item.alchemy.PotionUtils
 import net.minecraft.world.level.ItemLike
+import net.silkmc.silk.core.text.LiteralTextBuilder
+import net.silkmc.silk.core.text.literalText
 import java.util.*
 
 /**

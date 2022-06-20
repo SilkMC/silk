@@ -5,9 +5,9 @@
   "mixins": [
     "chunk.ChunkSerializerMixin",
     "chunk.EmptyLevelChunkMixin",
-    "chunk.ProtoChunkMixin",
     "chunk.ImposterProtoChunkMixin",
     "chunk.LevelChunkMixin",
+    "chunk.ProtoChunkMixin",
     "entity.EntityMixin",
     "world.ServerWorldMixin"
   ]

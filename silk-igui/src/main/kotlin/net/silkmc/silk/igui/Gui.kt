@@ -2,8 +2,6 @@ package net.silkmc.silk.igui
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import net.silkmc.silk.core.task.mcCoroutineScope
-import net.silkmc.silk.igui.mixin.SimpleContainerAccessor
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.MenuProvider
@@ -11,6 +9,8 @@ import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
+import net.silkmc.silk.core.task.mcCoroutineScope
+import net.silkmc.silk.igui.mixin.SimpleContainerAccessor
 
 /**
  * Opens the given gui.

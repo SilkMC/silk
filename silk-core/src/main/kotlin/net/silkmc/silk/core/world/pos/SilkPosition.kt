@@ -2,9 +2,6 @@ package net.silkmc.silk.core.world.pos
 
 import com.mojang.math.Vector3f
 import kotlinx.serialization.Serializable
-import net.silkmc.silk.core.Silk
-import net.silkmc.silk.core.entity.pos
-import net.silkmc.silk.core.serialization.serializers.ResourceLocationSerializer
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Registry
 import net.minecraft.core.SectionPos
@@ -15,6 +12,9 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import net.silkmc.silk.core.Silk
+import net.silkmc.silk.core.entity.pos
+import net.silkmc.silk.core.serialization.serializers.ResourceLocationSerializer
 import kotlin.math.roundToInt
 
 @Deprecated(

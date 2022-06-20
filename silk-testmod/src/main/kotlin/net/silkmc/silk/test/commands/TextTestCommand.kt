@@ -1,8 +1,8 @@
 package net.silkmc.silk.test.commands
 
-import net.silkmc.silk.core.text.literalText
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.HoverEvent
+import net.silkmc.silk.core.text.literalText
 
 private val textExamples = mapOf(
     "welcome" to literalText {

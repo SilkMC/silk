@@ -1,11 +1,11 @@
 package net.silkmc.silk.core.entity
 
-import net.silkmc.silk.core.world.block.BlockInfo
-import net.silkmc.silk.core.world.block.isCollidable
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
+import net.silkmc.silk.core.world.block.BlockInfo
+import net.silkmc.silk.core.world.block.isCollidable
 import kotlin.math.cos
 import kotlin.math.sin
 

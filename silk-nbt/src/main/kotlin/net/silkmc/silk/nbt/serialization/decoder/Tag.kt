@@ -10,10 +10,10 @@ import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import net.minecraft.nbt.*
 import net.silkmc.silk.nbt.serialization.Nbt
 import net.silkmc.silk.nbt.serialization.UnknownKeyException
 import net.silkmc.silk.nbt.serialization.internal.*
-import net.minecraft.nbt.*
 
 @ExperimentalSerializationApi
 abstract class NbtTagDecoder(protected val nbt: Nbt) : AbstractDecoder() {

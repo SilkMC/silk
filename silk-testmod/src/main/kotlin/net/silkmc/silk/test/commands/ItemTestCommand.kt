@@ -1,10 +1,10 @@
 package net.silkmc.silk.test.commands
 
-import net.silkmc.silk.core.item.*
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.Potions
 import net.minecraft.world.item.enchantment.Enchantments
+import net.silkmc.silk.core.item.*
 
 private fun createItems(player: ServerPlayer) = listOf(
     itemStack(Items.NETHERITE_SWORD) {

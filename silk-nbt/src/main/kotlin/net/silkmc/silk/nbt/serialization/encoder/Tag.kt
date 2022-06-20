@@ -7,13 +7,13 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.modules.SerializersModule
-import net.silkmc.silk.nbt.serialization.Nbt
-import net.silkmc.silk.nbt.serialization.internal.*
-import net.silkmc.silk.nbt.toNbt
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
 import net.minecraft.nbt.Tag
+import net.silkmc.silk.nbt.serialization.Nbt
+import net.silkmc.silk.nbt.serialization.internal.*
+import net.silkmc.silk.nbt.toNbt
 
 @ExperimentalSerializationApi
 abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {

@@ -1,8 +1,8 @@
 package net.silkmc.silk.igui
 
+import net.minecraft.world.item.ItemStack
 import net.silkmc.silk.igui.events.GuiClickEvent
 import net.silkmc.silk.igui.observable.AbstractGuiList
-import net.minecraft.world.item.ItemStack
 
 class GuiCompound<E>(
     val guiType: GuiType,

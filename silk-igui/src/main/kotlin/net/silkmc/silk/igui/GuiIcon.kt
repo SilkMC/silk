@@ -1,10 +1,10 @@
 package net.silkmc.silk.igui
 
 import kotlinx.coroutines.runBlocking
-import net.silkmc.silk.core.text.literal
-import net.silkmc.silk.igui.observable.GuiProperty
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.silkmc.silk.core.text.literal
+import net.silkmc.silk.igui.observable.GuiProperty
 
 abstract class GuiIcon : GuiUseable() {
     abstract val itemStack: ItemStack

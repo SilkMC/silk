@@ -1,7 +1,7 @@
 package net.silkmc.silk.core
 
-import net.silkmc.silk.core.annotations.DelicateSilkApi
 import net.minecraft.server.MinecraftServer
+import net.silkmc.silk.core.annotations.DelicateSilkApi
 
 @Deprecated(
     message = "FabrikMC has been renamed to Silk.",

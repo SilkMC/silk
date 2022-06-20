@@ -10,9 +10,9 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.enum
+import net.minecraft.nbt.*
 import net.silkmc.silk.nbt.serialization.Nbt
 import net.silkmc.silk.nbt.serialization.encodeToNbtElement
-import net.minecraft.nbt.*
 
 class NbtEncodingTest : StringSpec({
     "class should encode to compound" {

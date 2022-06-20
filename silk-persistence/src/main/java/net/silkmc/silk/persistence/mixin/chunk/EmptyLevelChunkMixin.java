@@ -1,9 +1,9 @@
 package net.silkmc.silk.persistence.mixin.chunk;
 
+import net.minecraft.world.level.chunk.EmptyLevelChunk;
 import net.silkmc.silk.persistence.CompoundProvider;
 import net.silkmc.silk.persistence.EmptyPersistentCompound;
 import net.silkmc.silk.persistence.PersistentCompound;
-import net.minecraft.world.level.chunk.EmptyLevelChunk;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 

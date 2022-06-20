@@ -1,13 +1,13 @@
 package net.silkmc.silk.commands.registration
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import net.silkmc.silk.commands.RegistrableCommand
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.commands.CommandSourceStack
+import net.silkmc.silk.commands.RegistrableCommand
 
 /**
  * Set up a callback which automatically registers this command on server startup.

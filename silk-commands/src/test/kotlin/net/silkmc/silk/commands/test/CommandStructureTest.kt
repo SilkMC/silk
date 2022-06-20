@@ -5,9 +5,9 @@ import com.mojang.brigadier.tree.CommandNode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
+import net.minecraft.commands.SharedSuggestionProvider
 import net.silkmc.silk.commands.RegistrableCommand
 import net.silkmc.silk.commands.command
-import net.minecraft.commands.SharedSuggestionProvider
 
 class CommandStructureTest : FunSpec({
     context("built command should have correct structure") {

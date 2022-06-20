@@ -2,9 +2,9 @@
 
 package net.silkmc.silk.core.math.geometry
 
-import net.silkmc.silk.core.world.pos.Pos3i
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
+import net.silkmc.silk.core.world.pos.Pos3i
 
 /**
  * Contains the core sphere generator functions.

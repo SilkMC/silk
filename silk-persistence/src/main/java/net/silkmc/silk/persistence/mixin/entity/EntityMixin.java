@@ -1,10 +1,10 @@
 package net.silkmc.silk.persistence.mixin.entity;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import net.silkmc.silk.persistence.CompoundProvider;
 import net.silkmc.silk.persistence.PersistentCompound;
 import net.silkmc.silk.persistence.PersistentCompoundImpl;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
