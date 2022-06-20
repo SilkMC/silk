@@ -16,7 +16,6 @@ dependencies {
     fun pluginDep(id: String, version: String) = "${id}:${id}.gradle.plugin:${version}"
 
     val kotlinVersion = "1.7.0"
-    val dokkaVersion = "1.6.21"
 
     compileOnly(kotlin("gradle-plugin", embeddedKotlinVersion))
     runtimeOnly(kotlin("gradle-plugin", kotlinVersion))
@@ -32,8 +31,13 @@ dependencies {
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.3.6"))
     implementation(pluginDep("xyz.jpenilla.run-paper", "1.0.6"))
 
-    implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
-    implementation("org.jetbrains.dokka:dokka-base:$dokkaVersion")
+    val compileDokkaVersion = "1.6.21"
+    val dokkaVersion = "1.7.0"
+
+    compileOnly("org.jetbrains.dokka:dokka-gradle-plugin:$compileDokkaVersion")
+    runtimeOnly("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
+    compileOnly("org.jetbrains.dokka:dokka-base:$compileDokkaVersion")
+    runtimeOnly("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 }
