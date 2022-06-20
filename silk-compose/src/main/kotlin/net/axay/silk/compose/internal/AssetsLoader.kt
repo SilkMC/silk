@@ -1,4 +1,4 @@
-package net.axay.silk.compose.internal
+package net.silkmc.silk.compose.internal
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.loadImageBitmap
@@ -6,12 +6,12 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.axay.silk.compose.icons.McIcon
-import net.axay.silk.compose.mojangapi.LauncherMeta
-import net.axay.silk.core.Silk
-import net.axay.silk.core.logging.logError
-import net.axay.silk.core.logging.logInfo
-import net.axay.silk.core.task.silkCoroutineScope
+import net.silkmc.silk.compose.icons.McIcon
+import net.silkmc.silk.compose.mojangapi.LauncherMeta
+import net.silkmc.silk.core.Silk
+import net.silkmc.silk.core.logging.logError
+import net.silkmc.silk.core.logging.logInfo
+import net.silkmc.silk.core.task.silkCoroutineScope
 import net.minecraft.SharedConstants
 import java.io.File
 import java.nio.file.FileSystems

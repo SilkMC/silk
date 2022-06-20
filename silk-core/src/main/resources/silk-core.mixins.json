@@ -1,5 +1,5 @@
 {
-  "package": "net.axay.silk.core.mixin",
+  "package": "net.silkmc.silk.core.mixin",
   "required": true,
   "compatibilityLevel": "JAVA_17",
   "mixins": [

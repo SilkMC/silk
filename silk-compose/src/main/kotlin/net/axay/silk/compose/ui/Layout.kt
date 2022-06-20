@@ -1,6 +1,6 @@
 @file:Suppress("FunctionName")
 
-package net.axay.silk.compose.ui
+package net.silkmc.silk.compose.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import net.axay.silk.compose.MinecraftComposeGui
+import net.silkmc.silk.compose.MinecraftComposeGui
 
 /**
  * Adds an opinionated window header suitable for [MinecraftComposeGui]s. This

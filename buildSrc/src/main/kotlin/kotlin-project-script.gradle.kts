@@ -30,7 +30,7 @@ kotlin.sourceSets.all {
     languageSettings {
         if (project.name.removePrefix(rootProject.name + "-") in BuildConstants.uploadModules) {
             listOf("InternalSilkApi", "DelicateSilkApi").forEach {
-                optIn("net.axay.silk.core.annotations.${it}")
+                optIn("net.silkmc.silk.core.annotations.${it}")
             }
         }
     }

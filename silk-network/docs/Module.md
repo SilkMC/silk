@@ -23,7 +23,7 @@ you with functions for sending and receiving packets.
 
 #### Server to client
 
-Use the [s2cPacket][net.axay.silk.network.packet.s2cPacket] function.
+Use the [s2cPacket][net.silkmc.silk.network.packet.s2cPacket] function.
 
 ```kt
 val personPacket = s2cPacket<Person>(Identifier("mymod", "personpacket"))
@@ -31,7 +31,7 @@ val personPacket = s2cPacket<Person>(Identifier("mymod", "personpacket"))
 
 #### Client to server
 
-Use the [c2sPacket][net.axay.silk.network.packet.c2sPacket] function.
+Use the [c2sPacket][net.silkmc.silk.network.packet.c2sPacket] function.
 
 ```kt
 val personPacket = c2sPacket<Person>(Identifier("mymod", "personpacket"))
@@ -66,8 +66,8 @@ personPacket.send(Person("Holger", 52))
 Using the packet instance, you can also register a packet receiver.
 
 This can be done using
-the [receiveOnClient][net.axay.silk.network.packet.ServerToClientPacketDefinition.receiveOnClient] or
-[receiveOnServer][net.axay.silk.network.packet.ClientToServerPacketDefinition.receiveOnServer] function.
+the [receiveOnClient][net.silkmc.silk.network.packet.ServerToClientPacketDefinition.receiveOnClient] or
+[receiveOnServer][net.silkmc.silk.network.packet.ClientToServerPacketDefinition.receiveOnServer] function.
 
 ### Server to client
 
@@ -85,6 +85,6 @@ personPacket.receiveOnServer { packet, context ->
 }
 ```
 
-# Package net.axay.silk.network.packet
+# Package net.silkmc.silk.network.packet
 
 Utilities for creating client-to-server and server-to-client packets

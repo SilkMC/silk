@@ -13,7 +13,7 @@ plugins {
 
 val modName by extra("$projectTitle Core")
 val modEntrypoints by extra(linkedMapOf(
-    "main" to listOf("net.axay.silk.core.internal.SilkEntrypoint"),
-    "client" to listOf("net.axay.silk.core.internal.SilkEntrypoint"),
+    "main" to listOf("net.silkmc.silk.core.internal.SilkEntrypoint"),
+    "client" to listOf("net.silkmc.silk.core.internal.SilkEntrypoint"),
 ))
 val modMixinFiles by extra(listOf("${rootProject.name}-core.mixins.json"))

@@ -19,8 +19,8 @@ dependencies {
 
 val modName by extra("$projectTitle Testmod")
 val modEntrypoints by extra(linkedMapOf(
-    "main" to listOf("net.axay.silk.test.Manager"),
-    "client" to listOf("net.axay.silk.test.Manager"),
+    "main" to listOf("net.silkmc.silk.test.Manager"),
+    "client" to listOf("net.silkmc.silk.test.Manager"),
 ))
 val modDepends by extra(
     linkedMapOf(

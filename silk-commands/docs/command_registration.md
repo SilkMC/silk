@@ -1,4 +1,4 @@
-# Package net.axay.silk.commands.registration
+# Package net.silkmc.silk.commands.registration
 
 Utilities for command registration
 
@@ -6,8 +6,8 @@ Utilities for command registration
 
 ### Automatic registration (Recommended)
 
-Commands created using the [command][net.axay.silk.commands.command]
-or [clientCommand][net.axay.silk.commands.clientCommand] builder function **will be registered automatically** if
+Commands created using the [command][net.silkmc.silk.commands.command]
+or [clientCommand][net.silkmc.silk.commands.clientCommand] builder function **will be registered automatically** if
 called during initialization of your mod.
 
 Note: this is only the case if the `register` parameter is set to `true`, which is the default
@@ -33,8 +33,8 @@ fun init() {
 ### Manual registration
 
 If you need to register it manually, call
-the [setupRegistrationCallback][net.axay.silk.commands.registration.setupRegistrationCallback] (server-side)
-or [register][net.axay.silk.commands.registration.register] (client-side) function by yourself.
+the [setupRegistrationCallback][net.silkmc.silk.commands.registration.setupRegistrationCallback] (server-side)
+or [register][net.silkmc.silk.commands.registration.register] (client-side) function by yourself.
 
 #### Example for manual registration
 

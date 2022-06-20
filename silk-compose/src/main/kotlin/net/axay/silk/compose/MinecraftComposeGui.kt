@@ -1,4 +1,4 @@
-package net.axay.silk.compose
+package net.silkmc.silk.compose
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -15,10 +15,10 @@ import com.github.ajalt.colormath.model.SRGB
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
-import net.axay.silk.compose.color.MaterialColorUtils
-import net.axay.silk.compose.internal.MapIdGenerator
-import net.axay.silk.core.logging.logError
-import net.axay.silk.core.logging.logInfo
+import net.silkmc.silk.compose.color.MaterialColorUtils
+import net.silkmc.silk.compose.internal.MapIdGenerator
+import net.silkmc.silk.core.logging.logError
+import net.silkmc.silk.core.logging.logInfo
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.core.BlockPos

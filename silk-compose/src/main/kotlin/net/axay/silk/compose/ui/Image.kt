@@ -1,4 +1,4 @@
-package net.axay.silk.compose.ui
+package net.silkmc.silk.compose.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
-import net.axay.silk.compose.icons.McIcon
-import net.axay.silk.compose.internal.AssetsLoader
+import net.silkmc.silk.compose.icons.McIcon
+import net.silkmc.silk.compose.internal.AssetsLoader
 
 /**
  * Renders the icon of any [Item] to this gui as an [Image].

@@ -12,8 +12,8 @@ ${dependencyNotice}
 
 ### Create a new gui
 
-The [igui][net.axay.silk.igui.igui] function opens up a new gui builder. Use
-the [page][net.axay.silk.igui.GuiBuilder.page] function to add a new page to this gui, you can that function as often
+The [igui][net.silkmc.silk.igui.igui] function opens up a new gui builder. Use
+the [page][net.silkmc.silk.igui.GuiBuilder.page] function to add a new page to this gui, you can that function as often
 as you want.
 
 ```kotlin
@@ -26,21 +26,21 @@ igui(GuiType.NINE_BY_SIX, "My cool gui".literal, defaultPageKey = 1) {
 
 ### The page builder
 
-The [page builder][net.axay.silk.igui.GuiBuilder.PageBuilder] is the most important part of the gui dsl. Inside this
-builder, you have access [all functions adding elements to the gui][net.axay.silk.igui.GuiBuilder.PageBuilder].
+The [page builder][net.silkmc.silk.igui.GuiBuilder.PageBuilder] is the most important part of the gui dsl. Inside this
+builder, you have access [all functions adding elements to the gui][net.silkmc.silk.igui.GuiBuilder.PageBuilder].
 
-# Package net.axay.silk.igui
+# Package net.silkmc.silk.igui
 
 Contains the GUI builder and all GUI implementation classes
 
-# Package net.axay.silk.igui.elements
+# Package net.silkmc.silk.igui.elements
 
 GUI elements can be rendered by a GUI implementation
 
-# Package net.axay.silk.igui.events
+# Package net.silkmc.silk.igui.events
 
 GUI events are passed to the user of this API for usage in callbacks
 
-# Package net.axay.silk.igui.observable
+# Package net.silkmc.silk.igui.observable
 
 Observable lists and properties which are used by GUI elements to handle non-static content

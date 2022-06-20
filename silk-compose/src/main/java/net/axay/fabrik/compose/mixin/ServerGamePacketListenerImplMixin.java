@@ -1,6 +1,6 @@
-package net.axay.silk.compose.mixin;
+package net.silkmc.silk.compose.mixin;
 
-import net.axay.silk.compose.MinecraftComposeGui;
+import net.silkmc.silk.compose.MinecraftComposeGui;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.server.level.ServerPlayer;

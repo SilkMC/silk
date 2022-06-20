@@ -1,4 +1,4 @@
-package net.axay.silk.compose.mojangapi
+package net.silkmc.silk.compose.mojangapi
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString

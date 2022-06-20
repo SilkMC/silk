@@ -1,5 +1,5 @@
 {
-  "package": "net.axay.silk.persistence.mixin",
+  "package": "net.silkmc.silk.persistence.mixin",
   "required": true,
   "compatibilityLevel": "JAVA_17",
   "mixins": [
