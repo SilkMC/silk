@@ -59,10 +59,12 @@ class GuiScreenHandler(
 
         val element = gui.currentPage.content[slotIndex]
         if (element != null) {
+            val guiActionType = GuiActionType.fromSlotActionType(actionType, button)
+
             val event = GuiClickEvent(
                 gui,
                 player,
-                GuiActionType.fromSlotActionType(actionType, button),
+                guiActionType,
                 slotIndex,
                 slots.getOrNull(slotIndex),
                 gui.guiType.dimensions.slotMap[slotIndex]
@@ -73,6 +75,13 @@ class GuiScreenHandler(
             mcCoroutineScope.launch {
                 element.onClick(event)
                 gui.eventHandler.onClick?.invoke(event)
+            }
+
+            if (shouldCancel) {
+                when (guiActionType) {
+                    GuiActionType.HOTKEY_SWAP -> player.inventoryMenu.sendAllDataToRemote()
+                    else -> Unit
+                }
             }
         }
 
