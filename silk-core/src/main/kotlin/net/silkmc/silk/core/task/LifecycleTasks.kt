@@ -4,16 +4,16 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.MinecraftServer
 import net.silkmc.silk.core.Silk
+import net.silkmc.silk.core.internal.events.ServerEvents
 
 @PublishedApi
 internal object LifecycleTasksManager {
     val uninitializedServerDeferred = CompletableDeferred<Boolean>()
 
     fun init() {
-        ServerLifecycleEvents.SERVER_STARTING.register {
+        ServerEvents.Init.register {
             uninitializedServerDeferred.complete(true)
         }
     }
