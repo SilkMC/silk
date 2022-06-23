@@ -11,15 +11,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinMinecraftServer {
 
     @Inject(
+        method = "runServer",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/server/MinecraftServer;initServer()Z",
-            shift = At.Shift.AFTER
-        ),
-        method = "runServer"
+            shift = At.Shift.BEFORE
+        )
     )
     private void onStarting(CallbackInfo ci) {
         //noinspection ConstantConditions
-        ServerEvents.Init.Companion.invoke((MinecraftServer) (Object) this);
+        ServerEvents.Init.Companion.invoke(new ServerEvents.Init((MinecraftServer) (Object) this));
     }
 }
