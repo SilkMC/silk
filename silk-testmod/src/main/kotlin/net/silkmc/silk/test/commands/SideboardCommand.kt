@@ -1,15 +1,20 @@
 package net.silkmc.silk.test.commands
 
 import net.silkmc.silk.core.text.literalText
-import net.silkmc.silk.game.sideboard.showSideboard
 import net.silkmc.silk.game.sideboard.sideboard
 
 val sideboardCommand = testCommand("sideboard") {
-    argument<String>("example") { example ->
+    argument("example") { example ->
         suggestList { sideboardExamples.keys }
-        runs {
-            val sideboard = sideboardExamples[example()] ?: return@runs
-            source.playerOrException.showSideboard(sideboard)
+        literal("display") {
+            runs {
+                sideboardExamples[example()]?.displayToPlayer(source.playerOrException)
+            }
+        }
+        literal("hide") {
+            runs {
+                sideboardExamples[example()]?.hideFromPlayer(source.playerOrException)
+            }
         }
     }
 }
