@@ -6,7 +6,7 @@ import net.silkmc.silk.core.annotations.InternalSilkApi
 open class Event<T> {
     private val listeners = ArrayList<(T) -> Unit>()
 
-    fun register(callback: (T) -> Unit) {
+    fun register(callback: (event: T) -> Unit) {
         listeners += callback
     }
 
