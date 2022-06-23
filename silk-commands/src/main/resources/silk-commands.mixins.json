@@ -1,0 +1,13 @@
+{
+  "package": "net.silkmc.silk.commands.mixin",
+  "required": true,
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "MixinCommands"
+  ],
+  "client": [
+    "client.ClientSuggestionProviderAccessor",
+    "client.MixinClientPacketListener",
+    "client.MixinLocalPlayer"
+  ]
+}

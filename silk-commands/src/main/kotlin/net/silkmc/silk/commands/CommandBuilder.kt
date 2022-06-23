@@ -18,7 +18,6 @@ import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.SharedSuggestionProvider
@@ -517,9 +516,9 @@ inline fun command(
 inline fun clientCommand(
     name: String,
     register: Boolean = true,
-    builder: LiteralCommandBuilder<FabricClientCommandSource>.() -> Unit = {},
-): RegistrableCommand<FabricClientCommandSource> =
-    RegistrableCommand(LiteralCommandBuilder<FabricClientCommandSource>(name).apply(builder)).apply {
+    builder: LiteralCommandBuilder<ClientCommandSourceStack>.() -> Unit = {},
+): RegistrableCommand<ClientCommandSourceStack> =
+    RegistrableCommand(LiteralCommandBuilder<ClientCommandSourceStack>(name).apply(builder)).apply {
         if (register)
             setupRegistrationCallback()
     }

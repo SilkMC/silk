@@ -15,4 +15,5 @@ dependencies {
 }
 
 val modName by extra("$projectTitle Commands")
+val modMixinFiles by extra(listOf("${rootProject.name}-commands.mixins.json"))
 val modDepends by extra(linkedMapOf("${rootProject.name}-core" to "*"))
