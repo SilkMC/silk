@@ -1,4 +1,3 @@
-import BuildConstants.fabricApiVersion
 import BuildConstants.githubRepo
 import BuildConstants.quiltMappingsVersion
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
@@ -59,11 +58,6 @@ tasks {
                     val yarnJavadocVersion = quiltMappingsVersion.removeSuffix(":v2")
                     url.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/"))
                     packageListUrl.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/element-list"))
-                }
-
-                externalDocumentationLink {
-                    url.set(URL("https://maven.fabricmc.net/docs/fabric-api-$fabricApiVersion/"))
-                    packageListUrl.set(URL("https://maven.fabricmc.net/docs/fabric-api-$fabricApiVersion/element-list"))
                 }
             }
         }
