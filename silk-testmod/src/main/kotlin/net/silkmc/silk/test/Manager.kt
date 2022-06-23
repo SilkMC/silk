@@ -2,8 +2,8 @@ package net.silkmc.silk.test
 
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.commands.CommandSourceStack
+import net.silkmc.silk.commands.ClientCommandSourceStack
 import net.silkmc.silk.commands.LiteralCommandBuilder
 import net.silkmc.silk.commands.clientCommand
 import net.silkmc.silk.commands.command
@@ -12,7 +12,7 @@ import net.silkmc.silk.test.network.NetworkTest
 
 object Manager : ModInitializer, ClientModInitializer {
     internal val testmodCommandBuilders = HashMap<String, LiteralCommandBuilder<CommandSourceStack>.() -> Unit>()
-    internal val clientTestmodCommandBuilders = HashMap<String, LiteralCommandBuilder<FabricClientCommandSource>.() -> Unit>()
+    internal val clientTestmodCommandBuilders = HashMap<String, LiteralCommandBuilder<ClientCommandSourceStack>.() -> Unit>()
 
     override fun onInitialize() {
         circleCommand
