@@ -14,6 +14,7 @@ public class MixinLocalPlayer {
 
     @Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
     private void onCommand(MessageSigner messageSigner, String string, Component component, CallbackInfo ci) {
+        //noinspection ConstantConditions
         if (ClientCommandHandler.INSTANCE.executeCommand(string, (LocalPlayer) (Object) this)) {
             ci.cancel();
         }
