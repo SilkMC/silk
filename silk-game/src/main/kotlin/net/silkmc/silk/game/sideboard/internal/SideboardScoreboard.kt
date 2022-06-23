@@ -1,6 +1,5 @@
 package net.silkmc.silk.game.sideboard.internal
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundSetDisplayObjectivePacket
@@ -13,32 +12,28 @@ import net.minecraft.world.scores.PlayerTeam
 import net.minecraft.world.scores.Score
 import net.minecraft.world.scores.Scoreboard
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
+import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.packet.sendPacket
 
 /**
  * A server side scoreboard which is only displayed to
  * a selected collection of players.
- * This implementation is used by the [net.silkmc.silk.core.sideboard.Sideboard]
+ * This implementation is used by the [net.silkmc.silk.game.sideboard.Sideboard]
  * api.
  *
  * The packet implementation of this class is not completed, thus
  * it is internal for now.
  *
- * Have a look at [net.minecraft.scoreboard.ServerScoreboard] for a
+ * Have a look at [net.minecraft.server.ServerScoreboard] for a
  * complete packet implementation.
  */
-internal class SilkSideboardScoreboard(
+@InternalSilkApi
+class SideboardScoreboard(
     name: String,
     displayName: Component,
 ) : Scoreboard() {
     companion object {
         private val sidebarId = getDisplaySlotByName("sidebar")
-
-        private val scoreboards = HashSet<SilkSideboardScoreboard>().also { boards ->
-            ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
-                boards.removeIf { it.players.remove(handler.player) && it.players.isEmpty() }
-            }
-        }
     }
 
     private val players = HashSet<ServerPlayer>()
@@ -52,7 +47,6 @@ internal class SilkSideboardScoreboard(
 
     fun displayToPlayer(player: ServerPlayer) {
         players += player
-        scoreboards.add(this)
 
         val updatePackets = ArrayList<Packet<*>>()
 
@@ -66,6 +60,12 @@ internal class SilkSideboardScoreboard(
         playerTeams.mapTo(updatePackets) { ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(it, true) }
 
         updatePackets.forEach(player.connection::send)
+    }
+
+    fun hideFromPlayer(player: ServerPlayer) {
+        players -= players
+
+        player.connection.send(ClientboundSetObjectivePacket(dummyObjective, ClientboundSetObjectivePacket.METHOD_REMOVE))
     }
 
     fun setPlayerScore(player: String, score: Int) {

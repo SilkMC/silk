@@ -1,13 +1,13 @@
 package net.silkmc.silk.game.sideboard
 
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.Silk
+import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.task.initWithServerAsync
 import net.silkmc.silk.core.task.silkCoroutineScope
-import net.silkmc.silk.game.sideboard.internal.SilkSideboardScoreboard
+import net.silkmc.silk.game.sideboard.internal.SideboardScoreboard
 
 /**
  * A sideboard which can be displayed to a variable collection of players
@@ -21,14 +21,9 @@ class Sideboard(
     displayName: Component,
     lines: List<SideboardLine>,
 ) {
-    private val scoreboardDeferred = initWithServerAsync { SilkSideboardScoreboard(name, displayName) }
-
-    private val initLock = CompletableDeferred<Boolean>()
-
-    init {
-        silkCoroutineScope.launch {
-            val scoreboard = scoreboardDeferred.await()
-
+    @InternalSilkApi
+    val scoreboardDeferred = initWithServerAsync {
+        SideboardScoreboard(name, displayName).also { scoreboard ->
             lines.forEachIndexed { index, line ->
                 val team = scoreboard.addPlayerTeam("team_$index")
                 scoreboard.addPlayerToTeam("§$index", team)
@@ -36,20 +31,24 @@ class Sideboard(
 
                 silkCoroutineScope.launch {
                     line.textFlow.collect {
-                        team.playerPrefix = it
+                        team.setPlayerPrefix(it)
                     }
                 }
             }
-
-            initLock.complete(true)
         }
     }
 
-    internal fun displayToPlayer(player: ServerPlayer) {
+    fun displayToPlayer(player: ServerPlayer) {
         if (Silk.currentServer?.isRunning == true)
             silkCoroutineScope.launch {
-                initLock.await()
                 scoreboardDeferred.await().displayToPlayer(player)
+            }
+    }
+
+    fun hideFromPlayer(player: ServerPlayer) {
+        if (Silk.currentServer != null)
+            silkCoroutineScope.launch {
+                scoreboardDeferred.await().hideFromPlayer(player)
             }
     }
 }

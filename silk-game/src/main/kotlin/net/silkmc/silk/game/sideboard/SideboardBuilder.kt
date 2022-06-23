@@ -16,6 +16,10 @@ import net.silkmc.silk.core.text.literalText
  * If the player leaves and then reconnects, you have to call this function again
  * if you wish to show the player the same sideboard.
  */
+@Deprecated(
+    message = "The extension function is not needed, there is a member function of Sideboard which does the same thing.",
+    replaceWith = ReplaceWith("sideboard.displayToPlayer(this)")
+)
 fun ServerPlayer.showSideboard(sideboard: Sideboard) {
     sideboard.displayToPlayer(this)
 }
