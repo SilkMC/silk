@@ -39,6 +39,10 @@ Operator functions and extensions for working with vectors
 
 Simple extensions for sending packets
 
+# Package net.silkmc.silk.core.server
+
+General extensions for the Minecraft server
+
 # Package net.silkmc.silk.core.task
 
 Coroutine utilities (for example a Minecraft main thread dispatcher) and coroutine task functions
