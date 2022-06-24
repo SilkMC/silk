@@ -282,12 +282,25 @@ class LiteralCommandBuilder<Source : SharedSuggestionProvider>(
 
     override fun toBrigadier(context: CommandBuildContext): List<LiteralCommandNode<Source>> {
         return super.toBrigadier(context).let { mainNodes ->
-            if (aliases.isEmpty()) mainNodes else {
+            if (aliases.isEmpty() || mainNodes.size != 1) mainNodes else {
+                val mainNode = mainNodes.single()
                 mainNodes + aliases.map { alias ->
-                    LiteralArgumentBuilder
-                        .literal<Source>(alias)
-                        .apply { mainNodes.singleOrNull()?.let { redirect(it) } }
-                        .build()
+                    if (mainNode.children.isNotEmpty() && mainNode.command == null) {
+                        LiteralArgumentBuilder
+                            .literal<Source>(alias)
+                            .redirect(mainNode)
+                            .build()
+                    } else {
+                        // we cannot use redirect here because of
+                        // https://github.com/Mojang/brigadier/issues/46
+                        // fix: create a new node here instead
+                        LiteralCommandNode(alias, mainNode.command, mainNode.requirement, mainNode.redirect, mainNode.redirectModifier, mainNode.isFork)
+                            .apply {
+                                for (child in mainNode.children) {
+                                    addChild(child)
+                                }
+                            }
+                    }
                 }
             }
         }
