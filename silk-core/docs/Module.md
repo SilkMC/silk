@@ -39,7 +39,7 @@ Operator functions and extensions for working with vectors
 
 Simple extensions for sending packets
 
-# Package net.axay.silk.core.serialization
+# Package net.silkmc.silk.core.serialization
 
 Temporary serialization package, will get replaced with another solution in the future
 

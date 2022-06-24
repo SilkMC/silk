@@ -8,8 +8,6 @@ plugins {
 
 tasks {
     withType<DokkaMultiModuleTask> {
-        outputDirectory.set(projectDir.resolve("docs"))
-
         includes.from("dokka/includes/main.md")
 
         pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {

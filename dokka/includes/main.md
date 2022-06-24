@@ -1,4 +1,4 @@
-*Silk [[sɪlk]](https://www.oxfordlearnersdictionaries.com/media/english/us_pron_ogg/s/sil/silk_/silk__us_1.ogg)
+Silk [[sɪlk]](https://www.oxfordlearnersdictionaries.com/media/english/us_pron_ogg/s/sil/silk_/silk__us_1.ogg)
 is a Minecraft API for [Kotlin](https://kotlinlang.org/) - targetting [Fabric](https://fabricmc.net/), [Quilt](https://quiltmc.org/) and
 [Paper](https://papermc.io/). <br>
 

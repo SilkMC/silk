@@ -16,7 +16,7 @@ tasks {
             "dependencyNotice" to """
                 ### Dependency
                 ```kt
-                modImplementation("net.axay:${project.name}:${rootProject.version}")
+                modImplementation("net.silkmc:${project.name}:${rootProject.version}")
                 ```
             """.trimIndent()
         )
