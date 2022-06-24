@@ -1,11 +1,11 @@
-package net.axay.silk.compose.ksp
+package net.silkmc.silk.compose.ksp
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import com.squareup.kotlinpoet.ksp.writeTo
-import net.axay.silk.compose.mojangapi.LauncherMeta
+import net.silkmc.silk.compose.mojangapi.LauncherMeta
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import kotlin.io.path.extension
@@ -30,7 +30,7 @@ class MinecraftResourceGenerator(
         if (invoked) return emptyList()
         invoked = true
 
-        val packageName = "net.axay.silk.compose.icons"
+        val packageName = "net.silkmc.silk.compose.icons"
         val fileName = "McIcons"
 
         val clientFile = Files.createTempFile("minecraft-client-$version", ".jar")

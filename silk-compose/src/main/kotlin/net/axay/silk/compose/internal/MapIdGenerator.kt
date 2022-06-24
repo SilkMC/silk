@@ -1,10 +1,10 @@
-package net.axay.silk.compose.internal
+package net.silkmc.silk.compose.internal
 
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import net.axay.silk.core.task.silkCoroutineScope
+import net.silkmc.silk.core.task.silkCoroutineScope
 
 internal object MapIdGenerator {
     private val mutex = Mutex()

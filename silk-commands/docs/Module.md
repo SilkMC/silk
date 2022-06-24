@@ -7,8 +7,8 @@ ${dependencyNotice}
 
 ## Usage
 
-You first have to create a command instance using the [command][net.axay.silk.commands.command]
-or [clientCommand][net.axay.silk.commands.clientCommand] function. <br>
+You first have to create a command instance using the [command][net.silkmc.silk.commands.command]
+or [clientCommand][net.silkmc.silk.commands.clientCommand] function. <br>
 Have a look at the `commands` package below for more information.
 
 After that, you can register that command instance. <br>

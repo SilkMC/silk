@@ -69,22 +69,22 @@ nbtCompound["myint"] = 3
 nbtCompound["coolboolean"] = false
 ```
 
-# Package net.axay.silk.nbt
+# Package net.silkmc.silk.nbt
 
 Contains `NbtCompound` access functions and conversion functions to create `NbtElement`s
 
-# Package net.axay.silk.nbt.dsl
+# Package net.silkmc.silk.nbt.dsl
 
 NBT builder DSL for `NbtCompound` and `NbtList`
 
-# Package net.axay.silk.nbt.serialization
+# Package net.silkmc.silk.nbt.serialization
 
 The main and public NBT serialization API
 
-# Package net.axay.silk.nbt.serialization.decoder
+# Package net.silkmc.silk.nbt.serialization.decoder
 
 Logic for decoding an NbtElement to a serializable class
 
-# Package net.axay.silk.nbt.serialization.encoder
+# Package net.silkmc.silk.nbt.serialization.encoder
 
 Logic for encoding a serializable class to an NbtElement

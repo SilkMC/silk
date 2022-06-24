@@ -1,4 +1,4 @@
-# Package net.axay.silk.commands
+# Package net.silkmc.silk.commands
 
 Contains all command builder functions
 
@@ -8,8 +8,8 @@ You can also [watch the YouTube Tutorial](https://youtu.be/KPAw8mxwskQ).
 
 ### Create a new command
 
-You can create a new command using the [command][net.axay.silk.commands.command]
-or [clientCommand][net.axay.silk.commands.clientCommand] function.
+You can create a new command using the [command][net.silkmc.silk.commands.command]
+or [clientCommand][net.silkmc.silk.commands.clientCommand] function.
 
 ```kt
 command("mycommand") {
@@ -19,7 +19,7 @@ command("mycommand") {
 
 ### Define execution logic
 
-You can use the [runs][net.axay.silk.commands.CommandBuilder.runs] function.
+You can use the [runs][net.silkmc.silk.commands.CommandBuilder.runs] function.
 
 ```kt
 command("mycommand") {
@@ -29,7 +29,7 @@ command("mycommand") {
 }
 ```
 
-[runsAsync][net.axay.silk.commands.CommandBuilder.runsAsync] is an alternative for `runs` and launches the command
+[runsAsync][net.silkmc.silk.commands.CommandBuilder.runsAsync] is an alternative for `runs` and launches the command
 handler in an async coroutine.
 
 #### The command execution context
@@ -48,7 +48,7 @@ manually
 
 ### Add subcommands (literals) to the command
 
-Subcommands can be easily added using the [literal][net.axay.silk.commands.CommandBuilder.literal] function.
+Subcommands can be easily added using the [literal][net.silkmc.silk.commands.CommandBuilder.literal] function.
 
 ```
 command("mycommand") {
@@ -89,7 +89,7 @@ literal("subcommand") runs { }
 
 ### Add arguments
 
-Arguments can be added using one of the [argument][net.axay.silk.commands.CommandBuilder.argument] functions.
+Arguments can be added using one of the [argument][net.silkmc.silk.commands.CommandBuilder.argument] functions.
 
 #### Define an argument
 
@@ -140,11 +140,11 @@ argument<String>("mystringarg") { stringArg ->
 ```
 
 So, what is happening here? You are getting a function passed in by
-the [argument][net.axay.silk.commands.CommandBuilder.argument] function as `it`, but you can rename it to whatever you
+the [argument][net.silkmc.silk.commands.CommandBuilder.argument] function as `it`, but you can rename it to whatever you
 want (in this case "stringArg").
 
-This "stringArg" function is only callable in the context of [runs][net.axay.silk.commands.CommandBuilder.runs]
-or [runsAsync][net.axay.silk.commands.CommandBuilder.runsAsync], where it will return the current value of the
+This "stringArg" function is only callable in the context of [runs][net.silkmc.silk.commands.CommandBuilder.runs]
+or [runsAsync][net.silkmc.silk.commands.CommandBuilder.runsAsync], where it will return the current value of the
 argument, entered by the user.
 
 ### Suggestions
@@ -156,14 +156,14 @@ Subcommands will be suggested automatically.
 #### Add argument value suggestions
 
 You can use one the many suggest functions to suggest argument values:
-[suggestSingle][net.axay.silk.commands.ArgumentCommandBuilder.suggestSingle]
-, [suggestSingleWithTooltip][net.axay.silk.commands.ArgumentCommandBuilder.suggestSingleWithTooltip]
-, [suggestSingleSuspending][net.axay.silk.commands.ArgumentCommandBuilder.suggestSingleSuspending]
-, [suggestSingleWithTooltipSuspending][net.axay.silk.commands.ArgumentCommandBuilder.suggestSingleWithTooltipSuspending]
-, [suggestList][net.axay.silk.commands.ArgumentCommandBuilder.suggestList]
-, [suggestListWithTooltips][net.axay.silk.commands.ArgumentCommandBuilder.suggestListWithTooltips]
-, [suggestListSuspending][net.axay.silk.commands.ArgumentCommandBuilder.suggestListSuspending]
-, [suggestListWithTooltipsSuspending][net.axay.silk.commands.ArgumentCommandBuilder.suggestListWithTooltipsSuspending]
+[suggestSingle][net.silkmc.silk.commands.ArgumentCommandBuilder.suggestSingle]
+, [suggestSingleWithTooltip][net.silkmc.silk.commands.ArgumentCommandBuilder.suggestSingleWithTooltip]
+, [suggestSingleSuspending][net.silkmc.silk.commands.ArgumentCommandBuilder.suggestSingleSuspending]
+, [suggestSingleWithTooltipSuspending][net.silkmc.silk.commands.ArgumentCommandBuilder.suggestSingleWithTooltipSuspending]
+, [suggestList][net.silkmc.silk.commands.ArgumentCommandBuilder.suggestList]
+, [suggestListWithTooltips][net.silkmc.silk.commands.ArgumentCommandBuilder.suggestListWithTooltips]
+, [suggestListSuspending][net.silkmc.silk.commands.ArgumentCommandBuilder.suggestListSuspending]
+, [suggestListWithTooltipsSuspending][net.silkmc.silk.commands.ArgumentCommandBuilder.suggestListWithTooltipsSuspending]
 
 An example would be:
 

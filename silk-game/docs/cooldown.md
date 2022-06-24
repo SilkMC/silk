@@ -1,4 +1,4 @@
-# Package net.axay.silk.game.cooldown
+# Package net.silkmc.silk.game.cooldown
 
 Functions for handling cooldown for actions performed on or by entities, including players
 
@@ -6,7 +6,7 @@ Functions for handling cooldown for actions performed on or by entities, includi
 
 ### Create a cooldown "key"
 
-Each *type* of cooldown can be represented by a new instance of [Cooldown][net.axay.silk.game.Cooldown].
+Each *type* of cooldown can be represented by a new instance of [Cooldown][net.silkmc.silk.game.Cooldown].
 
 ```kotlin
 val myCooldown = Cooldown()
@@ -31,7 +31,7 @@ The time unit is `ms`.
 #### hasCooldown
 
 You can check whether a player has a cooldown or not using
-the [hasCooldown][net.axay.silk.game.cooldown.Cooldown.hasCooldown] function.
+the [hasCooldown][net.silkmc.silk.game.cooldown.Cooldown.hasCooldown] function.
 
 ```kotlin
 if (myCooldown.hasCooldown(entity).not()) {
@@ -41,7 +41,7 @@ if (myCooldown.hasCooldown(entity).not()) {
 
 #### applyCooldown
 
-You can apply a cooldown instance using the [applyCooldown][net.axay.silk.game.cooldown.Cooldown.applyCooldown]
+You can apply a cooldown instance using the [applyCooldown][net.silkmc.silk.game.cooldown.Cooldown.applyCooldown]
 function.
 
 ```kotlin
@@ -56,7 +56,7 @@ Note: This function also takes a `delay` parameter, but that one is not required
 #### withCooldown
 
 Often you want to execute some code if the player or entity does not have an active cooldown, and then apply the
-cooldown. This can be done in a short form using the [withCooldown][net.axay.silk.game.cooldown.Cooldown.withCooldown]
+cooldown. This can be done in a short form using the [withCooldown][net.silkmc.silk.game.cooldown.Cooldown.withCooldown]
 function.
 
 ```kotlin

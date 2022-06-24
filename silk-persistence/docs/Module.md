@@ -23,9 +23,9 @@ Note: `Person` must be serializable here
 
 There are other compound key types:
 
-- [nbtElementCompoundKey][net.axay.silk.persistence.nbtElementCompoundKey] for storing NbtElements, as they don't have
+- [nbtElementCompoundKey][net.silkmc.silk.persistence.nbtElementCompoundKey] for storing NbtElements, as they don't have
   to (and cannot) be serialized
-- [customCompoundKey][net.axay.silk.persistence.customCompoundKey] for defining custom serialization logic (object
+- [customCompoundKey][net.silkmc.silk.persistence.customCompoundKey] for defining custom serialization logic (object
   to [NbtElement][net.minecraft.nbt.NbtElement]), for example if the class you are storing is not serializable, or if it
   is significantly faster than the built-in NBT serialization of silk-nbt
 
@@ -73,8 +73,8 @@ with(chunk.persistentCompound) {
 ### More functions
 
 Compounds offer more functions for more specific operations,
-see [PersistentCompound][net.axay.silk.persistence.PersistentCompound] for a list of these functions.
+see [PersistentCompound][net.silkmc.silk.persistence.PersistentCompound] for a list of these functions.
 
-# Package net.axay.silk.persistence
+# Package net.silkmc.silk.persistence
 
 Contains compound key creation and access to persistent compounds

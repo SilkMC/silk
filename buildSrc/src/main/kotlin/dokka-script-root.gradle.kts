@@ -1,6 +1,3 @@
-import org.gradle.kotlin.dsl.idea
-import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.repositories
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
 import org.jetbrains.dokka.gradle.DokkaMultiModuleTask

@@ -16,6 +16,6 @@ dependencies {
 
 val modName by extra("$projectTitle Network")
 val modEntrypoints by extra(linkedMapOf(
-    "main" to listOf("net.axay.silk.network.internal.SilkNetwork"),
-    "client" to listOf("net.axay.silk.network.internal.SilkNetwork"),
+    "main" to listOf("net.silkmc.silk.network.internal.SilkNetwork"),
+    "client" to listOf("net.silkmc.silk.network.internal.SilkNetwork"),
 ))

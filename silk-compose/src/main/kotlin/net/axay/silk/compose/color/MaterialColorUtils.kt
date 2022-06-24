@@ -1,4 +1,4 @@
-package net.axay.silk.compose.color
+package net.silkmc.silk.compose.color
 
 import androidx.compose.ui.graphics.Color
 import com.github.ajalt.colormath.calculate.differenceCIE2000
@@ -7,8 +7,8 @@ import com.github.ajalt.colormath.model.RGB
 import com.github.ajalt.colormath.model.RGBInt
 import com.github.ajalt.colormath.transform.interpolate
 import com.github.ajalt.colormath.transform.multiplyAlpha
-import net.axay.silk.compose.mixin.MaterialColorAccessor
-import net.axay.silk.core.logging.logWarning
+import net.silkmc.silk.compose.mixin.MaterialColorAccessor
+import net.silkmc.silk.core.logging.logWarning
 import net.minecraft.world.level.material.MaterialColor
 
 /**

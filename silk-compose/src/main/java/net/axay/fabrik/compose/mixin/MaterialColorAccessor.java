@@ -1,4 +1,4 @@
-package net.axay.silk.compose.mixin;
+package net.silkmc.silk.compose.mixin;
 
 import net.minecraft.world.level.material.MaterialColor;
 import org.spongepowered.asm.mixin.Mixin;

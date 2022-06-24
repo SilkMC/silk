@@ -4,7 +4,7 @@ Several utilities not fitting for the core module. They can be useful for mini-g
 
 ${dependencyNotice}
 
-# Package net.axay.silk.game.sideboard
+# Package net.silkmc.silk.game.sideboard
 
 A sideboard builder (displayed using scoreboards), supporting boards with changing content. The sideboard can be
 displayed to a selection of players.
