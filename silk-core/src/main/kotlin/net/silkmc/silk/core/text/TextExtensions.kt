@@ -46,18 +46,26 @@ inline fun Player.sendText(baseText: String = "", builder: LiteralTextBuilder.()
 }
 
 /**
- * Opens a [LiteralTextBuilder] and sends the resulting [TextComponent]
+ * Opens a [LiteralTextBuilder] and sends the resulting [Component]
  * to each player on the server.
  *
  * @see [literalText]
  */
 inline fun MinecraftServer.broadcastText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit= { }) {
-    playerList.broadcastSystemMessage(literalText(baseText, builder), ChatType.CHAT)
+    broadcastText(literalText(baseText, builder))
 }
 
 /**
  * Sends the given [Component] to each player on the server.
  */
+fun MinecraftServer.broadcastText(text: Component) {
+    playerList.broadcastSystemMessage(text, ChatType.SYSTEM)
+}
+
+@Deprecated(
+    message = "The function name sendText is inconsistent, use broadcastText instead.",
+    replaceWith = ReplaceWith("this.broadcastText(text)")
+)
 fun MinecraftServer.sendText(text: Component) {
-    playerList.broadcastSystemMessage(text, ChatType.CHAT)
+    broadcastText(text)
 }
