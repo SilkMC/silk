@@ -2,7 +2,7 @@ Silk [*[sɪlk]*](https://www.oxfordlearnersdictionaries.com/media/english/us_pro
 is a Minecraft API for [Kotlin](https://kotlinlang.org/) - targetting [Fabric](https://fabricmc.net/), [Quilt](https://quiltmc.org/) and
 [Paper](https://papermc.io/). <br>
 
-[Join our Discord](https://discord.gg/CJDUVuJ) or [Matrix Space](https://matrix.to/#/#kotlinmc:axay.net)
+Join our [Discord](https://discord.gg/CJDUVuJ) or [Matrix Space](https://matrix.to/#/#kotlinmc:axay.net)
 
 _____
 
@@ -25,7 +25,7 @@ Features of the API:
 
 ## Docs
 
-The docs are located at [**silkmc.github.io/silk**](https://silkmc.github.io/silk/).
+The docs are located at [**silkmc.net/silk/docs**](https://silkmc.net/silk/docs/).
 
 Read them to get started with each module and see how to add it to your Gradle project.
 
