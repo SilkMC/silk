@@ -3,6 +3,7 @@ package net.silkmc.silk.core.kotlin
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.levelgen.BitRandomSource
 import net.minecraft.world.level.levelgen.PositionalRandomFactory
+import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import kotlin.random.Random
 import kotlin.random.asJavaRandom
 
@@ -49,4 +50,5 @@ fun RandomSource.asKotlinRandom(): Random = WrappedMinecraftRandom(this)
  * This should only be used in very simple cases, for example when calling
  * `Registry::getRandom`.
  */
+@ExperimentalSilkApi
 fun Random.asMinecraftRandom(): RandomSource = WrappedKotlinRandom(this)

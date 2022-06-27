@@ -19,3 +19,14 @@ annotation class InternalSilkApi
     level = RequiresOptIn.Level.WARNING
 )
 annotation class DelicateSilkApi
+
+@Retention(value = AnnotationRetention.BINARY)
+@Target(AnnotationTarget.FUNCTION)
+@RequiresOptIn(
+    message = "This is an experimental API and its use requires care, since" +
+        " stability cannot be guaranteed for this API yet." +
+        " This means that the functionality of this API may not work correctly yet, or that" +
+        " breaking changes can occur at any time.",
+    level = RequiresOptIn.Level.WARNING
+)
+annotation class ExperimentalSilkApi
