@@ -21,7 +21,7 @@ ItemStack builder and ItemStack modification extensions
 
 # Package net.silkmc.silk.core.kotlin
 
-Utilities related to the Kotlin language itself, used by Silk itself
+Utilities related to the Kotlin language itself
 
 # Package net.silkmc.silk.core.logging
 
