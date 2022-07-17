@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.task.mcCoroutineDispatcher
-import java.util.*
 
 @ExperimentalSilkApi
 open class Event<T> {
@@ -53,12 +52,14 @@ open class Event<T> {
 
         /**
          * Creates a classic [Event] without async listener invocation.
+         * The event instance type [T] can be both mutable or immutable.
          */
         fun <T> onlySync() =
             Event<T>()
     }
 }
 
+@ExperimentalSilkApi
 open class AsyncEvent<ImmutableType, MutableType : ImmutableType> : Event<MutableType>() {
 
     /**

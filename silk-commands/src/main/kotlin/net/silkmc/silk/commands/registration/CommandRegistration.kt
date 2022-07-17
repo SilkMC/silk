@@ -6,13 +6,14 @@ import net.fabricmc.api.Environment
 import net.minecraft.commands.CommandSourceStack
 import net.silkmc.silk.commands.ClientCommandSourceStack
 import net.silkmc.silk.commands.RegistrableCommand
-import net.silkmc.silk.commands.internal.events.CommandEvents
+import net.silkmc.silk.commands.internal.events.command
+import net.silkmc.silk.core.events.Events
 
 /**
  * Set up a callback which automatically registers this command on server startup.
  */
 fun LiteralArgumentBuilder<CommandSourceStack>.setupRegistrationCallback() {
-    CommandEvents.Register.register { event ->
+    Events.command.register.listen { event ->
         event.dispatcher.register(this)
     }
 }
@@ -21,7 +22,7 @@ fun LiteralArgumentBuilder<CommandSourceStack>.setupRegistrationCallback() {
  * Set up a callback which automatically registers this command on server startup.
  */
 fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
-    CommandEvents.Register.register { event ->
+    Events.command.register.listen { event ->
         commandBuilder.toBrigadier(event.context).forEach {
             event.dispatcher.root.addChild(it)
         }
@@ -31,7 +32,7 @@ fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
 @Environment(EnvType.CLIENT)
 @JvmName("setupRegistrationCallbackClient")
 fun LiteralArgumentBuilder<ClientCommandSourceStack>.setupRegistrationCallback() {
-    CommandEvents.RegisterClient.register { event ->
+    Events.command.registerClient.listen { event ->
         event.dispatcher.register(this)
     }
 }
@@ -42,7 +43,7 @@ fun LiteralArgumentBuilder<ClientCommandSourceStack>.setupRegistrationCallback()
 @Environment(EnvType.CLIENT)
 @JvmName("setupRegistrationCallbackClient")
 fun RegistrableCommand<ClientCommandSourceStack>.setupRegistrationCallback() {
-    CommandEvents.RegisterClient.register { event ->
+    Events.command.registerClient.listen { event ->
         commandBuilder.toBrigadier(event.context).forEach {
             event.dispatcher.root.addChild(it)
         }
