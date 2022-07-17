@@ -22,6 +22,7 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "17"
+            freeCompilerArgs += "-Xcontext-receivers"
         }
     }
 }
@@ -29,7 +30,7 @@ tasks {
 kotlin.sourceSets.all {
     languageSettings {
         if (project.name.removePrefix(rootProject.name + "-") in BuildConstants.uploadModules) {
-            listOf("InternalSilkApi", "DelicateSilkApi").forEach {
+            listOf("InternalSilkApi", "DelicateSilkApi", "ExperimentalSilkApi").forEach {
                 optIn("net.silkmc.silk.core.annotations.${it}")
             }
         }
