@@ -21,7 +21,7 @@ annotation class InternalSilkApi
 annotation class DelicateSilkApi
 
 @Retention(value = AnnotationRetention.BINARY)
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @RequiresOptIn(
     message = "This is an experimental API and its use requires care, since" +
         " stability cannot be guaranteed for this API yet." +
