@@ -6,8 +6,8 @@ import net.fabricmc.api.Environment
 import net.minecraft.commands.CommandSourceStack
 import net.silkmc.silk.commands.ClientCommandSourceStack
 import net.silkmc.silk.commands.RegistrableCommand
-import net.silkmc.silk.commands.internal.events.command
-import net.silkmc.silk.core.events.Events
+import net.silkmc.silk.commands.event.command
+import net.silkmc.silk.core.event.Events
 
 /**
  * Set up a callback which automatically registers this command on server startup.

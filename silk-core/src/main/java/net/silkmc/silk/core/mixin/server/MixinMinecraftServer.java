@@ -1,7 +1,7 @@
 package net.silkmc.silk.core.mixin.server;
 
 import net.minecraft.server.MinecraftServer;
-import net.silkmc.silk.core.internal.events.ServerEvents;
+import net.silkmc.silk.core.event.ServerEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

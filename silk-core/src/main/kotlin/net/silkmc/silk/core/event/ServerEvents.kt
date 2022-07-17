@@ -1,8 +1,7 @@
-package net.silkmc.silk.core.internal.events
+package net.silkmc.silk.core.event
 
 import net.minecraft.server.MinecraftServer
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
-import net.silkmc.silk.core.events.Events
 
 /**
  * Events related to the [MinecraftServer].

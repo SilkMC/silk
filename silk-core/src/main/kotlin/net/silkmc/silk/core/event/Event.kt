@@ -1,4 +1,4 @@
-package net.silkmc.silk.core.internal.events
+package net.silkmc.silk.core.event
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.FlowCollector
@@ -7,6 +7,13 @@ import kotlinx.coroutines.flow.SharedFlow
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.task.mcCoroutineDispatcher
+
+/**
+ * The base object for discovering events, check the extensions
+ * values of this object.
+ */
+@ExperimentalSilkApi
+object Events
 
 @ExperimentalSilkApi
 open class Event<T> {

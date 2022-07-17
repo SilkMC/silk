@@ -10,7 +10,7 @@ import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.network.chat.ComponentUtils
 import net.silkmc.silk.commands.ClientCommandSourceStack
-import net.silkmc.silk.commands.internal.events.CommandEvents
+import net.silkmc.silk.commands.event.CommandEvents
 import net.silkmc.silk.commands.sendFailure
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.logging.logWarning
@@ -24,7 +24,7 @@ object ClientCommandHandler {
         val dispatcher = CommandDispatcher<ClientCommandSourceStack>()
         currentDispatcher = dispatcher
 
-        CommandEvents.RegisterClient.invoke(CommandEvents.RegisterClient(dispatcher, context))
+        CommandEvents.registerClient.invoke(CommandEvents.RegisterEventClient(dispatcher, context))
         dispatcher.findAmbiguities { _, child, sibling, inputs ->
             logWarning("Ambiguity between arguments ${dispatcher.getPath(child)} and ${dispatcher.getPath(sibling)} with inputs: $inputs");
         }

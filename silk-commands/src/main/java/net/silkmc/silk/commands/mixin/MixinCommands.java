@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.silkmc.silk.commands.internal.events.CommandEvents;
+import net.silkmc.silk.commands.event.CommandEvents;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,6 +28,6 @@ public class MixinCommands {
         )
     )
     private void onRegister(Commands.CommandSelection commandSelection, CommandBuildContext commandBuildContext, CallbackInfo ci) {
-        CommandEvents.Register.Companion.invoke(new CommandEvents.Register(dispatcher, commandBuildContext, commandSelection));
+        CommandEvents.INSTANCE.getRegister().invoke(new CommandEvents.RegisterEvent(dispatcher, commandBuildContext, commandSelection));
     }
 }
