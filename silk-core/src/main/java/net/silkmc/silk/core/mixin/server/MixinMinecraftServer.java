@@ -18,8 +18,39 @@ public class MixinMinecraftServer {
             shift = At.Shift.BEFORE
         )
     )
-    private void onStarting(CallbackInfo ci) {
+    private void onBeforeInit(CallbackInfo ci) {
         //noinspection ConstantConditions
-        ServerEvents.Init.Companion.invoke(new ServerEvents.Init((MinecraftServer) (Object) this));
+        ServerEvents.INSTANCE.getPreStart().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
+    }
+
+    @Inject(
+        method = "runServer",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/MinecraftServer;initServer()Z",
+            shift = At.Shift.BEFORE
+        )
+    )
+    private void onStarted(CallbackInfo ci) {
+        //noinspection ConstantConditions
+        ServerEvents.INSTANCE.getStarted().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
+    }
+
+    @Inject(
+        method = "stopServer",
+        at = @At("HEAD")
+    )
+    private void onBeforeStop(CallbackInfo ci) {
+        //noinspection ConstantConditions
+        ServerEvents.INSTANCE.getPreStop().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
+    }
+
+    @Inject(
+        method = "stopServer",
+        at = @At("TAIL")
+    )
+    private void onStopped(CallbackInfo ci) {
+        //noinspection ConstantConditions
+        ServerEvents.INSTANCE.getStopped().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
     }
 }
