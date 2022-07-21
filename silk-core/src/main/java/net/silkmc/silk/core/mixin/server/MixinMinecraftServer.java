@@ -20,7 +20,6 @@ public class MixinMinecraftServer {
         )
     )
     private void onBeforeInit(CallbackInfo ci) {
-        //noinspection ConstantConditions
         ServerEvents.INSTANCE.getPreStart().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
     }
 
@@ -33,7 +32,6 @@ public class MixinMinecraftServer {
         )
     )
     private void onStarted(CallbackInfo ci) {
-        //noinspection ConstantConditions
         ServerEvents.INSTANCE.getPostStart().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
     }
 
@@ -42,7 +40,6 @@ public class MixinMinecraftServer {
         at = @At("HEAD")
     )
     private void onBeforeStop(CallbackInfo ci) {
-        //noinspection ConstantConditions
         ServerEvents.INSTANCE.getPreStop().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
     }
 
@@ -51,7 +48,6 @@ public class MixinMinecraftServer {
         at = @At("TAIL")
     )
     private void onStopped(CallbackInfo ci) {
-        //noinspection ConstantConditions
         ServerEvents.INSTANCE.getPostStop().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
     }
 
@@ -62,7 +58,6 @@ public class MixinMinecraftServer {
     )
     private void onHalt(CallbackInfo ci) {
         final var scope = new EventScope.Cancellable();
-        //noinspection ConstantConditions
         ServerEvents.INSTANCE.getPreHalt().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this), scope);
         if (scope.isCancelled()) {
             ci.cancel();
