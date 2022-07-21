@@ -19,12 +19,11 @@ object BuildConstants {
     // check these values here: https://axay.net/mcdev
     const val minecraftVersion = "1.19"
     const val quiltMappingsVersion = "${minecraftVersion}+build.1:v2"
-    const val fabricLoaderVersion = "0.14.7"
-    const val fabricApiVersion = "0.55.3+1.19"
-    const val fabricLanguageKotlinVersion = "1.8.0+kotlin.1.7.0"
+    const val fabricLoaderVersion = "0.14.8"
+    const val fabricApiVersion = "0.57.0+1.19"
+    const val fabricLanguageKotlinVersion = "1.8.2+kotlin.1.7.10"
 
-    // TODO: update to 5.4 when released for compatiblity with Kotlin 1.7
-    const val kotestVersion = "5.3.1"
+    const val kotestVersion = "5.3.2"
     const val mockkVersion = "1.12.4"
 
     val uploadModules = listOf(

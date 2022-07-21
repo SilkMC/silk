@@ -28,11 +28,11 @@ dependencies {
     implementation(pluginDep("com.matthewprenger.cursegradle", "1.4.0"))
     implementation(pluginDep("com.modrinth.minotaur", "2.3.1"))
 
-    implementation(pluginDep("io.papermc.paperweight.userdev", "1.3.7"))
+    implementation(pluginDep("io.papermc.paperweight.userdev", "1.3.8"))
     implementation(pluginDep("xyz.jpenilla.run-paper", "1.0.6"))
 
-    val compileDokkaVersion = "1.6.21"
-    val dokkaVersion = "1.7.0"
+    val compileDokkaVersion = "1.7.10"
+    val dokkaVersion = "1.7.10"
 
     compileOnly("org.jetbrains.dokka:dokka-gradle-plugin:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
