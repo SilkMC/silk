@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package net.silkmc.silk.core.event
 
 import kotlinx.coroutines.*
@@ -6,6 +8,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import net.silkmc.silk.core.annotations.InternalSilkApi
+import net.silkmc.silk.core.task.mcClientCoroutineDispatcher
 import net.silkmc.silk.core.task.mcCoroutineDispatcher
 
 /**
@@ -49,8 +52,8 @@ open class Event<T, S : EventScope> {
          * The [MutableScope] passed to this function determines what kind of actions
          * can be performed in response to the event.
          */
-        fun <ImmutableType, MutableScope : EventScope> syncAsync() =
-            AsyncEvent<ImmutableType, MutableScope>()
+        fun <ImmutableType, MutableScope : EventScope> syncAsync(clientSide: Boolean = false) =
+            AsyncEvent<ImmutableType, MutableScope>(clientSide)
 
         /**
          * Creates an [AsyncEvent] with synchronous and asynchronous
@@ -58,8 +61,8 @@ open class Event<T, S : EventScope> {
          * The mutable scope passed to event handlers will be empty,
          * effectively making the event immutable for all handlers.
          */
-        fun <ImmutableType> syncAsyncImmutable() =
-            AsyncEvent.Immutable<ImmutableType>()
+        fun <ImmutableType> syncAsyncImmutable(clientSide: Boolean = false) =
+            AsyncEvent.Immutable<ImmutableType>(clientSide)
 
         /**
          * Creates a classic [Event] without async listener invocation.
@@ -84,7 +87,7 @@ open class Event<T, S : EventScope> {
 }
 
 @ExperimentalSilkApi
-open class AsyncEvent<T, S : EventScope> : Event<T, S>() {
+open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean) : Event<T, S>() {
 
     /**
      * The internal [flow] to which events are [emitted][MutableSharedFlow.emit].
@@ -105,7 +108,7 @@ open class AsyncEvent<T, S : EventScope> : Event<T, S>() {
      * in a non-blocking way.
      */
     protected open val syncDispatcher: CoroutineDispatcher
-        get() = mcCoroutineDispatcher
+        get() = if (clientSide) mcClientCoroutineDispatcher else mcCoroutineDispatcher
 
     /**
      * Listens to this event, and `emit`s to the [collector] if
@@ -151,7 +154,7 @@ open class AsyncEvent<T, S : EventScope> : Event<T, S>() {
         }
     }
 
-    class Immutable<T> : AsyncEvent<T, EventScope.Empty>() {
+    class Immutable<T>(clientSide: Boolean) : AsyncEvent<T, EventScope.Empty>(clientSide) {
         fun invoke(instance: T) = invoke(instance, EventScope.Empty)
     }
 }
