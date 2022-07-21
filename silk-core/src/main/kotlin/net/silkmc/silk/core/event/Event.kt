@@ -16,16 +16,16 @@ import net.silkmc.silk.core.task.mcCoroutineDispatcher
 object Events
 
 @ExperimentalSilkApi
-open class Event<T> {
+open class Event<T, MutableScope : MutableEventScope> {
 
     @InternalSilkApi
-    val listeners: MutableList<(T) -> Unit> = ArrayList()
+    val listeners: MutableList<context(MutableScope) (T) -> Unit> = ArrayList()
 
     /**
      * Listens to this event. The [callback] will always be called synchronously.
      * This function is synchronized, so it may be called from any thread.
      */
-    fun listen(callback: (event: T) -> Unit) {
+    fun listen(callback: context(MutableScope) (T) -> Unit) {
         synchronized(this) {
             listeners += callback
         }
@@ -35,39 +35,56 @@ open class Event<T> {
      * Invokes this event. Calling this function will trigger all
      * listeners and collectors.
      */
-    open fun invoke(instance: T) {
+    open fun invoke(instance: T, scope: MutableScope) {
         synchronized(this) {
-            listeners.forEach { it.invoke(instance) }
+            listeners.forEach { it.invoke(scope, instance) }
         }
     }
 
     companion object {
 
         /**
-         * Creates an [AsyncEvent], with different types for async and synchronous
-         * listeners.
+         * Creates an [AsyncEvent] with synchronous and asynchronous
+         * listener invocation.
+         * The [MutableScope] passed to this function determines what kind of actions
+         * can be performed in response to the event.
          */
-        fun <ImmutableType, MutableType : ImmutableType> both() =
-            AsyncEvent<ImmutableType, MutableType>()
+        fun <ImmutableType, MutableScope : MutableEventScope> syncAsync() =
+            AsyncEvent<ImmutableType, MutableScope>()
 
         /**
-         * Creates an [AsyncEvent], where all event instances passed to any listener
-         * will always be immutable.
+         * Creates an [AsyncEvent] with synchronous and asynchronous
+         * listener invocation.
+         * The mutable scope passed to event handlers will be empty,
+         * effectively making the event immutable for all handlers.
          */
-        fun <ImmutableType> bothImmutable() =
-            AsyncEvent<ImmutableType, ImmutableType>()
+        fun <ImmutableType> syncAsyncImmutable() =
+            AsyncEvent.Immutable<ImmutableType>()
 
         /**
          * Creates a classic [Event] without async listener invocation.
-         * The event instance type [T] can be both mutable or immutable.
+         * The [MutableScope] passed to this function determines what kind of actions
+         * can be performed in response to the event.
          */
-        fun <T> onlySync() =
-            Event<T>()
+        fun <T, MutableScope : MutableEventScope> onlySync() =
+            Event<T, MutableScope>()
+
+        /**
+         * Creates a classic [Event] without async listener invocation.
+         * The mutable scope passed to event handlers will be empty,
+         * effectively making the event immutable for all handlers.
+         */
+        fun <T> onlySyncImmutable() =
+            Immutable<T>()
+    }
+
+    class Immutable<T> : Event<T, MutableEventScope.Empty>() {
+        fun invoke(instance: T) = invoke(instance, MutableEventScope.Empty)
     }
 }
 
 @ExperimentalSilkApi
-open class AsyncEvent<ImmutableType, MutableType : ImmutableType> : Event<MutableType>() {
+open class AsyncEvent<T, MutableScope : MutableEventScope> : Event<T, MutableScope>() {
 
     /**
      * The internal [flow] to which events are [emitted][MutableSharedFlow.emit].
@@ -75,7 +92,7 @@ open class AsyncEvent<ImmutableType, MutableType : ImmutableType> : Event<Mutabl
      * the listeners have not finished handling the previous event.
      */
     @InternalSilkApi
-    open val flow = MutableSharedFlow<ImmutableType>()
+    open val flow = MutableSharedFlow<T>()
 
     /**
      * The scope used for emitting events without blocking the current execution.
@@ -98,7 +115,7 @@ open class AsyncEvent<ImmutableType, MutableType : ImmutableType> : Event<Mutabl
      * current scope.
      */
     context(CoroutineScope)
-    fun collectInScope(collector: FlowCollector<ImmutableType>): Job = launch {
+    fun collectInScope(collector: FlowCollector<T>): Job = launch {
         flow.collect(collector)
     }
 
@@ -110,7 +127,7 @@ open class AsyncEvent<ImmutableType, MutableType : ImmutableType> : Event<Mutabl
      * Minecraft main thread dispatcher ([syncDispatcher]).
      */
     context(CoroutineScope)
-    fun collectInScopeSync(collector: FlowCollector<ImmutableType>): Job = launch(syncDispatcher) {
+    fun collectInScopeSync(collector: FlowCollector<T>): Job = launch(syncDispatcher) {
         flow.collect(collector)
     }
 
@@ -123,14 +140,18 @@ open class AsyncEvent<ImmutableType, MutableType : ImmutableType> : Event<Mutabl
      * This function never completes, read [the official collect docs][kotlinx.coroutines.flow.SharedFlow.collect]
      * for more info.
      */
-    suspend fun collect(collector: FlowCollector<ImmutableType>): Nothing {
+    suspend fun collect(collector: FlowCollector<T>): Nothing {
         flow.collect(collector)
     }
 
-    override fun invoke(instance: MutableType) {
-        super.invoke(instance)
+    override fun invoke(instance: T, scope: MutableScope) {
+        super.invoke(instance, scope)
         invokeScope.launch {
             flow.emit(instance)
         }
+    }
+
+    class Immutable<T> : AsyncEvent<T, MutableEventScope.Empty>() {
+        fun invoke(instance: T) = invoke(instance, MutableEventScope.Empty)
     }
 }

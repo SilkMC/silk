@@ -17,20 +17,20 @@ object ServerEvents {
     /**
      * Called before the server is initialized.
      */
-    val preStart = Event.bothImmutable<ServerEvent>()
+    val preStart = Event.syncAsyncImmutable<ServerEvent>()
 
     /**
      * Called after the server has successfully started.
      */
-    val postStart = Event.bothImmutable<ServerEvent>()
+    val postStart = Event.syncAsyncImmutable<ServerEvent>()
 
     /**
      * Called before the server begins to shut down.
      */
-    val preStop = Event.bothImmutable<ServerEvent>()
+    val preStop = Event.syncAsyncImmutable<ServerEvent>()
 
     /**
      * Called after the server has successfully stopped.
      */
-    val postStop = Event.bothImmutable<ServerEvent>()
+    val postStop = Event.syncAsyncImmutable<ServerEvent>()
 }
