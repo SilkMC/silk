@@ -24,7 +24,7 @@ object ClientCommandHandler {
         val dispatcher = CommandDispatcher<ClientCommandSourceStack>()
         currentDispatcher = dispatcher
 
-        CommandEvents.registerClient.invoke(CommandEvents.RegisterEventClient(dispatcher, context))
+        CommandEvents.registerClient.invoke(CommandEvents.RegisterClientEvent(dispatcher, context))
         dispatcher.findAmbiguities { _, child, sibling, inputs ->
             logWarning("Ambiguity between arguments ${dispatcher.getPath(child)} and ${dispatcher.getPath(sibling)} with inputs: $inputs");
         }

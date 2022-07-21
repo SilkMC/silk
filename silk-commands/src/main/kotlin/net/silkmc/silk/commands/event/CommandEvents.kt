@@ -24,7 +24,7 @@ object CommandEvents {
         val selection: CommandSelection,
     )
 
-    class RegisterEventClient(
+    class RegisterClientEvent(
         val dispatcher: CommandDispatcher<ClientCommandSourceStack>,
         val context: CommandBuildContext,
     )
@@ -37,5 +37,5 @@ object CommandEvents {
     /**
      * Called when client commands are registered.
      */
-    val registerClient = Event.onlySync<RegisterEventClient>()
+    val registerClient = Event.onlySync<RegisterClientEvent>()
 }
