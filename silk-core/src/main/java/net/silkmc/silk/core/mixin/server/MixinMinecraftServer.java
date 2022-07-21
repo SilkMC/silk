@@ -27,8 +27,8 @@ public class MixinMinecraftServer {
         method = "runServer",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/server/MinecraftServer;initServer()Z",
-            shift = At.Shift.BEFORE
+            target = "Lnet/minecraft/server/MinecraftServer;updateStatusIcon(Lnet/minecraft/network/protocol/status/ServerStatus;)V",
+            shift = At.Shift.AFTER
         )
     )
     private void onStarted(CallbackInfo ci) {
