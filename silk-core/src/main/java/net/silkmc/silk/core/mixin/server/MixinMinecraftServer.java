@@ -33,7 +33,7 @@ public class MixinMinecraftServer {
     )
     private void onStarted(CallbackInfo ci) {
         //noinspection ConstantConditions
-        ServerEvents.INSTANCE.getStarted().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
+        ServerEvents.INSTANCE.getPostStart().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
     }
 
     @Inject(
@@ -51,6 +51,6 @@ public class MixinMinecraftServer {
     )
     private void onStopped(CallbackInfo ci) {
         //noinspection ConstantConditions
-        ServerEvents.INSTANCE.getStopped().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
+        ServerEvents.INSTANCE.getPostStop().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
     }
 }

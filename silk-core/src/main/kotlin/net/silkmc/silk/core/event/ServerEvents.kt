@@ -22,7 +22,7 @@ object ServerEvents {
     /**
      * Called after the server has successfully started.
      */
-    val started = Event.bothImmutable<ServerEvent>()
+    val postStart = Event.bothImmutable<ServerEvent>()
 
     /**
      * Called before the server begins to shut down.
@@ -32,5 +32,5 @@ object ServerEvents {
     /**
      * Called after the server has successfully stopped.
      */
-    val stopped = Event.bothImmutable<ServerEvent>()
+    val postStop = Event.bothImmutable<ServerEvent>()
 }
