@@ -4,14 +4,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import net.silkmc.silk.core.event.Events
-import net.silkmc.silk.core.event.server
+import net.silkmc.silk.core.event.Server
 import net.silkmc.silk.core.logging.logger
 
 internal object McCoroutineManager {
     private val log = logger()
 
     fun init() {
-        Events.server.preStart.listen {
+        Events.Server.preStart.listen {
             mcCoroutineDispatcher = it.server.asCoroutineDispatcher()
             mcCoroutineScope = CoroutineScope(SupervisorJob() + mcCoroutineDispatcher)
             log.info("Initialized mcCoroutineScope (MinecraftServer as executor)")

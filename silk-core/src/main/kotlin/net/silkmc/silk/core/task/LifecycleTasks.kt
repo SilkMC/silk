@@ -7,14 +7,14 @@ import kotlinx.coroutines.launch
 import net.minecraft.server.MinecraftServer
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.event.Events
-import net.silkmc.silk.core.event.server
+import net.silkmc.silk.core.event.Server
 
 @PublishedApi
 internal object LifecycleTasksManager {
     val uninitializedServerDeferred = CompletableDeferred<Boolean>()
 
     fun init() {
-        Events.server.preStart.listen {
+        Events.Server.preStart.listen {
             uninitializedServerDeferred.complete(true)
         }
     }

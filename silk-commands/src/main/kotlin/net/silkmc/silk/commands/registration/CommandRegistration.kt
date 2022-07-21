@@ -6,14 +6,14 @@ import net.fabricmc.api.Environment
 import net.minecraft.commands.CommandSourceStack
 import net.silkmc.silk.commands.ClientCommandSourceStack
 import net.silkmc.silk.commands.RegistrableCommand
-import net.silkmc.silk.commands.event.command
+import net.silkmc.silk.commands.event.Command
 import net.silkmc.silk.core.event.Events
 
 /**
  * Set up a callback which automatically registers this command on server startup.
  */
 fun LiteralArgumentBuilder<CommandSourceStack>.setupRegistrationCallback() {
-    Events.command.register.listen { event ->
+    Events.Command.register.listen { event ->
         event.dispatcher.register(this)
     }
 }
@@ -22,7 +22,7 @@ fun LiteralArgumentBuilder<CommandSourceStack>.setupRegistrationCallback() {
  * Set up a callback which automatically registers this command on server startup.
  */
 fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
-    Events.command.register.listen { event ->
+    Events.Command.register.listen { event ->
         commandBuilder.toBrigadier(event.context).forEach {
             event.dispatcher.root.addChild(it)
         }
@@ -32,7 +32,7 @@ fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
 @Environment(EnvType.CLIENT)
 @JvmName("setupRegistrationCallbackClient")
 fun LiteralArgumentBuilder<ClientCommandSourceStack>.setupRegistrationCallback() {
-    Events.command.registerClient.listen { event ->
+    Events.Command.registerClient.listen { event ->
         event.dispatcher.register(this)
     }
 }
@@ -43,7 +43,7 @@ fun LiteralArgumentBuilder<ClientCommandSourceStack>.setupRegistrationCallback()
 @Environment(EnvType.CLIENT)
 @JvmName("setupRegistrationCallbackClient")
 fun RegistrableCommand<ClientCommandSourceStack>.setupRegistrationCallback() {
-    Events.command.registerClient.listen { event ->
+    Events.Command.registerClient.listen { event ->
         commandBuilder.toBrigadier(event.context).forEach {
             event.dispatcher.root.addChild(it)
         }

@@ -13,7 +13,7 @@ import net.silkmc.silk.core.event.Events
  * Events related to commands.
  */
 @Suppress("unused") // receiver is for namespacing only
-val Events.command get() = CommandEvents
+val Events.Command get() = CommandEvents
 
 @ExperimentalSilkApi
 object CommandEvents {
