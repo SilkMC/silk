@@ -1,6 +1,7 @@
 package net.silkmc.silk.core.mixin.server;
 
 import net.minecraft.server.MinecraftServer;
+import net.silkmc.silk.core.event.EventScope;
 import net.silkmc.silk.core.event.ServerEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -52,5 +53,19 @@ public class MixinMinecraftServer {
     private void onStopped(CallbackInfo ci) {
         //noinspection ConstantConditions
         ServerEvents.INSTANCE.getPostStop().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this));
+    }
+
+    @Inject(
+        method = "halt",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void onHalt(CallbackInfo ci) {
+        final var scope = new EventScope.Cancellable();
+        //noinspection ConstantConditions
+        ServerEvents.INSTANCE.getPreHalt().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this), scope);
+        if (scope.isCancelled()) {
+            ci.cancel();
+        }
     }
 }

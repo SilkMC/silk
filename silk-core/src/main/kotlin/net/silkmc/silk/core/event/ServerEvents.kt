@@ -33,4 +33,9 @@ object ServerEvents {
      * Called after the server has successfully stopped.
      */
     val postStop = Event.syncAsyncImmutable<ServerEvent>()
+
+    /**
+     * Called before the game loop is stopped (running set to false).
+     */
+    val preHalt = Event.syncAsync<ServerEvent, EventScope.Cancellable>()
 }

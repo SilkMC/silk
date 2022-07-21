@@ -16,16 +16,16 @@ import net.silkmc.silk.core.task.mcCoroutineDispatcher
 object Events
 
 @ExperimentalSilkApi
-open class Event<T, MutableScope : MutableEventScope> {
+open class Event<T, S : EventScope> {
 
     @InternalSilkApi
-    val listeners: MutableList<context(MutableScope) (T) -> Unit> = ArrayList()
+    val listeners: MutableList<context(S) (T) -> Unit> = ArrayList()
 
     /**
      * Listens to this event. The [callback] will always be called synchronously.
      * This function is synchronized, so it may be called from any thread.
      */
-    fun listen(callback: context(MutableScope) (T) -> Unit) {
+    fun listen(callback: context(S) (T) -> Unit) {
         synchronized(this) {
             listeners += callback
         }
@@ -35,7 +35,7 @@ open class Event<T, MutableScope : MutableEventScope> {
      * Invokes this event. Calling this function will trigger all
      * listeners and collectors.
      */
-    open fun invoke(instance: T, scope: MutableScope) {
+    open fun invoke(instance: T, scope: S) {
         synchronized(this) {
             listeners.forEach { it.invoke(scope, instance) }
         }
@@ -49,7 +49,7 @@ open class Event<T, MutableScope : MutableEventScope> {
          * The [MutableScope] passed to this function determines what kind of actions
          * can be performed in response to the event.
          */
-        fun <ImmutableType, MutableScope : MutableEventScope> syncAsync() =
+        fun <ImmutableType, MutableScope : EventScope> syncAsync() =
             AsyncEvent<ImmutableType, MutableScope>()
 
         /**
@@ -66,7 +66,7 @@ open class Event<T, MutableScope : MutableEventScope> {
          * The [MutableScope] passed to this function determines what kind of actions
          * can be performed in response to the event.
          */
-        fun <T, MutableScope : MutableEventScope> onlySync() =
+        fun <T, MutableScope : EventScope> onlySync() =
             Event<T, MutableScope>()
 
         /**
@@ -78,13 +78,13 @@ open class Event<T, MutableScope : MutableEventScope> {
             Immutable<T>()
     }
 
-    class Immutable<T> : Event<T, MutableEventScope.Empty>() {
-        fun invoke(instance: T) = invoke(instance, MutableEventScope.Empty)
+    class Immutable<T> : Event<T, EventScope.Empty>() {
+        fun invoke(instance: T) = invoke(instance, EventScope.Empty)
     }
 }
 
 @ExperimentalSilkApi
-open class AsyncEvent<T, MutableScope : MutableEventScope> : Event<T, MutableScope>() {
+open class AsyncEvent<T, S : EventScope> : Event<T, S>() {
 
     /**
      * The internal [flow] to which events are [emitted][MutableSharedFlow.emit].
@@ -144,14 +144,14 @@ open class AsyncEvent<T, MutableScope : MutableEventScope> : Event<T, MutableSco
         flow.collect(collector)
     }
 
-    override fun invoke(instance: T, scope: MutableScope) {
+    override fun invoke(instance: T, scope: S) {
         super.invoke(instance, scope)
         invokeScope.launch {
             flow.emit(instance)
         }
     }
 
-    class Immutable<T> : AsyncEvent<T, MutableEventScope.Empty>() {
-        fun invoke(instance: T) = invoke(instance, MutableEventScope.Empty)
+    class Immutable<T> : AsyncEvent<T, EventScope.Empty>() {
+        fun invoke(instance: T) = invoke(instance, EventScope.Empty)
     }
 }
