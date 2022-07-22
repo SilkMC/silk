@@ -22,15 +22,21 @@ object Events
 open class Event<T, S : EventScope> {
 
     @InternalSilkApi
-    val listeners: MutableList<context(S) (T) -> Unit> = ArrayList()
+    val listenersByPriority: MutableList<MutableList<context(S) (T) -> Unit>> =
+        ArrayList(EventPriority.LAST.ordinal + 1)
 
     /**
      * Listens to this event. The [callback] will always be called synchronously.
      * This function is synchronized, so it may be called from any thread.
+     *
+     * @param priority specifies the priority with which this listener will be called
+     * over the other listeners, see [EventPriority]
      */
-    fun listen(callback: context(S) (T) -> Unit) {
+    fun listen(priority: EventPriority = EventPriority.NORMAL, callback: context(S) (T) -> Unit) {
         synchronized(this) {
-            listeners += callback
+            listenersByPriority[priority.ordinal] = listenersByPriority
+                .getOrElse(priority.ordinal) { ArrayList() }
+                .apply { add(callback) }
         }
     }
 
@@ -40,7 +46,11 @@ open class Event<T, S : EventScope> {
      */
     open fun invoke(instance: T, scope: S) {
         synchronized(this) {
-            listeners.forEach { it.invoke(scope, instance) }
+            for (listeners in listenersByPriority) {
+                for (listener in listeners) {
+                    listener(scope, instance)
+                }
+            }
         }
     }
 
