@@ -22,7 +22,7 @@ object Events
 open class Event<T, S : EventScope> {
 
     @InternalSilkApi
-    val listenersByPriority = ArrayList<MutableList<context(S) (T) -> Unit>>().apply {
+    val listenersByPriority: List<MutableList<context(S) (T) -> Unit>> = buildList {
         repeat(EventPriority.values().size) {
             add(ArrayList())
         }
@@ -37,9 +37,7 @@ open class Event<T, S : EventScope> {
      */
     fun listen(priority: EventPriority = EventPriority.NORMAL, callback: context(S) (T) -> Unit) {
         synchronized(this) {
-            listenersByPriority[priority.ordinal] = listenersByPriority
-                .getOrElse(priority.ordinal) { ArrayList() }
-                .apply { add(callback) }
+            listenersByPriority[priority.ordinal].add(callback)
         }
     }
 
