@@ -22,8 +22,11 @@ object Events
 open class Event<T, S : EventScope> {
 
     @InternalSilkApi
-    val listenersByPriority: MutableList<MutableList<context(S) (T) -> Unit>> =
-        ArrayList(EventPriority.LAST.ordinal + 1)
+    val listenersByPriority = ArrayList<MutableList<context(S) (T) -> Unit>>().apply {
+        repeat(EventPriority.values().size) {
+            add(ArrayList())
+        }
+    }
 
     /**
      * Listens to this event. The [callback] will always be called synchronously.
