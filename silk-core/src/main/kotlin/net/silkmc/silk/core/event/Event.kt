@@ -52,11 +52,18 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
      * @param priority specifies the priority with which this listener will be called
      * over the other listeners, see [EventPriority] - for listeners which should be
      * invoked synchronously after all mutations have taken place, see [monitor]
+     * @param register if true (the default), the listener will be register immediately
+     *
+     * @return the [ListenerInstance], making it possible to register and unregister
+     * the listener later
      */
-    fun listen(priority: EventPriority = EventPriority.NORMAL, callback: context(S, MutableEventScope) (T) -> Unit) {
-        synchronized(this) {
-            listenersByPriority[priority.ordinal].add(callback)
-        }
+    fun listen(
+        priority: EventPriority = EventPriority.NORMAL,
+        register: Boolean = true,
+        callback: context(S, MutableEventScope) (T) -> Unit,
+    ): ListenerInstance<*> {
+        return ListenerInstance(this, callback, listenersByPriority[priority.ordinal])
+            .also { if (register) it.register() }
     }
 
     /**
@@ -64,8 +71,12 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
      * to the mutable functions of the event scope. This [callback] will be executed
      * **after** [EventPriority.LAST], therefore monitor sees the final state.
      */
-    fun monitor(callback: context(S) (T) -> Unit) {
-        monitorListeners.add(callback)
+    fun monitor(
+        register: Boolean = true,
+        callback: context(S) (T) -> Unit,
+    ): ListenerInstance<*> {
+        return ListenerInstance(this, callback, monitorListeners)
+            .also { if (register) it.register() }
     }
 
     /**
