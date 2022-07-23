@@ -26,7 +26,7 @@ object Events
  * [onlySync] and [onlySyncImmutable] functions in the `companion object`.
  */
 @ExperimentalSilkApi
-open class Event<T, S : EventScope> {
+open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
 
     /**
      * The listeners added by [listen], sorted by [EventPriority] via the index
@@ -85,45 +85,57 @@ open class Event<T, S : EventScope> {
         }
     }
 
+    /**
+     * Same as [invoke], but it uses the default scope provided by [scopeSupplier].
+     * Returns the resulting scope.
+     */
+    fun invoke(instance: T): S {
+        val scope = scopeSupplier()
+        invoke(instance, scope)
+        return scope
+    }
+
     companion object {
 
         /**
          * Creates an [AsyncEvent] with synchronous and asynchronous
-         * listener invocation.
-         * The [MutableScope] passed to this function determines what kind of actions
+         * listener invocation, accepting events of the type [T].
+         * The scope [S] passed to this function determines what kind of actions
          * can be performed in response to the event.
+         *
+         * @param scopeSupplier creates the default scope for this event
          */
-        fun <ImmutableType, MutableScope : EventScope> syncAsync(clientSide: Boolean = false) =
-            AsyncEvent<ImmutableType, MutableScope>(clientSide)
+        fun <T, S : EventScope> syncAsync(clientSide: Boolean = false, scopeSupplier: () -> S) =
+            AsyncEvent<T, S>(clientSide, scopeSupplier)
 
         /**
          * Creates an [AsyncEvent] with synchronous and asynchronous
-         * listener invocation.
-         * The event passed to event handlers will be empty,
+         * listener invocation, accepting events of the type [T].
+         * The event scope passed to event handlers will be empty,
          * effectively making the event immutable for all handlers.
          */
-        fun <ImmutableType> syncAsyncImmutable(clientSide: Boolean = false) =
-            AsyncEvent.Immutable<ImmutableType>(clientSide)
+        fun <T> syncAsyncImmutable(clientSide: Boolean = false) =
+            AsyncEvent<T, EventScope.Empty>(clientSide, scopeSupplier = { EventScope.Empty })
 
         /**
-         * Creates a classic [Event] without async listener invocation.
-         * The [MutableScope] passed to this function determines what kind of actions
+         * Creates a classic [Event] without async listener invocation,
+         * accepting events of the type [T].
+         * The scope [S] passed to this function determines what kind of actions
          * can be performed in response to the event.
+         *
+         * @param scopeSupplier creates the default scope for this event
          */
-        fun <T, MutableScope : EventScope> onlySync() =
-            Event<T, MutableScope>()
+        fun <T, S : EventScope> onlySync(scopeSupplier: () -> S) =
+            Event<T, S>(scopeSupplier)
 
         /**
-         * Creates a classic [Event] without async listener invocation.
+         * Creates a classic [Event] without async listener invocation,
+         * accepting events of the type [T].
          * The event scope passed to event handlers will be empty,
          * effectively making the event immutable for all handlers.
          */
         fun <T> onlySyncImmutable() =
-            Immutable<T>()
-    }
-
-    class Immutable<T> : Event<T, EventScope.Empty>() {
-        fun invoke(instance: T) = invoke(instance, EventScope.Empty)
+            Event<T, EventScope.Empty>(scopeSupplier = { EventScope.Empty })
     }
 }
 
@@ -135,7 +147,7 @@ open class Event<T, S : EventScope> {
  * [Event.syncAsyncImmutable] functions.
  */
 @ExperimentalSilkApi
-open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean) : Event<T, S>() {
+open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier: () -> S) : Event<T, S>(scopeSupplier) {
 
     /**
      * The internal [flow] to which events are [emitted][MutableSharedFlow.emit].
@@ -200,9 +212,5 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean) : Event<T, S>(
         invokeScope.launch {
             flow.emit(instance)
         }
-    }
-
-    class Immutable<T>(clientSide: Boolean) : AsyncEvent<T, EventScope.Empty>(clientSide) {
-        fun invoke(instance: T) = invoke(instance, EventScope.Empty)
     }
 }
