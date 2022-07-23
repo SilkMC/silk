@@ -12,12 +12,12 @@ import kotlin.time.Duration.Companion.seconds
 class EventTest : FunSpec({
     context("create event instances") {
         test("create onlySync instance") {
-            Event.onlySync<EventClass, EventScope.Cancellable>()
+            Event.onlySync<EventClass, EventScope.Cancellable> { EventScope.Cancellable() }
             Event.onlySyncImmutable<EventClass>()
         }
 
         test("create syncAsync instances") {
-            Event.syncAsync<EventClass, EventScope.Cancellable>()
+            Event.syncAsync<EventClass, EventScope.Cancellable> { EventScope.Cancellable() }
             Event.syncAsyncImmutable<EventClass>()
         }
     }
@@ -26,7 +26,7 @@ class EventTest : FunSpec({
         context("synchronous listener") {
             suspend fun testListenReceive(priority: EventPriority) {
                 test("listen to events with priority = $priority and invoke") {
-                    val onlySync = Event.onlySync<EventClass, EventScope.Cancellable>()
+                    val onlySync = Event.onlySync<EventClass, EventScope.Cancellable> { EventScope.Cancellable() }
                     val onlySyncImmutable = Event.onlySyncImmutable<EventClass>()
 
                     val syncEvents = listOf(onlySync, onlySyncImmutable)
@@ -59,7 +59,7 @@ class EventTest : FunSpec({
         context("asynchronous collector") {
             suspend fun testListenReceive(priority: EventPriority) {
                 test("collect async events with priority = $priority and invoke") {
-                    val syncAsync = Event.syncAsync<EventClass, EventScope.Cancellable>()
+                    val syncAsync = Event.syncAsync<EventClass, EventScope.Cancellable> { EventScope.Cancellable() }
                     val syncAsyncImmutable = Event.syncAsyncImmutable<EventClass>()
 
                     val asyncEvents = listOf(syncAsync, syncAsyncImmutable)
