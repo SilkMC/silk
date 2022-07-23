@@ -14,8 +14,7 @@ public class LivingEntityMixin {
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void onHurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         EntityEvents.EntityDamageEvent event = new EntityEvents.EntityDamageEvent(source, amount, (LivingEntity) (Object) this);
-        EntityEvents.INSTANCE.getDamage().invoke(event);
-        if (event.isCancelled()) {
+        if (EntityEvents.INSTANCE.getDamage().invoke(event).isCancelled().get()) {
             cir.setReturnValue(false);
         }
     }
