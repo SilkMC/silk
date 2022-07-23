@@ -13,7 +13,7 @@ import net.silkmc.silk.core.event.Events
  * Set up a callback which automatically registers this command on server startup.
  */
 fun LiteralArgumentBuilder<CommandSourceStack>.setupRegistrationCallback() {
-    Events.Command.register.listen { event ->
+    Events.Command.register.listen {
         event.dispatcher.register(this)
     }
 }
@@ -22,7 +22,7 @@ fun LiteralArgumentBuilder<CommandSourceStack>.setupRegistrationCallback() {
  * Set up a callback which automatically registers this command on server startup.
  */
 fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
-    Events.Command.register.listen { event ->
+    Events.Command.register.listen {
         commandBuilder.toBrigadier(event.context).forEach {
             event.dispatcher.root.addChild(it)
         }
@@ -32,7 +32,7 @@ fun RegistrableCommand<CommandSourceStack>.setupRegistrationCallback() {
 @Environment(EnvType.CLIENT)
 @JvmName("setupRegistrationCallbackClient")
 fun LiteralArgumentBuilder<ClientCommandSourceStack>.setupRegistrationCallback() {
-    Events.Command.registerClient.listen { event ->
+    Events.Command.registerClient.listen {
         event.dispatcher.register(this)
     }
 }
@@ -43,7 +43,7 @@ fun LiteralArgumentBuilder<ClientCommandSourceStack>.setupRegistrationCallback()
 @Environment(EnvType.CLIENT)
 @JvmName("setupRegistrationCallbackClient")
 fun RegistrableCommand<ClientCommandSourceStack>.setupRegistrationCallback() {
-    Events.Command.registerClient.listen { event ->
+    Events.Command.registerClient.listen {
         commandBuilder.toBrigadier(event.context).forEach {
             event.dispatcher.root.addChild(it)
         }

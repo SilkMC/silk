@@ -17,7 +17,7 @@ class SilkEntrypoint : ModInitializer, ClientModInitializer {
         logInfo("Initializing Silk due to init call")
 
         Events.Server.preStart.listen(EventPriority.FIRST) {
-            Silk.currentServer = it.server
+            Silk.currentServer = event.server
             logInfo("Reached SERVER_STARTING state")
         }
 

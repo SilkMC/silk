@@ -2,6 +2,7 @@ package net.silkmc.silk.core.event
 
 import net.minecraft.server.MinecraftServer
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
+import net.silkmc.silk.core.event.Cancellable.Active
 
 /**
  * Events related to the [MinecraftServer].
@@ -37,7 +38,5 @@ object ServerEvents {
     /**
      * Called before the game loop is stopped (running set to false).
      */
-    val preHalt = Event.syncAsync<ServerEvent, EventScope.Cancellable> {
-        EventScope.Cancellable()
-    }
+    val preHalt = Event.syncAsync<ServerEvent, Cancellable> { Active }
 }

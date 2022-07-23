@@ -1,6 +1,7 @@
 package net.silkmc.silk.core.mixin.server;
 
 import net.minecraft.server.MinecraftServer;
+import net.silkmc.silk.core.event.Cancellable.Cancelled;
 import net.silkmc.silk.core.event.ServerEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -58,8 +59,8 @@ public class MixinMinecraftServer {
     private void onHalt(CallbackInfo ci) {
         if (
             ServerEvents.INSTANCE.getPreHalt()
-                .invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this))
-                .isCancelled().get()
+                // instanceof would work too, or we could add a utility property `isCancelled`
+                .invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this)) == Cancelled.INSTANCE
         ) {
             ci.cancel();
         }
