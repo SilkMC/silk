@@ -34,6 +34,9 @@ interface EventScope {
          * was invoked will be cancelled.
          *
          * The default value of this property is `false`.
+         *
+         * See [context-receivers/contextual-delegated-properties KEEP](https://github.com/Kotlin/KEEP/blob/master/proposals/context-receivers.md#contextual-delegated-properties)
+         * for why this isn't a delegate *yet*.
          */
         val isCancelled = EventScopeProperty(false)
     }
@@ -52,6 +55,9 @@ class EventScopeProperty<V>(private var value: V) {
     /**
      * Mutates this property. This functions **must** be called in a
      * [MutableEventScope], therefore in a normal synchronous listener.
+     *
+     * See [context-receivers/contextual-delegated-properties KEEP](https://github.com/Kotlin/KEEP/blob/master/proposals/context-receivers.md#contextual-delegated-properties)
+     * for why this isn't a delegate *yet*.
      */
     context(MutableEventScope)
     fun set(value: V) {
