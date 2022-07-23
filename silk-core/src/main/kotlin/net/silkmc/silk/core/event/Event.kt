@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import net.silkmc.silk.core.annotations.InternalSilkApi
+import net.silkmc.silk.core.event.Event.Companion.onlySync
+import net.silkmc.silk.core.event.Event.Companion.onlySyncImmutable
 import net.silkmc.silk.core.task.mcClientCoroutineDispatcher
 import net.silkmc.silk.core.task.mcCoroutineDispatcher
 
@@ -48,7 +50,8 @@ open class Event<T, S : EventScope> {
      * This function is synchronized, so it may be called from any thread.
      *
      * @param priority specifies the priority with which this listener will be called
-     * over the other listeners, see [EventPriority]
+     * over the other listeners, see [EventPriority] - for listeners which should be
+     * invoked synchronously after all mutations have taken place, see [monitor]
      */
     fun listen(priority: EventPriority = EventPriority.NORMAL, callback: context(S, MutableEventScope) (T) -> Unit) {
         synchronized(this) {
