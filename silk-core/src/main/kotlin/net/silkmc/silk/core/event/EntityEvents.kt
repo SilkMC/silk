@@ -15,7 +15,7 @@ val Events.entity get() = EntityEvents
 object EntityEvents {
 
     open class EntityEvent(open val entity: Entity)
-    class EntityDamageEvent(val source: DamageSource, val amount: Float, val target: Entity)
+    class EntityDamageEvent(val source: DamageSource, val amount: Float, override val entity: Entity) : EntityEvent(entity)
 
     /**
      * Called when a entity takes damage
