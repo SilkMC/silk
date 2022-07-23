@@ -18,15 +18,30 @@ import net.silkmc.silk.core.task.mcCoroutineDispatcher
 @ExperimentalSilkApi
 object Events
 
+/**
+ * The base event implementation with synchronous listeners.
+ * To create a new event of this type, have a look at the
+ * [onlySync] and [onlySyncImmutable] functions in the `companion object`.
+ */
 @ExperimentalSilkApi
 open class Event<T, S : EventScope> {
 
+    /**
+     * The listeners added by [listen], sorted by [EventPriority] via the index
+     * in the outer list.
+     */
     @InternalSilkApi
-    val listenersByPriority: List<MutableList<context(S) (T) -> Unit>> = buildList {
+    val listenersByPriority: List<MutableList<context(S, MutableEventScope) (T) -> Unit>> = buildList {
         repeat(EventPriority.values().size) {
             add(ArrayList())
         }
     }
+
+    /**
+     * The listeners added by [monitor].
+     */
+    @InternalSilkApi
+    val monitorListeners: MutableList<context(S) (T) -> Unit> = ArrayList()
 
     /**
      * Listens to this event. The [callback] will always be called synchronously.
@@ -35,10 +50,19 @@ open class Event<T, S : EventScope> {
      * @param priority specifies the priority with which this listener will be called
      * over the other listeners, see [EventPriority]
      */
-    fun listen(priority: EventPriority = EventPriority.NORMAL, callback: context(S) (T) -> Unit) {
+    fun listen(priority: EventPriority = EventPriority.NORMAL, callback: context(S, MutableEventScope) (T) -> Unit) {
         synchronized(this) {
             listenersByPriority[priority.ordinal].add(callback)
         }
+    }
+
+    /**
+     * Monitors this event. This is the same as [listen], but you do not have access
+     * to the mutable functions of the event scope. This [callback] will be executed
+     * **after** [EventPriority.LAST], therefore monitor sees the final state.
+     */
+    fun monitor(callback: context(S) (T) -> Unit) {
+        monitorListeners.add(callback)
     }
 
     /**
@@ -49,8 +73,11 @@ open class Event<T, S : EventScope> {
         synchronized(this) {
             for (listeners in listenersByPriority) {
                 for (listener in listeners) {
-                    listener(scope, instance)
+                    listener(scope, MutableEventScope, instance)
                 }
+            }
+            for (listener in monitorListeners) {
+                listener(scope, instance)
             }
         }
     }
@@ -69,7 +96,7 @@ open class Event<T, S : EventScope> {
         /**
          * Creates an [AsyncEvent] with synchronous and asynchronous
          * listener invocation.
-         * The mutable scope passed to event handlers will be empty,
+         * The event passed to event handlers will be empty,
          * effectively making the event immutable for all handlers.
          */
         fun <ImmutableType> syncAsyncImmutable(clientSide: Boolean = false) =
@@ -85,7 +112,7 @@ open class Event<T, S : EventScope> {
 
         /**
          * Creates a classic [Event] without async listener invocation.
-         * The mutable scope passed to event handlers will be empty,
+         * The event scope passed to event handlers will be empty,
          * effectively making the event immutable for all handlers.
          */
         fun <T> onlySyncImmutable() =
@@ -97,6 +124,13 @@ open class Event<T, S : EventScope> {
     }
 }
 
+/**
+ * The same as [Event] but with additional async collectors (via a flow).
+ * This allows you to listen to the event asynchronously in a totally different
+ * [CoroutineScope], and unregister via cancellation of that scope.
+ * To create an event of this type, have a look at the [Event.syncAsync] and
+ * [Event.syncAsyncImmutable] functions.
+ */
 @ExperimentalSilkApi
 open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean) : Event<T, S>() {
 

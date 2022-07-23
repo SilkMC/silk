@@ -59,7 +59,7 @@ public class MixinMinecraftServer {
     private void onHalt(CallbackInfo ci) {
         final var scope = new EventScope.Cancellable();
         ServerEvents.INSTANCE.getPreHalt().invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this), scope);
-        if (scope.isCancelled()) {
+        if (scope.isCancelled().get()) {
             ci.cancel();
         }
     }
