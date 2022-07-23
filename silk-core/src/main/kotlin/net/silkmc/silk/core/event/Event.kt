@@ -26,24 +26,21 @@ object Events
  * [onlySync] and [onlySyncImmutable] functions in the `companion object`.
  */
 @ExperimentalSilkApi
-open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
+open class Event<E, R>(val resultSupplier: () -> R) {
 
     /**
      * The listeners added by [listen], sorted by [EventPriority] via the index
      * in the outer list.
      */
     @InternalSilkApi
-    val listenersByPriority: List<MutableList<context(S, MutableEventScope) (T) -> Unit>> = buildList {
-        repeat(EventPriority.values().size) {
-            add(ArrayList())
-        }
-    }
+    val listenersByPriority: List<MutableList<Listener<E, R>>> =
+        List(EventPriority.values().size) { ArrayList() }
 
     /**
      * The listeners added by [monitor].
      */
     @InternalSilkApi
-    val monitorListeners: MutableList<context(S) (T) -> Unit> = ArrayList()
+    val monitorListeners: MutableList<Listener<E, R>> = ArrayList()
 
     /**
      * Listens to this event. The [callback] will always be called synchronously.
@@ -54,17 +51,22 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
      * invoked synchronously after all mutations have taken place, see [monitor]
      * @param register if true (the default), the listener will be register immediately
      *
-     * @return the [ListenerInstance], making it possible to register and unregister
+     * @return the [Listener], making it possible to register and unregister
      * the listener later
      */
     fun listen(
         priority: EventPriority = EventPriority.NORMAL,
         register: Boolean = true,
-        callback: context(S, MutableEventScope) (T) -> Unit,
-    ): ListenerInstance<*> {
-        return ListenerInstance(this, callback, listenersByPriority[priority.ordinal])
-            .also { if (register) it.register() }
-    }
+        callback: context(EventScope<E, R>) () -> Unit,
+    ): Listener<E, R> = ViewListener(this, listenersByPriority[priority.ordinal], callback)
+        .also { if (register) it.register() }
+
+    fun listenMut(
+        priority: EventPriority = EventPriority.NORMAL,
+        register: Boolean = true,
+        callback: context(EventScope<E, R>) () -> R,
+    ): Listener<E, R> = MutListener(this, listenersByPriority[priority.ordinal], callback)
+        .also { if (register) it.register() }
 
     /**
      * Monitors this event. This is the same as [listen], but you do not have access
@@ -73,37 +75,36 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
      */
     fun monitor(
         register: Boolean = true,
-        callback: context(S) (T) -> Unit,
-    ): ListenerInstance<*> {
-        return ListenerInstance(this, callback, monitorListeners)
-            .also { if (register) it.register() }
-    }
+        callback: context(EventScope<E, R>) () -> Unit,
+    ): Listener<E, R> = ViewListener(this, monitorListeners, callback)
+        .also { if (register) it.register() }
 
     /**
      * Invokes this event. Calling this function will trigger all
      * listeners and collectors.
      */
-    open fun invoke(instance: T, scope: S) {
+    open fun invoke(instance: E, initialResult: R) {
         synchronized(this) {
+            var scope = EventScope(instance, initialResult)
             for (listeners in listenersByPriority) {
                 for (listener in listeners) {
-                    listener(scope, MutableEventScope, instance)
+                    scope = listener(scope)
                 }
             }
             for (listener in monitorListeners) {
-                listener(scope, instance)
+                listener(scope)
             }
         }
     }
 
     /**
-     * Same as [invoke], but it uses the default scope provided by [scopeSupplier].
-     * Returns the resulting scope.
+     * Same as [invoke], but it uses the default initial result provided by [resultSupplier].
+     * Returns the final result.
      */
-    fun invoke(instance: T): S {
-        val scope = scopeSupplier()
-        invoke(instance, scope)
-        return scope
+    fun invoke(instance: E): R {
+        val result = resultSupplier()
+        invoke(instance, result)
+        return result
     }
 
     companion object {
@@ -114,39 +115,38 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
          * The scope [S] passed to this function determines what kind of actions
          * can be performed in response to the event.
          *
-         * @param scopeSupplier creates the default scope for this event
+         * @param resultSupplier creates the default scope for this event
          */
-        fun <T, S : EventScope> syncAsync(clientSide: Boolean = false, scopeSupplier: () -> S) =
-            AsyncEvent<T, S>(clientSide, scopeSupplier)
+        fun <E, R> syncAsync(clientSide: Boolean = false, resultSupplier: () -> R) =
+            AsyncEvent<E, R>(clientSide, resultSupplier)
 
         /**
          * Creates an [AsyncEvent] with synchronous and asynchronous
-         * listener invocation, accepting events of the type [T].
+         * listener invocation, accepting events of the type [E].
          * The event scope passed to event handlers will be empty,
          * effectively making the event immutable for all handlers.
          */
-        fun <T> syncAsyncImmutable(clientSide: Boolean = false) =
-            AsyncEvent<T, EventScope.Empty>(clientSide, scopeSupplier = { EventScope.Empty })
+        fun <E> syncAsyncImmutable(clientSide: Boolean = false) =
+            AsyncEvent<E, Unit>(clientSide, resultSupplier = { })
 
         /**
          * Creates a classic [Event] without async listener invocation,
-         * accepting events of the type [T].
-         * The scope [S] passed to this function determines what kind of actions
+         * accepting events of the type [E].
+         * The scope [R] passed to this function determines what kind of actions
          * can be performed in response to the event.
          *
-         * @param scopeSupplier creates the default scope for this event
+         * @param resultSupplier creates the default scope for this event
          */
-        fun <T, S : EventScope> onlySync(scopeSupplier: () -> S) =
-            Event<T, S>(scopeSupplier)
+        fun <E, R> onlySync(resultSupplier: () -> R) =
+            Event<E, R>(resultSupplier)
 
         /**
          * Creates a classic [Event] without async listener invocation,
-         * accepting events of the type [T].
+         * accepting events of the type [E].
          * The event scope passed to event handlers will be empty,
          * effectively making the event immutable for all handlers.
          */
-        fun <T> onlySyncImmutable() =
-            Event<T, EventScope.Empty>(scopeSupplier = { EventScope.Empty })
+        fun <E> onlySyncImmutable() = Event<E, Unit>(resultSupplier = { })
     }
 }
 
@@ -158,7 +158,7 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
  * [Event.syncAsyncImmutable] functions.
  */
 @ExperimentalSilkApi
-open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier: () -> S) : Event<T, S>(scopeSupplier) {
+open class AsyncEvent<E, R>(val clientSide: Boolean, resultSupplier: () -> R) : Event<E, R>(resultSupplier) {
 
     /**
      * The internal [flow] to which events are [emitted][MutableSharedFlow.emit].
@@ -166,7 +166,7 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * the listeners have not finished handling the previous event.
      */
     @InternalSilkApi
-    open val flow = MutableSharedFlow<T>()
+    open val flow = MutableSharedFlow<E>()
 
     /**
      * The scope used for emitting events without blocking the current execution.
@@ -189,7 +189,7 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * current scope.
      */
     context(CoroutineScope)
-    fun collectInScope(collector: FlowCollector<T>): Job = launch {
+    fun collectInScope(collector: FlowCollector<E>): Job = launch {
         flow.collect(collector)
     }
 
@@ -201,7 +201,7 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * Minecraft main thread dispatcher ([syncDispatcher]).
      */
     context(CoroutineScope)
-    fun collectInScopeSync(collector: FlowCollector<T>): Job = launch(syncDispatcher) {
+    fun collectInScopeSync(collector: FlowCollector<E>): Job = launch(syncDispatcher) {
         flow.collect(collector)
     }
 
@@ -214,12 +214,12 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * This function never completes, read [the official collect docs][kotlinx.coroutines.flow.SharedFlow.collect]
      * for more info.
      */
-    suspend fun collect(collector: FlowCollector<T>): Nothing {
+    suspend fun collect(collector: FlowCollector<E>): Nothing {
         flow.collect(collector)
     }
 
-    override fun invoke(instance: T, scope: S) {
-        super.invoke(instance, scope)
+    override fun invoke(instance: E, initialResult: R) {
+        super.invoke(instance, initialResult)
         invokeScope.launch {
             flow.emit(instance)
         }

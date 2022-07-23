@@ -13,7 +13,7 @@ internal object McCoroutineManager {
 
     fun init() {
         Events.Server.preStart.listen(EventPriority.FIRST) {
-            mcCoroutineDispatcher = it.server.asCoroutineDispatcher()
+            mcCoroutineDispatcher = event.server.asCoroutineDispatcher()
             mcCoroutineScope = CoroutineScope(SupervisorJob() + mcCoroutineDispatcher)
             log.info("Initialized mcCoroutineScope (MinecraftServer as executor)")
         }
