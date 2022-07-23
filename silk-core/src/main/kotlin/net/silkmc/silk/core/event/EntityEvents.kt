@@ -14,10 +14,12 @@ val Events.entity get() = EntityEvents
 object EntityEvents {
 
     open class EntityEvent(open val entity: Entity)
-    class EntityDamageEvent(val source: DamageSource, val amount: Float, val target: Entity) : CancellableEvent()
+    class EntityDamageEvent(val source: DamageSource, val amount: Float, val target: Entity)
 
     /**
      * Called when a entity takes damage
      */
-    val damage = Event.bothImmutable<EntityDamageEvent>()
+    val damage = Event.syncAsync<EntityDamageEvent, EventScope.Cancellable> {
+        EventScope.Cancellable()
+    }
 }
