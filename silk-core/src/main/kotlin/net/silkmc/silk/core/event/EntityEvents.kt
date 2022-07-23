@@ -7,9 +7,10 @@ import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 /**
  * Events related to an [net.minecraft.world.entity.Entity].
  */
-@Suppress("unused") // receiver is for namespacing only
+@Suppress("unused")
 val Events.entity get() = EntityEvents
 
+@Suppress("unused")
 @ExperimentalSilkApi
 object EntityEvents {
 
