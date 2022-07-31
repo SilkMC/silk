@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "block.AbstractBlockAccessor",
-    "server.MixinMinecraftServer"
+    "server.MixinMinecraftServer",
+    "server.MixinPlayerList",
+    "server.MixinServerGamePacketListenerImpl"
   ]
 }

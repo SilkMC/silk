@@ -8,6 +8,7 @@ import net.silkmc.silk.commands.LiteralCommandBuilder
 import net.silkmc.silk.commands.clientCommand
 import net.silkmc.silk.commands.command
 import net.silkmc.silk.test.commands.*
+import net.silkmc.silk.test.events.PlayerEventTest
 import net.silkmc.silk.test.events.ServerEventTest
 import net.silkmc.silk.test.network.NetworkTest
 
@@ -24,6 +25,7 @@ object Manager : ModInitializer, ClientModInitializer {
         persistenceTestCommand
         textTestCommand
         sideboardCommand
+        PlayerEventTest.init()
         ServerEventTest.init()
         NetworkTest.initServer()
 
