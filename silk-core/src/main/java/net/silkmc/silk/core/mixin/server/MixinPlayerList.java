@@ -16,8 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinPlayerList {
 
     @Unique private ServerPlayer silk$temporaryPlayer = null;
-
-
+    
     @Inject(method = "placeNewPlayer", at = @At("HEAD"))
     private void onPlayerJoin(Connection connection, ServerPlayer player, CallbackInfo ci) {
         silk$temporaryPlayer = player;
