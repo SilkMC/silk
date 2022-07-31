@@ -19,5 +19,15 @@ object PlayerEventTest {
                 }
             }
         }
+        Events.PlayerConnection.playerQuit.listen {
+            it.quitMessage = literalText {
+                text(it.player.gameProfile.name) {
+                    color = 0x3424
+                }
+                text(" left the game! :(") {
+                    color = 0x2334
+                }
+            }
+        }
     }
 }
