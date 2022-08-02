@@ -9,7 +9,7 @@ import net.silkmc.silk.core.annotations.ExperimentalSilkApi
  * Events related to an [net.minecraft.world.level.block.Block].
  */
 @Suppress("unused") // receiver is for namespacing only
-val Events.Block get() = ServerEvents
+val Events.Block get() = BlockEvents
 
 @ExperimentalSilkApi
 object BlockEvents {
