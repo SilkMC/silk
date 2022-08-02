@@ -8,5 +8,5 @@ import net.minecraft.server.MinecraftServer
  * Note that the [command] must not contain the slash prefix.
  */
 fun MinecraftServer.executeCommand(command: String) {
-    commands.performCommand(createCommandSourceStack(), command)
+    commands.performCommand(commands.dispatcher.parse(command, createCommandSourceStack()), command)
 }
