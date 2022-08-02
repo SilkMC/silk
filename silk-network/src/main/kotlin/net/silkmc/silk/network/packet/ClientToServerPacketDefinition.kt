@@ -1,6 +1,7 @@
 package net.silkmc.silk.network.packet
 
 import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.network.FriendlyByteBuf
@@ -10,6 +11,7 @@ import net.silkmc.silk.network.internal.SilkNetwork
 /**
  * See [c2sPacket] function, which constructs this packet definition class.
  */
+@OptIn(ExperimentalSerializationApi::class)
 class ClientToServerPacketDefinition<T : Any>(
     id: ResourceLocation,
     cbor: Cbor,
