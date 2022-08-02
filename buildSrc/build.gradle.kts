@@ -39,5 +39,5 @@ dependencies {
     compileOnly("org.jetbrains.dokka:dokka-base:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0-RC")
 }
