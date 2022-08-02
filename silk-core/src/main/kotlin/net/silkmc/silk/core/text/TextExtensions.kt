@@ -1,6 +1,5 @@
 package net.silkmc.silk.core.text
 
-import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.MinecraftServer
@@ -59,7 +58,7 @@ inline fun MinecraftServer.broadcastText(baseText: String = "", builder: Literal
  * Sends the given [Component] to each player on the server.
  */
 fun MinecraftServer.broadcastText(text: Component) {
-    playerList.broadcastSystemMessage(text, ChatType.SYSTEM)
+    playerList.broadcastSystemMessage(text, false)
 }
 
 @Deprecated(
