@@ -40,6 +40,7 @@ interface EventScope {
          */
         val isCancelled = EventScopeProperty(false)
     }
+
 }
 
 @ExperimentalSilkApi
