@@ -18,11 +18,8 @@ object PlayerItemEvents {
     /**
      * Called before an item gets collected
      */
-    val preItemCollect = Event.syncAsync<PlayerItemEvent, EventScope.Cancellable> { EventScope.Cancellable() }
+    val itemCollect = Event.syncAsync<PlayerItemEvent, EventScope.Cancellable> { EventScope.Cancellable() }
 
-    /**
-     * Called after an item gets collected
-     */
-    val itemCollect = Event.syncAsync<PlayerItemEvent, EventScope.Empty> { EventScope.Empty }
+
 
 }
