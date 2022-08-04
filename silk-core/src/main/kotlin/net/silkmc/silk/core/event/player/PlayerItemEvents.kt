@@ -18,11 +18,15 @@ object PlayerItemEvents {
 
     /**
      * Called before an item gets collected by a player
+     *
+     * Client and Serverside
      */
     val itemCollect = Event.syncAsync<PlayerItemEvent, EventScope.Cancellable> { EventScope.Cancellable() }
 
     /**
      * Called before an item gets dropped by a player
+     *
+     * Clientside
      */
     val itemDrop = Event.syncAsync<PlayerItemEvent, EventScope.Cancellable> { EventScope.Cancellable() }
 

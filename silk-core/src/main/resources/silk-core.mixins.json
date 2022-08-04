@@ -6,6 +6,7 @@
     "block.AbstractBlockAccessor",
     "player.MixinInventory",
     "player.MixinPlayer",
+    "player.MixinPlayerAdvancements",
     "player.MixinServerPlayer",
     "server.MixinMinecraftServer"
   ]
