@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package net.silkmc.silk.test.network
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import net.silkmc.silk.core.logging.logInfo
 import net.silkmc.silk.core.logging.logger

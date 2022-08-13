@@ -1,9 +1,12 @@
+@file:OptIn(DelicateSilkApi::class)
+
 package net.silkmc.silk.test.igui
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.minecraft.core.Registry
 import net.minecraft.world.item.Items
+import net.silkmc.silk.core.annotations.DelicateSilkApi
 import net.silkmc.silk.core.task.silkCoroutineScope
 import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.igui.*
