@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public class EntityMixin implements CompoundProvider {
+
     @Unique
     private final PersistentCompound compound = new PersistentCompoundImpl();
 
