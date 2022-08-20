@@ -31,7 +31,7 @@ class Sideboard(
 
                 silkCoroutineScope.launch {
                     line.textFlow.collect {
-                        team.setPlayerPrefix(it)
+                        team.playerPrefix = it
                     }
                 }
             }
