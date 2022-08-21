@@ -1,7 +1,9 @@
-package net.silkmc.silk.core.event
+package net.silkmc.silk.core.event.player
 
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
+import net.silkmc.silk.core.event.Event
+import net.silkmc.silk.core.event.Events
 
 @Suppress("UnusedReceiverParameter") // receiver is for namespacing only
 val Events.Player get() = PlayerEvents
