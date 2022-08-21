@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChunkSerializer.class)
 public class ChunkSerializerMixin {
+
     @Inject(method = "write", at = @At("RETURN"))
     private static void onSerialize(ServerLevel world,
                                     ChunkAccess chunk,
