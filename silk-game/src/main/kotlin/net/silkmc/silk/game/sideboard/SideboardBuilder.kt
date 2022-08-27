@@ -116,7 +116,7 @@ class SideboardBuilder {
         replaceWith = ReplaceWith("line(flow { flowBuilder() })")
     )
     inline fun lineChanging(crossinline flowBuilder: suspend FlowCollector<Component>.() -> Unit) {
-        lines += ChangingSideboardLine(flow { this.flowBuilder() })
+        lines += SideboardLine.Changing(flow { this.flowBuilder() })
     }
 
     /**
@@ -127,7 +127,7 @@ class SideboardBuilder {
      * of the line
      */
     @Deprecated(
-        message = "This function has been replaced by [updatingLine]",
+        message = "This function has been replaced with \"updatingLine\"",
         replaceWith = ReplaceWith(
             "updatingLine(period.milliseconds) { block() }",
             "kotlin.time.Duration.Companion.milliseconds"
