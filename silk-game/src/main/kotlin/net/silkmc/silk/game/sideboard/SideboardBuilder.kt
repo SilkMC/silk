@@ -55,6 +55,9 @@ class SideboardBuilder {
     @PublishedApi
     internal val lines = ArrayList<SideboardLine>()
 
+    /**
+     * Adds any line implementing the [SideboardLine] interface.
+     */
     fun line(line: SideboardLine) {
         lines += line
     }

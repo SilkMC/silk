@@ -38,6 +38,10 @@ class Sideboard(
         }
     }
 
+    /**
+     * Shows this sideboard to the given [player]. This registers the player
+     * for receiving updates on the sideboard, until he leaves the server.
+     */
     fun displayToPlayer(player: ServerPlayer) {
         if (Silk.currentServer?.isRunning == true)
             silkCoroutineScope.launch {
@@ -45,6 +49,10 @@ class Sideboard(
             }
     }
 
+    /**
+     * Hides this sideboard from the given [player]. This also unregisters the
+     * player from receiving any further updates on the sideboard.
+     */
     fun hideFromPlayer(player: ServerPlayer) {
         if (Silk.currentServer != null)
             silkCoroutineScope.launch {
