@@ -1,13 +1,15 @@
 package net.silkmc.silk.game.sideboard
 
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
-import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.text.LiteralTextBuilder
+import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.core.text.literalText
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Displays the given [sideboard] to the player.
@@ -49,22 +51,63 @@ inline fun sideboard(
  * You probably want to use this class via the [sideboard] function.
  */
 class SideboardBuilder {
+
     @PublishedApi
     internal val lines = ArrayList<SideboardLine>()
+
+    /**
+     * Adds any line implementing the [SideboardLine] interface.
+     */
+    fun line(line: SideboardLine) {
+        lines += line
+    }
 
     /**
      * Adds a simple and static line of text.
      */
     fun line(text: Component) {
-        lines += SimpleSideboardLine(text)
+        lines += SideboardLine.Static(text)
+    }
+
+    /**
+     * Shortcut for adding a [SideboardLine.Changing].
+     */
+    fun line(flow: Flow<Component>) {
+        lines += SideboardLine.Changing(flow)
+    }
+
+
+    /**
+     * Adds a line where the content is updated periodically.
+     *
+     * @param period the delay duration between each call to [updater]
+     * @param updater the callback which is executed each time to get the content
+     * of the line
+     */
+    fun updatingLine(period: Duration, updater: suspend () -> Component) {
+        lines += SideboardLine.UpdatingPeriodically(period, updater)
+    }
+
+    /**
+     * Adds an empty line to the board.
+     */
+    fun emptyLine() {
+        line("".literal)
     }
 
     /**
      * Adds a simple and static line of text.
      * The [block] parameter can be used to add some additional logic.
      */
+    @Deprecated(
+        message = "This function is not useful enough to stay in Silk, therefore it will be removed in the future.",
+        replaceWith = ReplaceWith(
+            "line(SimpleSideboardLine(block()))",
+            "net.silkmc.silk.game.sideboard.SimpleSideboardLine"
+        )
+    )
     inline fun line(block: () -> Component) {
-        lines += SimpleSideboardLine(block())
+        lines += SideboardLine.Static(block())
     }
 
     /**
@@ -79,8 +122,12 @@ class SideboardBuilder {
      *
      * See [flow] documention to learn more about flows.
      */
+    @Deprecated(
+        message = "This function is not needed anymore since any flow can just be passed to \"line\"",
+        replaceWith = ReplaceWith("line(flow { flowBuilder() })")
+    )
     inline fun lineChanging(crossinline flowBuilder: suspend FlowCollector<Component>.() -> Unit) {
-        lines += ChangingSideboardLine(flow { this.flowBuilder() })
+        lines += SideboardLine.Changing(flow { this.flowBuilder() })
     }
 
     /**
@@ -90,13 +137,15 @@ class SideboardBuilder {
      * @param block the callback which is executed each time to get the content
      * of the line
      */
-    inline fun lineChangingPeriodically(period: Long, crossinline block: suspend () -> Component) {
-        lines += ChangingSideboardLine(flow {
-            while (Silk.currentServer?.isRunning == true) {
-                emit(block())
-                delay(period)
-            }
-        })
+    @Deprecated(
+        message = "This function has been replaced with \"updatingLine\"",
+        replaceWith = ReplaceWith(
+            "updatingLine(period.milliseconds) { block() }",
+            "kotlin.time.Duration.Companion.milliseconds"
+        )
+    )
+    fun lineChangingPeriodically(period: Long, block: suspend () -> Component) {
+        updatingLine(period.milliseconds, block)
     }
 
     /**
@@ -105,16 +154,26 @@ class SideboardBuilder {
      * The difference to [line] is that this function immediately opens a
      * [literalText] builder.
      */
+    @Deprecated(
+        message = "This function is not useful enough to stay in Silk, therefore it will be removed in the future.",
+        replaceWith = ReplaceWith("line(literalText(baseText) { builder() })")
+    )
     inline fun literalLine(baseText: String = "", crossinline builder: LiteralTextBuilder.() -> Unit = {}) {
-        lines += SimpleSideboardLine(literalText(baseText, builder))
+        line(literalText(baseText, builder))
     }
 
     /**
      * A utility function, allowing you to emit a [Text] to the flow, which is
      * built by an easy to use [literalText] builder.
      */
+    @Deprecated(
+        message = "This function is not useful enough to stay in Silk, therefore it will be removed in the future.",
+        replaceWith = ReplaceWith("emit(literalText(baseText) { builder() }")
+    )
     suspend inline fun FlowCollector<Component>.emitLiteralText(
         baseText: String = "",
         crossinline builder: LiteralTextBuilder.() -> Unit = {}
-    ) = emit(literalText(baseText, builder))
+    ) {
+        emit(literalText(baseText, builder))
+    }
 }

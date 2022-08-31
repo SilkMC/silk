@@ -3,7 +3,6 @@
 package net.silkmc.silk.core.event
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
@@ -166,7 +165,7 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * the listeners have not finished handling the previous event.
      */
     @InternalSilkApi
-    open val flow = MutableSharedFlow<T>()
+    open val flow = MutableSharedFlow<Pair<T, S>>()
 
     /**
      * The scope used for emitting events without blocking the current execution.
@@ -189,8 +188,10 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * current scope.
      */
     context(CoroutineScope)
-    fun collectInScope(collector: FlowCollector<T>): Job = launch {
-        flow.collect(collector)
+    fun collectInScope(collector: suspend context(S) (T) -> Unit): Job = launch {
+        flow.collect {
+            collector(it.second, it.first)
+        }
     }
 
     /**
@@ -201,8 +202,10 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * Minecraft main thread dispatcher ([syncDispatcher]).
      */
     context(CoroutineScope)
-    fun collectInScopeSync(collector: FlowCollector<T>): Job = launch(syncDispatcher) {
-        flow.collect(collector)
+    fun collectInScopeSync(collector: suspend context(S) (T) -> Unit): Job = launch(syncDispatcher) {
+        flow.collect {
+            collector(it.second, it.first)
+        }
     }
 
     /**
@@ -214,14 +217,16 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * This function never completes, read [the official collect docs][kotlinx.coroutines.flow.SharedFlow.collect]
      * for more info.
      */
-    suspend fun collect(collector: FlowCollector<T>): Nothing {
-        flow.collect(collector)
+    suspend fun collect(collector: suspend context(S) (T) -> Unit): Nothing {
+        flow.collect {
+            collector(it.second, it.first)
+        }
     }
 
     override fun invoke(instance: T, scope: S) {
         super.invoke(instance, scope)
         invokeScope.launch {
-            flow.emit(instance)
+            flow.emit(instance to scope)
         }
     }
 }

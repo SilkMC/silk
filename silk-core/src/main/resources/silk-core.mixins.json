@@ -5,6 +5,7 @@
   "mixins": [
     "block.AbstractBlockAccessor",
     "server.MixinMinecraftServer",
-    "entity.MixinLivingEntity"
+    "entity.MixinLivingEntity",
+    "server.MixinPlayerList"
   ]
 }

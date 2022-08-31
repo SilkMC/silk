@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(EmptyLevelChunk.class)
 public class EmptyLevelChunkMixin implements CompoundProvider {
+
     @NotNull
     @Override
     public PersistentCompound getCompound() {

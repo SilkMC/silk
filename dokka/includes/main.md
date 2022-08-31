@@ -13,6 +13,11 @@ The library offers you stable and simple APIs for common tasks in mod developmen
 
 Click on each module below to get started with it and to see how to use it in your build environment.
 
+#### **IMPORTANT** Temporary setup requirement
+
+**See [this gist](https://gist.github.com/jakobkmar/5068aa14e37b859c3246de91cac74347) to learn how to use Silk 1.9.1
+and above.** This is only temporary, due to Silk already making use of context receivers.
+
 ### Provide it at runtime
 
 If you use Silk, it must be available at runtime.

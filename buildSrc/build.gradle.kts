@@ -22,7 +22,7 @@ dependencies {
     compileOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
     runtimeOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
 
-    implementation(pluginDep("fabric-loom", "0.12-SNAPSHOT"))
+    implementation(pluginDep("fabric-loom", "0.13-SNAPSHOT"))
     implementation(pluginDep("io.github.juuxel.loom-quiltflower", "1.7.3"))
     implementation(pluginDep("org.quiltmc.quilt-mappings-on-loom", "4.2.1"))
     implementation(pluginDep("com.matthewprenger.cursegradle", "1.4.0"))
@@ -39,5 +39,5 @@ dependencies {
     compileOnly("org.jetbrains.dokka:dokka-base:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
 }
