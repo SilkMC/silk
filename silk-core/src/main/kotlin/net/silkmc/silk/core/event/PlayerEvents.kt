@@ -34,6 +34,11 @@ object PlayerEvents {
     val preItemCollect = Event.syncAsync<ServerPlayerItemEvent, EventScope.Cancellable> { EventScope.Cancellable() }
 
     /**
+     * Called after the player received all collect stats from the server
+     */
+    val itemCollect = Event.syncAsyncImmutable<ServerPlayerItemEvent>()
+
+    /**
      * Called before an item gets dropped by a player
      */
     val preItemDrop = Event.syncAsync<ServerPlayerItemEvent, EventScope.Cancellable> { EventScope.Cancellable() }
