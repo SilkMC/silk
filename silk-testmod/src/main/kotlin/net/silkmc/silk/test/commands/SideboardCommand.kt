@@ -1,8 +1,5 @@
 package net.silkmc.silk.test.commands
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import net.silkmc.silk.core.task.silkCoroutineScope
 import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.core.text.literalText
 import net.silkmc.silk.game.sideboard.SideboardLine
@@ -40,7 +37,7 @@ private val sideboardExamples = mapOf(
     ) {
         line("Hey, how".literal)
         line("are you?".literal)
-        line("".literal)
+        emptyLine()
         line(literalText("colors work as well!") {
             color = 0xFF9658
         })
@@ -51,7 +48,7 @@ private val sideboardExamples = mapOf(
     ) {
         line("Hey, how".literal)
         line("are you?".literal)
-        line(" ".literal)
+        emptyLine()
         updatingLine(1.seconds) {
             literalText("changing color") {
                 color = (0x000000..0xFFFFFF).random()

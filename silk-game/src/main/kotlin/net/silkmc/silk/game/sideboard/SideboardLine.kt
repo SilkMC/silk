@@ -53,13 +53,19 @@ interface SideboardLine {
             }
         }
 
+        /**
+         * Emits a new [text] value to the internal update flow.
+         */
         suspend fun update(text: Component) {
             textFlow.emit(text)
         }
 
+        /**
+         * Launches a new coroutine to execute [update] in there.
+         */
         fun launchUpdate(text: Component) {
             silkCoroutineScope.launch {
-                textFlow.emit(text)
+                update(text)
             }
         }
     }
