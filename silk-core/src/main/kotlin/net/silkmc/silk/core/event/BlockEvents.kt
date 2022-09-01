@@ -14,20 +14,19 @@ val Events.Block get() = BlockEvents
 @ExperimentalSilkApi
 object BlockEvents {
 
-    @Suppress("unused")
     class BlockEvent(val level: Level, val pos: BlockPos, val blockState: BlockState)
 
     /**
      * Called before a block gets set
      */
-    val set = Event.syncAsync<BlockEvent, EventScope.Cancellable> {
+    val prePlace = Event.syncAsync<BlockEvent, EventScope.Cancellable> {
         EventScope.Cancellable()
     }
 
     /**
      * Called before a block gets destroyed
      */
-    val destroy = Event.syncAsync<BlockEvent, EventScope.Cancellable> {
+    val preDestroy = Event.syncAsync<BlockEvent, EventScope.Cancellable> {
         EventScope.Cancellable()
     }
 }
