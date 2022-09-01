@@ -16,12 +16,12 @@ object PlayerEvents {
     open class ServerPlayerEvent(val player: ServerPlayer)
 
     /**
-     * Called before a player receives the login packet from the server.
+     * Called before a player receives the login packet from the server
      */
     val preLogin = Event.syncAsyncImmutable<ServerPlayerEvent>()
 
     /**
-     * Called after a player has received all login information from the server.
+     * Called after a player has received all login information from the server
      */
     val postLogin = Event.syncAsyncImmutable<ServerPlayerEvent>()
 
