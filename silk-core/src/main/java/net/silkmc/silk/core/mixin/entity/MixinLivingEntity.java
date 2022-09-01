@@ -11,10 +11,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
 
-    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
+    @Inject(
+            method = "hurt",
+            at = @At(
+                    "HEAD"
+            ),
+            cancellable = true
+    )
     private void onHurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        EntityEvents.EntityDamageEvent event = new EntityEvents.EntityDamageEvent(source, amount, (LivingEntity) (Object) this);
-        if (EntityEvents.INSTANCE.getDamage().invoke(event).isCancelled().get()) {
+        final var event = new EntityEvents.EntityDamageEvent(source, amount, (LivingEntity) (Object) this);
+        if (EntityEvents.INSTANCE.getPreDamage().invoke(event).isCancelled().get()) {
             cir.setReturnValue(false);
         }
     }
