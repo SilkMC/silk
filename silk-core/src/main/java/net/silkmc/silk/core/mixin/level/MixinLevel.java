@@ -16,11 +16,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinLevel {
 
     @Inject(
-            method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
-            at = @At(
-                    "HEAD"
-            ),
-            cancellable = true
+        method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
+        at = @At(
+            "HEAD"
+        ),
+        cancellable = true
     )
     private void prePlaceBlock(BlockPos pos, BlockState state, int flags, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir) {
         BlockEvents.BlockEvent blockEvent = new BlockEvents.BlockEvent((Level) (Object) this, pos, state);
