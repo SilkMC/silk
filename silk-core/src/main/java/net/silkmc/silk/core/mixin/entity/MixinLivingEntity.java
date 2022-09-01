@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinLivingEntity {
 
     @Inject(
-            method = "hurt",
-            at = @At(
-                    "HEAD"
-            ),
-            cancellable = true
+        method = "hurt",
+        at = @At(
+            "HEAD"
+        ),
+        cancellable = true
     )
     private void onHurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         final var event = new EntityEvents.EntityDamageEvent(source, amount, (LivingEntity) (Object) this);
