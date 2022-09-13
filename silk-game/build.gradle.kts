@@ -14,3 +14,4 @@ dependencies {
 }
 
 val modName by extra("$projectTitle Game")
+val modMixinFiles by extra(listOf("${rootProject.name}-game.mixins.json"))
