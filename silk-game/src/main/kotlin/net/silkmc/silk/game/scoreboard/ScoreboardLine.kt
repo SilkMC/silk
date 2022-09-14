@@ -41,7 +41,7 @@ interface ScoreboardLine {
      * An updatable sideboard line, which might have an [initial]
      * content, and can be changed at any time.
      */
-    open class Updatable(initial: Component? = null) : ScoreboardLine {
+    open class Updatable(val initial: Component? = null) : ScoreboardLine {
 
         override val textFlow = MutableSharedFlow<Component>()
 
