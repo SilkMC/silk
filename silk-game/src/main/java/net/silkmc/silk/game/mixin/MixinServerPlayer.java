@@ -20,5 +20,4 @@ public class MixinServerPlayer {
         cir.setReturnValue(tablist.getPlayerNames().get(player.getUUID()));
         cir.cancel();
     }
-
 }

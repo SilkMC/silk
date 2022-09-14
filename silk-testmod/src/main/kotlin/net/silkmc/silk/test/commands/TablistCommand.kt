@@ -1,6 +1,6 @@
 package net.silkmc.silk.test.commands
 
-import kotlinx.coroutines.flow.flowOf
+import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.core.text.literalText
 import net.silkmc.silk.game.scoreboard.ScoreboardLine
 import net.silkmc.silk.game.tablist.tablist
@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.seconds
 val tablistCommand = testCommand("tablist") {
     literal("updating") {
         runs {
-            updatingTablistLine.launchUpdate(literalText((1 .. 600000).random().toString()) {
+            updatingTablistLine.launchUpdate(literalText((1..600000).random().toString()) {
                 color = (0x000000..0xFFFFFF).random()
             })
         }
@@ -23,24 +23,22 @@ val tablistCommand = testCommand("tablist") {
 }
 
 
-val updatingTablistLine = ScoreboardLine.Updatable(literalText("Starting string"))
+private val updatingTablistLine = ScoreboardLine.Updatable(initial = "Starting string".literal)
 
 val tablist = tablist {
 
     generateName {
         literalText("${this.name.string}sad") {
-            color = (0x44212 .. 0x45641).random()
+            color = (0x44212..0x45641).random()
         }
     }
 
     footer(
-        listOf(
-            updatingTablistLine,
-            ScoreboardLine.UpdatingPeriodically(1.seconds) {
-                literalText(UUID.randomUUID().toString()) {
-                    color = 0x568F97
-                }
-            })
+        listOf(updatingTablistLine, ScoreboardLine.UpdatingPeriodically(1.seconds) {
+            literalText(UUID.randomUUID().toString()) {
+                color = 0x568F97
+            }
+        })
     )
 
     header(
