@@ -47,12 +47,12 @@ See [line][net.silkmc.silk.game.sideboard.SideboardBuilder.line] and
 
 ### Updatable line
 
-You can create an [updatable line][net.silkmc.silk.game.sideboard.SideboardLine.Updatable] as a normal value everywhere
+You can create an [updatable line][net.silkmc.silk.game.scoreboard.ScoreboardLine.Updatable] as a normal value everywhere
 
 ```kotlin
-val updatableLine = SideboardLine.Updatable()
+val updatableLine = ScoreboardLine.Updatable()
 // or optionally pass an initial value
-val updatableLine = SideboardLine.Updatable(initial = "Nothing here".literal)
+val updatableLine = ScoreboardLine.Updatable(initial = "Nothing here".literal)
 ```
 
 and then use it in a sideboard builder
@@ -66,9 +66,9 @@ val mySideboard = sideboard("My Sideboard".literal) {
 ```
 
 To change the value of that updatable line, just call either
-[launchUpdate][net.silkmc.silk.game.sideboard.SideboardLine.Updatable.launchUpdate]
+[launchUpdate][net.silkmc.silk.game.scoreboard.ScoreboardLine.Updatable.launchUpdate]
 or if you are already in a suspending context just call
-[update][net.silkmc.silk.game.sideboard.SideboardLine.Updatable.update].
+[update][net.silkmc.silk.game.scoreboard.ScoreboardLine.Updatable.update].
 
 ```kotlin
 updatableLine.update("New line content!".literal)
