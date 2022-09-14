@@ -1,6 +1,6 @@
 package net.silkmc.silk.game.tablist
 
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket
@@ -9,9 +9,9 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.annotations.InternalSilkApi
-import net.silkmc.silk.core.task.infiniteMcCoroutineTask
+import net.silkmc.silk.core.task.initWithServerAsync
 import net.silkmc.silk.core.task.silkCoroutineScope
-import net.silkmc.silk.core.text.literalText
+import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.game.scoreboard.ScoreboardLine
 import java.util.*
 
@@ -24,8 +24,8 @@ import java.util.*
  */
 class Tablist(
     private val nameGenerator: (suspend ServerPlayer.() -> Component)?,
-    headers: List<ScoreboardLine>,
-    footers: List<ScoreboardLine>
+    private val headers: List<ScoreboardLine>,
+    private val footers: List<ScoreboardLine>
 ) {
 
     companion object {
@@ -34,22 +34,42 @@ class Tablist(
     }
 
     @InternalSilkApi
-    private val headerFooterUpdateTask = infiniteMcCoroutineTask(scope = silkCoroutineScope) {
-        val currentHeaders: ArrayList<Component> = ArrayList()
-        val currentFooters: ArrayList<Component> = ArrayList()
+    val currentHeaders: MutableList<Component> = mutableListOf()
 
-        headers.handleUpdating(currentHeaders) {
-            Silk.currentServer?.sendTablistUpdate(currentHeaders, currentFooters)
+    @InternalSilkApi
+    val currentFooters: MutableList<Component> = mutableListOf()
+
+    @InternalSilkApi
+    val headerFooterDeferred = initWithServerAsync {
+        silkCoroutineScope.launch {
+            currentFooters.preFill(footers)
+            currentHeaders.preFill(headers)
         }
 
-        footers.handleUpdating(currentFooters) {
-            Silk.currentServer?.sendTablistUpdate(currentHeaders, currentFooters)
+        Silk.currentServer?.sendTablistUpdate(currentHeaders, currentFooters)
+
+        headers.forEachIndexed { index, scoreboardLine ->
+            silkCoroutineScope.launch {
+                scoreboardLine.textFlow.collect {
+                    if (currentHeaders.getOrNull(index) == null) currentHeaders += it
+                    else currentHeaders[index] = it
+                    Silk.currentServer?.sendTablistUpdate(currentHeaders, currentFooters)
+                }
+            }
+        }
+        footers.forEachIndexed { index, scoreboardLine ->
+            silkCoroutineScope.launch {
+                scoreboardLine.textFlow.collect {
+                    if (currentFooters.getOrNull(index) == null) currentFooters += it
+                    else currentFooters[index] = it
+                    Silk.currentServer?.sendTablistUpdate(currentHeaders, currentFooters)
+                }
+            }
         }
     }
 
     @InternalSilkApi
     val playerNames = HashMap<UUID, Component>()
-
 
     /**
      * Regenerates all player names playing on the server.
@@ -87,7 +107,7 @@ class Tablist(
             Silk.currentServer?.playerList?.players?.forEach {
                 it.connection.send(
                     ClientboundPlayerInfoPacket(
-                        ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, it
+                        ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, player
                     )
                 )
             }
@@ -104,6 +124,12 @@ class Tablist(
         if (nameGenerator == null) return
         silkCoroutineScope.launch {
             playerNames[player.uuid] = nameGenerator.invoke(player)
+            headerFooterDeferred.await()
+            player.connection.send(
+                ClientboundPlayerInfoPacket(
+                    ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, player.server.playerList.players
+                )
+            )
         }
     }
 
@@ -123,22 +149,10 @@ class Tablist(
 }
 
 private fun List<Component>.merge(): Component {
-    return literalText {
-        this@merge.forEachIndexed { i, component ->
-            siblingText.append(component)
-            if (i != this@merge.size) siblingText.append("\n")
-        }
-    }
-}
-
-private fun List<ScoreboardLine>.handleUpdating(currentList: ArrayList<Component>, action: suspend () -> Unit) {
-    if (currentList.isEmpty()) repeat(this.size) {currentList += Component.empty()}
-    this.forEachIndexed { index, line ->
-        silkCoroutineScope.launch {
-            line.textFlow.collect { component ->
-                currentList[index] = component
-                action()
-            }
+    return Component.empty().also {
+        this.forEachIndexed { i, component ->
+            it.append(component)
+            if (this.size - 1 > i) it.append("\n".literal)
         }
     }
 }
@@ -150,5 +164,16 @@ private fun MinecraftServer?.sendTablistUpdate(headers: List<Component>, footers
                 headers.merge(), footers.merge()
             )
         )
+    }
+}
+
+private suspend fun MutableList<Component>.preFill(source: List<ScoreboardLine>) {
+    if (this.size >= source.size) return
+    repeat(source.size - this.size) { this += Component.empty() }
+    source.filterIsInstance<ScoreboardLine.Updatable>().forEachIndexed { index, scoreboardLine ->
+        this[index] = scoreboardLine.initial ?: Component.empty()
+    }
+    source.filterIsInstance<ScoreboardLine.Static>().forEachIndexed { index, scoreboardLine ->
+        this[index] = scoreboardLine.textFlow.last()
     }
 }
