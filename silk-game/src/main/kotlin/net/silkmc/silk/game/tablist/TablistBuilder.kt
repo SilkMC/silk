@@ -12,15 +12,14 @@ import net.silkmc.silk.game.scoreboard.ScoreboardLine
  * @return the final instance of [Tablist]
  */
 inline fun tablist(
-    enabled: Boolean = true,
     builder: TablistBuilder.() -> Unit
 ): Tablist {
-    val sideboardBuilder = TablistBuilder().apply(builder)
+    val tablistBuilder = TablistBuilder().apply(builder)
     return Tablist(
-        sideboardBuilder.nameGenerator,
-        sideboardBuilder.headerLines,
-        sideboardBuilder.footerLines
-    ).apply { if (enabled) enable() }
+        tablistBuilder.nameGenerator,
+        tablistBuilder.headerLines,
+        tablistBuilder.footerLines
+    )
 }
 
 /**
@@ -65,5 +64,4 @@ class TablistBuilder {
     fun header(lines: List<ScoreboardLine>) {
         headerLines += lines
     }
-
 }

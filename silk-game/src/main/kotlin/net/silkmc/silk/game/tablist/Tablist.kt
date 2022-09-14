@@ -1,5 +1,6 @@
 package net.silkmc.silk.game.tablist
 
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket
@@ -33,7 +34,7 @@ class Tablist(
     }
 
     @InternalSilkApi
-    val headerFooterUpdateTask = infiniteMcCoroutineTask {
+    private val headerFooterUpdateTask = infiniteMcCoroutineTask(scope = silkCoroutineScope) {
         val currentHeaders: ArrayList<Component> = ArrayList()
         val currentFooters: ArrayList<Component> = ArrayList()
 
@@ -116,33 +117,22 @@ class Tablist(
         playerNames.remove(player.uuid)
     }
 
-    /**
-     * Disables the [headerFooterUpdateTask]
-     */
-    fun disable() {
-        headerFooterUpdateTask.cancel()
-        currentTablist = null
-    }
-
-    /**
-     * Enables the [headerFooterUpdateTask]
-     */
-    fun enable() {
-        headerFooterUpdateTask.start()
+    init {
         currentTablist = this
     }
 }
 
 private fun List<Component>.merge(): Component {
-    val merged = Component.empty()
-    this.forEachIndexed { index, component ->
-        merged.append(component)
-        if (index >= this.size) merged.append(literalText { newLine() })
+    return literalText {
+        this@merge.forEachIndexed { i, component ->
+            siblingText.append(component)
+            if (i != this@merge.size) siblingText.append("\n")
+        }
     }
-    return merged
 }
 
 private fun List<ScoreboardLine>.handleUpdating(currentList: ArrayList<Component>, action: suspend () -> Unit) {
+    if (currentList.isEmpty()) repeat(this.size) {currentList += Component.empty()}
     this.forEachIndexed { index, line ->
         silkCoroutineScope.launch {
             line.textFlow.collect { component ->
@@ -153,8 +143,8 @@ private fun List<ScoreboardLine>.handleUpdating(currentList: ArrayList<Component
     }
 }
 
-private fun MinecraftServer.sendTablistUpdate(headers: List<Component>, footers: List<Component>) {
-    this.playerList.players.forEach {
+private fun MinecraftServer?.sendTablistUpdate(headers: List<Component>, footers: List<Component>) {
+    this?.playerList?.players?.forEach {
         it.connection.send(
             ClientboundTabListPacket(
                 headers.merge(), footers.merge()
