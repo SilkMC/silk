@@ -25,6 +25,7 @@ object Manager : ModInitializer, ClientModInitializer {
         textTestCommand
         sideboardCommand
         executeCommandTestCommand
+        tablistCommand
 
         ServerEventTest.init()
         NetworkTest.initServer()

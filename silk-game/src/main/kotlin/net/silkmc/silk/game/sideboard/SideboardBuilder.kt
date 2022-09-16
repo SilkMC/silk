@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.text.LiteralTextBuilder
 import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.core.text.literalText
+import net.silkmc.silk.game.scoreboard.ScoreboardLine
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -29,8 +30,8 @@ fun ServerPlayer.showSideboard(sideboard: Sideboard) {
 /**
  * Opens a new sideboard [builder] and returns the final sideboard.
  *
- * You can then open the sideboard to a [ServerPlayerEntity] using
- * [ServerPlayerEntity.showSideboard].
+ * You can then open the sideboard to a [ServerPlayer] using
+ * [ServerPlayer.showSideboard].
  *
  * @param displayName the name of sideboard, which is displayed on the top
  * @param name an optional internal name of the sideboard (only visible to the player
@@ -53,12 +54,12 @@ inline fun sideboard(
 class SideboardBuilder {
 
     @PublishedApi
-    internal val lines = ArrayList<SideboardLine>()
+    internal val lines = ArrayList<ScoreboardLine>()
 
     /**
-     * Adds any line implementing the [SideboardLine] interface.
+     * Adds any line implementing the [ScoreboardLine] interface.
      */
-    fun line(line: SideboardLine) {
+    fun line(line: ScoreboardLine) {
         lines += line
     }
 
@@ -66,14 +67,14 @@ class SideboardBuilder {
      * Adds a simple and static line of text.
      */
     fun line(text: Component) {
-        lines += SideboardLine.Static(text)
+        lines += ScoreboardLine.Static(text)
     }
 
     /**
-     * Shortcut for adding a [SideboardLine.Changing].
+     * Shortcut for adding a [ScoreboardLine.Changing].
      */
     fun line(flow: Flow<Component>) {
-        lines += SideboardLine.Changing(flow)
+        lines += ScoreboardLine.Changing(flow)
     }
 
 
@@ -85,7 +86,7 @@ class SideboardBuilder {
      * of the line
      */
     fun updatingLine(period: Duration, updater: suspend () -> Component) {
-        lines += SideboardLine.UpdatingPeriodically(period, updater)
+        lines += ScoreboardLine.UpdatingPeriodically(period, updater)
     }
 
     /**
@@ -103,11 +104,11 @@ class SideboardBuilder {
         message = "This function is not useful enough to stay in Silk, therefore it will be removed in the future.",
         replaceWith = ReplaceWith(
             "line(SimpleSideboardLine(block()))",
-            "net.silkmc.silk.game.sideboard.SimpleSideboardLine"
+            "net.silkmc.silk.game.scoreboard.SimpleSideboardLine"
         )
     )
     inline fun line(block: () -> Component) {
-        lines += SideboardLine.Static(block())
+        lines += ScoreboardLine.Static(block())
     }
 
     /**
@@ -120,14 +121,14 @@ class SideboardBuilder {
      * [lineChangingPeriodically] or [literalLineChangingPeriodically]
      * functions instead.
      *
-     * See [flow] documention to learn more about flows.
+     * See [flow] documentation to learn more about flows.
      */
     @Deprecated(
         message = "This function is not needed anymore since any flow can just be passed to \"line\"",
         replaceWith = ReplaceWith("line(flow { flowBuilder() })")
     )
     inline fun lineChanging(crossinline flowBuilder: suspend FlowCollector<Component>.() -> Unit) {
-        lines += SideboardLine.Changing(flow { this.flowBuilder() })
+        lines += ScoreboardLine.Changing(flow { this.flowBuilder() })
     }
 
     /**

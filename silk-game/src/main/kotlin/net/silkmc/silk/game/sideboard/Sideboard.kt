@@ -7,6 +7,7 @@ import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.task.initWithServerAsync
 import net.silkmc.silk.core.task.silkCoroutineScope
+import net.silkmc.silk.game.scoreboard.ScoreboardLine
 import net.silkmc.silk.game.sideboard.internal.SideboardScoreboard
 
 /**
@@ -19,7 +20,7 @@ import net.silkmc.silk.game.sideboard.internal.SideboardScoreboard
 class Sideboard(
     name: String,
     displayName: Component,
-    lines: List<SideboardLine>,
+    lines: List<ScoreboardLine>,
 ) {
     @InternalSilkApi
     val scoreboardDeferred = initWithServerAsync {
