@@ -17,7 +17,9 @@ public class MixinServerPlayer {
     public void onGetTablistName(CallbackInfoReturnable<Component> cir) {
         Tablist tablist = Tablist.getCurrentTablist();
         if (tablist == null) return;
-        cir.setReturnValue(tablist.getPlayerNames().get(player.getUUID()));
+        var generatedName = tablist.getPlayerNames().get(player.getUUID());
+        if (generatedName == null) return;
+        cir.setReturnValue(generatedName.component1());
         cir.cancel();
     }
 }
