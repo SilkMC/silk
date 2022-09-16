@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.annotations.InternalSilkApi
+import net.silkmc.silk.core.packet.sendPacket
 import net.silkmc.silk.core.task.initWithServerAsync
 import net.silkmc.silk.core.task.silkCoroutineScope
 import net.silkmc.silk.core.text.literal
@@ -23,7 +24,7 @@ import java.util.*
  * **Note:** You probably want to build this class using the tablist builder API. See [tablist]!
  */
 class Tablist(
-    private val nameGenerator: (suspend ServerPlayer.() -> Component)?,
+    private val nameGenerator: (suspend ServerPlayer.() -> Pair<Component, String>)?,
     private val headers: List<ScoreboardLine>,
     private val footers: List<ScoreboardLine>
 ) {
@@ -69,48 +70,59 @@ class Tablist(
     }
 
     @InternalSilkApi
-    val playerNames = HashMap<UUID, Component>()
+    val playerNames = HashMap<UUID, Pair<Component, String>>()
 
     /**
-     * Regenerates all player names playing on the server.
+     * Regenerates all player names and priorities
      */
     fun updateNames() {
         if (nameGenerator == null) return
         val server = Silk.currentServer
         if (server?.isRunning == false) return
+
         silkCoroutineScope.launch {
             server?.playerList?.players?.forEach {
-                playerNames[it.uuid] = nameGenerator.invoke(it)
+                val nameGen = nameGenerator.invoke(it)
+                playerNames[it.uuid] = nameGen
             }
 
-            server?.playerList?.players?.forEach {
-                it.connection.send(
-                    ClientboundPlayerInfoPacket(
-                        ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, server.playerList.players
-                    )
+            playerNames.forEach { (uuid, pair) ->
+                val player = server?.playerList?.getPlayer(uuid) ?: return@forEach
+                val team = player.scoreboard.getPlayerTeam(pair.second) ?: player.scoreboard.addPlayerTeam(
+                    pair.second
                 )
+                player.scoreboard.addPlayerToTeam(player.scoreboardName, team)
             }
+
+            server?.playerList?.players?.sendPacket(
+                ClientboundPlayerInfoPacket(
+                    ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, server.playerList.players
+                )
+            )
         }
     }
 
     /**
-     * Regenerate the name of the given [player]
+     * Regenerate the name and priority of the [player]
      *
-     * @param player the player whose name should be updated
+     * @param player the player whose attributes should be updated
      */
     fun updateName(player: ServerPlayer) {
         if (nameGenerator == null) return
         if (Silk.currentServer?.isRunning == false) return
         silkCoroutineScope.launch {
-            playerNames[player.uuid] = nameGenerator.invoke(player)
+            val nameGen = nameGenerator.invoke(player)
+            playerNames[player.uuid] = nameGen
+            val team = player.scoreboard.getPlayerTeam(nameGen.second) ?: player.scoreboard.addPlayerTeam(
+                nameGen.second
+            )
+            player.scoreboard.addPlayerToTeam(player.scoreboardName, team)
 
-            Silk.currentServer?.playerList?.players?.forEach {
-                it.connection.send(
-                    ClientboundPlayerInfoPacket(
-                        ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, player
-                    )
+            player.server.playerList.players.sendPacket(
+                ClientboundPlayerInfoPacket(
+                    ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, player
                 )
-            }
+            )
         }
     }
 
@@ -123,11 +135,16 @@ class Tablist(
     fun addPlayer(player: ServerPlayer) {
         if (nameGenerator == null) return
         silkCoroutineScope.launch {
-            playerNames[player.uuid] = nameGenerator.invoke(player)
+            val nameGen = nameGenerator.invoke(player)
+            playerNames[player.uuid] = nameGen
             headerFooterDeferred.await()
-            player.connection.send(
+            val team = player.scoreboard.getPlayerTeam(nameGen.second) ?: player.scoreboard.addPlayerTeam(
+                nameGen.second
+            )
+            player.scoreboard.addPlayerToTeam(player.scoreboardName, team)
+            player.server.playerList.players.sendPacket(
                 ClientboundPlayerInfoPacket(
-                    ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, player.server.playerList.players
+                    ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, player
                 )
             )
         }

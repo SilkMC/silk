@@ -28,9 +28,10 @@ private val updatingTablistLine = ScoreboardLine.Updatable(initial = "Starting s
 val tablist = tablist {
 
     generateName {
-        literalText("${this.name.string}sad") {
+        val priority = "0123456".random().toString()
+        literalText("${this.name.string}sad $priority") {
             color = (0x44212..0x45641).random()
-        }
+        } to priority
     }
 
     footer(

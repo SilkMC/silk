@@ -36,14 +36,14 @@ class TablistBuilder {
     internal val footerLines = ArrayList<ScoreboardLine>()
 
     @PublishedApi
-    internal var nameGenerator: (suspend ServerPlayer.() -> Component)? = null
+    internal var nameGenerator: (suspend ServerPlayer.() -> Pair<Component, String>)? = null
 
     /**
      * Adds the name generator to the [Tablist]
      *
-     * @param nameGenerator the generator to get the name
+     * @param nameGenerator the generator to get the name and the priority of the player
      */
-    fun generateName(nameGenerator: suspend ServerPlayer.() -> Component) {
+    fun generateName(nameGenerator: suspend ServerPlayer.() -> Pair<Component, String>) {
         this@TablistBuilder.nameGenerator = nameGenerator
     }
 
