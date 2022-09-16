@@ -21,7 +21,7 @@ val myTablist = tablist() {
 myTablist.updateNames()
 
 // update and regenerate the name of this player
-val player = Silk.currentServer?.playerList?.getPlayer("btwonion")
+val player = Silk.currentServer?.playerList?.getPlayerByName("btwonion") ?: return
 myTablist.updateName(player)
 ```
 
@@ -33,12 +33,12 @@ val myTablist = tablist() {
 
     generateName {
         // put your name generator here
-        // it provides a ServerPlayer and requires a Component
+        // it provides a ServerPlayer and requires a Component and a String which defines the priority
         
         //Example: 
         literalText("${this.name.string} test") {
             color = (0x44212..0x45641).random()
-        }
+        } to "2"
     }
 
     // sets your footers with ScoreboardLines
