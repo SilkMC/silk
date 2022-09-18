@@ -7,7 +7,7 @@ displayed to a selection of players.
 
 ### Creating a sideboard
 
-Use the top-level [sideboard][et.silkmc.silk.game.sideboard.sideboard] function.
+Use the top-level [sideboard][net.silkmc.silk.game.sideboard.sideboard] function.
 
 ```kotlin
 val mySideboard = sideboard("My Sideboard".literal) {
