@@ -21,7 +21,7 @@ public class MixinPlayerList {
         )
     )
     private void onPreLogin(Connection connection, ServerPlayer player, CallbackInfo ci) {
-        PlayerEvents.INSTANCE.getPreLogin().invoke(new PlayerEvents.ServerPlayerEvent(player));
+        PlayerEvents.INSTANCE.getPreLogin().invoke(new PlayerEvents.PlayerEvent<>(player));
     }
 
     @Inject(
@@ -29,6 +29,6 @@ public class MixinPlayerList {
         at = @At("TAIL")
     )
     private void onPostLogin(Connection connection, ServerPlayer player, CallbackInfo ci) {
-        PlayerEvents.INSTANCE.getPostLogin().invoke(new PlayerEvents.ServerPlayerEvent(player));
+        PlayerEvents.INSTANCE.getPostLogin().invoke(new PlayerEvents.PlayerEvent<>(player));
     }
 }
