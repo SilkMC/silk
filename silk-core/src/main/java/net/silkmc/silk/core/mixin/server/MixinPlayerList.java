@@ -17,7 +17,7 @@ public class MixinPlayerList {
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;<init>(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/network/Connection;Lnet/minecraft/server/level/ServerPlayer;)V",
-            shift = At.Shift.AFTER
+            shift = At.Shift.BEFORE
         )
     )
     private void onPreLogin(Connection connection, ServerPlayer player, CallbackInfo ci) {
