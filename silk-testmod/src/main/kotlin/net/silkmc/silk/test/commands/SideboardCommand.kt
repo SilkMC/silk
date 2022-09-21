@@ -19,12 +19,23 @@ val sideboardCommand = testCommand("sideboard") {
                 sideboardExamples[example()]?.hideFromPlayer(source.playerOrException)
             }
         }
-        literal("update_updatable") {
-            argument<String>("content") { contentArg ->
-                runsAsync {
-                    updatableLine.update(contentArg().literal)
-                }
+    }
+    literal("update_updatable") {
+        argument<String>("content") { contentArg ->
+            runsAsync {
+                updatableLine.update(contentArg().literal)
             }
+        }
+    }
+    literal("sync_test") {
+        runs {
+            val updatable = SideboardLine.Updatable("initial value".literal)
+            val board = sideboard("syncTest".literal) {
+                line("Updatable:".literal)
+                line(updatable)
+            }
+            board.displayToPlayer(source.playerOrException)
+            updatable.launchUpdate("updated".literal)
         }
     }
 }
