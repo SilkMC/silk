@@ -5,6 +5,7 @@ import BuildConstants.fabricLoaderVersion
 import BuildConstants.githubRepo
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
+import BuildConstants.parchmentMappingsVersion
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,7 +25,7 @@ repositories {
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.layered {
-        parchment("org.parchmentmc.data:parchment-1.19.2:2022.09.18@zip")
+        parchment("org.parchmentmc.data:parchment-${parchmentMappingsVersion}@zip")
         officialMojangMappings()
     })
 
