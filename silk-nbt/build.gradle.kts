@@ -11,4 +11,8 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+dependencies {
+    api(modProject(":${rootProject.name}-core"))
+}
+
 val modName by extra("$projectTitle NBT")
