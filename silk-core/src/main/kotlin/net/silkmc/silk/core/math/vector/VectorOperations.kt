@@ -33,7 +33,7 @@ operator fun Vector3f.plus(n: Number): Vector3f =
     copy().apply { n.toFloat().let { nFloat -> add(nFloat, nFloat, nFloat) } }
 
 operator fun Vector3f.minus(n: Number): Vector3f =
-    copy().apply { n.toFloat().let { nFloat -> sub(Vector3f(nFloat, nFloat, nFloat)) } }
+    copy().apply { sub(Vector3f(n, n, n)) }
 
 operator fun Vector3f.times(n: Number): Vector3f =
     n.toFloat().let { nFloat -> Vector3f(x() * nFloat, y() * nFloat, z() * nFloat) }
@@ -70,16 +70,14 @@ inline operator fun <reified T : Vec3i> T.minus(n: Number): T =
 
 operator fun Vec3i.times(n: Number): Vec3i = multiply(n.toInt())
 operator fun Vec3i.div(n: Number) = (1.0 / n.toDouble()).let { nDouble -> Vec3i(x * nDouble, y * nDouble, z * nDouble) }
-operator fun Vec3i.compareTo(n: Number) =
-    Vec3(x.toDouble(), y.toDouble(), z.toDouble()).length().compareTo(n.toDouble())
+operator fun Vec3i.compareTo(n: Number) = Vec3(x, y, z).length().compareTo(n.toDouble())
 
 inline operator fun <reified T : Vec3i> T.plus(vec: Vec3i): T = offset(vec) as T
 inline operator fun <reified T : Vec3i> T.minus(vec: Vec3i): T = offset(!vec) as T
 operator fun Vec3i.times(vec: Vec3i): Vec3i = Vec3i(x * vec.x, y * vec.y, z * vec.z)
 operator fun Vec3i.div(vec: Vec3i): Vec3i = Vec3i(x / vec.x, y / vec.y, z / vec.z)
 operator fun Vec3i.compareTo(vec: Vec3i) =
-    Vec3(x.toDouble(), y.toDouble(), z.toDouble()).lengthSqr()
-        .compareTo(Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble()).lengthSqr())
+    Vec3(x, y, z).lengthSqr().compareTo(Vec3(vec.x, vec.y, vec.z).lengthSqr())
 
 fun Vec3i.triple() = Triple(x, y, z)
 fun Vec3i(x: Number, y: Number, z: Number) = Vec3i(x.toDouble(), y.toDouble(), z.toDouble())
@@ -116,7 +114,7 @@ operator fun Vector3d.component2() = y
 operator fun Vector3d.component3() = z
 
 
-fun <T : Number> Triple<T, T, T>.vector3() = Vec3(first, second, third)
-fun <T : Number> Triple<T, T, T>.vector3i() = Vec3i(first, second, third)
+fun <T : Number> Triple<T, T, T>.vec3() = Vec3(first, second, third)
+fun <T : Number> Triple<T, T, T>.vec3i() = Vec3i(first, second, third)
 fun <T : Number> Triple<T, T, T>.vector3f() = Vector3f(first, second, third)
 fun <T : Number> Triple<T, T, T>.vector3d() = Vector3d(first, second, third)
