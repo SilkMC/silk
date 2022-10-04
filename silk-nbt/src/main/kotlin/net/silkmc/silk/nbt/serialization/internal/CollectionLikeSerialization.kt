@@ -1,7 +1,9 @@
 package net.silkmc.silk.nbt.serialization.internal
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
+import net.silkmc.silk.nbt.serialization.serializer.CollectionTagSerializer
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
@@ -32,9 +34,13 @@ private val collectionLikeElementSerializerField = collectionLikeSerializerClass
     .first { it.name == "elementSerializer" }
     .apply { isAccessible = true } as KProperty1<Any, KSerializer<*>>
 
+@OptIn(ExperimentalSerializationApi::class)
 internal val Any.elementSerializer: KSerializer<*>?
     get() = if (collectionLikeSerializerClass.isInstance(this)) {
         collectionLikeElementSerializerField.get(this)
+    } else if (this is CollectionTagSerializer<*, *>) {
+        tag
     } else {
         null
     }
+

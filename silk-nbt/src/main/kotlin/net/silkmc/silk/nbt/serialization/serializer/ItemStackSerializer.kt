@@ -12,7 +12,7 @@ import net.silkmc.silk.core.serialization.SilkSerializer
 
 // TODO: Unit test
 @ExperimentalSerializationApi
-object ItemStackSerializer : SilkSerializer<ItemStack>() {
+object ItemStackSerializer : SilkSerializer<ItemStack>(ItemStack::class) {
     override val descriptor = buildClassSerialDescriptor(descriptorName) {
         element<ResourceLocation>("id")
         element<Int>("Count")
