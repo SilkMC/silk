@@ -1,26 +1,47 @@
 package net.silkmc.silk.nbt.serialization
 
 import kotlinx.serialization.*
-import kotlinx.serialization.modules.EmptySerializersModule
-import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.*
 import net.minecraft.nbt.Tag
-import net.silkmc.silk.nbt.serialization.decoder.NbtRootDecoder
-import net.silkmc.silk.nbt.serialization.encoder.NbtRootEncoder
+import net.silkmc.silk.nbt.serialization.decoder.RootTagDecoder
+import net.silkmc.silk.nbt.serialization.encoder.RootTagEncoder
+import net.silkmc.silk.nbt.serialization.serializer.*
+
+@ExperimentalSerializationApi
+internal val TagsModule = SerializersModule {
+    polymorphic(Tag::class) {
+        subclass(CompoundTagSerializer)
+        subclass(EndTagSerializer)
+        subclass(StringTagSerializer)
+        subclass(ByteTagSerializer)
+        subclass(DoubleTagSerializer)
+        subclass(FloatTagSerializer)
+        subclass(IntTagSerializer)
+        subclass(LongTagSerializer)
+        subclass(ListTagSerializer)
+        subclass(ByteArrayTagSerializer)
+        subclass(IntArrayTagSerializer)
+        subclass(LongArrayTagSerializer)
+        defaultDeserializer { BaseTagSerializer }
+    }
+}
 
 /**
  * Instances of this class can encode values to [Tag]s and decode
  * [Tag]s to values.
  */
 @OptIn(ExperimentalSerializationApi::class)
-sealed class Nbt(val config: NbtConfig, val serializersModule: SerializersModule) {
-    companion object Default : Nbt(NbtConfig(), EmptySerializersModule)
+sealed class Nbt(val config: NbtConfig, serializersModule: SerializersModule) {
+    companion object Default : Nbt(NbtConfig(), EmptySerializersModule())
+
+    val serializersModule = serializersModule + TagsModule
 
     fun <T> encodeToNbtElement(serializer: SerializationStrategy<T>, value: T): Tag =
-        NbtRootEncoder(this).apply { encodeSerializableValue(serializer, value) }.element
+        RootTagEncoder(this).apply { encodeSerializableValue(serializer, value) }.element
             ?: throw SerializationException("Serializer did not encode any element")
 
     fun <T> decodeFromNbtElement(deserializer: DeserializationStrategy<T>, element: Tag): T =
-        NbtRootDecoder(this, element).decodeSerializableValue(deserializer)
+        RootTagDecoder(this, element).decodeSerializableValue(deserializer)
 }
 
 private class NbtImpl(config: NbtConfig, serializersModule: SerializersModule) : Nbt(config, serializersModule)
@@ -52,7 +73,7 @@ class NbtBuilder(from: Nbt) {
  * function. Otherwise, an [net.minecraft.nbt.CompoundTag] will be created.
  */
 inline fun <reified T> Nbt.encodeToNbtElement(value: T) =
-    encodeToNbtElement(serializer(), value)
+    encodeToNbtElement(serializersModule.serializer(), value)
 
 /**
  * Encodes the given [element] to an instance of the class [T].
@@ -61,7 +82,7 @@ inline fun <reified T> Nbt.encodeToNbtElement(value: T) =
  * will be thrown.
  */
 inline fun <reified T> Nbt.decodeFromNbtElement(element: Tag) =
-    decodeFromNbtElement(serializer<T>(), element)
+    decodeFromNbtElement(serializersModule.serializer<T>(), element)
 
 /**
  * Thrown if [NbtConfig.ignoreUnknownKeys] is set to false and an unknown key
