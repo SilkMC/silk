@@ -14,7 +14,7 @@ import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import net.minecraft.core.Vec3i
-import net.silkmc.silk.core.math.vector.triple
+import net.silkmc.silk.core.math.vector.toTriple
 import net.silkmc.silk.core.serialization.SilkSerializer
 
 private const val xIndex = 0
@@ -76,7 +76,7 @@ object Vec3iSerializer : SilkSerializer<Vec3i>() {
         decoder.beginStructure(descriptor).decodeVector(descriptor, serializer, (::Vec3i))
 
     override fun serialize(encoder: Encoder, value: Vec3i) =
-        encoder.beginStructure(descriptor).encodeVector(descriptor, serializer, value.triple()).endStructure(descriptor)
+        encoder.beginStructure(descriptor).encodeVector(descriptor, serializer, value.toTriple()).endStructure(descriptor)
 }
 
 @ExperimentalSerializationApi
@@ -89,7 +89,7 @@ object Vector3fSerializer : SilkSerializer<Vector3f>() {
         decoder.beginStructure(descriptor).decodeVector(descriptor, serializer, (::Vector3f))
 
     override fun serialize(encoder: Encoder, value: Vector3f) =
-        encoder.beginStructure(descriptor).encodeVector(descriptor, serializer, value.triple()).endStructure(descriptor)
+        encoder.beginStructure(descriptor).encodeVector(descriptor, serializer, value.toTriple()).endStructure(descriptor)
 }
 
 @ExperimentalSerializationApi
@@ -102,5 +102,5 @@ object Vector3dSerializer : SilkSerializer<Vector3d>() {
         decoder.beginStructure(descriptor).decodeVector(descriptor, serializer, (::Vector3d))
 
     override fun serialize(encoder: Encoder, value: Vector3d) =
-        encoder.beginStructure(descriptor).encodeVector(descriptor, serializer, value.triple()).endStructure(descriptor)
+        encoder.beginStructure(descriptor).encodeVector(descriptor, serializer, value.toTriple()).endStructure(descriptor)
 }

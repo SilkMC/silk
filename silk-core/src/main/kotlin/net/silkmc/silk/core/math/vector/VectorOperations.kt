@@ -19,7 +19,7 @@ operator fun Vec3.times(vec: Vec3): Vec3 = multiply(vec)
 operator fun Vec3.div(vec: Vec3): Vec3 = Vec3(x / vec.x, y / vec.y, z / vec.z)
 operator fun Vec3.compareTo(vec: Vec3) = lengthSqr().compareTo(vec.lengthSqr())
 
-fun Vec3.triple() = Triple(x, y, z)
+fun Vec3.toTriple() = Triple(x, y, z)
 fun Vec3(x: Number, y: Number, z: Number) = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
 
 operator fun Vec3.component1() = x
@@ -47,7 +47,7 @@ operator fun Vector3f.times(vec: Vector3f): Vector3f = Vector3f(x() * vec.x(), y
 operator fun Vector3f.div(vec: Vector3f): Vector3f = Vector3f(x() / vec.x(), y() / vec.y(), z() / vec.z())
 operator fun Vector3f.compareTo(vec: Vector3f) = Vec3(this).lengthSqr().compareTo(Vec3(vec).lengthSqr())
 
-fun Vector3f.triple() = Triple(x, y, z)
+fun Vector3f.toTriple() = Triple(x, y, z)
 fun Vector3f(x: Number, y: Number, z: Number) = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
 val Vector3f.x: Float
@@ -79,7 +79,7 @@ operator fun Vec3i.div(vec: Vec3i): Vec3i = Vec3i(x / vec.x, y / vec.y, z / vec.
 operator fun Vec3i.compareTo(vec: Vec3i) =
     Vec3(x, y, z).lengthSqr().compareTo(Vec3(vec.x, vec.y, vec.z).lengthSqr())
 
-fun Vec3i.triple() = Triple(x, y, z)
+fun Vec3i.toTriple() = Triple(x, y, z)
 fun Vec3i(x: Number, y: Number, z: Number) = Vec3i(x.toDouble(), y.toDouble(), z.toDouble())
 
 operator fun Vec3i.component1() = x
@@ -106,7 +106,7 @@ operator fun Vector3d.compareTo(vec: Vector3d) =
     Vec3(x, y, z).lengthSqr().compareTo(Vec3(vec.x, vec.y, vec.z).lengthSqr())
 
 fun Vector3d.copy() = Vector3d(x, y, z)
-fun Vector3d.triple() = Triple(x, y, z)
+fun Vector3d.toTriple() = Triple(x, y, z)
 fun Vector3d(x: Number, y: Number, z: Number) = Vector3d(x.toDouble(), y.toDouble(), z.toDouble())
 
 operator fun Vector3d.component1() = x
