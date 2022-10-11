@@ -17,9 +17,9 @@ import net.minecraft.core.Vec3i
 import net.silkmc.silk.core.math.vector.triple
 import net.silkmc.silk.core.serialization.SilkSerializer
 
-private const val XIndex = 0;
-private const val YIndex = 1;
-private const val ZIndex = 2;
+private const val xIndex = 0
+private const val yIndex = 1
+private const val zIndex = 2
 
 private inline fun <reified T : Number> SilkSerializer<*>.descriptor(serializer: KSerializer<T>) =
     buildClassSerialDescriptor(descriptorName) {
@@ -36,9 +36,9 @@ private inline fun <reified T : Number, U> CompositeDecoder.decodeVector(
 ) = run {
     if (decodeSequentially()) {
         constructor(
-            decodeSerializableElement(descriptor, XIndex, serializer),
-            decodeSerializableElement(descriptor, YIndex, serializer),
-            decodeSerializableElement(descriptor, ZIndex, serializer)
+            decodeSerializableElement(descriptor, xIndex, serializer),
+            decodeSerializableElement(descriptor, yIndex, serializer),
+            decodeSerializableElement(descriptor, zIndex, serializer)
         )
     } else {
         var x: T? = null
@@ -47,9 +47,9 @@ private inline fun <reified T : Number, U> CompositeDecoder.decodeVector(
         while (true) {
             when (val i = decodeElementIndex(Vec3iSerializer.descriptor)) {
                 CompositeDecoder.DECODE_DONE -> break
-                XIndex -> x = decodeSerializableElement(descriptor, i, serializer)
-                YIndex -> y = decodeSerializableElement(descriptor, i, serializer)
-                ZIndex -> z = decodeSerializableElement(descriptor, i, serializer)
+                xIndex -> x = decodeSerializableElement(descriptor, i, serializer)
+                yIndex -> y = decodeSerializableElement(descriptor, i, serializer)
+                zIndex -> z = decodeSerializableElement(descriptor, i, serializer)
             }
         }
         constructor(x!!, y!!, z!!)
@@ -61,9 +61,9 @@ private fun <T : Number> CompositeEncoder.encodeVector(
     serializer: SerializationStrategy<T>,
     triple: Triple<T, T, T>
 ) = apply {
-    encodeSerializableElement(descriptor, XIndex, serializer, triple.first)
-    encodeSerializableElement(descriptor, YIndex, serializer, triple.second)
-    encodeSerializableElement(descriptor, ZIndex, serializer, triple.third)
+    encodeSerializableElement(descriptor, xIndex, serializer, triple.first)
+    encodeSerializableElement(descriptor, yIndex, serializer, triple.second)
+    encodeSerializableElement(descriptor, zIndex, serializer, triple.third)
 }
 
 @ExperimentalSerializationApi

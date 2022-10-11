@@ -114,7 +114,7 @@ operator fun Vector3d.component2() = y
 operator fun Vector3d.component3() = z
 
 
-fun <T : Number> Triple<T, T, T>.vec3() = Vec3(first, second, third)
-fun <T : Number> Triple<T, T, T>.vec3i() = Vec3i(first, second, third)
-fun <T : Number> Triple<T, T, T>.vector3f() = Vector3f(first, second, third)
-fun <T : Number> Triple<T, T, T>.vector3d() = Vector3d(first, second, third)
+fun <T : Number> Triple<T, T, T>.toVec3() = Vec3(first, second, third)
+fun <T : Number> Triple<T, T, T>.toVec3i() = Vec3i(first, second, third)
+fun <T : Number> Triple<T, T, T>.toVector3f() = Vector3f(first, second, third)
+fun <T : Number> Triple<T, T, T>.toVector3d() = Vector3d(first, second, third)
