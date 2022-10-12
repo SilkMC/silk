@@ -11,7 +11,7 @@ package net.silkmc.silk.core.annotations
 annotation class InternalSilkApi
 
 @Retention(value = AnnotationRetention.BINARY)
-@Target(AnnotationTarget.TYPEALIAS, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.TYPEALIAS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
 @RequiresOptIn(
     message = "This is a delicate API and its use requires care." +
             " Make sure you fully understand the declaration that is marked as a delicate API." +
