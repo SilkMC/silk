@@ -16,12 +16,6 @@ import net.silkmc.silk.core.serialization.SilkSerializer
 import net.silkmc.silk.nbt.serialization.decoder.TagDecoder
 import kotlin.reflect.KClass
 
-/**
- * [Source](https://github.com/Kotlin/kotlinx.serialization/issues/1940)
- */
-@Suppress("unused")
-private val lazy = LazyThreadSafetyMode.PUBLICATION
-
 @ExperimentalSerializationApi
 @OptIn(InternalSerializationApi::class)
 object BaseTagSerializer : SilkSerializer<Tag>(Tag::class) {
