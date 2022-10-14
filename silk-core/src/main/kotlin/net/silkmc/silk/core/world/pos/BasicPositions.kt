@@ -37,13 +37,7 @@ sealed interface IPos<N : Number> {
 }
 
 @Serializable
-sealed interface Pos2Dimensional<N : Number, In3d> : IPos<N> {
-
-    /**
-     * Keeps the [x] and [z] coordinate, but puts this position into 3-dimensional
-     * space ([Pos3Dimensional]) at the given height [y].
-     */
-    fun atY(y: N): In3d
+sealed interface Pos2Dimensional<N : Number> : IPos<N> {
 
     fun toMcVec2() = Vec2(x.toFloat(), z.toFloat())
 
@@ -58,24 +52,13 @@ sealed interface Pos2Dimensional<N : Number, In3d> : IPos<N> {
 }
 
 @Serializable
-sealed interface Pos3Dimensional<N : Number, In2d, Self> : IPos<N> {
+sealed interface Pos3Dimensional<N : Number> : IPos<N> {
 
     /**
      * Vertical y-coordinate, equivalent of `y` in a Minecraft world.
      * This coordinate represents the **height**.
      */
     val y: N
-
-    /**
-     * Removes the [y] coordinate and returns a new instance of [Pos2Dimensional].
-     */
-    fun withoutHeight(): In2d
-
-    /**
-     * Takes the [x] and [z] coordinate and adds them together
-     * with the given new [y].
-     */
-    fun atY(y: N): Self
 
     /**
      * Converts this position to a Kotlin [Triple] of [x], [y] and [z].
@@ -101,13 +84,42 @@ sealed interface Pos3Dimensional<N : Number, In2d, Self> : IPos<N> {
     fun toBlockPos() = toMcBlockPos()
 }
 
+@Serializable
+sealed interface Pos2DimensionalConvertible<N : Number, In3d, Self> : Pos2Dimensional<N>
+        where Self : Pos2DimensionalConvertible<N, In3d, Self>,
+              In3d : Pos3DimensionalConvertible<N, Self, In3d> {
+
+    /**
+     * Keeps the [x] and [z] coordinate, but puts this position into 3-dimensional
+     * space ([Pos3Dimensional]) at the given height [y].
+     */
+    fun atY(y: N): In3d
+}
+
+@Serializable
+sealed interface Pos3DimensionalConvertible<N : Number, In2d, Self> : Pos3Dimensional<N>
+        where Self : Pos3DimensionalConvertible<N, In2d, Self>,
+              In2d : Pos2DimensionalConvertible<N, Self, In2d> {
+
+    /**
+     * Removes the [y] coordinate and returns a new instance of [Pos2Dimensional].
+     */
+    fun withoutHeight(): In2d
+
+    /**
+     * Takes the [x] and [z] coordinate and adds them together
+     * with the given new [y].
+     */
+    fun atY(y: N): Self
+}
+
 /**
  * A simple class representing **a pair of x and z** (being 2-dimensional **integer** coordinates).
  * As y would be the height in Minecraft, this two-dimensional class does not contain a y value.
  */
 @Serializable
 @SerialName("pos2i")
-data class Pos2i(override val x: Int, override val z: Int) : Pos2Dimensional<Int, Pos3i> {
+data class Pos2i(override val x: Int, override val z: Int) : Pos2DimensionalConvertible<Int, Pos3i, Pos2i> {
     override fun atY(y: Int) = Pos3i(x, y, z)
 }
 
@@ -117,7 +129,7 @@ data class Pos2i(override val x: Int, override val z: Int) : Pos2Dimensional<Int
  */
 @Serializable
 @SerialName("pos2f")
-data class Pos2f(override val x: Float, override val z: Float) : Pos2Dimensional<Float, Pos3f> {
+data class Pos2f(override val x: Float, override val z: Float) : Pos2DimensionalConvertible<Float, Pos3f, Pos2f> {
     override fun atY(y: Float) = Pos3f(x, y, z)
 }
 
@@ -127,7 +139,7 @@ data class Pos2f(override val x: Float, override val z: Float) : Pos2Dimensional
  */
 @Serializable
 @SerialName("pos2d")
-data class Pos2d(override val x: Double, override val z: Double) : Pos2Dimensional<Double, Pos3d> {
+data class Pos2d(override val x: Double, override val z: Double) : Pos2DimensionalConvertible<Double, Pos3d, Pos2d> {
     override fun atY(y: Double) = Pos3d(x, y, z)
 }
 
@@ -137,7 +149,7 @@ data class Pos2d(override val x: Double, override val z: Double) : Pos2Dimension
  */
 @Serializable
 @SerialName("pos3i")
-data class Pos3i(override val x: Int, override val y: Int, override val z: Int) : Pos3Dimensional<Int, Pos2i, Pos3i> {
+data class Pos3i(override val x: Int, override val y: Int, override val z: Int) : Pos3DimensionalConvertible<Int, Pos2i, Pos3i> {
     override fun atY(y: Int) = Pos3i(x, y, z)
     override fun withoutHeight() = Pos2i(x, z)
 }
@@ -148,7 +160,7 @@ data class Pos3i(override val x: Int, override val y: Int, override val z: Int) 
  */
 @Serializable
 @SerialName("pos3f")
-data class Pos3f(override val x: Float, override val y: Float, override val z: Float) : Pos3Dimensional<Float, Pos2f, Pos3f> {
+data class Pos3f(override val x: Float, override val y: Float, override val z: Float) : Pos3DimensionalConvertible<Float, Pos2f, Pos3f> {
     override fun atY(y: Float) = Pos3f(x, y, z)
     override fun withoutHeight() = Pos2f(x, z)
 }
@@ -159,7 +171,7 @@ data class Pos3f(override val x: Float, override val y: Float, override val z: F
  */
 @Serializable
 @SerialName("pos3d")
-data class Pos3d(override val x: Double, override val y: Double, override val z: Double) : Pos3Dimensional<Double, Pos2d, Pos3d> {
+data class Pos3d(override val x: Double, override val y: Double, override val z: Double) : Pos3DimensionalConvertible<Double, Pos2d, Pos3d> {
     override fun atY(y: Double) = Pos3d(x, y, z)
     override fun withoutHeight() = Pos2d(x, z)
 }
