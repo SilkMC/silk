@@ -19,19 +19,17 @@ import kotlin.reflect.KClass
 @ExperimentalSerializationApi
 @OptIn(InternalSerializationApi::class)
 object BaseTagSerializer : SilkSerializer<Tag>(Tag::class) {
+    private val serializer = PolymorphicSerializer(Tag::class)
     override val descriptor: SerialDescriptor =
         buildSerialDescriptor(descriptorName, PolymorphicKind.SEALED)
 
     override fun deserialize(decoder: Decoder) = run {
-        require(decoder is TagDecoder)
-        decoder.nextMaybeNullable()
+        if (decoder is TagDecoder) decoder.nextMaybeNullable()
+        else serializer.deserialize(decoder)
     }
 
     override fun serialize(encoder: Encoder, value: Tag) {
-        val actualSerializer =
-            encoder.serializersModule.getPolymorphic(Tag::class, value)
-                ?: value::class.serializer() as SerializationStrategy<Tag>
-        actualSerializer.serialize(encoder, value)
+        serializer.serialize(encoder, value)
     }
 }
 

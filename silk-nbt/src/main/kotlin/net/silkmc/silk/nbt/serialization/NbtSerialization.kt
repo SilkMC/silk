@@ -8,7 +8,7 @@ import net.silkmc.silk.nbt.serialization.encoder.RootTagEncoder
 import net.silkmc.silk.nbt.serialization.serializer.*
 
 @ExperimentalSerializationApi
-internal val TagsModule = SerializersModule {
+val TagsModule = SerializersModule {
     polymorphic(Tag::class) {
         subclass(CompoundTagSerializer)
         subclass(EndTagSerializer)
