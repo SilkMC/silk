@@ -43,7 +43,7 @@ interface SideboardLine {
      */
     open class Updatable(initial: Component? = null) : SideboardLine {
 
-        override val textFlow = MutableSharedFlow<Component>()
+        override val textFlow = MutableSharedFlow<Component>(replay = 1)
 
         init {
             if (initial != null) {
@@ -53,13 +53,19 @@ interface SideboardLine {
             }
         }
 
+        /**
+         * Emits a new [text] value to the internal update flow.
+         */
         suspend fun update(text: Component) {
             textFlow.emit(text)
         }
 
+        /**
+         * Launches a new coroutine to execute [update] in there.
+         */
         fun launchUpdate(text: Component) {
             silkCoroutineScope.launch {
-                textFlow.emit(text)
+                update(text)
             }
         }
     }

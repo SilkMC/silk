@@ -59,7 +59,7 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
     fun listen(
         priority: EventPriority = EventPriority.NORMAL,
         register: Boolean = true,
-        callback: context(S, MutableEventScope) (T) -> Unit,
+        callback: context(S, MutableEventScope) (event: T) -> Unit,
     ): ListenerInstance<*> {
         return ListenerInstance(this, callback, listenersByPriority[priority.ordinal])
             .also { if (register) it.register() }
@@ -188,7 +188,7 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * current scope.
      */
     context(CoroutineScope)
-    fun collectInScope(collector: suspend context(S) (T) -> Unit): Job = launch {
+    fun collectInScope(collector: suspend context(S) (event: T) -> Unit): Job = launch {
         flow.collect {
             collector(it.second, it.first)
         }
@@ -202,7 +202,7 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * Minecraft main thread dispatcher ([syncDispatcher]).
      */
     context(CoroutineScope)
-    fun collectInScopeSync(collector: suspend context(S) (T) -> Unit): Job = launch(syncDispatcher) {
+    fun collectInScopeSync(collector: suspend context(S) (event: T) -> Unit): Job = launch(syncDispatcher) {
         flow.collect {
             collector(it.second, it.first)
         }
@@ -217,7 +217,7 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * This function never completes, read [the official collect docs][kotlinx.coroutines.flow.SharedFlow.collect]
      * for more info.
      */
-    suspend fun collect(collector: suspend context(S) (T) -> Unit): Nothing {
+    suspend fun collect(collector: suspend context(S) (event: T) -> Unit): Nothing {
         flow.collect {
             collector(it.second, it.first)
         }

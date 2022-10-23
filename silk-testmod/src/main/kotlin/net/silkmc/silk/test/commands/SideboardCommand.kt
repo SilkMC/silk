@@ -1,8 +1,5 @@
 package net.silkmc.silk.test.commands
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import net.silkmc.silk.core.task.silkCoroutineScope
 import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.core.text.literalText
 import net.silkmc.silk.game.sideboard.SideboardLine
@@ -22,12 +19,23 @@ val sideboardCommand = testCommand("sideboard") {
                 sideboardExamples[example()]?.hideFromPlayer(source.playerOrException)
             }
         }
-        literal("update_updatable") {
-            argument<String>("content") { contentArg ->
-                runsAsync {
-                    updatableLine.update(contentArg().literal)
-                }
+    }
+    literal("update_updatable") {
+        argument<String>("content") { contentArg ->
+            runsAsync {
+                updatableLine.update(contentArg().literal)
             }
+        }
+    }
+    literal("sync_test") {
+        runs {
+            val updatable = SideboardLine.Updatable("initial value".literal)
+            val board = sideboard("syncTest".literal) {
+                line("Updatable:".literal)
+                line(updatable)
+            }
+            board.displayToPlayer(source.playerOrException)
+            updatable.launchUpdate("updated".literal)
         }
     }
 }
@@ -40,7 +48,7 @@ private val sideboardExamples = mapOf(
     ) {
         line("Hey, how".literal)
         line("are you?".literal)
-        line("".literal)
+        emptyLine()
         line(literalText("colors work as well!") {
             color = 0xFF9658
         })
@@ -51,7 +59,7 @@ private val sideboardExamples = mapOf(
     ) {
         line("Hey, how".literal)
         line("are you?".literal)
-        line(" ".literal)
+        emptyLine()
         updatingLine(1.seconds) {
             literalText("changing color") {
                 color = (0x000000..0xFFFFFF).random()

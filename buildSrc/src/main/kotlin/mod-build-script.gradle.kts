@@ -5,7 +5,7 @@ import BuildConstants.fabricLoaderVersion
 import BuildConstants.githubRepo
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
-import BuildConstants.quiltMappingsVersion
+import BuildConstants.parchmentMappingsVersion
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -17,10 +17,15 @@ plugins {
     id("org.quiltmc.quilt-mappings-on-loom")
 }
 
+repositories {
+    maven("https://maven.fabricmc.net/")
+    maven("https://maven.parchmentmc.org")
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.layered {
-        addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:$quiltMappingsVersion"))
+        parchment("org.parchmentmc.data:parchment-${parchmentMappingsVersion}@zip")
         officialMojangMappings()
     })
 
@@ -90,8 +95,8 @@ tasks {
             } ?: linkedMapOf(),
             modMixinFiles ?: emptyList(),
             linkedMapOf(
-                "fabric" to "*",
-                "fabric-language-kotlin" to ">=1.6.0+kotlin.1.5.0",
+                "fabric-api" to "*",
+                "fabric-language-kotlin" to ">=1.8.0+kotlin.1.7.0",
                 "minecraft" to "${majorMinecraftVersion}.x"
             ).apply { putAll(modDepends ?: emptyMap()) },
             FabricModConfiguration.Contact(

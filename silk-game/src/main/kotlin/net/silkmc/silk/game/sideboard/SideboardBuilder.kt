@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.flow
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.text.LiteralTextBuilder
+import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.core.text.literalText
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -54,6 +55,9 @@ class SideboardBuilder {
     @PublishedApi
     internal val lines = ArrayList<SideboardLine>()
 
+    /**
+     * Adds any line implementing the [SideboardLine] interface.
+     */
     fun line(line: SideboardLine) {
         lines += line
     }
@@ -82,6 +86,13 @@ class SideboardBuilder {
      */
     fun updatingLine(period: Duration, updater: suspend () -> Component) {
         lines += SideboardLine.UpdatingPeriodically(period, updater)
+    }
+
+    /**
+     * Adds an empty line to the board.
+     */
+    fun emptyLine() {
+        line("".literal)
     }
 
     /**
@@ -116,7 +127,7 @@ class SideboardBuilder {
         replaceWith = ReplaceWith("line(flow { flowBuilder() })")
     )
     inline fun lineChanging(crossinline flowBuilder: suspend FlowCollector<Component>.() -> Unit) {
-        lines += ChangingSideboardLine(flow { this.flowBuilder() })
+        lines += SideboardLine.Changing(flow { this.flowBuilder() })
     }
 
     /**
@@ -127,7 +138,7 @@ class SideboardBuilder {
      * of the line
      */
     @Deprecated(
-        message = "This function has been replaced by [updatingLine]",
+        message = "This function has been replaced with \"updatingLine\"",
         replaceWith = ReplaceWith(
             "updatingLine(period.milliseconds) { block() }",
             "kotlin.time.Duration.Companion.milliseconds"
