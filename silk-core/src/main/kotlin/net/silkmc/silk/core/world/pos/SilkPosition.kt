@@ -1,11 +1,10 @@
 package net.silkmc.silk.core.world.pos
 
-import com.mojang.math.Vector3f
 import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Registry
 import net.minecraft.core.SectionPos
 import net.minecraft.core.Vec3i
+import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.Entity
@@ -15,6 +14,7 @@ import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.entity.pos
 import net.silkmc.silk.core.serialization.serializers.ResourceLocationSerializer
+import org.joml.Vector3f
 import kotlin.math.roundToInt
 
 @Deprecated(
@@ -82,7 +82,7 @@ data class SilkPosition(
         get() = Vec3(x, y, z)
 
     val worldKey: ResourceKey<Level>?
-        get() = if (worldIdentifier != null) ResourceKey.create(Registry.DIMENSION_REGISTRY, worldIdentifier) else null
+        get() = if (worldIdentifier != null) ResourceKey.create(Registries.DIMENSION, worldIdentifier) else null
     val world: Level?
         get() = worldKey?.let { Silk.currentServer?.getLevel(it) }
 }

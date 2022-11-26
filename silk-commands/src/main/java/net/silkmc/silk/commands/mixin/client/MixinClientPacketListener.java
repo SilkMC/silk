@@ -6,6 +6,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
+import net.minecraft.world.flag.FeatureFlags;
 import net.silkmc.silk.commands.internal.ClientCommandHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,7 +25,8 @@ public class MixinClientPacketListener {
         at = @At("RETURN")
     )
     private void onLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
-        ClientCommandHandler.INSTANCE.refreshDispatcher(new CommandBuildContext(packet.registryHolder()));
+        final var context = CommandBuildContext.simple(packet.registryHolder(), FeatureFlags.DEFAULT_FLAGS);
+        ClientCommandHandler.INSTANCE.refreshDispatcher(context);
     }
 
     @Inject(

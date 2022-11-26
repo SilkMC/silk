@@ -2,14 +2,14 @@
 
 package net.silkmc.silk.core.world.pos
 
-import com.mojang.math.Vector3d
-import com.mojang.math.Vector3f
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.minecraft.world.phys.Vec2
 import net.minecraft.world.phys.Vec3
+import org.joml.Vector3d
+import org.joml.Vector3f
 
 /**
  * Base interface for position class implementations.

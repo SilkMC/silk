@@ -1,8 +1,8 @@
 package net.silkmc.silk.core.math.vector
 
-import com.mojang.math.Vector3f
 import net.minecraft.core.Vec3i
 import net.minecraft.world.phys.Vec3
+import org.joml.Vector3f
 
 operator fun Vec3.not(): Vec3 = reverse()
 
@@ -25,14 +25,14 @@ operator fun Vec3.component3() = z
 
 operator fun Vector3f.not(): Vector3f = times(-1f)
 
-operator fun Vector3f.plus(n: Number): Vector3f = copy().apply { n.toFloat().let { nFloat -> add(nFloat, nFloat, nFloat) } }
-operator fun Vector3f.minus(n: Number): Vector3f = copy().apply { n.toFloat().let { nFloat -> sub(Vector3f(nFloat, nFloat, nFloat)) } }
+operator fun Vector3f.plus(n: Number): Vector3f = Vector3f(this).apply { n.toFloat().let { nFloat -> add(nFloat, nFloat, nFloat) } }
+operator fun Vector3f.minus(n: Number): Vector3f = Vector3f(this).apply { n.toFloat().let { nFloat -> sub(Vector3f(nFloat, nFloat, nFloat)) } }
 operator fun Vector3f.times(n: Number): Vector3f = n.toFloat().let { nFloat -> Vector3f(x() * nFloat, y() * nFloat, z() * nFloat) }
 operator fun Vector3f.div(n: Number): Vector3f = times(1.0 / n.toDouble())
 operator fun Vector3f.compareTo(n: Number) = Vec3(this).length().compareTo(n.toDouble())
 
-operator fun Vector3f.plus(vec: Vector3f): Vector3f = copy().apply { add(vec) }
-operator fun Vector3f.minus(vec: Vector3f): Vector3f = copy().apply { sub(vec) }
+operator fun Vector3f.plus(vec: Vector3f): Vector3f = Vector3f(this).apply { add(vec) }
+operator fun Vector3f.minus(vec: Vector3f): Vector3f = Vector3f(this).apply { sub(vec) }
 operator fun Vector3f.times(vec: Vector3f): Vector3f = Vector3f(x() * vec.x(), y() * vec.y(), z() * vec.z())
 operator fun Vector3f.div(vec: Vector3f): Vector3f = Vector3f(x() / vec.x(), y() / vec.y(), z() / vec.z())
 operator fun Vector3f.compareTo(vec: Vector3f) = Vec3(this).lengthSqr().compareTo(Vec3(vec).lengthSqr())
