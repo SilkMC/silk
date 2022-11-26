@@ -150,6 +150,8 @@ data class Pos2d(override val x: Double, override val z: Double) : Pos2Dimension
 @Serializable
 @SerialName("pos3i")
 data class Pos3i(override val x: Int, override val y: Int, override val z: Int) : Pos3DimensionalConvertible<Int, Pos2i, Pos3i> {
+    constructor(vec3i: Vec3i) : this(vec3i.x, vec3i.y, vec3i.z)
+
     override fun atY(y: Int) = Pos3i(x, y, z)
     override fun withoutHeight() = Pos2i(x, z)
 }
@@ -161,6 +163,8 @@ data class Pos3i(override val x: Int, override val y: Int, override val z: Int) 
 @Serializable
 @SerialName("pos3f")
 data class Pos3f(override val x: Float, override val y: Float, override val z: Float) : Pos3DimensionalConvertible<Float, Pos2f, Pos3f> {
+    constructor(vector3f: Vector3f) : this(vector3f.x(), vector3f.y(), vector3f.z())
+
     override fun atY(y: Float) = Pos3f(x, y, z)
     override fun withoutHeight() = Pos2f(x, z)
 }
@@ -172,6 +176,8 @@ data class Pos3f(override val x: Float, override val y: Float, override val z: F
 @Serializable
 @SerialName("pos3d")
 data class Pos3d(override val x: Double, override val y: Double, override val z: Double) : Pos3DimensionalConvertible<Double, Pos2d, Pos3d> {
+    constructor(vector3d: Vector3d) : this(vector3d.x, vector3d.y, vector3d.z)
+
     override fun atY(y: Double) = Pos3d(x, y, z)
     override fun withoutHeight() = Pos2d(x, z)
 }
