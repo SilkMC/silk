@@ -1,8 +1,6 @@
 package net.silkmc.silk.core.chat;
 
-
 import net.minecraft.network.chat.TextColor;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
