@@ -14,7 +14,6 @@ plugins {
     kotlin("jvm")
     id("fabric-loom")
     id("io.github.juuxel.loom-quiltflower")
-    id("org.quiltmc.quilt-mappings-on-loom")
 }
 
 repositories {
