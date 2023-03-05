@@ -27,6 +27,7 @@ import net.silkmc.silk.commands.DslAnnotations.TopLevel.NodeDsl
 import net.silkmc.silk.commands.internal.ArgumentTypeUtils
 import net.silkmc.silk.commands.registration.setupRegistrationCallback
 import net.silkmc.silk.core.annotations.InternalSilkApi
+import net.silkmc.silk.core.logging.logError
 import net.silkmc.silk.core.task.silkCoroutineScope
 import java.util.concurrent.CompletableFuture
 
@@ -81,9 +82,14 @@ abstract class CommandBuilder<Source, Builder, Node>
         brigadierBuilders += {
             val previousCommand = this.command
             this.executes {
-                previousCommand?.run(it)
-                block(it)
-                1
+                val previousResult = previousCommand?.run(it)
+                try {
+                    block(it)
+                    if (previousResult != null && previousResult < 0) -1 else 0
+                } catch (exc: Throwable) {
+                    logError(exc.stackTraceToString())
+                    throw exc
+                }
             }
         }
     }
