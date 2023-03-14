@@ -15,6 +15,7 @@ import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.entity.pos
 import net.silkmc.silk.core.serialization.serializers.ResourceLocationSerializer
 import org.joml.Vector3f
+import kotlin.math.floor
 import kotlin.math.roundToInt
 
 @Deprecated(
@@ -64,7 +65,7 @@ data class SilkPosition(
     )
 
     val blockPos: BlockPos
-        get() = BlockPos(x.toInt(), y.toInt(), z.toInt())
+        get() = BlockPos(floor(x).toInt(), floor(y).toInt(), floor(z).toInt())
     val roundedBlockPos: BlockPos
         get() = BlockPos(x.roundToInt(), y.roundToInt(), z.roundToInt())
     val posInChunk: PosInChunk
@@ -75,7 +76,7 @@ data class SilkPosition(
         get() = SectionPos.of(blockPos)
 
     val vec3i: Vec3i
-        get() = Vec3i(x, y, z)
+        get() = Vec3i(x.toInt(), y.toInt(), z.toInt())
     val vec3f: Vector3f
         get() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
     val vec3d: Vec3
