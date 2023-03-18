@@ -26,7 +26,7 @@ public class MixinMinecraftServer {
         method = "runServer",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/server/MinecraftServer;loadStatusIcon()Ljava/util/Optional;",
+            target = "Lnet/minecraft/server/MinecraftServer;buildServerStatus()Lnet/minecraft/network/protocol/status/ServerStatus;",
             shift = At.Shift.AFTER
         )
     )
