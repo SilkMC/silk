@@ -2,8 +2,9 @@ package net.silkmc.silk.test.igui
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Items
+import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.task.silkCoroutineScope
 import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.igui.*
@@ -56,7 +57,10 @@ object SimpleTestGui {
 
             val compound = compound(
                 (1 sl 2) rectTo (6 sl 8),
-                Registry.ITEM.filter { it != Items.AIR }.toGuiList(),
+                Silk.currentServer?.registryAccess()
+                    ?.registryOrThrow(Registries.ITEM)
+                    ?.filter { it != Items.AIR }
+                    .orEmpty().toGuiList(),
                 iconGenerator = { it.defaultInstance }
             )
 

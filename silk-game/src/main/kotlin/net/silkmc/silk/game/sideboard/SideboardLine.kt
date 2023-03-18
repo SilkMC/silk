@@ -43,7 +43,7 @@ interface SideboardLine {
      */
     open class Updatable(initial: Component? = null) : SideboardLine {
 
-        override val textFlow = MutableSharedFlow<Component>()
+        override val textFlow = MutableSharedFlow<Component>(replay = 1)
 
         init {
             if (initial != null) {

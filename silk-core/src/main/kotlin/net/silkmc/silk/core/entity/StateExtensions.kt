@@ -7,6 +7,7 @@ import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.world.block.BlockInfo
 import net.silkmc.silk.core.world.block.isCollidable
 import kotlin.math.cos
+import kotlin.math.floor
 import kotlin.math.sin
 
 val Entity.pos: Vec3 get() = position()
@@ -17,7 +18,11 @@ val Entity.blockPos: BlockPos get() = blockPosition()
  * Returns the pos under the entities "feet".
  */
 val Entity.posUnder: BlockPos
-    get() = pos.run { BlockPos(x, y - 0.05, z) }
+    get() {
+        val exactPos = pos
+        val posForXZ = blockPos
+        return BlockPos(posForXZ.x, floor(exactPos.y - 0.05).toInt(), posForXZ.z)
+    }
 
 /**
  * Returns a unit-vector pointing in the direction the entity

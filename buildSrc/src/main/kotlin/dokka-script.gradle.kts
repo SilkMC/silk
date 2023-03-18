@@ -1,5 +1,4 @@
 import BuildConstants.githubRepo
-import BuildConstants.quiltMappingsVersion
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URL
 
@@ -54,11 +53,11 @@ tasks {
                     }
                 }
 
-                externalDocumentationLink {
-                    val yarnJavadocVersion = quiltMappingsVersion.removeSuffix(":v2")
-                    url.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/"))
-                    packageListUrl.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/element-list"))
-                }
+//                externalDocumentationLink {
+//                    val yarnJavadocVersion = quiltMappingsVersion.removeSuffix(":v2")
+//                    url.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/"))
+//                    packageListUrl.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnJavadocVersion/element-list"))
+//                }
             }
         }
     }

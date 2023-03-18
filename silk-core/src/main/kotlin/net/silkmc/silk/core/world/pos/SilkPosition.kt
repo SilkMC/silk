@@ -1,11 +1,10 @@
 package net.silkmc.silk.core.world.pos
 
-import com.mojang.math.Vector3f
 import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Registry
 import net.minecraft.core.SectionPos
 import net.minecraft.core.Vec3i
+import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.Entity
@@ -15,6 +14,8 @@ import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.entity.pos
 import net.silkmc.silk.core.serialization.serializers.ResourceLocationSerializer
+import org.joml.Vector3f
+import kotlin.math.floor
 import kotlin.math.roundToInt
 
 @Deprecated(
@@ -64,7 +65,7 @@ data class SilkPosition(
     )
 
     val blockPos: BlockPos
-        get() = BlockPos(x.toInt(), y.toInt(), z.toInt())
+        get() = BlockPos(floor(x).toInt(), floor(y).toInt(), floor(z).toInt())
     val roundedBlockPos: BlockPos
         get() = BlockPos(x.roundToInt(), y.roundToInt(), z.roundToInt())
     val posInChunk: PosInChunk
@@ -75,14 +76,14 @@ data class SilkPosition(
         get() = SectionPos.of(blockPos)
 
     val vec3i: Vec3i
-        get() = Vec3i(x, y, z)
+        get() = Vec3i(x.toInt(), y.toInt(), z.toInt())
     val vec3f: Vector3f
         get() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
     val vec3d: Vec3
         get() = Vec3(x, y, z)
 
     val worldKey: ResourceKey<Level>?
-        get() = if (worldIdentifier != null) ResourceKey.create(Registry.DIMENSION_REGISTRY, worldIdentifier) else null
+        get() = if (worldIdentifier != null) ResourceKey.create(Registries.DIMENSION, worldIdentifier) else null
     val world: Level?
         get() = worldKey?.let { Silk.currentServer?.getLevel(it) }
 }

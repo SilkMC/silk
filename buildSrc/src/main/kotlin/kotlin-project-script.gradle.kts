@@ -6,32 +6,26 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://maven.fabricmc.net/")
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
 }
 
 tasks {
-    withType<JavaCompile> {
-        options.apply {
-            release.set(17)
-            encoding = "UTF-8"
-        }
-    }
-
     withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = "17"
             freeCompilerArgs += "-Xcontext-receivers"
         }
     }
 }
 
-kotlin.sourceSets.all {
-    languageSettings {
-        if (project.name.removePrefix(rootProject.name + "-") in BuildConstants.uploadModules) {
-            listOf("InternalSilkApi", "DelicateSilkApi", "ExperimentalSilkApi").forEach {
-                optIn("net.silkmc.silk.core.annotations.${it}")
+kotlin {
+    jvmToolchain(17)
+
+    sourceSets.all {
+        languageSettings {
+            if (project.name.removePrefix(rootProject.name + "-") in BuildConstants.uploadModules) {
+                listOf("InternalSilkApi", "DelicateSilkApi", "ExperimentalSilkApi").forEach {
+                    optIn("net.silkmc.silk.core.annotations.${it}")
+                }
             }
         }
     }

@@ -3,7 +3,6 @@ import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
 import BuildConstants.modrinthId
 import BuildConstants.projectState
-import BuildConstants.projectStateType
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
@@ -32,7 +31,7 @@ modrinth {
 
     projectId.set(modrinthId)
     versionNumber.set(rootProject.version.toString())
-    versionType.set(projectStateType.name)
+    versionType.set(projectState)
     gameVersions.set(listOf(minecraftVersion))
     loaders.set(listOf("fabric"))
 

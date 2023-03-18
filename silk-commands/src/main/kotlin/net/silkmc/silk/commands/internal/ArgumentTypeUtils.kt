@@ -15,8 +15,6 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.effect.MobEffect
-import net.minecraft.world.item.enchantment.Enchantment
 import java.util.*
 
 object ArgumentTypeUtils {
@@ -42,15 +40,17 @@ object ArgumentTypeUtils {
             Coordinates::class -> BlockPosArgument.blockPos()
             BlockInput::class -> BlockStateArgument.block(context)
             ChatFormatting::class -> ColorArgument.color()
-            Enchantment::class -> ItemEnchantmentArgument.enchantment()
             ResourceLocation::class -> ResourceLocationArgument.id()
             ItemInput::class -> ItemArgument.item(context)
             CompoundTag::class -> CompoundTagArgument.compoundTag()
             Tag::class -> NbtTagArgument.nbtTag()
-            ParticleOptions::class -> ParticleArgument.particle()
-            MobEffect::class -> MobEffectArgument.effect()
+            ParticleOptions::class -> ParticleArgument.particle(context)
             Component::class -> ComponentArgument.textComponent()
             GameProfileArgument.Result::class -> GameProfileArgument.gameProfile()
+
+            // see ResourceArgument
+            // Enchantment::class -> ItemEnchantmentArgument.enchantment()
+            // MobEffect::class -> MobEffectArgument.effect()
 
             else -> throw IllegalArgumentException("The specified type '${T::class.qualifiedName}' does not have corresponding default argument type")
         }

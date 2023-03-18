@@ -5,7 +5,7 @@ import BuildConstants.fabricLoaderVersion
 import BuildConstants.githubRepo
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
-import BuildConstants.quiltMappingsVersion
+import BuildConstants.parchmentMappingsVersion
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -14,13 +14,17 @@ plugins {
     kotlin("jvm")
     id("fabric-loom")
     id("io.github.juuxel.loom-quiltflower")
-    id("org.quiltmc.quilt-mappings-on-loom")
+}
+
+repositories {
+    maven("https://maven.fabricmc.net/")
+    maven("https://maven.parchmentmc.org")
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.layered {
-        addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:$quiltMappingsVersion"))
+        parchment("org.parchmentmc.data:parchment-${parchmentMappingsVersion}@zip")
         officialMojangMappings()
     })
 
