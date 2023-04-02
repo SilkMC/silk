@@ -744,7 +744,7 @@ public class Colors {
             .collect(Collectors.toList());
     }
 
-    private static TextColor fromRGB(int r, int g, int b) {
+    public static TextColor fromRGB(int r, int g, int b) {
         return TextColor.fromRgb(new Color(r, g, b).getRGB());
     }
 }
