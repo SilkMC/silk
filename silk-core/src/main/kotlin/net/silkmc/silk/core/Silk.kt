@@ -1,7 +1,7 @@
 package net.silkmc.silk.core
 
 import net.minecraft.server.MinecraftServer
-import net.minecraft.world.entity.player.Player
+import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.server.players
 
 @Deprecated(
@@ -38,7 +38,7 @@ object Silk {
      *
      * @see [MinecraftServer.players]
      */
-    val players: List<Player>
+    val players: List<ServerPlayer>
         get() = server?.players.orEmpty()
 
     @Deprecated(
