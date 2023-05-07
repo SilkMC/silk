@@ -30,7 +30,7 @@ inline fun <T> initWithServerSync(crossinline block: suspend CoroutineScope.(Min
     silkCoroutineScope.async {
         LifecycleTasksManager.uninitializedServerDeferred.await()
         mcCoroutineScope.launch {
-            block(Silk.currentServer!!)
+            block(Silk.serverOrThrow)
         }
     }
 
@@ -41,5 +41,5 @@ inline fun <T> initWithServerSync(crossinline block: suspend CoroutineScope.(Min
 inline fun <T> initWithServerAsync(crossinline block: suspend CoroutineScope.(MinecraftServer) -> T) =
     silkCoroutineScope.async {
         LifecycleTasksManager.uninitializedServerDeferred.await()
-        block(Silk.currentServer!!)
+        block(Silk.serverOrThrow)
     }

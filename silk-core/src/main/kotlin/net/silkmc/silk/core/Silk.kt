@@ -1,7 +1,8 @@
 package net.silkmc.silk.core
 
 import net.minecraft.server.MinecraftServer
-import net.silkmc.silk.core.annotations.DelicateSilkApi
+import net.minecraft.world.entity.player.Player
+import net.silkmc.silk.core.server.players
 
 @Deprecated(
     message = "FabrikMC has been renamed to Silk.",
@@ -14,10 +15,36 @@ typealias Fabrik = Silk
  */
 object Silk {
 
+
     /**
-     * The current [MinecraftServer] server instance.
+     * The current [MinecraftServer] instance.
+     * This property is `null` when being accessed
+     * and no server has startet yet.
      */
-    @DelicateSilkApi
-    var currentServer: MinecraftServer? = null
+    var server: MinecraftServer? = null
         internal set
+
+    /**
+     * The current [MinecraftServer] instance.
+     * This property throws an [IllegalStateException] when being accessed
+     * and no server has startet yet.
+     */
+    val serverOrThrow: MinecraftServer
+        get() = server ?: error("Cannot get server, because none has been started yet")
+
+    /**
+     * Returns the list of current players, or an empty list if no
+     * players are online or the server has not been started yet.
+     *
+     * @see [MinecraftServer.players]
+     */
+    val players: List<Player>
+        get() = server?.players.orEmpty()
+
+    @Deprecated(
+        message = "The property has been renamed to 'server'!",
+        replaceWith = ReplaceWith("Silk.server")
+    )
+    val currentServer
+        get() = server
 }
