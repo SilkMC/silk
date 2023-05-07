@@ -169,7 +169,7 @@ class NbtListDecoder(
 class NbtByteArrayDecoder(array: ByteArrayTag) : AbstractDecoder() {
     private val array = array.asByteArray
 
-    override val serializersModule: SerializersModule = EmptySerializersModule
+    override val serializersModule: SerializersModule = EmptySerializersModule()
 
     private var idx = 0
 
@@ -183,7 +183,7 @@ class NbtByteArrayDecoder(array: ByteArrayTag) : AbstractDecoder() {
 class NbtIntArrayDecoder(array: IntArrayTag) : AbstractDecoder() {
     private val array = array.asIntArray
 
-    override val serializersModule: SerializersModule = EmptySerializersModule
+    override val serializersModule: SerializersModule = EmptySerializersModule()
 
     private var idx = 0
 
@@ -197,7 +197,7 @@ class NbtIntArrayDecoder(array: IntArrayTag) : AbstractDecoder() {
 class NbtLongArrayDecoder(array: LongArrayTag) : AbstractDecoder() {
     private val array = array.asLongArray
 
-    override val serializersModule: SerializersModule = EmptySerializersModule
+    override val serializersModule: SerializersModule = EmptySerializersModule()
 
     private var idx = 0
 

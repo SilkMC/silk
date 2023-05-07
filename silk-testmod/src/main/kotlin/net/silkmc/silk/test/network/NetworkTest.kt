@@ -1,5 +1,6 @@
 package net.silkmc.silk.test.network
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import net.silkmc.silk.core.logging.logInfo
 import net.silkmc.silk.core.logging.logger
@@ -9,6 +10,7 @@ import net.silkmc.silk.test.commands.clientTestCommand
 import net.silkmc.silk.test.commands.testCommand
 import net.silkmc.silk.test.testmodId
 
+@OptIn(ExperimentalSerializationApi::class)
 object NetworkTest {
     @Serializable
     private data class TestPacket(

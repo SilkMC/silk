@@ -19,3 +19,7 @@ val modEntrypoints by extra(linkedMapOf(
     "main" to listOf("net.silkmc.silk.network.internal.SilkNetwork"),
     "client" to listOf("net.silkmc.silk.network.internal.SilkNetwork"),
 ))
+
+kotlin.sourceSets.all {
+    languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
+}

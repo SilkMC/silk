@@ -56,7 +56,7 @@ class NbtEncodingTest : StringSpec({
     }
 
     "byte collections should encode to byte array" {
-        checkAll(Arb.byteArrays(Arb.int(0..0x1000), Arb.byte())) {
+        checkAll(Arb.byteArray(Arb.int(0..0x1000), Arb.byte())) {
             val element = Nbt.encodeToNbtElement(it)
             element.shouldBeInstanceOf<ByteArrayTag>()
             element.asByteArray shouldBe it

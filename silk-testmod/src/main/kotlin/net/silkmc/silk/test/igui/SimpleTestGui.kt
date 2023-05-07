@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Items
 import net.silkmc.silk.core.Silk
+import net.silkmc.silk.core.annotations.DelicateSilkApi
 import net.silkmc.silk.core.task.silkCoroutineScope
 import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.igui.*
@@ -12,6 +13,7 @@ import net.silkmc.silk.igui.observable.GuiProperty
 import net.silkmc.silk.igui.observable.toGuiList
 import java.util.*
 
+@OptIn(DelicateSilkApi::class)
 object SimpleTestGui {
     fun create() = igui(GuiType.NINE_BY_SIX, "Moincraft".literal, 1) {
         page(1) {
