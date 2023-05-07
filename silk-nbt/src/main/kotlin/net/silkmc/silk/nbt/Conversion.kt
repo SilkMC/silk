@@ -19,5 +19,6 @@ fun IntArray.toNbt() = IntArrayTag(this)
 fun List<Int>.toNbt() = IntArrayTag(this)
 fun LongArray.toNbt() = LongArrayTag(this)
 fun List<Long>.toNbt() = LongArrayTag(this)
+fun <T : Tag> List<T>.toNbt() = ListTag().also { it.addAll(this) }
 
 fun UUID.toNbt(): IntArrayTag = NbtUtils.createUUID(this)

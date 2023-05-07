@@ -15,8 +15,25 @@ import net.silkmc.silk.nbt.serialization.Nbt
 import net.silkmc.silk.nbt.serialization.internal.*
 import net.silkmc.silk.nbt.toNbt
 
+
 @ExperimentalSerializationApi
-abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
+@Deprecated(message = "Renamed by mojmap", replaceWith = ReplaceWith("TagEncoder"))
+typealias NbtTagEncoder = TagEncoder
+
+@ExperimentalSerializationApi
+@Deprecated(message = "Renamed by mojmap", replaceWith = ReplaceWith("RootTagEncoder"))
+typealias NbtRootEncoder = RootTagEncoder
+
+@ExperimentalSerializationApi
+@Deprecated(message = "Renamed by mojmap", replaceWith = ReplaceWith("CompoundTagEncoder"))
+typealias NbtCompoundEncoder = CompoundTagEncoder
+
+@ExperimentalSerializationApi
+@Deprecated(message = "Renamed by mojmap", replaceWith = ReplaceWith("ListTagEncoder"))
+typealias NbtListEncoder = ListTagEncoder
+
+@ExperimentalSerializationApi
+abstract class TagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
     override val serializersModule: SerializersModule = nbt.serializersModule
 
     private var isNextNullable = false
@@ -53,8 +70,9 @@ abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder =
         when (descriptor.kind) {
-            StructureKind.LIST -> NbtListEncoder(nbt, ::consumeStructure)
-            else -> NbtCompoundEncoder(nbt, ::consumeStructure)
+            StructureKind.LIST -> ListTagEncoder(nbt, ::consumeStructure)
+            StructureKind.MAP -> CompoundTagMapEncoder(nbt, ::consumeStructure)
+            else -> CompoundTagEncoder(nbt, ::consumeStructure)
         }
 
     override fun encodeNotNullMark() {
@@ -119,7 +137,7 @@ abstract class NbtTagEncoder(protected val nbt: Nbt) : AbstractEncoder() {
 }
 
 @ExperimentalSerializationApi
-class NbtRootEncoder(nbt: Nbt) : NbtTagEncoder(nbt) {
+class RootTagEncoder(nbt: Nbt) : TagEncoder(nbt) {
     var element: Tag? = null
         private set
 
@@ -132,11 +150,41 @@ class NbtRootEncoder(nbt: Nbt) : NbtTagEncoder(nbt) {
     }
 }
 
+
 @ExperimentalSerializationApi
-class NbtCompoundEncoder(
+class CompoundTagMapEncoder(
     nbt: Nbt,
     private val consumer: (CompoundTag) -> Unit
-) : NbtTagEncoder(nbt) {
+) : TagEncoder(nbt) {
+    private val compound = CompoundTag()
+    private lateinit var key: String
+    private var isKey = true
+
+    override fun encodeElement(element: Tag) {
+        if (isKey) { // writing key
+            key = element.asString
+            isKey = false
+        } else {
+            compound.put(key, element)
+            isKey = true
+        }
+    }
+
+    override fun consumeStructure(element: Tag) = encodeElement(element)
+
+    override fun endStructure(descriptor: SerialDescriptor) {
+        consumer(compound)
+    }
+
+    override fun shouldEncodeElementDefault(descriptor: SerialDescriptor, index: Int) =
+        nbt.config.encodeDefaults
+}
+
+@ExperimentalSerializationApi
+class CompoundTagEncoder(
+    nbt: Nbt,
+    private val consumer: (CompoundTag) -> Unit
+) : TagEncoder(nbt) {
     private val compound = CompoundTag()
     private val tags = ArrayDeque<String>()
 
@@ -164,10 +212,10 @@ class NbtCompoundEncoder(
 }
 
 @ExperimentalSerializationApi
-class NbtListEncoder(
+class ListTagEncoder(
     nbt: Nbt,
     private val consumer: (ListTag) -> Unit
-) : NbtTagEncoder(nbt) {
+) : TagEncoder(nbt) {
     private val list = ListTag()
 
     override fun encodeElement(element: Tag) {
@@ -182,3 +230,4 @@ class NbtListEncoder(
         consumer(list)
     }
 }
+
