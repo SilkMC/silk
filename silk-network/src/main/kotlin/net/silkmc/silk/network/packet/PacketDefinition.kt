@@ -1,103 +1,37 @@
 @file:OptIn(ExperimentalSerializationApi::class)
+@file:Suppress("MemberVisibilityCanBePrivate")
 
 package net.silkmc.silk.network.packet
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
-import kotlinx.serialization.encodeToByteArray
-import kotlinx.serialization.serializer
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
-import net.silkmc.silk.core.kotlin.ReadWriteMutex
-
-/**
- * Creates a new [ServerToClientPacketDefinition]. This packet can only be sent
- * from the server to one or multiple clients. The packet can only be sent
- * in a typesafe way. The type is specified by [T].
- *
- * @param id the [ResourceLocation] allowing communication between server and client as they
- * both know this identifier
- * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
- */
-inline fun <reified T : Any> s2cPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
-    ServerToClientPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
-
-/**
- * Creates a new [ClientToServerPacketDefinition]. This packet can only be sent
- * from the client to the current server. The packet can only be sent
- * in a typesafe way. The type is specified by [T].
- *
- * @param id the [ResourceLocation] allowing communication between server and client as they
- * both know this identifier
- * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
- */
-inline fun <reified T : Any> c2sPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
-    ClientToServerPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
-
-/**
- * Creates a new [ClientToClientPacketDefinition]. This packet can only be sent
- * from the client to another client. The server will act as the middle man, it is
- * responsible for forwarding this packet. The packet can only be sent
- * in a typesafe way. The type is specified by [T].
- *
- * @param id the [ResourceLocation] allowing communication between server and client as they
- * both know this identifier
- * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
- */
-inline fun <reified T : Any> c2cPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
-    ClientToClientPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Abstraction of server-to-client and client-to-server packets. See [ServerToClientPacketDefinition]
- * and [ClientToServerPacketDefinition].
+ * and [ClientToServerPacketDefinition]. Additionally, this class is partially the basis of
+ * [ClientToClientPacketDefinition].
  */
 abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
-    id: ResourceLocation,
+    val id: ResourceLocation,
     val cbor: Cbor,
-    private val deserializer: DeserializationStrategy<T>,
+    private val serializer: KSerializer<T>,
 ) {
-    companion object {
-        /**
-         * The [CoroutineScope] used for packet callback handling.
-         */
-        val packetCoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    }
-
-    internal open class DefinitionRegistry<C> {
-        protected val registeredDefinitions = HashMap<String, AbstractPacketDefinition<*, C>>()
-
-        protected val definitionLock = ReadWriteMutex()
-
-        internal suspend fun registerDefinition(definition: AbstractPacketDefinition<*, C>) {
-            definitionLock.write {
-                registeredDefinitions[definition.idString] = definition
-            }
-        }
-
-        internal fun onReceive(bytes: ByteArray, channel: String, context: C) {
-            packetCoroutineScope.launch {
-                definitionLock.read { registeredDefinitions[channel] }?.onReceive(bytes, context)
-            }
-        }
-    }
-
-    /**
-     * The stored [ResourceLocation] of this packet in its string representation.
-     */
-    val idString = id.toString()
-
     private val registeredReceivers = ArrayList<suspend (T, C) -> Unit>()
 
-    private val receiverLock = ReadWriteMutex()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    protected val receiverScope = CoroutineScope(Dispatchers.Default.limitedParallelism(1))
 
-    private suspend fun onReceive(bytes: ByteArray, context: C) {
-        receiverLock.read {
+    private fun onReceive(bytes: ByteArray, context: C) {
+        receiverScope.launch {
             if (registeredReceivers.isNotEmpty()) {
                 val value = deserialize(bytes)
                 for (receiver in registeredReceivers) {
@@ -108,23 +42,32 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
     }
 
     internal fun registerReceiver(receiver: suspend (T, C) -> Unit, definitionRegistry: DefinitionRegistry<C>) {
-        packetCoroutineScope.launch {
-            definitionRegistry.registerDefinition(this@AbstractPacketDefinition)
-            receiverLock.write {
-                registeredReceivers += receiver
-            }
+        receiverScope.launch {
+            definitionRegistry.register(this@AbstractPacketDefinition)
+            registeredReceivers += receiver
         }
     }
 
     internal fun deserialize(byteArray: ByteArray): T {
-        return cbor.decodeFromByteArray(deserializer, byteArray)
+        return cbor.decodeFromByteArray(serializer, byteArray)
     }
 
-    @PublishedApi
-    internal inline fun <reified TPacket : T> createBuffer(value: TPacket): FriendlyByteBuf {
+    protected fun createBuffer(value: T): FriendlyByteBuf {
         val buffer = PacketByteBufs.create()
-        buffer.writeByteArray(cbor.encodeToByteArray(value))
-        buffer.writeUtf(idString)
+        buffer.writeByteArray(cbor.encodeToByteArray(serializer, value))
         return buffer
+    }
+
+    internal open class DefinitionRegistry<C> {
+        protected val registeredDefinitions = ConcurrentHashMap<ResourceLocation, AbstractPacketDefinition<*, C>>()
+
+        fun register(definition: AbstractPacketDefinition<*, C>) {
+            registeredDefinitions[definition.id] = definition
+        }
+
+        fun onReceive(channel: ResourceLocation, bytes: ByteArray, context: C): Boolean {
+            registeredDefinitions[channel]?.onReceive(bytes, context) ?: return false
+            return true
+        }
     }
 }

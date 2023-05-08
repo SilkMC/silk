@@ -15,10 +15,7 @@ dependencies {
 }
 
 val modName by extra("$projectTitle Network")
-val modEntrypoints by extra(linkedMapOf(
-    "main" to listOf("net.silkmc.silk.network.internal.SilkNetwork"),
-    "client" to listOf("net.silkmc.silk.network.internal.SilkNetwork"),
-))
+val modMixinFiles by extra(listOf("${rootProject.name}-network.mixins.json"))
 
 kotlin.sourceSets.all {
     languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")

@@ -1,17 +1,19 @@
 @file:OptIn(ExperimentalSerializationApi::class)
+@file:Suppress("MemberVisibilityCanBePrivate")
 
 package net.silkmc.silk.network.packet
 
 import kotlinx.coroutines.launch
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.minecraft.client.Minecraft
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket
+import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
-import net.silkmc.silk.network.internal.SilkNetwork
 
 /**
  * Used by the [ClientToClientPacketDefinition], which requires a server-side forwarder.
@@ -19,7 +21,7 @@ import net.silkmc.silk.network.internal.SilkNetwork
 typealias ServerPacketForwarder<T> = suspend ClientToClientPacketDefinition<T>.(
     packet: ClientToClientPacketDefinition.SerializedPacket,
     context: ServerPacketContext,
-) -> ServerPlayer?
+) -> Collection<ServerPlayer>
 
 /**
  * See [c2cPacket] function, which constructs this packet definition class.
@@ -27,47 +29,51 @@ typealias ServerPacketForwarder<T> = suspend ClientToClientPacketDefinition<T>.(
 class ClientToClientPacketDefinition<T : Any>(
     id: ResourceLocation,
     cbor: Cbor,
-    deserializer: DeserializationStrategy<T>,
+    deserializer: KSerializer<T>,
 ) : AbstractPacketDefinition<T, ClientPacketContext>(id, cbor, deserializer) {
-    internal companion object : DefinitionRegistry<ClientPacketContext>() {
-        internal fun onReceiveServer(bytes: ByteArray, channel: String, context: ServerPacketContext) {
-            packetCoroutineScope.launch {
-                (definitionLock.read { registeredDefinitions[channel] } as ClientToClientPacketDefinition<*>?)
-                    ?.onReceiveServer(bytes, context)
+
+    /**
+     * The forwarder responsible for deciding which packets will be forwarded
+     * to which players.
+     *
+     * @see ServerPacketForwarder
+     * @see forwardOnServer
+     */
+    private var forwarder: ServerPacketForwarder<T>? = null
+
+    /**
+     * A special receive function, which handles incoming packets on the server,
+     * which are meant to be forwarded to another client.
+     */
+    private fun onReceiveServer(bytes: ByteArray, context: ServerPacketContext) {
+        receiverScope.launch {
+            val receivers = forwarder?.invoke(this@ClientToClientPacketDefinition, SerializedPacket(bytes), context)
+            if (receivers?.isNotEmpty() == true) {
+                val buffer = PacketByteBufs.create()
+                buffer.writeByteArray(bytes)
+                receivers.forEach { it.connection.send(ClientboundCustomPayloadPacket(id, buffer)) }
             }
         }
     }
 
-    @JvmInline
-    value class SerializedPacket(val bytes: ByteArray)
-
-    private var forwarder: ServerPacketForwarder<T>? = null
-
-    suspend fun onReceiveServer(bytes: ByteArray, context: ServerPacketContext) {
-        val receiver = forwarder?.invoke(this, SerializedPacket(bytes), context)
-        if (receiver != null) {
-            val buffer = PacketByteBufs.create()
-            buffer.writeByteArray(bytes)
-            buffer.writeUtf(idString)
-            ServerPlayNetworking.send(receiver, SilkNetwork.packetId, buffer)
-        }
-    }
-
     /**
-     * Sends the given [value] as a packet to the server.
+     * Sends the given [value] as a packet to the server, which will then
+     * forward it to players selected by the forwarder. You can specify the
+     * forwarder using [forwardOnServer].
      */
-    inline fun <reified TPacket : T> send(value: TPacket) =
-        ClientPlayNetworking.send(SilkNetwork.packetId, createBuffer(value))
+    fun send(value: T) {
+        send(createBuffer(value))
+    }
 
     /**
      * Specifies the forward logic (on the server, as it is the instance which forwards this packet).
      * The returned player will receive the packet. Return null if you do not wish to forward this packet.
      */
     fun forwardOnServer(forwarder: ServerPacketForwarder<T>) {
-        packetCoroutineScope.launch {
-            registerDefinition(this@ClientToClientPacketDefinition)
+        receiverScope.launch {
+            register(this@ClientToClientPacketDefinition)
+            this@ClientToClientPacketDefinition.forwarder = forwarder
         }
-        this.forwarder = forwarder
     }
 
     /**
@@ -78,7 +84,31 @@ class ClientToClientPacketDefinition<T : Any>(
     }
 
     /**
+     * A wrapper around a byte array containing packet data.
+     * This wrapper will be used when forwarding packets on the server,
+     * since deserialization should only happen when requested.
+     */
+    @JvmInline
+    value class SerializedPacket(val bytes: ByteArray)
+
+    /**
      * Deserializes this serialized packet to an instance of its original class.
      */
     fun SerializedPacket.deserialize(): T = deserialize(bytes)
+
+    private fun send(buffer: FriendlyByteBuf) {
+        val connection = Minecraft.getInstance().connection ?: error("Cannot send packets to the server while not in-game")
+        connection.send(ServerboundCustomPayloadPacket(id, buffer))
+    }
+
+    internal companion object : DefinitionRegistry<ClientPacketContext>() {
+        /**
+         * @see [ClientToClientPacketDefinition.onReceiveServer]
+         */
+        fun onReceiveServer(channel: ResourceLocation, bytes: ByteArray, context: ServerPacketContext): Boolean {
+            (registeredDefinitions[channel] as? ClientToClientPacketDefinition<*>?)
+                ?.onReceiveServer(bytes, context) ?: return false
+            return true
+        }
+    }
 }
