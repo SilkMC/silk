@@ -1,5 +1,6 @@
 package net.silkmc.silk.core.test
 
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.mpp.log
@@ -7,6 +8,7 @@ import kotlinx.coroutines.*
 import net.silkmc.silk.core.event.Event
 import net.silkmc.silk.core.event.EventPriority
 import net.silkmc.silk.core.event.EventScope
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class EventTest : FunSpec({
@@ -79,13 +81,14 @@ class EventTest : FunSpec({
                             }
                         }
                     }
-
-                    delay(500)
+                    delay(100.milliseconds)
 
                     invokeEvents("test invoked $priority collectors")
 
-                    withTimeout(5.seconds) {
-                        futures.values.forEach { it.await() }
+                    shouldNotThrow<TimeoutCancellationException> {
+                        withTimeout(5.seconds) {
+                            futures.values.forEach { it.await() }
+                        }
                     }
                 }
             }
