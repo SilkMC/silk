@@ -3,6 +3,8 @@ package net.silkmc.silk.core.server
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import java.nio.file.Path
+import kotlin.io.path.absolute
 
 /**
  * Executes the given [command] for this server.
@@ -29,3 +31,10 @@ fun MinecraftServer.executeCommand(command: String, source: CommandSourceStack) 
  */
 val MinecraftServer.players: List<ServerPlayer>
     get() = playerList.players
+
+/**
+ * Returns the current run directory of the server as an
+ * absolute [Path].
+ */
+val MinecraftServer.serverPath: Path
+    get() = serverDirectory.toPath().absolute()
