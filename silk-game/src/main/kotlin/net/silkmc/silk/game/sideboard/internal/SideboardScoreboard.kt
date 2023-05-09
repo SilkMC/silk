@@ -76,8 +76,8 @@ class SideboardScoreboard(
 
                 // add line packets
                 lines.access {
-                    it.forEach { line ->
-                        this@buildList.addAll(line.createInitPackets(0))
+                    it.reversed().forEachIndexed { index, line ->
+                        this@buildList.addAll(line.createInitPackets(index))
                     }
                 }
 
@@ -168,8 +168,6 @@ class SideboardScoreboard(
             line = Line(index)
             it.add(line)
         }
-        line.createInitPackets(0)
-            .forEach(::emitPacket)
         return line
     }
 }
