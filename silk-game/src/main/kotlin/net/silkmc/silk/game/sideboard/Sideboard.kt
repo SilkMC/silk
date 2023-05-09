@@ -53,7 +53,7 @@ class Sideboard(
      */
     fun hideFromPlayer(player: ServerPlayer) {
         silkCoroutineScope.launch {
-            scoreboard.displayToPlayer(player)
+            scoreboard.hideFromPlayer(player)
         }
     }
 }
