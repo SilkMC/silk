@@ -85,5 +85,5 @@ data class SilkPosition(
     val worldKey: ResourceKey<Level>?
         get() = if (worldIdentifier != null) ResourceKey.create(Registries.DIMENSION, worldIdentifier) else null
     val world: Level?
-        get() = worldKey?.let { Silk.currentServer?.getLevel(it) }
+        get() = worldKey?.let { Silk.server?.getLevel(it) }
 }

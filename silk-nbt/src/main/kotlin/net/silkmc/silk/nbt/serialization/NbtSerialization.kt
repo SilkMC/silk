@@ -13,7 +13,7 @@ import net.silkmc.silk.nbt.serialization.encoder.NbtRootEncoder
  */
 @OptIn(ExperimentalSerializationApi::class)
 sealed class Nbt(val config: NbtConfig, val serializersModule: SerializersModule) {
-    companion object Default : Nbt(NbtConfig(), EmptySerializersModule)
+    companion object Default : Nbt(NbtConfig(), EmptySerializersModule())
 
     fun <T> encodeToNbtElement(serializer: SerializationStrategy<T>, value: T): Tag =
         NbtRootEncoder(this).apply { encodeSerializableValue(serializer, value) }.element

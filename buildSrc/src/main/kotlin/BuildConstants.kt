@@ -17,12 +17,12 @@ object BuildConstants {
     // check these values here: https://jakobk.net/mcdev
     const val minecraftVersion = "1.19.4"
     const val parchmentMappingsVersion = "1.19.3:2023.03.12"
-    const val fabricLoaderVersion = "0.14.17"
-    const val fabricApiVersion = "0.75.3+1.19.4"
-    const val fabricLanguageKotlinVersion = "1.9.1+kotlin.1.8.10"
+    const val fabricLoaderVersion = "0.14.19"
+    const val fabricApiVersion = "0.80.0+1.19.4"
+    const val fabricLanguageKotlinVersion = "1.9.4+kotlin.1.8.21"
 
-    const val kotestVersion = "5.5.5"
-    const val mockkVersion = "1.13.4"
+    const val kotestVersion = "5.6.1"
+    const val mockkVersion = "1.13.5"
 
     val uploadModules = listOf(
         "commands",

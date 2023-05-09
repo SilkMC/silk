@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
 }
 
 tasks {

@@ -1,7 +1,9 @@
 package net.silkmc.silk.core.kotlin
 
 import kotlinx.coroutines.sync.Mutex
+import net.silkmc.silk.core.annotations.InternalSilkApi
 
+@InternalSilkApi
 class ReadWriteMutex {
     private var readers = 0
 

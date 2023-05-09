@@ -37,7 +37,7 @@ class ServerToClientPacketDefinition<T : Any>(
      */
     inline fun <reified TPacket : T> sendToAll(value: TPacket) {
         val buffer = createBuffer(value)
-        Silk.currentServer?.playerList?.players?.forEach { push(buffer, it) }
+        Silk.server?.playerList?.players?.forEach { push(buffer, it) }
     }
 
     /**
