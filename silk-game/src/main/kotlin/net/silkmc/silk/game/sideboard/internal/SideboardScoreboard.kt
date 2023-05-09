@@ -76,8 +76,8 @@ class SideboardScoreboard(
 
                 // add line packets
                 lines.access {
-                    it.forEach { line ->
-                        this@buildList.addAll(line.createInitPackets(0))
+                    it.reversed().forEachIndexed { score, line ->
+                        this@buildList.addAll(line.createInitPackets(score))
                     }
                 }
 
