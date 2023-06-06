@@ -22,19 +22,19 @@ dependencies {
     runtimeOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
 
     implementation(pluginDep("fabric-loom", "1.2-SNAPSHOT"))
-    implementation(pluginDep("io.github.juuxel.loom-quiltflower", "1.8.0"))
+    implementation(pluginDep("io.github.juuxel.loom-quiltflower", "1.10.0"))
     implementation(pluginDep("com.modrinth.minotaur", "2.7.5"))
 
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.5.5"))
     implementation(pluginDep("xyz.jpenilla.run-paper", "2.1.0"))
 
-    val compileDokkaVersion = "1.8.10"
-    val dokkaVersion = "1.8.10"
+    val compileDokkaVersion = "1.8.20"
+    val dokkaVersion = "1.8.20"
 
     compileOnly("org.jetbrains.dokka:dokka-gradle-plugin:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     compileOnly("org.jetbrains.dokka:dokka-base:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 }
