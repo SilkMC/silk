@@ -24,7 +24,8 @@ public class MixinCommands {
         at = @At(
             value = "INVOKE",
             target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V",
-            shift = At.Shift.BEFORE
+            shift = At.Shift.BEFORE,
+            remap = false
         )
     )
     private void onRegister(Commands.CommandSelection commandSelection, CommandBuildContext commandBuildContext, CallbackInfo ci) {

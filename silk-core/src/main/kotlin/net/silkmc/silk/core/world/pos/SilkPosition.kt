@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.entity.pos
+import net.silkmc.silk.core.entity.world
 import net.silkmc.silk.core.serialization.serializers.ResourceLocationSerializer
 import org.joml.Vector3f
 import kotlin.math.floor
@@ -50,7 +51,7 @@ data class SilkPosition(
         : this(vec3d.x, vec3d.y, vec3d.z, worldIdentifier, pitch, yaw)
 
     constructor(entity: Entity)
-        : this(entity.pos, entity.level.dimension().location(), entity.xRot, entity.yRot)
+        : this(entity.pos, entity.world.dimension().location(), entity.xRot, entity.yRot)
 
     constructor(chunkPos: ChunkPos, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
         chunkPos.minBlockX.toDouble(), 0.0, chunkPos.minBlockZ.toDouble(),

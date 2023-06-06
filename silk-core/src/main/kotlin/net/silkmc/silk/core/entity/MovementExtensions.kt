@@ -28,7 +28,7 @@ fun Entity.changePos(
         return
     }
 
-    if (world != null && world != this.level) {
+    if (world != null && world != this.level()) {
         changeDimension(world)
     }
 
