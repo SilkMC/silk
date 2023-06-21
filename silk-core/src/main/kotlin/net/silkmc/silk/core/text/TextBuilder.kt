@@ -4,6 +4,7 @@ package net.silkmc.silk.core.text
 
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.*
+import net.minecraft.resources.ResourceLocation
 
 /**
  * Opens a [LiteralTextBuilder].
@@ -44,6 +45,19 @@ class LiteralTextBuilder(
      */
     var color: Int? = null
 
+    /**
+     * The resource location of the font for this component in the
+     * resource pack or mod resources within `assets/<namespace>/font`.
+     * Defaults to "minecraft:default".
+     */
+    var font: ResourceLocation? = null
+
+    /**
+     * When the text is shift-clicked by a player, this string is inserted in their chat input.
+     * It does not overwrite any existing text the player was writing. This only works in chat messages.
+     */
+    var insertion: String? = null
+
     var clickEvent: ClickEvent? = null
     var hoverEvent: HoverEvent? = null
 
@@ -55,6 +69,8 @@ class LiteralTextBuilder(
             .let { if (strikethrough == true) it.applyFormat(ChatFormatting.STRIKETHROUGH) else it }
             .let { if (obfuscated == true) it.applyFormat(ChatFormatting.OBFUSCATED) else it }
             .let { if (color != null) it.withColor(TextColor.fromRgb(color ?: 0xFFFFFF)) else it }
+            .withFont(font)
+            .withInsertion(insertion)
             .withClickEvent(clickEvent)
             .withHoverEvent(hoverEvent)
             .let { if (inheritStyle) it.applyTo(parentStyle) else it }
