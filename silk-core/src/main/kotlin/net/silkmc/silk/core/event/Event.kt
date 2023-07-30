@@ -33,7 +33,7 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
      */
     @InternalSilkApi
     val listenersByPriority: List<MutableList<context(S, MutableEventScope) (T) -> Unit>> = buildList {
-        repeat(EventPriority.values().size) {
+        repeat(EventPriority.entries.size) {
             add(ArrayList())
         }
     }

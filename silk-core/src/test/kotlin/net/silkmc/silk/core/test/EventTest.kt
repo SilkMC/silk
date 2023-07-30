@@ -53,7 +53,7 @@ class EventTest : FunSpec({
             }
 
             testListenReceive(EventPriority.NORMAL)
-            EventPriority.values().forEach {
+            EventPriority.entries.forEach {
                 testListenReceive(it)
             }
         }
@@ -94,7 +94,7 @@ class EventTest : FunSpec({
             }
 
             testListenReceive(EventPriority.NORMAL)
-            EventPriority.values().forEach {
+            EventPriority.entries.forEach {
                 testListenReceive(it)
             }
         }
