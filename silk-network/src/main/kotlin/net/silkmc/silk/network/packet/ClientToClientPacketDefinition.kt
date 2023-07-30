@@ -105,9 +105,9 @@ class ClientToClientPacketDefinition<T : Any>(
         /**
          * @see [ClientToClientPacketDefinition.onReceiveServer]
          */
-        fun onReceiveServer(channel: ResourceLocation, bytes: ByteArray, context: ServerPacketContext): Boolean {
+        fun onReceiveServer(channel: ResourceLocation, byteBuf: FriendlyByteBuf, context: ServerPacketContext): Boolean {
             (registeredDefinitions[channel] as? ClientToClientPacketDefinition<*>?)
-                ?.onReceiveServer(bytes, context) ?: return false
+                ?.onReceiveServer(byteBuf.readByteArray(), context) ?: return false
             return true
         }
     }
