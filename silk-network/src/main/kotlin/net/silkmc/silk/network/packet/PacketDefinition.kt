@@ -3,6 +3,7 @@
 
 package net.silkmc.silk.network.packet
 
+import io.netty.buffer.Unpooled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -10,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import java.util.concurrent.ConcurrentHashMap
@@ -53,7 +53,7 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
     }
 
     protected fun createBuffer(value: T): FriendlyByteBuf {
-        val buffer = PacketByteBufs.create()
+        val buffer = FriendlyByteBuf(Unpooled.buffer())
         buffer.writeByteArray(cbor.encodeToByteArray(serializer, value))
         return buffer
     }
