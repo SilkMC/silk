@@ -3,11 +3,11 @@
 
 package net.silkmc.silk.network.packet
 
+import io.netty.buffer.Unpooled
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket
@@ -49,7 +49,7 @@ class ClientToClientPacketDefinition<T : Any>(
         receiverScope.launch {
             val receivers = forwarder?.invoke(this@ClientToClientPacketDefinition, SerializedPacket(bytes), context)
             if (receivers?.isNotEmpty() == true) {
-                val buffer = PacketByteBufs.create()
+                val buffer = FriendlyByteBuf(Unpooled.buffer())
                 buffer.writeByteArray(bytes)
                 receivers.forEach { it.connection.send(ClientboundCustomPayloadPacket(id, buffer)) }
             }
