@@ -65,8 +65,8 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
             registeredDefinitions[definition.id] = definition
         }
 
-        fun onReceive(channel: ResourceLocation, bytes: ByteArray, context: C): Boolean {
-            registeredDefinitions[channel]?.onReceive(bytes, context) ?: return false
+        fun onReceive(channel: ResourceLocation, byteBuf: FriendlyByteBuf, context: C): Boolean {
+            registeredDefinitions[channel]?.onReceive(byteBuf.readByteArray(), context) ?: return false
             return true
         }
     }

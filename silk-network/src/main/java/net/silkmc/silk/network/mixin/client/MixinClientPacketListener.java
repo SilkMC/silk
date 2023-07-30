@@ -22,12 +22,11 @@ public class MixinClientPacketListener {
                                        CallbackInfo ci) {
         final var data = packet.getData();
         final var id = packet.getIdentifier();
-        final var bytes = data.readByteArray();
 
         @SuppressWarnings("DataFlowIssue")
         final var context = new ClientPacketContext((ClientPacketListener) (Object) this);
 
-        if (ServerToClientPacketDefinition.Companion.onReceive(id, bytes, context)) {
+        if (ServerToClientPacketDefinition.Companion.onReceive(id, data, context)) {
             ci.cancel();
         }
     }

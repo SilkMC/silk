@@ -3,7 +3,6 @@ package net.silkmc.silk.network.mixin.server;
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.silkmc.silk.network.packet.ClientToClientPacketDefinition;
-import net.silkmc.silk.network.packet.ClientToClientPacketDefinitionKt;
 import net.silkmc.silk.network.packet.ClientToServerPacketDefinition;
 import net.silkmc.silk.network.packet.ServerPacketContext;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,14 +22,13 @@ public class MixinServerGamePacketListenerImpl {
                                        CallbackInfo ci) {
         final var data = packet.getData();
         final var id = packet.getIdentifier();
-        final var bytes = data.readByteArray();
 
         @SuppressWarnings("DataFlowIssue")
         final var context = new ServerPacketContext((ServerGamePacketListenerImpl) (Object) this);
 
         if (
-            ClientToServerPacketDefinition.Companion.onReceive(id, bytes, context) ||
-                ClientToClientPacketDefinition.Companion.onReceiveServer(id, bytes, context)
+            ClientToServerPacketDefinition.Companion.onReceive(id, data, context) ||
+                ClientToClientPacketDefinition.Companion.onReceiveServer(id, data, context)
         ) {
             ci.cancel();
         }
