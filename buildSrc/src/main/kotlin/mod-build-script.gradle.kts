@@ -1,11 +1,9 @@
 import BuildConstants.authors
-import BuildConstants.fabricApiVersion
 import BuildConstants.fabricLanguageKotlinVersion
 import BuildConstants.fabricLoaderVersion
 import BuildConstants.githubRepo
 import BuildConstants.majorMinecraftVersion
 import BuildConstants.minecraftVersion
-import BuildConstants.parchmentMappingsVersion
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -13,7 +11,7 @@ import kotlinx.serialization.json.Json
 plugins {
     kotlin("jvm")
     id("fabric-loom")
-    id("io.github.juuxel.loom-quiltflower")
+    id("io.github.juuxel.loom-vineflower")
 }
 
 repositories {
@@ -24,11 +22,10 @@ repositories {
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.layered {
-        // parchment("org.parchmentmc.data:parchment-${parchmentMappingsVersion}@zip")
         officialMojangMappings()
     })
 
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+    // modImplementation("net.fabricmc.fabric-api:fabric-api:0.86.1+1.20.1")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 }
