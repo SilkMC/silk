@@ -5,6 +5,7 @@
   "mixins": [
     "block.AbstractBlockAccessor",
     "server.MixinMinecraftServer",
+    "level.MixinLevel",
     "server.MixinPlayerList",
     "server.MixinServerGamePacketListenerImpl",
     "server.MixinServerLoginPacketListenerImpl"
