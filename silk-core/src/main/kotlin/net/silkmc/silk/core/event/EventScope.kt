@@ -1,6 +1,9 @@
 package net.silkmc.silk.core.event
 
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
+import net.silkmc.silk.core.event.EventScope.Cancellable
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 /**
  * A marker which can be passed to event handlers to make the event
@@ -43,7 +46,18 @@ interface EventScope {
 }
 
 @ExperimentalSilkApi
-class EventScopeProperty<V>(private var value: V) {
+class EventScopeProperty<V>(private var value: V) : ReadWriteProperty<Any, V> {
+
+    context(MutableEventScope)
+    override operator fun getValue(thisRef: Any, property: KProperty<*>): V {
+        return get()
+    }
+
+
+    context(MutableEventScope)
+    override operator fun setValue(thisRef: Any, property: KProperty<*>, value: V) {
+        set(value)
+    }
 
     /**
      * Returns the current value of this property.
@@ -55,11 +69,7 @@ class EventScopeProperty<V>(private var value: V) {
     /**
      * Mutates this property. This functions **must** be called in a
      * [MutableEventScope], therefore in a normal synchronous listener.
-     *
-     * See [context-receivers/contextual-delegated-properties KEEP](https://github.com/Kotlin/KEEP/blob/master/proposals/context-receivers.md#contextual-delegated-properties)
-     * for why this isn't a delegate *yet*.
      */
-    context(MutableEventScope)
     fun set(value: V) {
         this.value = value
     }
