@@ -45,6 +45,7 @@ class EventScopeProperty<V>(private var value: V) : ReadWriteProperty<Any, V> {
      * Mutates this property. This functions **must** be called in a
      * [MutableEventScope], therefore in a normal synchronous listener.
      */
+    context(MutableEventScope)
     fun set(value: V) {
         this.value = value
     }
