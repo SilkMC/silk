@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("DataFlowIssue")
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
 
@@ -56,11 +57,9 @@ public class MixinMinecraftServer {
         cancellable = true
     )
     private void onHalt(CallbackInfo ci) {
-        if (
-            ServerEvents.INSTANCE.getPreHalt()
-                .invoke(new ServerEvents.ServerEvent((MinecraftServer) (Object) this))
-                .isCancelled().get()
-        ) {
+        final var event = new ServerEvents.PreHaltEvent((MinecraftServer) (Object) this);
+        ServerEvents.INSTANCE.getPreHalt().invoke(event);
+        if (event.isCancelled().get()) {
             ci.cancel();
         }
     }

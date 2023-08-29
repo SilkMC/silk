@@ -3,29 +3,30 @@
 package net.silkmc.silk.core.event
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.event.Event.Companion.onlySync
-import net.silkmc.silk.core.event.Event.Companion.onlySyncImmutable
+import net.silkmc.silk.core.event.Event.Companion.syncAsync
 import net.silkmc.silk.core.task.mcClientCoroutineDispatcher
 import net.silkmc.silk.core.task.mcCoroutineDispatcher
 
 /**
  * The base event implementation with synchronous listeners.
  * To create a new event of this type, have a look at the
- * [onlySync] and [onlySyncImmutable] functions in the `companion object`.
+ * [onlySync] and [syncAsync] functions in the `companion object`.
  */
 @ExperimentalSilkApi
-open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
+open class Event<T> {
 
     /**
      * The listeners added by [listen], sorted by [EventPriority] via the index
      * in the outer list.
      */
     @InternalSilkApi
-    val listenersByPriority: List<MutableList<context(S, MutableEventScope) (T) -> Unit>> = buildList {
+    val listenersByPriority: List<MutableList<context(MutableEventScope) (T) -> Unit>> = buildList {
         repeat(EventPriority.entries.size) {
             add(ArrayList())
         }
@@ -35,7 +36,7 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
      * The listeners added by [monitor].
      */
     @InternalSilkApi
-    val monitorListeners: MutableList<context(S) (T) -> Unit> = ArrayList()
+    val monitorListeners: MutableList<(T) -> Unit> = ArrayList()
 
     /**
      * Listens to this event. The [callback] will always be called synchronously.
@@ -52,7 +53,7 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
     fun listen(
         priority: EventPriority = EventPriority.NORMAL,
         register: Boolean = true,
-        callback: context(S, MutableEventScope) (event: T) -> Unit,
+        callback: context(MutableEventScope) (event: T) -> Unit,
     ): ListenerInstance<*> {
         return ListenerInstance(this, callback, listenersByPriority[priority.ordinal])
             .also { if (register) it.register() }
@@ -65,7 +66,7 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
      */
     fun monitor(
         register: Boolean = true,
-        callback: context(S) (T) -> Unit,
+        callback: (T) -> Unit,
     ): ListenerInstance<*> {
         return ListenerInstance(this, callback, monitorListeners)
             .also { if (register) it.register() }
@@ -75,27 +76,17 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
      * Invokes this event. Calling this function will trigger all
      * listeners and collectors.
      */
-    open fun invoke(instance: T, scope: S) {
+    open fun invoke(instance: T) {
         synchronized(this) {
             for (listeners in listenersByPriority) {
                 for (listener in listeners) {
-                    listener(scope, MutableEventScope, instance)
+                    listener(MutableEventScope, instance)
                 }
             }
             for (listener in monitorListeners) {
-                listener(scope, instance)
+                listener(instance)
             }
         }
-    }
-
-    /**
-     * Same as [invoke], but it uses the default scope provided by [scopeSupplier].
-     * Returns the resulting scope.
-     */
-    fun invoke(instance: T): S {
-        val scope = scopeSupplier()
-        invoke(instance, scope)
-        return scope
     }
 
     companion object {
@@ -108,17 +99,8 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
          *
          * @param scopeSupplier creates the default scope for this event
          */
-        fun <T, S : EventScope> syncAsync(clientSide: Boolean = false, scopeSupplier: () -> S) =
-            AsyncEvent<T, S>(clientSide, scopeSupplier)
-
-        /**
-         * Creates an [AsyncEvent] with synchronous and asynchronous
-         * listener invocation, accepting events of the type [T].
-         * The event scope passed to event handlers will be empty,
-         * effectively making the event immutable for all handlers.
-         */
-        fun <T> syncAsyncImmutable(clientSide: Boolean = false) =
-            AsyncEvent<T, EventScope.Empty>(clientSide, scopeSupplier = { EventScope.Empty })
+        fun <T> syncAsync(clientSide: Boolean = false) =
+            AsyncEvent<T>(clientSide)
 
         /**
          * Creates a classic [Event] without async listener invocation,
@@ -128,17 +110,8 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
          *
          * @param scopeSupplier creates the default scope for this event
          */
-        fun <T, S : EventScope> onlySync(scopeSupplier: () -> S) =
-            Event<T, S>(scopeSupplier)
-
-        /**
-         * Creates a classic [Event] without async listener invocation,
-         * accepting events of the type [T].
-         * The event scope passed to event handlers will be empty,
-         * effectively making the event immutable for all handlers.
-         */
-        fun <T> onlySyncImmutable() =
-            Event<T, EventScope.Empty>(scopeSupplier = { EventScope.Empty })
+        fun <T> onlySync() =
+            Event<T>()
     }
 }
 
@@ -150,7 +123,7 @@ open class Event<T, S : EventScope>(val scopeSupplier: () -> S) {
  * [Event.syncAsyncImmutable] functions.
  */
 @ExperimentalSilkApi
-open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier: () -> S) : Event<T, S>(scopeSupplier) {
+open class AsyncEvent<T>(val clientSide: Boolean) : Event<T>() {
 
     /**
      * The internal [flow] to which events are [emitted][MutableSharedFlow.emit].
@@ -158,7 +131,7 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * the listeners have not finished handling the previous event.
      */
     @InternalSilkApi
-    open val flow = MutableSharedFlow<Pair<T, S>>()
+    open val flow = MutableSharedFlow<T>()
 
     /**
      * The scope used for emitting events without blocking the current execution.
@@ -181,11 +154,8 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * current scope.
      */
     context(CoroutineScope)
-    fun collectInScope(collector: suspend context(S) (event: T) -> Unit): Job = launch {
-        flow.collect {
-            collector(it.second, it.first)
-        }
-    }
+    fun collectInScope(collector: FlowCollector<T>): Job =
+        launch { flow.collect(collector) }
 
     /**
      * Listens to this event, and `emit`s to the [collector] if
@@ -195,11 +165,8 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * Minecraft main thread dispatcher ([syncDispatcher]).
      */
     context(CoroutineScope)
-    fun collectInScopeSync(collector: suspend context(S) (event: T) -> Unit): Job = launch(syncDispatcher) {
-        flow.collect {
-            collector(it.second, it.first)
-        }
-    }
+    fun collectInScopeSync(collector: FlowCollector<T>): Job =
+        launch(syncDispatcher) { flow.collect(collector) }
 
     /**
      * Calls [SharedFlow.collect] on the underlying [flow].
@@ -210,16 +177,14 @@ open class AsyncEvent<T, S : EventScope>(val clientSide: Boolean, scopeSupplier:
      * This function never completes, read [the official collect docs][kotlinx.coroutines.flow.SharedFlow.collect]
      * for more info.
      */
-    suspend fun collect(collector: suspend context(S) (event: T) -> Unit): Nothing {
-        flow.collect {
-            collector(it.second, it.first)
-        }
+    suspend fun collect(collector: FlowCollector<T>) {
+        flow.collect(collector)
     }
 
-    override fun invoke(instance: T, scope: S) {
-        super.invoke(instance, scope)
+    override fun invoke(instance: T) {
+        super.invoke(instance)
         invokeScope.launch {
-            flow.emit(instance to scope)
+            flow.emit(instance)
         }
     }
 }

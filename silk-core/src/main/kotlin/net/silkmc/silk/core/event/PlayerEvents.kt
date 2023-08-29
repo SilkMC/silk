@@ -12,20 +12,20 @@ object PlayerEvents {
     /**
      * Called before a player receives the login packet from the server.
      */
-    val preLogin = Event.syncAsyncImmutable<PlayerEvent<ServerPlayer>>()
+    val preLogin = Event.syncAsync<PlayerEvent<ServerPlayer>>()
 
     /**
      * Called after a player has received all login information from the server.
      */
-    val postLogin = Event.syncAsyncImmutable<PlayerEvent<ServerPlayer>>()
+    val postLogin = Event.syncAsync<PlayerEvent<ServerPlayer>>()
 
     /**
      * Called before a player leaves the server.
      */
-    val preQuit = Event.syncAsyncImmutable<PlayerEvent<ServerPlayer>>()
+    val preQuit = Event.syncAsync<PlayerEvent<ServerPlayer>>()
 
     /**
      * Called when a player disconnects during the login process.
      */
-    val quitDuringLogin = Event.syncAsyncImmutable<PlayerEvent<ServerPlayer?>>()
+    val quitDuringLogin = Event.syncAsync<PlayerEvent<ServerPlayer?>>()
 }

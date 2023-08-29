@@ -1,7 +1,6 @@
 package net.silkmc.silk.core.event
 
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
-import net.silkmc.silk.core.event.EventScope.Cancellable
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -14,37 +13,13 @@ import kotlin.reflect.KProperty
 object MutableEventScope
 
 /**
- * An event scope can provide additional information and / or
- * functions to event handlers without the event itself having
- * to implement these features.
- * The prime example for this is cancellation, see [Cancellable].
+ * A property which wraps a variable of type [V].
+ * Its value can only be mutated inside a [MutableEventScope], which
+ * protects it from misuse.
+ *
+ * See [context-receivers/contextual-delegated-properties KEEP](https://github.com/Kotlin/KEEP/blob/master/proposals/context-receivers.md#contextual-delegated-properties)
+ * for why this isn't being used as a delegate *yet*.
  */
-@ExperimentalSilkApi
-interface EventScope {
-
-    /**
-     * An empty [EventScope], this is simply a no-op implementation.
-     */
-    object Empty : EventScope
-
-    /**
-     * A simple [EventScope] providing the [isCancelled] property.
-     */
-    open class Cancellable : EventScope {
-
-        /**
-         * If set to `true`, further execution of the action why this event
-         * was invoked will be cancelled.
-         *
-         * The default value of this property is `false`.
-         *
-         * See [context-receivers/contextual-delegated-properties KEEP](https://github.com/Kotlin/KEEP/blob/master/proposals/context-receivers.md#contextual-delegated-properties)
-         * for why this isn't a delegate *yet*.
-         */
-        val isCancelled = EventScopeProperty(false)
-    }
-}
-
 @ExperimentalSilkApi
 class EventScopeProperty<V>(private var value: V) : ReadWriteProperty<Any, V> {
 
@@ -73,4 +48,8 @@ class EventScopeProperty<V>(private var value: V) : ReadWriteProperty<Any, V> {
     fun set(value: V) {
         this.value = value
     }
+}
+
+interface Cancellable {
+    val isCancelled: EventScopeProperty<Boolean>
 }
