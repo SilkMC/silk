@@ -3,12 +3,6 @@ package net.silkmc.silk.core.event
 import net.minecraft.server.MinecraftServer
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 
-/**
- * Events related to the [MinecraftServer].
- */
-@Suppress("UnusedReceiverParameter") // receiver is for namespacing only
-val Events.Server get() = ServerEvents
-
 @ExperimentalSilkApi
 object ServerEvents {
 

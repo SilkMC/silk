@@ -13,13 +13,6 @@ import net.silkmc.silk.core.task.mcClientCoroutineDispatcher
 import net.silkmc.silk.core.task.mcCoroutineDispatcher
 
 /**
- * The base object for discovering events, check the extensions
- * values of this object.
- */
-@ExperimentalSilkApi
-object Events
-
-/**
  * The base event implementation with synchronous listeners.
  * To create a new event of this type, have a look at the
  * [onlySync] and [onlySyncImmutable] functions in the `companion object`.

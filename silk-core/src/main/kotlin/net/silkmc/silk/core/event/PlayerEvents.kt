@@ -4,9 +4,6 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 
-@Suppress("UnusedReceiverParameter") // receiver is for namespacing only
-val Events.Player get() = PlayerEvents
-
 @ExperimentalSilkApi
 object PlayerEvents {
 
