@@ -106,7 +106,7 @@ tasks {
             if (isModParent) null else FabricModConfiguration.Custom(FabricModConfiguration.Custom.ModMenu("silk-all")),
         )
 
-        val modDotJson = buildDir.resolve("resources/main/fabric.mod.json")
+        val modDotJson = layout.buildDirectory.get().asFile.resolve("resources/main/fabric.mod.json")
 
         inputs.property("modConfig", modConfig.toString())
         outputs.file(modDotJson)
