@@ -21,18 +21,18 @@ object MutableEventScope
  * for why this isn't being used as a delegate *yet*.
  */
 @ExperimentalSilkApi
-class EventScopeProperty<V>(private var value: V) : ReadWriteProperty<Any, V> {
+class EventScopeProperty<V>(private var value: V)/* : ReadWriteProperty<Any, V>*/ {
 
-    context(MutableEventScope)
-    override operator fun getValue(thisRef: Any, property: KProperty<*>): V {
-        return get()
-    }
-
-
-    context(MutableEventScope)
-    override operator fun setValue(thisRef: Any, property: KProperty<*>, value: V) {
-        set(value)
-    }
+//    context(MutableEventScope)
+//    override operator fun getValue(thisRef: Any, property: KProperty<*>): V {
+//        return get()
+//    }
+//
+//
+//    context(MutableEventScope)
+//    override operator fun setValue(thisRef: Any, property: KProperty<*>, value: V) {
+//        set(value)
+//    }
 
     /**
      * Returns the current value of this property.
