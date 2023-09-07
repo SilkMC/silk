@@ -32,10 +32,10 @@ object CommandEvents {
     /**
      * Called when server commands are registered.
      */
-    val register = Event.onlySyncImmutable<RegisterEvent>()
+    val register = Event.onlySync<RegisterEvent>()
 
     /**
      * Called when client commands are registered.
      */
-    val registerClient = Event.onlySyncImmutable<RegisterClientEvent>()
+    val registerClient = Event.onlySync<RegisterClientEvent>()
 }

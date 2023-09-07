@@ -5,22 +5,23 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.mpp.log
 import kotlinx.coroutines.*
+import net.silkmc.silk.core.event.Cancellable
 import net.silkmc.silk.core.event.Event
 import net.silkmc.silk.core.event.EventPriority
-import net.silkmc.silk.core.event.EventScope
+import net.silkmc.silk.core.event.EventScopeProperty
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class EventTest : FunSpec({
     context("create event instances") {
         test("create onlySync instance") {
-            Event.onlySync<EventClass, EventScope.Cancellable> { EventScope.Cancellable() }
-            Event.onlySyncImmutable<EventClass>()
+            Event.onlySync<EventClass>()
+            Event.onlySync<EventClassCancellable>()
         }
 
         test("create syncAsync instances") {
-            Event.syncAsync<EventClass, EventScope.Cancellable> { EventScope.Cancellable() }
-            Event.syncAsyncImmutable<EventClass>()
+            Event.syncAsync<EventClass>()
+            Event.syncAsync<EventClassCancellable>()
         }
     }
 
@@ -28,14 +29,14 @@ class EventTest : FunSpec({
         context("synchronous listener") {
             suspend fun testListenReceive(priority: EventPriority) {
                 test("listen to events with priority = $priority and invoke") {
-                    val onlySync = Event.onlySync<EventClass, EventScope.Cancellable> { EventScope.Cancellable() }
-                    val onlySyncImmutable = Event.onlySyncImmutable<EventClass>()
+                    val onlySync = Event.onlySync<EventClass>()
+                    val onlySyncCancellable = Event.onlySync<EventClassCancellable>()
 
-                    val syncEvents = listOf(onlySync, onlySyncImmutable)
+                    val syncEvents = listOf(onlySync, onlySyncCancellable)
 
                     fun invokeEvents(message: String = "test message") {
-                        onlySync.invoke(EventClass(message), EventScope.Cancellable())
-                        onlySyncImmutable.invoke(EventClass(message))
+                        onlySync.invoke(EventClass(message))
+                        onlySyncCancellable.invoke(EventClassCancellable(message))
                     }
 
                     var received = 0
@@ -61,14 +62,14 @@ class EventTest : FunSpec({
         context("asynchronous collector") {
             suspend fun testListenReceive(priority: EventPriority) {
                 test("collect async events with priority = $priority and invoke") {
-                    val syncAsync = Event.syncAsync<EventClass, EventScope.Cancellable> { EventScope.Cancellable() }
-                    val syncAsyncImmutable = Event.syncAsyncImmutable<EventClass>()
+                    val syncAsync = Event.syncAsync<EventClass>()
+                    val syncAsyncCancellable = Event.syncAsync<EventClassCancellable>()
 
-                    val asyncEvents = listOf(syncAsync, syncAsyncImmutable)
+                    val asyncEvents = listOf(syncAsyncCancellable, syncAsync)
 
                     fun invokeEvents(message: String = "test message") {
-                        syncAsync.invoke(EventClass(message), EventScope.Cancellable())
-                        syncAsyncImmutable.invoke(EventClass(message))
+                        syncAsync.invoke(EventClass(message))
+                        syncAsyncCancellable.invoke(EventClassCancellable(message))
                     }
 
                     val futures = asyncEvents.associateWith { CompletableDeferred<Unit>() }
@@ -100,5 +101,10 @@ class EventTest : FunSpec({
         }
     }
 }) {
-    class EventClass(val message: String)
+
+    open class EventClass(val message: String)
+
+    class EventClassCancellable(message: String) : EventClass(message), Cancellable {
+        override val isCancelled = EventScopeProperty(false)
+    }
 }
