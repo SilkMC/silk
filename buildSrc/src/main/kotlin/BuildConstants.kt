@@ -15,12 +15,12 @@ object BuildConstants {
     const val majorMinecraftVersion = "1.20"
 
     // check these values here: https://jakobk.net/mcdev
-    const val minecraftVersion = "1.20.1"
-    const val fabricLoaderVersion = "0.14.21"
-    const val fabricLanguageKotlinVersion = "1.10.8+kotlin.1.9.0"
+    const val minecraftVersion = "1.20.2-pre4"
+    const val fabricLoaderVersion = "0.14.22"
+    const val fabricLanguageKotlinVersion = "1.10.10+kotlin.1.9.10"
 
-    const val kotestVersion = "5.6.2"
-    const val mockkVersion = "1.13.5"
+    const val kotestVersion = "5.7.1"
+    const val mockkVersion = "1.13.7"
 
     val uploadModules = listOf(
         "commands",

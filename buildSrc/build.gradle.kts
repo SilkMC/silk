@@ -14,7 +14,7 @@ repositories {
 dependencies {
     fun pluginDep(id: String, version: String) = "${id}:${id}.gradle.plugin:${version}"
 
-    val kotlinVersion = "1.9.0"
+    val kotlinVersion = "1.9.10"
 
     compileOnly(kotlin("gradle-plugin", embeddedKotlinVersion))
     runtimeOnly(kotlin("gradle-plugin", kotlinVersion))
@@ -23,18 +23,18 @@ dependencies {
 
     implementation(pluginDep("fabric-loom", "1.3-SNAPSHOT"))
     implementation(pluginDep("io.github.juuxel.loom-vineflower", "1.11.0"))
-    implementation(pluginDep("com.modrinth.minotaur", "2.8.2"))
+    implementation(pluginDep("com.modrinth.minotaur", "2.8.4"))
 
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.5.5"))
     implementation(pluginDep("xyz.jpenilla.run-paper", "2.1.0"))
 
-    val compileDokkaVersion = "1.8.20"
-    val dokkaVersion = "1.8.20"
+    val compileDokkaVersion = "1.9.0"
+    val dokkaVersion = "1.9.0"
 
     compileOnly("org.jetbrains.dokka:dokka-gradle-plugin:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     compileOnly("org.jetbrains.dokka:dokka-base:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }
