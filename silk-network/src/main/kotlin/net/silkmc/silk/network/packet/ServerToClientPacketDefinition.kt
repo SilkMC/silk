@@ -2,11 +2,11 @@ package net.silkmc.silk.network.packet
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
-import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.Silk
+import net.silkmc.silk.network.packet.internal.SilkPacketPayload
 
 /**
  * See [s2cPacket] function, which constructs this packet definition class.
@@ -24,7 +24,7 @@ class ServerToClientPacketDefinition<T : Any>(
      * serialization of the given value.
      */
     fun send(value: T, player: ServerPlayer) {
-        send(createBuffer(value), player)
+        send(createPayload(value), player)
     }
 
     /**
@@ -32,7 +32,7 @@ class ServerToClientPacketDefinition<T : Any>(
      * of the given value.
      */
     fun sendToAll(value: T) {
-        val buffer = createBuffer(value)
+        val buffer = createPayload(value)
         Silk.players.forEach { send(buffer, it) }
     }
 
@@ -43,7 +43,7 @@ class ServerToClientPacketDefinition<T : Any>(
         registerReceiver(receiver, Companion)
     }
 
-    private fun send(buffer: FriendlyByteBuf, player: ServerPlayer) {
-        player.connection.send(ClientboundCustomPayloadPacket(id, buffer))
+    private fun send(payload: SilkPacketPayload, player: ServerPlayer) {
+        player.connection.send(ClientboundCustomPayloadPacket(payload))
     }
 }

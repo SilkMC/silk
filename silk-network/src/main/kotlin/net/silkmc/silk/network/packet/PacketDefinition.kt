@@ -3,7 +3,6 @@
 
 package net.silkmc.silk.network.packet
 
-import io.netty.buffer.Unpooled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,8 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
-import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
+import net.silkmc.silk.network.packet.internal.SilkPacketPayload
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -52,10 +51,11 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
         return cbor.decodeFromByteArray(serializer, byteArray)
     }
 
-    protected fun createBuffer(value: T): FriendlyByteBuf {
-        val buffer = FriendlyByteBuf(Unpooled.buffer())
-        buffer.writeByteArray(cbor.encodeToByteArray(serializer, value))
-        return buffer
+    protected fun createPayload(value: T): SilkPacketPayload {
+        return SilkPacketPayload(
+            id,
+            cbor.encodeToByteArray(serializer, value)
+        )
     }
 
     internal open class DefinitionRegistry<C> {
@@ -65,9 +65,13 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
             registeredDefinitions[definition.id] = definition
         }
 
-        fun onReceive(channel: ResourceLocation, byteBuf: FriendlyByteBuf, context: C): Boolean {
-            registeredDefinitions[channel]?.onReceive(byteBuf.readByteArray(), context) ?: return false
+        fun onReceive(channel: ResourceLocation, bytes: ByteArray, context: C): Boolean {
+            registeredDefinitions[channel]?.onReceive(bytes, context) ?: return false
             return true
+        }
+
+        fun isRegistered(channel: ResourceLocation): Boolean {
+            return registeredDefinitions.containsKey(channel)
         }
     }
 }

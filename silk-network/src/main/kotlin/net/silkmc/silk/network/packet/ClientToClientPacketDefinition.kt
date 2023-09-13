@@ -3,17 +3,16 @@
 
 package net.silkmc.silk.network.packet
 
-import io.netty.buffer.Unpooled
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
 import net.minecraft.client.Minecraft
-import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
+import net.silkmc.silk.network.packet.internal.SilkPacketPayload
 
 /**
  * Used by the [ClientToClientPacketDefinition], which requires a server-side forwarder.
@@ -49,9 +48,8 @@ class ClientToClientPacketDefinition<T : Any>(
         receiverScope.launch {
             val receivers = forwarder?.invoke(this@ClientToClientPacketDefinition, SerializedPacket(bytes), context)
             if (receivers?.isNotEmpty() == true) {
-                val buffer = FriendlyByteBuf(Unpooled.buffer())
-                buffer.writeByteArray(bytes)
-                receivers.forEach { it.connection.send(ClientboundCustomPayloadPacket(id, buffer)) }
+                val payload = SilkPacketPayload(id, bytes)
+                receivers.forEach { it.connection.send(ClientboundCustomPayloadPacket(payload)) }
             }
         }
     }
@@ -62,7 +60,7 @@ class ClientToClientPacketDefinition<T : Any>(
      * forwarder using [forwardOnServer].
      */
     fun send(value: T) {
-        send(createBuffer(value))
+        send(createPayload(value))
     }
 
     /**
@@ -96,18 +94,19 @@ class ClientToClientPacketDefinition<T : Any>(
      */
     fun SerializedPacket.deserialize(): T = deserialize(bytes)
 
-    private fun send(buffer: FriendlyByteBuf) {
+    private fun send(payload: SilkPacketPayload) {
         val connection = Minecraft.getInstance().connection ?: error("Cannot send packets to the server while not in-game")
-        connection.send(ServerboundCustomPayloadPacket(id, buffer))
+        connection.send(ServerboundCustomPayloadPacket(payload))
     }
 
     internal companion object : DefinitionRegistry<ClientPacketContext>() {
+
         /**
          * @see [ClientToClientPacketDefinition.onReceiveServer]
          */
-        fun onReceiveServer(channel: ResourceLocation, byteBuf: FriendlyByteBuf, context: ServerPacketContext): Boolean {
+        fun onReceiveServer(channel: ResourceLocation, bytes: ByteArray, context: ServerPacketContext): Boolean {
             (registeredDefinitions[channel] as? ClientToClientPacketDefinition<*>?)
-                ?.onReceiveServer(byteBuf.readByteArray(), context) ?: return false
+                ?.onReceiveServer(bytes, context) ?: return false
             return true
         }
     }

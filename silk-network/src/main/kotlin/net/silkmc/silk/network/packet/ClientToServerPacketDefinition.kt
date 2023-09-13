@@ -3,9 +3,9 @@ package net.silkmc.silk.network.packet
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
 import net.minecraft.client.Minecraft
-import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket
 import net.minecraft.resources.ResourceLocation
+import net.silkmc.silk.network.packet.internal.SilkPacketPayload
 
 /**
  * See [c2sPacket] function, which constructs this packet definition class.
@@ -22,7 +22,7 @@ class ClientToServerPacketDefinition<T : Any>(
      * Sends the given [value] as a packet to the server.
      */
     fun send(value: T) {
-        send(createBuffer(value))
+        send(createPayload(value))
     }
 
     /**
@@ -32,8 +32,8 @@ class ClientToServerPacketDefinition<T : Any>(
         registerReceiver(receiver, Companion)
     }
 
-    private fun send(buffer: FriendlyByteBuf) {
+    private fun send(payload: SilkPacketPayload) {
         val connection = Minecraft.getInstance().connection ?: error("Cannot send packets to the server while not in-game")
-        connection.send(ServerboundCustomPayloadPacket(id, buffer))
+        connection.send(ServerboundCustomPayloadPacket(payload))
     }
 }

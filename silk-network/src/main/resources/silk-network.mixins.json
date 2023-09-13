@@ -3,9 +3,11 @@
   "required": true,
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "server.MixinServerGamePacketListenerImpl"
+    "server.MixinServerboundCustomPayloadPacket",
+    "server.MixinServerCommonPacketListenerImpl"
   ],
   "client": [
-    "client.MixinClientPacketListener"
+    "client.MixinClientboundCustomPayloadPacket",
+    "client.MixinClientCommonPacketListenerImpl"
   ]
 }
