@@ -1,6 +1,8 @@
 package net.silkmc.silk.persistence.mixin.world;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.silkmc.silk.persistence.CompoundProvider;
 import net.silkmc.silk.persistence.PersistentCompound;
@@ -24,11 +26,19 @@ public abstract class ServerWorldMixin implements CompoundProvider {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
-        getDataStorage().computeIfAbsent(
-            nbt -> CompoundPersistentState.Companion.load(nbt, compound),
-            () -> new CompoundPersistentState(compound),
-            PersistentCompoundImpl.CUSTOM_DATA_KEY
-        );
+        try {
+            CompoundPersistentState.Companion.getBLOCK_DATA_FIXER().set(true);
+            getDataStorage().computeIfAbsent(
+                new SavedData.Factory<SavedData>(
+                    () -> new CompoundPersistentState(compound),
+                    nbt -> CompoundPersistentState.Companion.load(nbt, compound),
+                    DataFixTypes.LEVEL // not actually, but we cannot use null here
+                ),
+                PersistentCompoundImpl.CUSTOM_DATA_KEY
+            );
+        } finally {
+            CompoundPersistentState.Companion.getBLOCK_DATA_FIXER().set(false);
+        }
     }
 
     @NotNull

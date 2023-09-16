@@ -5,10 +5,14 @@ import net.minecraft.world.level.saveddata.SavedData
 import net.silkmc.silk.persistence.PersistentCompound
 
 class CompoundPersistentState(private val compound: PersistentCompound) : SavedData() {
+
     override fun save(nbt: CompoundTag) =
         nbt.also { compound.putInCompound(it, true) }
 
     companion object {
+
+        val BLOCK_DATA_FIXER: ThreadLocal<Boolean> = ThreadLocal.withInitial { false }
+
         fun load(nbt: CompoundTag, targetCompound: PersistentCompound) =
             CompoundPersistentState(targetCompound.apply { loadFromCompound(nbt, true) })
     }

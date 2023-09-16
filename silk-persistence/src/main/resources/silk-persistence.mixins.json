@@ -9,6 +9,7 @@
     "chunk.LevelChunkMixin",
     "chunk.ProtoChunkMixin",
     "entity.EntityMixin",
+    "other.MixinDataFixTypes",
     "world.ServerWorldMixin"
   ]
 }
