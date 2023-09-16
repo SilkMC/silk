@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket
 import net.minecraft.network.protocol.game.ClientboundSetScorePacket
 import net.minecraft.server.ServerScoreboard
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.scores.DisplaySlot
 import net.minecraft.world.scores.Objective
 import net.minecraft.world.scores.PlayerTeam
 import net.minecraft.world.scores.Scoreboard
@@ -41,11 +42,6 @@ class SideboardScoreboard(
 ) {
 
     companion object {
-        /**
-         * The ID of the sideboard display slot.
-         */
-        private val sidebarId = Scoreboard.getDisplaySlotByName("sidebar")
-
         private val playerBoards = ConcurrentHashMap<UUID, SideboardScoreboard>().also { map ->
             Events.Player.preQuit.listen { event ->
                 silkCoroutineScope.launch {
@@ -82,7 +78,7 @@ class SideboardScoreboard(
                 }
 
                 // display at the side
-                add(ClientboundSetDisplayObjectivePacket(sidebarId, dummyObjective))
+                add(ClientboundSetDisplayObjectivePacket(DisplaySlot.SIDEBAR, dummyObjective))
             }
         }
 
