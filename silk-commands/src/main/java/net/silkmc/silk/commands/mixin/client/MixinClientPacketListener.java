@@ -5,11 +5,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.world.flag.FeatureFlags;
 import net.silkmc.silk.commands.internal.ClientCommandHandler;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,19 +17,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
-public class MixinClientPacketListener {
+public abstract class MixinClientPacketListener {
 
     @Shadow
     private CommandDispatcher<SharedSuggestionProvider> commands;
 
-    @Shadow @Final private Minecraft minecraft;
+    @Shadow public abstract RegistryAccess.Frozen registryAccess();
 
     @Inject(
         method = "handleLogin",
         at = @At("RETURN")
     )
     private void onHandleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
-        final var context = CommandBuildContext.simple(packet.registryHolder(), FeatureFlags.DEFAULT_FLAGS);
+        final var context = CommandBuildContext.simple(registryAccess(), FeatureFlags.DEFAULT_FLAGS);
         ClientCommandHandler.INSTANCE.refreshDispatcher(context);
     }
 
@@ -47,7 +47,7 @@ public class MixinClientPacketListener {
         cancellable = true
     )
     private void onSendCommand(String command, CallbackInfo ci) {
-        final var player = minecraft.player;
+        final var player = Minecraft.getInstance().player;
         if (player != null) {
             if (ClientCommandHandler.INSTANCE.executeCommand(command, player)) {
                 ci.cancel();
