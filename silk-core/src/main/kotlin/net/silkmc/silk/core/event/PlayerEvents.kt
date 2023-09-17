@@ -21,10 +21,10 @@ object PlayerEvents {
      */
     val postLogin = Event.syncAsync<PlayerEvent<ServerPlayer>>()
 
-    open class PlayerQuitEvent<T : Player?>(
-        player: T,
+    open class PlayerQuitEvent(
+        player: ServerPlayer,
         val reason: Component,
-    ) : PlayerEvent<T>(player)
+    ) : PlayerEvent<ServerPlayer>(player)
 
     /**
      * Called before a player leaves the server. Will only be called when
@@ -33,7 +33,7 @@ object PlayerEvents {
      * @see quitDuringLogin
      * @see quitDuringConfiguration
      */
-    val preQuit = Event.syncAsync<PlayerQuitEvent<ServerPlayer>>()
+    val preQuit = Event.syncAsync<PlayerQuitEvent>()
 
     open class PlayerQuitDuringLoginEvent(
         val gameProfile: GameProfile?,

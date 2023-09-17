@@ -1,6 +1,5 @@
 package net.silkmc.silk.core.mixin.server;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -14,8 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class MixinServerGamePacketListenerImpl {
 
-    @Shadow protected abstract GameProfile playerProfile();
-
     @Shadow public ServerPlayer player;
 
     @Inject(
@@ -25,6 +22,6 @@ public abstract class MixinServerGamePacketListenerImpl {
     private void onPreQuit(Component reason,
                            CallbackInfo ci) {
         PlayerEvents.INSTANCE.getPreQuit()
-            .invoke(new PlayerEvents.PlayerQuitEvent<>(player, reason));
+            .invoke(new PlayerEvents.PlayerQuitEvent(player, reason));
     }
 }
