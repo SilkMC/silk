@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(BlockBehaviour.class)
 public interface AbstractBlockAccessor {
+
     @Accessor("hasCollision")
     boolean isCollidable();
 }
