@@ -15,7 +15,6 @@ typealias Fabrik = Silk
  */
 object Silk {
 
-
     /**
      * The current [MinecraftServer] instance.
      * This property is `null` when being accessed
