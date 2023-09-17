@@ -1,7 +1,7 @@
 package net.silkmc.silk.core.mixin.server;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import net.silkmc.silk.core.event.PlayerEvents;
 import org.jetbrains.annotations.Nullable;
@@ -12,15 +12,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
-public class MixinServerLoginPacketListenerImpl {
+public abstract class MixinServerLoginPacketListenerImpl {
 
-    @Shadow @Nullable private ServerPlayer delayedAcceptPlayer;
+    @Shadow private @Nullable GameProfile authenticatedProfile;
 
     @Inject(
         method = "onDisconnect",
         at = @At("HEAD")
     )
-    private void onPreQuit(Component reason, CallbackInfo ci) {
-        PlayerEvents.INSTANCE.getQuitDuringLogin().invoke(new PlayerEvents.PlayerEvent<>(delayedAcceptPlayer));
+    private void onQuitDuringLogin(Component reason,
+                                   CallbackInfo ci) {
+        PlayerEvents.INSTANCE.getQuitDuringLogin()
+            .invoke(new PlayerEvents.PlayerQuitDuringLoginEvent(authenticatedProfile, reason));
     }
 }

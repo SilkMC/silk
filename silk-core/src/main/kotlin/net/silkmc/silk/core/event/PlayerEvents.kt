@@ -1,5 +1,7 @@
 package net.silkmc.silk.core.event
 
+import com.mojang.authlib.GameProfile
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
@@ -19,13 +21,43 @@ object PlayerEvents {
      */
     val postLogin = Event.syncAsync<PlayerEvent<ServerPlayer>>()
 
+    open class PlayerQuitEvent<T : Player?>(
+        player: T,
+        val reason: Component,
+    ) : PlayerEvent<T>(player)
+
     /**
-     * Called before a player leaves the server.
+     * Called before a player leaves the server. Will only be called when
+     * a player who was fully in-game leaves the server.
+     *
+     * @see quitDuringLogin
+     * @see quitDuringConfiguration
      */
-    val preQuit = Event.syncAsync<PlayerEvent<ServerPlayer>>()
+    val preQuit = Event.syncAsync<PlayerQuitEvent<ServerPlayer>>()
+
+    open class PlayerQuitDuringLoginEvent(
+        val gameProfile: GameProfile?,
+        val reason: Component,
+    )
 
     /**
      * Called when a player disconnects during the login process.
+     *
+     * Note: this only applies to the early login phase - for the
+     * configuration phase (between login and actual game join) see
+     * [quitDuringConfiguration]
+     *
+     * @see quitDuringConfiguration
+     * @see preQuit
      */
-    val quitDuringLogin = Event.syncAsync<PlayerEvent<ServerPlayer?>>()
+    val quitDuringLogin = Event.syncAsync<PlayerQuitDuringLoginEvent>()
+
+    /**
+     * Called when a player disconnects in the configuration phase. This is
+     * the phase between login and actual game join.
+     *
+     * @see quitDuringLogin
+     * @see preQuit
+     */
+    val quitDuringConfiguration = Event.syncAsync<PlayerQuitDuringLoginEvent>()
 }
