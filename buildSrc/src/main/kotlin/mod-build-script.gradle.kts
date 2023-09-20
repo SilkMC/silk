@@ -91,7 +91,6 @@ tasks {
             } ?: linkedMapOf(),
             modMixinFiles ?: emptyList(),
             linkedMapOf(
-                "fabric-api" to "*",
                 "fabric-language-kotlin" to ">=1.8.0+kotlin.1.7.0",
                 "minecraft" to "${majorMinecraftVersion}.x"
             ).apply { putAll(modDepends ?: emptyMap()) },
