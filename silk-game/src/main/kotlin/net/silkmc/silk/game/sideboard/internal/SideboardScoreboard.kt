@@ -3,23 +3,24 @@ package net.silkmc.silk.game.sideboard.internal
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.numbers.BlankFormat
 import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientboundResetScorePacket
 import net.minecraft.network.protocol.game.ClientboundSetDisplayObjectivePacket
 import net.minecraft.network.protocol.game.ClientboundSetObjectivePacket
 import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket
 import net.minecraft.network.protocol.game.ClientboundSetScorePacket
-import net.minecraft.server.ServerScoreboard
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.scores.DisplaySlot
 import net.minecraft.world.scores.Objective
 import net.minecraft.world.scores.PlayerTeam
-import net.minecraft.world.scores.Scoreboard
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.event.Events
 import net.silkmc.silk.core.event.Player
 import net.silkmc.silk.core.kotlin.LimitedAccessWrapper
 import net.silkmc.silk.core.task.silkCoroutineScope
+import net.silkmc.silk.core.text.literal
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -51,7 +52,7 @@ class SideboardScoreboard(
         }
     }
 
-    private val dummyObjective = Objective(NoopScoreboard, name, ObjectiveCriteria.DUMMY, displayName, ObjectiveCriteria.RenderType.INTEGER)
+    private val dummyObjective = Objective(NoopScoreboard, name, ObjectiveCriteria.DUMMY, displayName, ObjectiveCriteria.RenderType.INTEGER, false, BlankFormat.INSTANCE)
 
     // scoreboard state
     private val lines = LimitedAccessWrapper(ArrayList<Line>())
@@ -141,7 +142,7 @@ class SideboardScoreboard(
 
         suspend fun createInitPackets(score: Int): List<Packet<*>> {
             return buildList {
-                add(ClientboundSetScorePacket(ServerScoreboard.Method.CHANGE, dummyObjective.name, fakePlayerName, score))
+                add(ClientboundSetScorePacket(fakePlayerName, dummyObjective.name, score, fakePlayerName.literal, BlankFormat.INSTANCE))
                 wrappedTeam.access { team ->
                     add(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true))
                 }
@@ -151,7 +152,7 @@ class SideboardScoreboard(
 
         fun createRemovePackets(): List<Packet<*>> {
             return buildList {
-                add(ClientboundSetScorePacket(ServerScoreboard.Method.REMOVE, dummyObjective.name, fakePlayerName, 0))
+                add(ClientboundResetScorePacket(fakePlayerName, dummyObjective.name))
                 add(ClientboundSetPlayerTeamPacket.createRemovePacket(unsafeTeam))
             }
         }

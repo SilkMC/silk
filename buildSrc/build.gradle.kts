@@ -21,8 +21,7 @@ dependencies {
     compileOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
     runtimeOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
 
-    implementation(pluginDep("fabric-loom", "1.3-SNAPSHOT"))
-    implementation(pluginDep("io.github.juuxel.loom-vineflower", "1.11.0"))
+    implementation(pluginDep("fabric-loom", "1.4-SNAPSHOT"))
     implementation(pluginDep("com.modrinth.minotaur", "2.8.4"))
 
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.5.5"))
