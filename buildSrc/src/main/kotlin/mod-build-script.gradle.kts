@@ -11,7 +11,6 @@ import kotlinx.serialization.json.Json
 plugins {
     kotlin("jvm")
     id("fabric-loom")
-    id("io.github.juuxel.loom-vineflower")
 }
 
 repositories {
