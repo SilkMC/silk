@@ -42,6 +42,17 @@ fun ItemStack.setLore(text: Collection<Component>) {
 }
 
 /**
+ * Sets the item lore, which is displayed below the display
+ * name of the item stack. Each child of the first children of
+ * the generated literal text represents one line.
+ */
+fun ItemStack.setLore(baseText: String = "", builder: LiteralTextBuilder.() -> Unit) {
+    literalText(baseText, builder).siblings.firstOrNull()?.let {
+        setLore(it.siblings)
+    }
+}
+
+/**
  * Opens a [LiteralTextBuilder] to change the custom name of
  * the item stack. See [literalText].
  */
