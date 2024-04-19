@@ -2,6 +2,7 @@ package net.silkmc.silk.test.igui
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Items
 import net.silkmc.silk.core.Silk
@@ -26,7 +27,7 @@ object SimpleTestGui {
 
             placeholder(2 sl 5, changingName.guiIcon {
                 listOf(Items.ACACIA_SIGN, Items.BIRCH_SIGN, Items.DARK_OAK_SIGN)
-                    .random().defaultInstance.setHoverName(it.literal)
+                    .random().defaultInstance.apply { set(DataComponents.CUSTOM_NAME, it.literal) }
             })
 
             silkCoroutineScope.launch {

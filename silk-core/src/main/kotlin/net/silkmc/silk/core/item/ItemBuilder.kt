@@ -1,13 +1,16 @@
 package net.silkmc.silk.core.item
 
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
-import net.minecraft.nbt.StringTag
+import com.mojang.authlib.properties.Property
+import com.mojang.authlib.properties.PropertyMap
+import net.minecraft.core.Holder
+import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.alchemy.Potion
-import net.minecraft.world.item.alchemy.PotionUtils
+import net.minecraft.world.item.alchemy.PotionContents
+import net.minecraft.world.item.component.ItemLore
+import net.minecraft.world.item.component.ResolvableProfile
 import net.minecraft.world.level.ItemLike
 import net.silkmc.silk.core.text.LiteralTextBuilder
 import net.silkmc.silk.core.text.literalText
@@ -35,18 +38,28 @@ inline fun itemStack(
  * one line.
  */
 fun ItemStack.setLore(text: Collection<Component>) {
-    getOrCreateTagElement("display").put(
-        "Lore",
-        text.mapTo(ListTag()) { StringTag.valueOf(Component.Serializer.toJson(it)) }
-    )
+    set(DataComponents.LORE, ItemLore(text.toList()))
 }
 
 /**
  * Opens a [LiteralTextBuilder] to change the custom name of
  * the item stack. See [literalText].
  */
-inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack =
-    setHoverName(literalText(baseText, builder))    
+inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack {
+    set(DataComponents.CUSTOM_NAME, literalText(baseText, builder))
+    return this
+}
+
+/**
+ * Opens a [LiteralTextBuilder] to change the "minecraft:item_name" item component of
+ * the item stack. Name set by "minecraft:item_name" would behave as the default name of this item
+ * (for example it will not show up when hovering an item frame with this item stack in it).
+ * See [literalText].
+ */
+inline fun ItemStack.setItemName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack {
+    set(DataComponents.ITEM_NAME, literalText(baseText, builder))
+    return this
+}
 
 /**
  * Sets the given potion for this [ItemStack].
@@ -61,12 +74,13 @@ inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBu
  * }
  * ```
  */
-fun ItemStack.setPotion(potion: Potion) {
-    PotionUtils.setPotion(this, potion)
+fun ItemStack.setPotion(potionHolder: Holder<Potion>) {
+    val potionContent = getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
+    set(DataComponents.POTION_CONTENTS, potionContent.withPotion(potionHolder))
 }
 
 /**
- * Configures the `SkullOwner` nbt tag to have the given [texture].
+ * Configures the `minecraft:profile` item component to have the given [texture].
  * The [texture] has to be base64 encoded.
  *
  * You can find a lot of heads with the associated base64 values on
@@ -85,26 +99,15 @@ fun ItemStack.setPotion(potion: Potion) {
  */
 fun ItemStack.setSkullTexture(
     texture: String,
-    uuid: UUID = UUID(0, 0),
+    uuid: UUID? = null,
 ) {
-    orCreateTag.put("SkullOwner", CompoundTag().apply {
-        putUUID("Id", uuid)
-
-        val propsCompound = if (this.contains("Properties"))
-            this.getCompound("Properties")
-        else
-            CompoundTag().also { put("Properties", it) }
-
-        propsCompound.put("textures", ListTag().apply {
-            add(CompoundTag().apply {
-                putString("Value", texture)
-            })
-        })
-    })
+    set(DataComponents.PROFILE, ResolvableProfile(Optional.of(""), Optional.ofNullable(uuid), PropertyMap().apply {
+        this.put("textures", Property("textures", texture))
+    }))
 }
 
 /**
- * Configures the `SkullOwner` nbt tag to represent the given player
+ * Configures the `minecraft:profile` item component to represent the given player
  * (specified via [uuid]). The [name] can be anything, but it *should* match
  * the actual player name.
  *
@@ -113,7 +116,5 @@ fun ItemStack.setSkullTexture(
  * ```
  */
 fun ItemStack.setSkullPlayer(player: ServerPlayer) {
-    player.gameProfile.properties.get("textures")
-        .map { it.value }
-        .forEach(::setSkullTexture)
+    set(DataComponents.PROFILE, ResolvableProfile(player.gameProfile))
 }

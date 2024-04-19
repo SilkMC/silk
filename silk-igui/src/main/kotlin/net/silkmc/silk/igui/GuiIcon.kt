@@ -1,9 +1,10 @@
 package net.silkmc.silk.igui
 
 import kotlinx.coroutines.runBlocking
+import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.silkmc.silk.core.text.literal
+import net.silkmc.silk.core.item.setCustomName
 import net.silkmc.silk.igui.observable.GuiProperty
 
 abstract class GuiIcon : GuiUseable() {
@@ -37,8 +38,8 @@ abstract class GuiIcon : GuiUseable() {
  * Creates a static gui icon.
  */
 val ItemStack.guiIcon get() = GuiIcon.StaticIcon(this.apply {
-    if (!hasCustomHoverName())
-        setHoverName("".literal)
+    if (!has(DataComponents.CUSTOM_NAME))
+        setCustomName("")
 })
 
 /**

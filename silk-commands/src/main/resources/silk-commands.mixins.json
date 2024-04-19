@@ -1,7 +1,7 @@
 {
   "package": "net.silkmc.silk.commands.mixin",
   "required": true,
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MixinCommands"
   ],

@@ -45,7 +45,7 @@ object ArgumentTypeUtils {
             CompoundTag::class -> CompoundTagArgument.compoundTag()
             Tag::class -> NbtTagArgument.nbtTag()
             ParticleOptions::class -> ParticleArgument.particle(context)
-            Component::class -> ComponentArgument.textComponent()
+            Component::class -> ComponentArgument.textComponent(context)
             GameProfileArgument.Result::class -> GameProfileArgument.gameProfile()
 
             // see ResourceArgument

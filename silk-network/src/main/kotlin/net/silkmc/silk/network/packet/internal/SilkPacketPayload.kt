@@ -1,19 +1,15 @@
 package net.silkmc.silk.network.packet.internal
 
-import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import net.silkmc.silk.core.annotations.InternalSilkApi
 
 @InternalSilkApi
 class SilkPacketPayload(
-    private val id: ResourceLocation,
+    id: ResourceLocation,
     val bytes: ByteArray,
 ) : CustomPacketPayload {
+    private val type = CustomPacketPayload.Type<SilkPacketPayload>(id)
 
-    override fun id() = id
-
-    override fun write(friendlyByteBuf: FriendlyByteBuf) {
-        friendlyByteBuf.writeByteArray(bytes)
-    }
+    override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> = type
 }

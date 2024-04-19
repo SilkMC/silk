@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.numbers.BlankFormat
+import net.minecraft.network.chat.numbers.NumberFormat
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.text.LiteralTextBuilder
 import net.silkmc.silk.core.text.literal
@@ -42,8 +44,9 @@ fun ServerPlayer.showSideboard(sideboard: Sideboard) {
 inline fun sideboard(
     displayName: Component,
     name: String = displayName.string.filter { it.isLetter() }.take(16),
+    numberFormat: NumberFormat = BlankFormat.INSTANCE,
     builder: SideboardBuilder.() -> Unit
-) = Sideboard(name, displayName, SideboardBuilder().apply(builder).lines)
+) = Sideboard(name, displayName, numberFormat, SideboardBuilder().apply(builder).lines)
 
 /**
  * A helper class which is used to create a [Sideboard].

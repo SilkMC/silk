@@ -3,24 +3,21 @@ package net.silkmc.silk.game.sideboard.internal
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.numbers.BlankFormat
+import net.minecraft.network.chat.numbers.NumberFormat
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundResetScorePacket
 import net.minecraft.network.protocol.game.ClientboundSetDisplayObjectivePacket
 import net.minecraft.network.protocol.game.ClientboundSetObjectivePacket
-import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket
 import net.minecraft.network.protocol.game.ClientboundSetScorePacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.scores.DisplaySlot
 import net.minecraft.world.scores.Objective
-import net.minecraft.world.scores.PlayerTeam
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.event.Events
 import net.silkmc.silk.core.event.Player
 import net.silkmc.silk.core.kotlin.LimitedAccessWrapper
 import net.silkmc.silk.core.task.silkCoroutineScope
-import net.silkmc.silk.core.text.literal
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -40,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap
 class SideboardScoreboard(
     name: String,
     displayName: Component,
+    val numberFormat: NumberFormat
 ) {
 
     companion object {
@@ -52,7 +50,7 @@ class SideboardScoreboard(
         }
     }
 
-    private val dummyObjective = Objective(NoopScoreboard, name, ObjectiveCriteria.DUMMY, displayName, ObjectiveCriteria.RenderType.INTEGER, false, BlankFormat.INSTANCE)
+    private val dummyObjective = Objective(NoopScoreboard, name, ObjectiveCriteria.DUMMY, displayName, ObjectiveCriteria.RenderType.INTEGER, false, numberFormat)
 
     // scoreboard state
     private val lines = LimitedAccessWrapper(ArrayList<Line>())
@@ -73,8 +71,8 @@ class SideboardScoreboard(
 
                 // add line packets
                 lines.access {
-                    it.reversed().forEachIndexed { index, line ->
-                        this@buildList.addAll(line.createInitPackets(index))
+                    it.reversed().forEachIndexed { _, line ->
+                        this@buildList.add(line.createContentPacket())
                     }
                 }
 
@@ -124,45 +122,31 @@ class SideboardScoreboard(
         }
     }
 
-    inner class Line(number: Int) {
-        private val fakePlayerName = number.toString().map { "§${it}" }.joinToString("")
-        private val teamName = "team_${number}"
+    inner class Line(number: Int, private var content: Component) {
+        private val fakePlayerName = "line$number"
+        private val score = -number
 
-        private val unsafeTeam = PlayerTeam(NoopScoreboard, teamName)
-        private val wrappedTeam = LimitedAccessWrapper(unsafeTeam)
-
-        suspend fun setContent(text: Component) {
-            val packet: Packet<*>
-            wrappedTeam.access { team ->
-                team.playerPrefix = text
-                packet = ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false)
-            }
-            emitPacket(packet)
+        fun createContentPacket(): Packet<*> {
+            return ClientboundSetScorePacket(fakePlayerName, dummyObjective.name, score, Optional.of(content), Optional.of(numberFormat))
         }
 
-        suspend fun createInitPackets(score: Int): List<Packet<*>> {
-            return buildList {
-                add(ClientboundSetScorePacket(fakePlayerName, dummyObjective.name, score, fakePlayerName.literal, BlankFormat.INSTANCE))
-                wrappedTeam.access { team ->
-                    add(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true))
-                }
-                add(ClientboundSetPlayerTeamPacket.createPlayerPacket(unsafeTeam, fakePlayerName, ClientboundSetPlayerTeamPacket.Action.ADD))
-            }
+        fun setContent(content: Component) {
+            this.content = content
+            emitPacket(createContentPacket())
         }
 
         fun createRemovePackets(): List<Packet<*>> {
             return buildList {
                 add(ClientboundResetScorePacket(fakePlayerName, dummyObjective.name))
-                add(ClientboundSetPlayerTeamPacket.createRemovePacket(unsafeTeam))
             }
         }
     }
 
-    suspend fun addLine(): Line {
+    suspend fun addLine(initialContent: Component): Line {
         val line: Line
         lines.access {
             val index = it.lastIndex + 1
-            line = Line(index)
+            line = Line(index, initialContent)
             it.add(line)
         }
         return line

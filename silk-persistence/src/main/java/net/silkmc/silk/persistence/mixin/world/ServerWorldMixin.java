@@ -31,7 +31,7 @@ public abstract class ServerWorldMixin implements CompoundProvider {
             getDataStorage().computeIfAbsent(
                 new SavedData.Factory<SavedData>(
                     () -> new CompoundPersistentState(compound),
-                    nbt -> CompoundPersistentState.Companion.load(nbt, compound),
+                        (nbt, provider) -> CompoundPersistentState.Companion.load(nbt, compound),
                     DataFixTypes.LEVEL // not actually, but we cannot use null here
                 ),
                 PersistentCompoundImpl.CUSTOM_DATA_KEY

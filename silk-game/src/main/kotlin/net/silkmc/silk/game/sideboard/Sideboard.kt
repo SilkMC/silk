@@ -2,8 +2,10 @@ package net.silkmc.silk.game.sideboard
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.numbers.NumberFormat
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.task.silkCoroutineScope
@@ -19,15 +21,16 @@ import net.silkmc.silk.game.sideboard.internal.SideboardScoreboard
 class Sideboard(
     name: String,
     displayName: Component,
+    numberFormat: NumberFormat,
     lines: List<SideboardLine>,
 ) {
 
     @InternalSilkApi
-    val scoreboard = SideboardScoreboard(name, displayName).also { scoreboard ->
+    val scoreboard = SideboardScoreboard(name, displayName, numberFormat).also { scoreboard ->
         @OptIn(ExperimentalCoroutinesApi::class)
         silkCoroutineScope.launch(Dispatchers.Default.limitedParallelism(1)) {
             lines.forEach { line ->
-                val scoreboardLine = scoreboard.addLine()
+                val scoreboardLine = scoreboard.addLine(line.textFlow.first())
                 silkCoroutineScope.launch {
                     line.textFlow.collect {
                         scoreboardLine.setContent(it)

@@ -33,7 +33,7 @@ public class MixinClientCommonPacketListenerImpl {
         ) {
             final var context = new ClientPacketContext();
 
-            if (ServerToClientPacketDefinition.Companion.onReceive(payload.id(), payload.getBytes(), context)) {
+            if (ServerToClientPacketDefinition.Companion.onReceive(payload.type().id(), payload.getBytes(), context)) {
                 ci.cancel();
             }
         }
