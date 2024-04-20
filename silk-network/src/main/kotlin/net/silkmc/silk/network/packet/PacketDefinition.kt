@@ -29,6 +29,9 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     protected val receiverScope = CoroutineScope(Dispatchers.Default.limitedParallelism(1))
 
+//    @InternalSilkApi
+//    val type: CustomPacketPayload.Type<SilkPacketPayload> = CustomPacketPayload.createType(id.toString())
+
     private fun onReceive(bytes: ByteArray, context: C) {
         receiverScope.launch {
             if (registeredReceivers.isNotEmpty()) {

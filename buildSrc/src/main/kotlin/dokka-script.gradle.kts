@@ -1,6 +1,6 @@
 import BuildConstants.githubRepo
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import java.net.URL
+import java.net.URI
 
 plugins {
     id("org.jetbrains.dokka")
@@ -38,11 +38,7 @@ tasks {
 
                 sourceLink {
                     localDirectory.set(file("src/main/kotlin"))
-                    remoteUrl.set(
-                        URL(
-                            "https://github.com/$githubRepo/tree/main/${project.name}/src/main/kotlin"
-                        )
-                    )
+                    remoteUrl.set(URI.create("https://github.com/$githubRepo/tree/main/${project.name}/src/main/kotlin").toURL())
                     remoteLineSuffix.set("#L")
                 }
 

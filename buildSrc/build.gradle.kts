@@ -25,15 +25,15 @@ dependencies {
     implementation(pluginDep("com.modrinth.minotaur", "2.8.7"))
 
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.5.11"))
-    implementation(pluginDep("xyz.jpenilla.run-paper", "2.2.2"))
+    implementation(pluginDep("xyz.jpenilla.run-paper", "2.2.3"))
 
-    val compileDokkaVersion = "1.9.0"
-    val dokkaVersion = "1.9.10"
+    val compileDokkaVersion = "1.9.20"
+    val dokkaVersion = "1.9.20"
 
     compileOnly("org.jetbrains.dokka:dokka-gradle-plugin:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
     compileOnly("org.jetbrains.dokka:dokka-base:$compileDokkaVersion")
     runtimeOnly("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 }

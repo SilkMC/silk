@@ -4,6 +4,7 @@ import com.mojang.authlib.properties.Property
 import com.mojang.authlib.properties.PropertyMap
 import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponents
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
@@ -12,9 +13,11 @@ import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.item.component.ResolvableProfile
 import net.minecraft.world.level.ItemLike
+import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.text.LiteralTextBuilder
 import net.silkmc.silk.core.text.literalText
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * A utility function for building complex [item] stacks with the given [amount].
@@ -77,6 +80,14 @@ inline fun ItemStack.setItemName(baseText: String = "", builder: LiteralTextBuil
 fun ItemStack.setPotion(potionHolder: Holder<Potion>) {
     val potionContent = getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
     set(DataComponents.POTION_CONTENTS, potionContent.withPotion(potionHolder))
+}
+
+@Deprecated(message = "Use the setPotion function with a holder instead. This function searches for the holder in the potion registry for compatibility only!")
+fun ItemStack.setPotion(potion: Potion) {
+    val potionRegistry = Silk.server?.registryAccess()?.registry(Registries.POTION)?.getOrNull() ?: return
+    val id = potionRegistry.getKey(potion) ?: return
+    val holder = potionRegistry.getHolder(id).getOrNull() ?: return
+    setPotion(holder)
 }
 
 /**

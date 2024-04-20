@@ -10,6 +10,20 @@ class SilkPacketPayload(
     val bytes: ByteArray,
 ) : CustomPacketPayload {
     private val type = CustomPacketPayload.Type<SilkPacketPayload>(id)
-
     override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> = type
 }
+
+//companion object {
+//    val STREAM_CODEC = CustomPacketPayload.codec(SilkPacketPayload::write, ::SilkPacketPayload)
+//}
+//
+//constructor(buf: FriendlyByteBuf) : this(
+//CustomPacketPayload.createType(buf.readResourceLocation().toString()),
+//buf.readByteArray()
+//)
+//
+//fun write(buf: FriendlyByteBuf) {
+//    buf.writeByteArray(bytes)
+//}
+//
+//override fun type(): CustomPacketPayload.Type<SilkPacketPayload> = type
