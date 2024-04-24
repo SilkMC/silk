@@ -36,6 +36,7 @@ public class EntityMixin implements CompoundProvider {
         compound.loadFromCompound(nbt);
     }
 
+    @Unique
     @NotNull
     @Override
     public PersistentCompound getCompound() {

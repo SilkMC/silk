@@ -3,7 +3,7 @@ package net.silkmc.silk.persistence.mixin.other;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.util.datafix.DataFixTypes;
-import net.silkmc.silk.persistence.internal.CompoundPersistentState;
+import net.silkmc.silk.persistence.internal.CompoundSavedData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,7 +22,7 @@ public class MixinDataFixTypes {
                               int oldVersion, int newVersion,
                               CallbackInfoReturnable<Dynamic<T>> cir) {
         // has this been called during a persistent data read operation?
-        if (CompoundPersistentState.Companion.getBLOCK_DATA_FIXER().get()) {
+        if (CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().get()) {
             // just return the input
             cir.setReturnValue(input);
         }

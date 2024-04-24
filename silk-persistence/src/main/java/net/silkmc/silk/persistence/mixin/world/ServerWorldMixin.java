@@ -1,16 +1,12 @@
 package net.silkmc.silk.persistence.mixin.world;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.datafix.DataFixTypes;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.silkmc.silk.persistence.CompoundProvider;
 import net.silkmc.silk.persistence.PersistentCompound;
 import net.silkmc.silk.persistence.PersistentCompoundImpl;
-import net.silkmc.silk.persistence.internal.CompoundPersistentState;
+import net.silkmc.silk.persistence.internal.CompoundSavedData;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,25 +18,31 @@ public abstract class ServerWorldMixin implements CompoundProvider {
     @Unique
     private final PersistentCompound compound = new PersistentCompoundImpl();
 
-    @Shadow public abstract DimensionDataStorage getDataStorage();
-
+    @SuppressWarnings("UnreachableCode")
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
+        final var serverLevel = (ServerLevel) (Object) this;
+
         try {
-            CompoundPersistentState.Companion.getBLOCK_DATA_FIXER().set(true);
-            getDataStorage().computeIfAbsent(
-                new SavedData.Factory<SavedData>(
-                    () -> new CompoundPersistentState(compound),
-                    (nbt, provider) -> CompoundPersistentState.Companion.load(nbt, compound),
-                    DataFixTypes.LEVEL // not actually, but we cannot use null here
-                ),
-                PersistentCompoundImpl.CUSTOM_DATA_KEY
-            );
+            CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().set(true);
+
+            final var factory = CompoundSavedData.createFactory(compound);
+            final var dataStorage = serverLevel.getDataStorage();
+
+            // move legacy data
+            final var legacyData = dataStorage.get(factory, PersistentCompoundImpl.LEGACY_CUSTOM_DATA_KEY);
+            if (legacyData != null) {
+                dataStorage.set(PersistentCompoundImpl.CUSTOM_DATA_KEY, legacyData);
+                // note: we do not delete the legacy data, as there is no official way to do so
+            }
+
+            dataStorage.computeIfAbsent(factory, PersistentCompoundImpl.CUSTOM_DATA_KEY);
         } finally {
-            CompoundPersistentState.Companion.getBLOCK_DATA_FIXER().set(false);
+            CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().set(false);
         }
     }
 
+    @Unique
     @NotNull
     @Override
     public PersistentCompound getCompound() {

@@ -14,6 +14,7 @@ public class ProtoChunkMixin implements CompoundProvider {
     @Unique
     private final PersistentCompound compound = new PersistentCompoundImpl();
 
+    @Unique
     @NotNull
     @Override
     public PersistentCompound getCompound() {

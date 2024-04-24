@@ -147,12 +147,20 @@ object EmptyPersistentCompound : PersistentCompound() {
  */
 internal class PersistentCompoundImpl : PersistentCompound() {
     companion object {
-        const val CUSTOM_DATA_KEY = "fabrikmcData"
+        const val CUSTOM_DATA_KEY = "silkmc_persistent_data"
+        const val LEGACY_CUSTOM_DATA_KEY = "fabrikmcData"
     }
 
     override var data: CompoundTag? = CompoundTag()
 
     override fun loadFromCompound(nbtCompound: CompoundTag, loadRaw: Boolean) {
+        // move legacy tag
+        if (nbtCompound.contains(LEGACY_CUSTOM_DATA_KEY)) {
+            val legacyData = nbtCompound.getCompound(LEGACY_CUSTOM_DATA_KEY)
+            nbtCompound.put(CUSTOM_DATA_KEY, legacyData.copy())
+            nbtCompound.remove(LEGACY_CUSTOM_DATA_KEY)
+        }
+
         data = if (loadRaw) nbtCompound else nbtCompound.getCompound(CUSTOM_DATA_KEY)
     }
 

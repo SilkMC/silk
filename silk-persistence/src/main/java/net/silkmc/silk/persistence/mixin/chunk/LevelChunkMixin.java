@@ -31,6 +31,7 @@ public class LevelChunkMixin implements CompoundProvider {
         compound = ((CompoundProvider) protoChunk).getCompound();
     }
 
+    @Unique
     @NotNull
     @Override
     public PersistentCompound getCompound() {
