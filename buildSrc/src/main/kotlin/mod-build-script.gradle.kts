@@ -23,8 +23,6 @@ dependencies {
     mappings(loom.layered {
         officialMojangMappings()
     })
-
-    // modImplementation("net.fabricmc.fabric-api:fabric-api:0.86.1+1.20.1")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 }
@@ -90,7 +88,7 @@ tasks {
             } ?: linkedMapOf(),
             modMixinFiles ?: emptyList(),
             linkedMapOf(
-                "fabric-language-kotlin" to ">=1.8.0+kotlin.1.7.0",
+                "fabric-language-kotlin" to ">=1.9.0+kotlin.1.8.0",
                 "minecraft" to "${majorMinecraftVersion}.x"
             ).apply { putAll(modDepends ?: emptyMap()) },
             FabricModConfiguration.Contact(
