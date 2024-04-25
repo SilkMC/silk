@@ -14,11 +14,10 @@ import net.silkmc.silk.core.task.McCoroutineManager
 @InternalSilkApi
 class SilkEntrypoint : ModInitializer, ClientModInitializer {
     override fun onInitialize() {
-        logInfo("Initializing Silk due to init call")
+        logInfo("Initializing Silk")
 
         Events.Server.preStart.listen(EventPriority.FIRST) {
             Silk.server = it.server
-            logInfo("Reached SERVER_STARTING state")
         }
 
         McCoroutineManager.init()
