@@ -1,9 +1,9 @@
 package net.silkmc.silk.core.text
 
+import net.minecraft.commands.CommandSource
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.MinecraftServer
-import net.minecraft.world.entity.player.Player
 import org.apache.commons.lang3.text.WordUtils
 
 /**
@@ -29,19 +29,24 @@ inline fun String.literalLines(
 
 /**
  * Sends the given [Component] to the player.
+ *
+ * This function currently simply calls the [CommandSource.sendSystemMessage] function.
+ * It exists to provide a more consistent API with the more complex [sendText] builder
+ * function.
+ * Additionally, it will remain stable in case Minecraft changes the API in the future.
  */
-fun Player.sendText(text: Component) {
-    displayClientMessage(text, false)
+fun CommandSource.sendText(text: Component) {
+    sendSystemMessage(text)
 }
 
 /**
- * Opens a [LiteralTextBuilder] and sends the resulting [TextComponent]
+ * Opens a [LiteralTextBuilder] and sends the resulting [MutableComponent]
  * to the player.
  *
  * @see [literalText]
  */
-inline fun Player.sendText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = { }) {
-    displayClientMessage(literalText(baseText, builder), false)
+inline fun CommandSource.sendText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = { }) {
+    sendSystemMessage(literalText(baseText, builder))
 }
 
 /**
