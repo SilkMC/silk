@@ -24,6 +24,10 @@ private fun createItems(player: ServerPlayer) = listOf(
     itemStack(Items.PLAYER_HEAD) {
         setSkullPlayer(player)
     },
+    itemStack(Items.PLAYER_HEAD) {
+        setCustomName("BastiGHG Player Head")
+        setSkullTexture(name = "BastiGHG")
+    },
 )
 
 val itemTestCommand = testCommand("item") {

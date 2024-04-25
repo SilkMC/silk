@@ -46,22 +46,24 @@ fun ItemStack.setLore(text: Collection<Component>) {
 
 /**
  * Opens a [LiteralTextBuilder] to change the custom name of
- * the item stack. See [literalText].
+ * the item stack. Sets [DataComponents.CUSTOM_NAME].
+ *
+ * @see literalText
  */
-inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack {
+inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}) {
     set(DataComponents.CUSTOM_NAME, literalText(baseText, builder))
-    return this
 }
 
 /**
- * Opens a [LiteralTextBuilder] to change the "minecraft:item_name" item component of
- * the item stack. Name set by "minecraft:item_name" would behave as the default name of this item
+ * Opens a [LiteralTextBuilder] to change the `minecraft:item_name` item component of
+ * the item stack. Names set by `minecraft:item_name` would behave as the default name of this item
  * (for example it will not show up when hovering an item frame with this item stack in it).
- * See [literalText].
+ * Sets [DataComponents.ITEM_NAME].
+ *
+ * @see literalText
  */
-inline fun ItemStack.setItemName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}): ItemStack {
+inline fun ItemStack.setItemName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}) {
     set(DataComponents.ITEM_NAME, literalText(baseText, builder))
-    return this
 }
 
 /**
@@ -91,35 +93,48 @@ fun ItemStack.setPotion(potion: Potion) {
 }
 
 /**
- * Configures the `minecraft:profile` item component to have the given [texture].
- * The [texture] has to be base64 encoded.
+ * Configures the `minecraft:profile` item component to have the given texture.
+ * It can be provided via [texture], [uuid] or [name].
+ * If provided, the [texture] has to be base64 encoded.
  *
  * You can find a lot of heads with the associated base64 values on
  * [minecraft-heads.com](https://minecraft-heads.com/).
  *
- * Optional, you can specify a [uuid]. This is *not* necessary if this head
- * is just used because of its texture, but you should specify one if the head
- * is associated with an actual player.
+ * Possible ways of using this function are:
  *
  * ```kotlin
- * skullStack.setSkullTexture(
- *     texture = "eyJ0ZXh0dXJlcyI6ey...", // base64 encoded texture json (this example is truncated)
- *     uuid = UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5") // this is optional
- * )
+ * // base64 encoded texture json (this example is truncated)
+ * skullStack.setSkullTexture(texture = "eyJ0ZXh0dXJlcyI6ey...")
+ * // or
+ * skullStack.setSkullTexture(uuid = uuid = UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5"))
+ * // or
+ * skullStack.setSkullTexture(name = "Notch")
  * ```
+ *
+ * Beware that not setting the texture directly will result in an API call to Mojang.
  */
 fun ItemStack.setSkullTexture(
-    texture: String,
+    texture: String? = null,
     uuid: UUID? = null,
+    name: String? = null,
 ) {
-    set(DataComponents.PROFILE, ResolvableProfile(Optional.of(""), Optional.ofNullable(uuid), PropertyMap().apply {
-        this.put("textures", Property("textures", texture))
-    }))
+    val profile = ResolvableProfile(
+        Optional.ofNullable(name),
+        Optional.ofNullable(uuid),
+        PropertyMap().apply {
+            if (texture != null) {
+                put("textures", Property("textures", texture))
+            }
+        }
+    )
+    set(DataComponents.PROFILE, profile)
 }
 
 /**
  * Configures the `minecraft:profile` item component to represent the given player
- * (specified via [uuid]). The [name] can be anything, but it *should* match
+ * (specified via [uuid] in its game profile).
+ *
+ * The internal [name] can be anything, but it *should* match
  * the actual player name.
  *
  * ```kotlin
