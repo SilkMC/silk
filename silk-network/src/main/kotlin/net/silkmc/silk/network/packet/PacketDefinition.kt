@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalSerializationApi::class)
 @file:Suppress("MemberVisibilityCanBePrivate")
 
 package net.silkmc.silk.network.packet
@@ -7,10 +6,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.cbor.Cbor
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.codec.StreamCodec
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
+import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.network.packet.internal.SilkPacketPayload
 import java.util.concurrent.ConcurrentHashMap
 
@@ -19,9 +21,9 @@ import java.util.concurrent.ConcurrentHashMap
  * and [ClientToServerPacketDefinition]. Additionally, this class is partially the basis of
  * [ClientToClientPacketDefinition].
  */
-abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
+sealed class AbstractPacketDefinition<T : Any, C>(
     val id: ResourceLocation,
-    val cbor: Cbor,
+    val binaryFormat: BinaryFormat,
     private val serializer: KSerializer<T>,
 ) {
     private val registeredReceivers = ArrayList<suspend (T, C) -> Unit>()
@@ -29,10 +31,17 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     protected val receiverScope = CoroutineScope(Dispatchers.Default.limitedParallelism(1))
 
-//    @InternalSilkApi
-//    val type: CustomPacketPayload.Type<SilkPacketPayload> = CustomPacketPayload.createType(id.toString())
+    @InternalSilkApi
+    val type: CustomPacketPayload.Type<SilkPacketPayload> = CustomPacketPayload.createType(id.toString())
 
-    private fun onReceive(bytes: ByteArray, context: C) {
+    @InternalSilkApi
+    val streamCodec: StreamCodec<FriendlyByteBuf, SilkPacketPayload> =
+        object : StreamCodec<FriendlyByteBuf, SilkPacketPayload> {
+            override fun decode(buf: FriendlyByteBuf) = SilkPacketPayload(this@AbstractPacketDefinition, buf.readByteArray())
+            override fun encode(buf: FriendlyByteBuf, payload: SilkPacketPayload) { buf.writeByteArray(payload.bytes) }
+        }
+
+    internal fun onReceive(bytes: ByteArray, context: C) {
         receiverScope.launch {
             if (registeredReceivers.isNotEmpty()) {
                 val value = deserialize(bytes)
@@ -43,21 +52,20 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
         }
     }
 
-    internal fun registerReceiver(receiver: suspend (T, C) -> Unit, definitionRegistry: DefinitionRegistry<C>) {
+    internal fun registerReceiver(receiver: suspend (T, C) -> Unit) {
         receiverScope.launch {
-            definitionRegistry.register(this@AbstractPacketDefinition)
             registeredReceivers += receiver
         }
     }
 
     internal fun deserialize(byteArray: ByteArray): T {
-        return cbor.decodeFromByteArray(serializer, byteArray)
+        return binaryFormat.decodeFromByteArray(serializer, byteArray)
     }
 
     protected fun createPayload(value: T): SilkPacketPayload {
         return SilkPacketPayload(
-            id,
-            cbor.encodeToByteArray(serializer, value)
+            this,
+            binaryFormat.encodeToByteArray(serializer, value)
         )
     }
 
@@ -68,13 +76,8 @@ abstract class AbstractPacketDefinition<T : Any, C> internal constructor(
             registeredDefinitions[definition.id] = definition
         }
 
-        fun onReceive(channel: ResourceLocation, bytes: ByteArray, context: C): Boolean {
-            registeredDefinitions[channel]?.onReceive(bytes, context) ?: return false
-            return true
-        }
-
-        fun isRegistered(channel: ResourceLocation): Boolean {
-            return registeredDefinitions.containsKey(channel)
+        fun lookupDefinition(channel: ResourceLocation): AbstractPacketDefinition<*, C>? {
+            return registeredDefinitions[channel]
         }
     }
 }

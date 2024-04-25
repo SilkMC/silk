@@ -8,6 +8,6 @@
     "server.MixinServerGamePacketListenerImpl"
   ],
   "client": [
-    "client.MixinClientCommonPacketListenerImpl"
+    "client.MixinClientPacketListener"
   ]
 }

@@ -1,7 +1,7 @@
 package net.silkmc.silk.network.packet
 
+import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.cbor.Cbor
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
@@ -13,11 +13,9 @@ import net.silkmc.silk.network.packet.internal.SilkPacketPayload
  */
 class ServerToClientPacketDefinition<T : Any>(
     id: ResourceLocation,
-    cbor: Cbor,
+    binaryFormat: BinaryFormat,
     deserializer: KSerializer<T>,
-) : AbstractPacketDefinition<T, ClientPacketContext>(id, cbor, deserializer) {
-
-    internal companion object : DefinitionRegistry<ClientPacketContext>()
+) : AbstractPacketDefinition<T, ClientPacketContext>(id, binaryFormat, deserializer) {
 
     /**
      * Sends the given [value] to the given [player]. This will result in the
@@ -40,10 +38,13 @@ class ServerToClientPacketDefinition<T : Any>(
      * Executes the given [receiver] as a callback when this packet is received on the client-side.
      */
     fun receiveOnClient(receiver: suspend (packet: T, context: ClientPacketContext) -> Unit) {
-        registerReceiver(receiver, Companion)
+        registerReceiver(receiver)
     }
 
     private fun send(payload: SilkPacketPayload, player: ServerPlayer) {
         player.connection.send(ClientboundCustomPayloadPacket(payload))
     }
+
+    internal companion object : DefinitionRegistry<ClientPacketContext>()
+    init { register(this) }
 }

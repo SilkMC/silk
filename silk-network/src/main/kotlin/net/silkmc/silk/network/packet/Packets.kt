@@ -1,5 +1,6 @@
 package net.silkmc.silk.network.packet
 
+import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.serializer
 import net.minecraft.resources.ResourceLocation
@@ -11,10 +12,11 @@ import net.minecraft.resources.ResourceLocation
  *
  * @param id the [ResourceLocation] allowing communication between server and client as they
  * both know this identifier
- * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
+ * @param format (optional) the [BinaryFormat] instance used for serialization and
+ * deserialization of this packet ([Cbor] by default)
  */
-inline fun <reified T : Any> s2cPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
-    ServerToClientPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
+inline fun <reified T : Any> s2cPacket(id: ResourceLocation, format: BinaryFormat = Cbor) =
+    ServerToClientPacketDefinition<T>(id, format, format.serializersModule.serializer())
 
 /**
  * Creates a new [ClientToServerPacketDefinition]. This packet can only be sent
@@ -23,10 +25,11 @@ inline fun <reified T : Any> s2cPacket(id: ResourceLocation, cbor: Cbor = Cbor) 
  *
  * @param id the [ResourceLocation] allowing communication between server and client as they
  * both know this identifier
- * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
+ * @param format (optional) the [BinaryFormat] instance used for serialization and
+ * deserialization of this packet ([Cbor] by default)
  */
-inline fun <reified T : Any> c2sPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
-    ClientToServerPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
+inline fun <reified T : Any> c2sPacket(id: ResourceLocation, format: BinaryFormat = Cbor) =
+    ClientToServerPacketDefinition<T>(id, format, format.serializersModule.serializer())
 
 /**
  * Creates a new [ClientToClientPacketDefinition]. This packet can only be sent
@@ -36,7 +39,8 @@ inline fun <reified T : Any> c2sPacket(id: ResourceLocation, cbor: Cbor = Cbor) 
  *
  * @param id the [ResourceLocation] allowing communication between server and client as they
  * both know this identifier
- * @param cbor (optional) the [Cbor] instanced used for serialization and deserialization of this packet
+ * @param format (optional) the [BinaryFormat] instance used for serialization and
+ * deserialization of this packet ([Cbor] by default)
  */
-inline fun <reified T : Any> c2cPacket(id: ResourceLocation, cbor: Cbor = Cbor) =
-    ClientToClientPacketDefinition<T>(id, cbor, cbor.serializersModule.serializer())
+inline fun <reified T : Any> c2cPacket(id: ResourceLocation, format: BinaryFormat = Cbor) =
+    ClientToClientPacketDefinition<T>(id, format, format.serializersModule.serializer())

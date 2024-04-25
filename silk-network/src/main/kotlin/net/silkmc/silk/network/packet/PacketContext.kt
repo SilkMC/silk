@@ -17,4 +17,6 @@ class ServerPacketContext(
     )
 }
 
-class ClientPacketContext(val client: Minecraft = Minecraft.getInstance())
+class ClientPacketContext(
+    val client: Minecraft = Minecraft.getInstance()
+)

@@ -1,12 +1,10 @@
-@file:OptIn(ExperimentalSerializationApi::class)
 @file:Suppress("MemberVisibilityCanBePrivate")
 
 package net.silkmc.silk.network.packet
 
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.cbor.Cbor
 import net.minecraft.client.Minecraft
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket
@@ -27,9 +25,9 @@ typealias ServerPacketForwarder<T> = suspend ClientToClientPacketDefinition<T>.(
  */
 class ClientToClientPacketDefinition<T : Any>(
     id: ResourceLocation,
-    cbor: Cbor,
+    binaryFormat: BinaryFormat,
     deserializer: KSerializer<T>,
-) : AbstractPacketDefinition<T, ClientPacketContext>(id, cbor, deserializer) {
+) : AbstractPacketDefinition<T, ClientPacketContext>(id, binaryFormat, deserializer) {
 
     /**
      * The forwarder responsible for deciding which packets will be forwarded
@@ -44,11 +42,11 @@ class ClientToClientPacketDefinition<T : Any>(
      * A special receive function, which handles incoming packets on the server,
      * which are meant to be forwarded to another client.
      */
-    private fun onReceiveServer(bytes: ByteArray, context: ServerPacketContext) {
+    internal fun onReceiveServer(bytes: ByteArray, context: ServerPacketContext) {
         receiverScope.launch {
             val receivers = forwarder?.invoke(this@ClientToClientPacketDefinition, SerializedPacket(bytes), context)
             if (receivers?.isNotEmpty() == true) {
-                val payload = SilkPacketPayload(id, bytes)
+                val payload = SilkPacketPayload(this@ClientToClientPacketDefinition, bytes)
                 receivers.forEach { it.connection.send(ClientboundCustomPayloadPacket(payload)) }
             }
         }
@@ -69,7 +67,6 @@ class ClientToClientPacketDefinition<T : Any>(
      */
     fun forwardOnServer(forwarder: ServerPacketForwarder<T>) {
         receiverScope.launch {
-            register(this@ClientToClientPacketDefinition)
             this@ClientToClientPacketDefinition.forwarder = forwarder
         }
     }
@@ -78,7 +75,7 @@ class ClientToClientPacketDefinition<T : Any>(
      * Executes the given [receiver] as a callback when this packet is received on the client-side.
      */
     fun receiveOnClient(receiver: suspend (packet: T, context: ClientPacketContext) -> Unit) {
-        registerReceiver(receiver, Companion)
+        registerReceiver(receiver)
     }
 
     /**
@@ -99,15 +96,6 @@ class ClientToClientPacketDefinition<T : Any>(
         connection.send(ServerboundCustomPayloadPacket(payload))
     }
 
-    internal companion object : DefinitionRegistry<ClientPacketContext>() {
-
-        /**
-         * @see [ClientToClientPacketDefinition.onReceiveServer]
-         */
-        fun onReceiveServer(channel: ResourceLocation, bytes: ByteArray, context: ServerPacketContext): Boolean {
-            (registeredDefinitions[channel] as? ClientToClientPacketDefinition<*>?)
-                ?.onReceiveServer(bytes, context) ?: return false
-            return true
-        }
-    }
+    internal companion object : DefinitionRegistry<ClientPacketContext>()
+    init { register(this) }
 }
