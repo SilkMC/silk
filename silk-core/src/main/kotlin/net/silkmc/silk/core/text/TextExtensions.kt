@@ -45,7 +45,7 @@ fun CommandSource.sendText(text: Component) {
  *
  * @see [literalText]
  */
-inline fun CommandSource.sendText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = { }) {
+inline fun CommandSource.sendText(baseText: String? = null, builder: LiteralTextBuilder.() -> Unit = { }) {
     sendSystemMessage(literalText(baseText, builder))
 }
 
@@ -55,7 +55,7 @@ inline fun CommandSource.sendText(baseText: String = "", builder: LiteralTextBui
  *
  * @see [literalText]
  */
-inline fun MinecraftServer.broadcastText(baseText: String = "", builder: LiteralTextBuilder.() -> Unit= { }) {
+inline fun MinecraftServer.broadcastText(baseText: String? = null, builder: LiteralTextBuilder.() -> Unit= { }) {
     broadcastText(literalText(baseText, builder))
 }
 

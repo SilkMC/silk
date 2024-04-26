@@ -161,7 +161,7 @@ class SideboardBuilder {
         message = "This function is not useful enough to stay in Silk, therefore it will be removed in the future.",
         replaceWith = ReplaceWith("line(literalText(baseText) { builder() })")
     )
-    inline fun literalLine(baseText: String = "", crossinline builder: LiteralTextBuilder.() -> Unit = {}) {
+    inline fun literalLine(baseText: String? = null, crossinline builder: LiteralTextBuilder.() -> Unit = {}) {
         line(literalText(baseText, builder))
     }
 
@@ -174,7 +174,7 @@ class SideboardBuilder {
         replaceWith = ReplaceWith("emit(literalText(baseText) { builder() }")
     )
     suspend inline fun FlowCollector<Component>.emitLiteralText(
-        baseText: String = "",
+        baseText: String? = null,
         crossinline builder: LiteralTextBuilder.() -> Unit = {}
     ) {
         emit(literalText(baseText, builder))

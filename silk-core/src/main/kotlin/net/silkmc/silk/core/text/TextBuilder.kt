@@ -2,34 +2,35 @@
 
 package net.silkmc.silk.core.text
 
-import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.*
 import net.minecraft.resources.ResourceLocation
 
 /**
  * Opens a [LiteralTextBuilder].
  *
- * @param baseText the text you want to begin with, it is okay to let this empty
+ * @param baseText the text you want to begin with, it is okay to leave this empty or null
  * @param builder the builder which can be used to set the style and add child text components
  */
 inline fun literalText(
-    baseText: String = "",
+    baseText: String? = null,
     builder: LiteralTextBuilder.() -> Unit = { }
-) = LiteralTextBuilder(baseText, Style.EMPTY, false).apply(builder).build()
+) = LiteralTextBuilder(baseText, true).apply(builder).build()
 
 class LiteralTextBuilder(
-    private val text: MutableComponent,
-    private val parentStyle: Style,
-    private val inheritStyle: Boolean
+    private val baseText: Component?,
+    private val inheritStyle: Boolean,
 ) {
-    constructor(text: String, parentStyle: Style, inheritStyle: Boolean) :
-            this(Component.literal(text), parentStyle, inheritStyle)
+    constructor(text: String?, inheritStyle: Boolean) :
+            this(text?.literal, inheritStyle)
 
-    var bold: Boolean? = null
-    var italic: Boolean? = null
-    var underline: Boolean? = null
-    var strikethrough: Boolean? = null
-    var obfuscated: Boolean? = null
+    @Suppress("NOTHING_TO_INLINE") // default should only be initialized when inheritance is disabled
+    private inline fun <T> withDefault(default: T): T? = if (inheritStyle) null else default
+
+    var bold: Boolean? = withDefault(false)
+    var italic: Boolean? = withDefault(false)
+    var underline: Boolean? = withDefault(false)
+    var strikethrough: Boolean? = withDefault(false)
+    var obfuscated: Boolean? = withDefault(false)
 
     /**
      * The text color.
@@ -43,14 +44,14 @@ class LiteralTextBuilder(
      *  - `color = 0xF21347`
      *  - `color = 15864647`
      */
-    var color: Int? = null
+    var color: Int? = withDefault(0xFFFFFF)
 
     /**
      * The resource location of the font for this component in the
      * resource pack or mod resources within `assets/<namespace>/font`.
      * Defaults to "minecraft:default".
      */
-    var font: ResourceLocation? = null
+    var font: ResourceLocation? = withDefault(Style.DEFAULT_FONT)
 
     /**
      * When the text is shift-clicked by a player, this string is inserted in their chat input.
@@ -65,17 +66,27 @@ class LiteralTextBuilder(
         get() = Style.EMPTY
             .withBold(bold)
             .withItalic(italic)
-            .let { if (underline == true) it.applyFormat(ChatFormatting.UNDERLINE) else it }
-            .let { if (strikethrough == true) it.applyFormat(ChatFormatting.STRIKETHROUGH) else it }
-            .let { if (obfuscated == true) it.applyFormat(ChatFormatting.OBFUSCATED) else it }
-            .let { if (color != null) it.withColor(TextColor.fromRgb(color ?: 0xFFFFFF)) else it }
+            .withUnderlined(underline)
+            .withStrikethrough(strikethrough)
+            .withObfuscated(obfuscated)
+            .withColor(color?.let { c -> TextColor.fromRgb(c) })
             .withFont(font)
             .withInsertion(insertion)
             .withClickEvent(clickEvent)
             .withHoverEvent(hoverEvent)
-            .let { if (inheritStyle) it.applyTo(parentStyle) else it }
 
-    val siblingText: MutableComponent = Component.literal("")
+    @PublishedApi
+    internal val placeholderText: MutableComponent = Component.empty()
+
+    @PublishedApi
+    internal val appendTasks = mutableListOf<() -> Unit>()
+
+    @PublishedApi
+    internal inline fun append(crossinline appender: () -> Component) {
+        appendTasks.add {
+            placeholderText.append(appender())
+        }
+    }
 
     /**
      * Append text to the parent.
@@ -87,13 +98,16 @@ class LiteralTextBuilder(
     inline fun text(
         text: String = "",
         inheritStyle: Boolean = true,
-        builder: LiteralTextBuilder.() -> Unit = { }
+        crossinline builder: LiteralTextBuilder.() -> Unit = { }
     ) {
-        siblingText.append(LiteralTextBuilder(text, currentStyle, inheritStyle).apply(builder).build())
+        append {
+            LiteralTextBuilder(text, inheritStyle)
+                .apply(builder).build()
+        }
     }
 
     /**
-     * Append text to the parent.
+     * Appends a [MutableComponent] to the parent.
      *
      * @param text the text instance
      * @param inheritStyle if true, this text will inherit the style from its parent
@@ -102,12 +116,11 @@ class LiteralTextBuilder(
     inline fun text(
         text: Component,
         inheritStyle: Boolean = true,
-        builder: LiteralTextBuilder.() -> Unit = { }
+        crossinline builder: LiteralTextBuilder.() -> Unit = { }
     ) {
-        if (text is MutableComponent) {
-            siblingText.append(LiteralTextBuilder(text, currentStyle, inheritStyle).apply(builder).build())
-        } else {
-            siblingText.append(text)
+        append {
+            LiteralTextBuilder(text, inheritStyle)
+                .apply(builder).build()
         }
     }
 
@@ -115,7 +128,9 @@ class LiteralTextBuilder(
      * Adds a line break.
      */
     fun newLine() {
-        siblingText.append(Component.literal("\n"))
+        append {
+            Component.literal("\n")
+        }
     }
 
     /**
@@ -126,9 +141,24 @@ class LiteralTextBuilder(
         newLine()
     }
 
-    fun build() = text.apply {
-        style = currentStyle
-        if (siblingText.siblings.isNotEmpty())
-            append(siblingText)
+    fun build(): MutableComponent {
+        // apply style and append children
+        placeholderText.style = currentStyle
+        appendTasks.forEach { it() }
+
+        // no children, return (optionally styled) base text
+        if (placeholderText.siblings.isEmpty() && baseText is MutableComponent) {
+            val returnText = baseText.copy()
+            if (placeholderText.style.isEmpty.not()) {
+                returnText.style = placeholderText.style.applyTo(returnText.style)
+            }
+            return returnText
+        }
+
+        // children exist, append base text if present and return placeholder
+        if (baseText != null) {
+            placeholderText.siblings.addFirst(baseText)
+        }
+        return placeholderText
     }
 }

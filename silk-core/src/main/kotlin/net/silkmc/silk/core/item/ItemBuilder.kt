@@ -50,7 +50,7 @@ fun ItemStack.setLore(text: Collection<Component>) {
  *
  * @see literalText
  */
-inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}) {
+inline fun ItemStack.setCustomName(baseText: String? = null, builder: LiteralTextBuilder.() -> Unit = {}) {
     set(DataComponents.CUSTOM_NAME, literalText(baseText, builder))
 }
 
@@ -62,7 +62,7 @@ inline fun ItemStack.setCustomName(baseText: String = "", builder: LiteralTextBu
  *
  * @see literalText
  */
-inline fun ItemStack.setItemName(baseText: String = "", builder: LiteralTextBuilder.() -> Unit = {}) {
+inline fun ItemStack.setItemName(baseText: String? = null, builder: LiteralTextBuilder.() -> Unit = {}) {
     set(DataComponents.ITEM_NAME, literalText(baseText, builder))
 }
 
