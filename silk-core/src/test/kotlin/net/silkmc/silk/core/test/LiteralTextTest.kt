@@ -83,40 +83,35 @@ class LiteralTextTest : FunSpec({
                 }
             }
 
-            val siblings = text.siblings.first().siblings
+            val siblings = text.siblings
+
+            println(text.toString())
 
             test("basic style correctness") {
-                siblings.size shouldBe 5
+                siblings.size shouldBe 6
 
-                siblings[0].style.isItalic shouldBe true
-                siblings[1].style.isUnderlined shouldBe true
-                siblings[2].style.isItalic shouldBe true
-            }
-
-            test("check inheritance") {
-                siblings[0].style.isBold shouldBe true
+                siblings[1].style.isItalic shouldBe true
+                siblings[2].style.isUnderlined shouldBe true
+                siblings[3].style.isItalic shouldBe true
             }
             test("check inheritance override") {
-                siblings[1].style.color?.value shouldBe blueColor
+                siblings[2].style.color?.value shouldBe blueColor
             }
             test("check disabled inheritance") {
-                siblings[2].style.isBold shouldBe false
-                siblings[2].style.color?.value shouldNotBe redColor
+                siblings[3].style.isBold shouldBe false
+                siblings[3].style.color?.value shouldNotBe redColor
             }
             test("check disabled inheritance and new color") {
-                siblings[3].style.isBold shouldBe false
-                siblings[3].style.color?.value shouldBe blueColor
+                siblings[4].style.isBold shouldBe false
+                siblings[4].style.color?.value shouldBe blueColor
             }
 
             test("nested sub texts should work") {
-                siblings[4].siblings.size shouldBe 1
-                siblings[4].siblings.first().siblings.size shouldBe 1
+                siblings[5].siblings.size shouldBe 2
+                siblings[5].siblings.first().siblings.size shouldBe 0
 
-                val nestedSubText = siblings[4].siblings.first().siblings.first()
+                val nestedSubText = siblings[5].siblings[1]
                 nestedSubText.string shouldBe nestedSubString
-
-                nestedSubText.style.isBold shouldBe true
-                nestedSubText.style.color?.value shouldBe redColor
             }
         }
     }

@@ -1,9 +1,15 @@
 package net.silkmc.silk.core.text
 
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import net.minecraft.commands.CommandSource
+import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.MinecraftServer
+import net.silkmc.silk.core.annotations.DelicateSilkApi
+import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import org.apache.commons.lang3.text.WordUtils
 
 /**
@@ -72,4 +78,17 @@ fun MinecraftServer.broadcastText(text: Component) {
 )
 fun MinecraftServer.sendText(text: Component) {
     broadcastText(text)
+}
+
+/**
+ * Returns a pretty printed JSON string of this [Component]
+ * in its serialized form.
+ */
+@DelicateSilkApi
+@ExperimentalSilkApi
+fun Component.serializeToPrettyJson(): String {
+    val jsonString = Component.Serializer.toJson(this, RegistryAccess.EMPTY)
+    val jsonElement = Json.decodeFromString<JsonElement>(jsonString)
+    @Suppress("JSON_FORMAT_REDUNDANT")
+    return Json { prettyPrint = true }.encodeToString(jsonElement)
 }
