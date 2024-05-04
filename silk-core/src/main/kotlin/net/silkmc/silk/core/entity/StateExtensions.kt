@@ -1,6 +1,7 @@
 package net.silkmc.silk.core.entity
 
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.Level
@@ -30,7 +31,7 @@ val Entity.world: Level get() = level()
 /**
  * Shortcut property accessor for [ServerPlayer.serverLevel].
  */
-val ServerPlayer.serverWorld: Level get() = serverLevel()
+val ServerPlayer.serverWorld: ServerLevel get() = serverLevel()
 
 /**
  * Returns the pos under the entities "feet".
