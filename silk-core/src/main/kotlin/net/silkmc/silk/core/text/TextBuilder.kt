@@ -49,9 +49,10 @@ class LiteralTextBuilder(
     /**
      * The resource location of the font for this component in the
      * resource pack or mod resources within `assets/<namespace>/font`.
-     * Defaults to "minecraft:default".
+     * Defaults to `minecraft:default`.
      */
-    var font: ResourceLocation? = withDefault(Style.DEFAULT_FONT)
+    var font: ResourceLocation? = withDefault(ResourceLocation("minecraft", "default"))
+    // var font: ResourceLocation? = withDefault(Style.DEFAULT_FONT)
 
     /**
      * When the text is shift-clicked by a player, this string is inserted in their chat input.
