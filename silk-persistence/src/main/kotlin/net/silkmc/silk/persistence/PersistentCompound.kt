@@ -14,6 +14,12 @@ abstract class PersistentCompound {
     internal val values = HashMap<CompoundKey<*>, Any>()
 
     /**
+     * Returns whether this compound contains no data.
+     */
+    val isEmpty: Boolean
+        get() = values.isEmpty() && (data?.isEmpty != false)
+
+    /**
      * Puts the given value into the persistent storage.
      *
      * Values **have to** be serializable. Annotate them with
@@ -165,6 +171,8 @@ internal class PersistentCompoundImpl : PersistentCompound() {
     }
 
     override fun putInCompound(nbtCompound: CompoundTag, writeRaw: Boolean) {
+        if (isEmpty) return
+
         val currentData = data!!
 
         for ((untypedKey, value) in values) {
@@ -174,11 +182,10 @@ internal class PersistentCompoundImpl : PersistentCompound() {
             currentData.put(typedKey.name, typedKey.convertValueToNbtElement(value))
         }
 
-        if (!currentData.isEmpty) {
-            if (writeRaw)
-                nbtCompound.merge(currentData)
-            else
-                nbtCompound.put(CUSTOM_DATA_KEY, currentData)
+        if (writeRaw) {
+            nbtCompound.merge(currentData)
+        } else {
+            nbtCompound.put(CUSTOM_DATA_KEY, currentData)
         }
     }
 }

@@ -10,6 +10,7 @@
     "chunk.ProtoChunkMixin",
     "entity.EntityMixin",
     "other.MixinDataFixTypes",
+    "other.MixinSavedData",
     "world.ServerWorldMixin"
   ]
 }

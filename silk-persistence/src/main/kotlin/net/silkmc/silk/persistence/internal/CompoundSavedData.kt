@@ -8,7 +8,14 @@ import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.persistence.PersistentCompound
 
 @InternalSilkApi
-class CompoundSavedData(internal val compound: PersistentCompound) : SavedData() {
+class CompoundSavedData(val compound: PersistentCompound) : SavedData() {
+
+    // a compound does not track whether it is dirty, however custom
+    // logic is implemented via a mixin to prevent file creation for
+    // empty compounds
+    override fun isDirty(): Boolean {
+        return true
+    }
 
     override fun save(nbt: CompoundTag, provider: HolderLookup.Provider) =
         nbt.also { compound.putInCompound(it, writeRaw = true) }
