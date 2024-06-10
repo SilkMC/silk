@@ -32,7 +32,7 @@ sealed class AbstractPacketDefinition<T : Any, C>(
     protected val receiverScope = CoroutineScope(Dispatchers.Default.limitedParallelism(1))
 
     @InternalSilkApi
-    val type: CustomPacketPayload.Type<SilkPacketPayload> = CustomPacketPayload.createType(id.toString())
+    val type: CustomPacketPayload.Type<SilkPacketPayload> = CustomPacketPayload.Type(id)
 
     @InternalSilkApi
     val streamCodec: StreamCodec<FriendlyByteBuf, SilkPacketPayload> =

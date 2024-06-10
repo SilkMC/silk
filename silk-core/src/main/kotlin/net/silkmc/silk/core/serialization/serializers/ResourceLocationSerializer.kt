@@ -10,8 +10,7 @@ typealias IdentifierSerializer = ResourceLocationSerializer
 
 class ResourceLocationSerializer : SilkSerializer<ResourceLocation>() {
     override fun deserialize(decoder: Decoder): ResourceLocation {
-        val split = decoder.decodeString().split(':')
-        return ResourceLocation(split[0], split[1])
+        return ResourceLocation.bySeparator(decoder.decodeString(), ':')
     }
 
     override fun serialize(encoder: Encoder, value: ResourceLocation) {

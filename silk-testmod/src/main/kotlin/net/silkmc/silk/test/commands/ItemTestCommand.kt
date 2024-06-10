@@ -1,5 +1,6 @@
 package net.silkmc.silk.test.commands
 
+import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.Potions
@@ -8,7 +9,8 @@ import net.silkmc.silk.core.item.*
 
 private fun createItems(player: ServerPlayer) = listOf(
     itemStack(Items.NETHERITE_SWORD) {
-        enchant(Enchantments.SHARPNESS, 2)
+        val enchantmentRegistry = player.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT)
+        enchant(enchantmentRegistry.getHolderOrThrow(Enchantments.SHARPNESS), 2)
     },
     itemStack(Items.POTION) {
         setPotion(Potions.LEAPING)

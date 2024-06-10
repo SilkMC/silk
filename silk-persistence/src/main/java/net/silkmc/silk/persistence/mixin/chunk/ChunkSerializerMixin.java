@@ -7,6 +7,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.chunk.storage.ChunkSerializer;
+import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 import net.silkmc.silk.persistence.CompoundProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,6 +28,7 @@ public class ChunkSerializerMixin {
     @Inject(method = "read", at = @At("RETURN"))
     private static void onDeserialize(ServerLevel world,
                                       PoiManager poiStorage,
+                                      RegionStorageInfo regionStorageInfo,
                                       ChunkPos pos,
                                       CompoundTag nbt,
                                       CallbackInfoReturnable<ProtoChunk> cir) {

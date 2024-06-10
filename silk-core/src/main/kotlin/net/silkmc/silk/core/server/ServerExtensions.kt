@@ -37,4 +37,4 @@ val MinecraftServer.players: List<ServerPlayer>
  * absolute [Path].
  */
 val MinecraftServer.serverPath: Path
-    get() = serverDirectory.toPath().absolute()
+    get() = serverDirectory.absolute()
