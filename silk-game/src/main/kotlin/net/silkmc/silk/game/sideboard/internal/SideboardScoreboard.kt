@@ -143,12 +143,9 @@ class SideboardScoreboard(
     }
 
     suspend fun addLine(initialContent: Component): Line {
-        val line: Line
-        lines.access {
+        return lines.access {
             val index = it.lastIndex + 1
-            line = Line(index, initialContent)
-            it.add(line)
+            Line(index, initialContent).apply { it.add(this) }
         }
-        return line
     }
 }

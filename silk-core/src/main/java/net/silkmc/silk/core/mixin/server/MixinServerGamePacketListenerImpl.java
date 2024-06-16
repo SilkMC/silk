@@ -1,6 +1,6 @@
 package net.silkmc.silk.core.mixin.server;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.silkmc.silk.core.event.PlayerEvents;
@@ -19,9 +19,9 @@ public abstract class MixinServerGamePacketListenerImpl {
         method = "onDisconnect",
         at = @At("HEAD")
     )
-    private void onPreQuit(Component reason,
+    private void onPreQuit(DisconnectionDetails disconnectionDetails,
                            CallbackInfo ci) {
         PlayerEvents.INSTANCE.getPreQuit()
-            .invoke(new PlayerEvents.PlayerQuitEvent(player, reason));
+            .invoke(new PlayerEvents.PlayerQuitEvent(player, disconnectionDetails.reason()));
     }
 }

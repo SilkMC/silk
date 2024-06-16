@@ -36,5 +36,9 @@ val MinecraftServer.players: List<ServerPlayer>
  * Returns the current run directory of the server as an
  * absolute [Path].
  */
+@Deprecated(
+    message = "Minecraft now offers a 'serverDirectory' property, use that instead.",
+    replaceWith = ReplaceWith("serverDirectory.absolute()", "kotlin.io.path.absolute"),
+)
 val MinecraftServer.serverPath: Path
-    get() = serverDirectory.toPath().absolute()
+    get() = serverDirectory.absolute()

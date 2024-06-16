@@ -1,7 +1,7 @@
 package net.silkmc.silk.core.mixin.server;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.silkmc.silk.core.event.PlayerEvents;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,9 +19,9 @@ public abstract class MixinServerConfigurationPacketListenerImpl {
         method = "onDisconnect",
         at = @At("HEAD")
     )
-    private void onQuitDuringConfiguration(Component reason,
+    private void onQuitDuringConfiguration(DisconnectionDetails disconnectionDetails,
                                            CallbackInfo ci) {
         PlayerEvents.INSTANCE.getQuitDuringConfiguration()
-            .invoke(new PlayerEvents.PlayerQuitDuringLoginEvent(playerProfile(), reason));
+            .invoke(new PlayerEvents.PlayerQuitDuringLoginEvent(playerProfile(), disconnectionDetails.reason()));
     }
 }
