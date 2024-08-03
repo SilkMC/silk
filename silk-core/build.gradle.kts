@@ -14,6 +14,8 @@ plugins {
 
 dependencies {
     modApi("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+
+    modCompileOnly("me.lucko:fabric-permissions-api:0.3.1")
 }
 
 val modName by extra("$projectTitle Core")
