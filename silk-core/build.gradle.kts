@@ -1,3 +1,4 @@
+import BuildConstants.fabricApiVersion
 import BuildConstants.projectTitle
 
 description = "Silk Core provides a simple and stable Kotlin API for working with Minecraft"
@@ -9,6 +10,10 @@ plugins {
     `kotest-script`
     `dokka-script`
     kotlin("plugin.serialization")
+}
+
+dependencies {
+    modApi("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
 }
 
 val modName by extra("$projectTitle Core")

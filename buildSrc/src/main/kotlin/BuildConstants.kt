@@ -20,6 +20,7 @@ object BuildConstants {
     const val paperMinecraftVersion = "1.21.1"
     const val fabricLoaderVersion = "0.16.2"
     const val fabricLanguageKotlinVersion = "1.12.1+kotlin.2.0.20"
+    const val fabricApiVersion = "0.100.8+1.21"
 
     const val kotestVersion = "5.9.1"
     const val mockkVersion = "1.13.12"
