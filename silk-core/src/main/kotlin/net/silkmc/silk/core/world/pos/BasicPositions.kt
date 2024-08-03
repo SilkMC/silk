@@ -8,8 +8,56 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.minecraft.world.phys.Vec2
 import net.minecraft.world.phys.Vec3
+import org.joml.Vector2d
+import org.joml.Vector2f
+import org.joml.Vector2i
 import org.joml.Vector3d
 import org.joml.Vector3f
+import org.joml.Vector3i
+
+fun pos3iOf(x: Int, y: Int, z: Int) = Pos3i(x, y, z)
+fun pos3fOf(x: Float, y: Float, z: Float) = Pos3f(x, y, z)
+fun pos3dOf(x: Double, y: Double, z: Double) = Pos3d(x, y, z)
+
+fun pos2iOf(x: Int, y: Int) = Pos2i(x, y)
+fun pos2fOf(x: Float, y: Float) = Pos2f(x, y)
+fun pos2dOf(x: Double, y: Double) = Pos2d(x, y)
+
+fun Vec3i.toPos3i(): Pos3i = Pos3i(x, y, z)
+fun Vec3i.toPos3f(): Pos3f = Pos3f(x.toFloat(), y.toFloat(), z.toFloat())
+fun Vec3i.toPos3d(): Pos3d = Pos3d(x.toDouble(), y.toDouble(), z.toDouble())
+
+fun Vec3.toPos3i(): Pos3i = Pos3i(x.toInt(), y.toInt(), z.toInt())
+fun Vec3.toPos3f(): Pos3f = Pos3f(x.toFloat(), y.toFloat(), z.toFloat())
+fun Vec3.toPos3d(): Pos3d = Pos3d(x, y, z)
+
+fun Vector3i.toPos3i(): Pos3i = Pos3i(x, y, z)
+fun Vector3i.toPos3f(): Pos3f = Pos3f(x.toFloat(), y.toFloat(), z.toFloat())
+fun Vector3i.toPos3d(): Pos3d = Pos3d(x.toDouble(), y.toDouble(), z.toDouble())
+
+fun Vector3f.toPos3i(): Pos3i = Pos3i(x.toInt(), y.toInt(), z.toInt())
+fun Vector3f.toPos3f(): Pos3f = Pos3f(x, y, z)
+fun Vector3f.toPos3d(): Pos3d = Pos3d(x.toDouble(), y.toDouble(), z.toDouble())
+
+fun Vector3d.toPos3i(): Pos3i = Pos3i(x.toInt(), y.toInt(), z.toInt())
+fun Vector3d.toPos3f(): Pos3f = Pos3f(x.toFloat(), y.toFloat(), z.toFloat())
+fun Vector3d.toPos3d(): Pos3d = Pos3d(x, y, z)
+
+fun Vec2.toPos2i(): Pos2i = Pos2i(x.toInt(), y.toInt())
+fun Vec2.toPos2f(): Pos2f = Pos2f(x, y)
+fun Vec2.toPos2d(): Pos2d = Pos2d(x.toDouble(), y.toDouble())
+
+fun Vector2i.toPos2i(): Pos2i = Pos2i(x, y)
+fun Vector2i.toPos2f(): Pos2f = Pos2f(x.toFloat(), y.toFloat())
+fun Vector2i.toPos2d(): Pos2d = Pos2d(x.toDouble(), y.toDouble())
+
+fun Vector2f.toPos2i(): Pos2i = Pos2i(x.toInt(), y.toInt())
+fun Vector2f.toPos2f(): Pos2f = Pos2f(x, y)
+fun Vector2f.toPos2d(): Pos2d = Pos2d(x.toDouble(), y.toDouble())
+
+fun Vector2d.toPos2i(): Pos2i = Pos2i(x.toInt(), y.toInt())
+fun Vector2d.toPos2f(): Pos2f = Pos2f(x.toFloat(), y.toFloat())
+fun Vector2d.toPos2d(): Pos2d = Pos2d(x, y)
 
 /**
  * Base interface for position class implementations.
@@ -28,6 +76,10 @@ sealed interface IPos<N : Number> {
      */
     val z: N
 
+    fun toPos2i(): Pos2i = Pos2i(x.toInt(), z.toInt())
+    fun toPos2f(): Pos2f = Pos2f(x.toFloat(), z.toFloat())
+    fun toPos2d(): Pos2d = Pos2d(x.toDouble(), z.toDouble())
+
     /**
      * Converts this position to a basic Kotlin [Pair] of [x] and [z].
      */
@@ -40,6 +92,7 @@ sealed interface IPos<N : Number> {
 sealed interface Pos2Dimensional<N : Number> : IPos<N> {
 
     fun toMcVec2() = Vec2(x.toFloat(), z.toFloat())
+    fun toMcVec2d() = toMcVec2() // for yarn mappings (Vec2 is Vec2d in yarn)
 
     operator fun component1() = x
     operator fun component2() = z
@@ -60,6 +113,10 @@ sealed interface Pos3Dimensional<N : Number> : IPos<N> {
      */
     val y: N
 
+    fun toPos3i(): Pos3i = Pos3i(x.toInt(), y.toInt(), z.toInt())
+    fun toPos3f(): Pos3f = Pos3f(x.toFloat(), y.toFloat(), z.toFloat())
+    fun toPos3d(): Pos3d = Pos3d(x.toDouble(), y.toDouble(), z.toDouble())
+
     /**
      * Converts this position to a Kotlin [Triple] of [x], [y] and [z].
      */
@@ -71,6 +128,7 @@ sealed interface Pos3Dimensional<N : Number> : IPos<N> {
     fun toMcVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
     fun toMcVec3() = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
+    fun toMcVec3d() = toMcVec3() // for yarn mappings (Vec3 is Vec3d in yarn)
     fun toMcVector3d() = Vector3d(x.toDouble(), y.toDouble(), z.toDouble())
 
     operator fun component1() = x
