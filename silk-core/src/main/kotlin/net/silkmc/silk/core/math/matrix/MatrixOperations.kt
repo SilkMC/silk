@@ -43,9 +43,7 @@ operator fun Double.times(matrix: Matrix2f): Matrix2f = Matrix2f(matrix).scale(t
 operator fun Number.times(matrix: Matrix2f): Matrix2f = Matrix2f(matrix).scale(this.toFloat())
 
 operator fun Matrix2f.times(vec: Vector2f): Vector2f = Matrix2f(this).transform(vec)
-
 operator fun Vector2f.times(matrix: Matrix2f): Vector2f = Matrix2f(matrix).transpose().transform(this)
-
 operator fun Matrix2f.times(matrix: Matrix2f): Matrix2f = Matrix2f(this).mul(matrix)
 
 
@@ -72,9 +70,7 @@ operator fun Double.times(matrix: Matrix2d): Matrix2d = Matrix2d(matrix).scale(t
 operator fun Number.times(matrix: Matrix2d): Matrix2d = Matrix2d(matrix).scale(this.toDouble())
 
 operator fun Matrix2d.times(vec: Vector2d): Vector2d = Matrix2d(this).transform(vec)
-
 operator fun Vector2d.times(matrix: Matrix2d): Vector2d = Matrix2d(matrix).transpose().transform(this)
-
 operator fun Matrix2d.times(matrix: Matrix2d): Matrix2d = Matrix2d(this).mul(matrix)
 
 
@@ -101,9 +97,7 @@ operator fun Double.times(matrix: Matrix3f): Matrix3f = Matrix3f(matrix).scale(t
 operator fun Number.times(matrix: Matrix3f): Matrix3f = Matrix3f(matrix).scale(this.toFloat())
 
 operator fun Matrix3f.times(vec: Vector3f): Vector3f = Matrix3f(this).transform(vec)
-
 operator fun Vector3f.times(matrix: Matrix3f): Vector3f = Matrix3f(matrix).transpose().transform(this)
-
 operator fun Matrix3f.times(matrix: Matrix3f): Matrix3f = Matrix3f(this).mul(matrix)
 
 
@@ -130,9 +124,7 @@ operator fun Double.times(matrix: Matrix3d): Matrix3d = Matrix3d(matrix).scale(t
 operator fun Number.times(matrix: Matrix3d): Matrix3d = Matrix3d(matrix).scale(this.toDouble())
 
 operator fun Matrix3d.times(vec: Vector3d): Vector3d = Matrix3d(this).transform(vec)
-
 operator fun Vector3d.times(matrix: Matrix3d): Vector3d = Matrix3d(matrix).transpose().transform(this)
-
 operator fun Matrix3d.times(matrix: Matrix3d): Matrix3d = Matrix3d(this).mul(matrix)
 
 
@@ -155,7 +147,6 @@ operator fun Double.times(matrix: Matrix3x2f): Matrix3x2f = Matrix3x2f(matrix).s
 operator fun Number.times(matrix: Matrix3x2f): Matrix3x2f = Matrix3x2f(matrix).scale(this.toFloat())
 
 operator fun Matrix3x2f.times(vec: Vector3f): Vector3f = Matrix3x2f(this).transform(vec)
-
 operator fun Matrix3x2f.times(matrix: Matrix3x2f): Matrix3x2f = Matrix3x2f(this).mul(matrix)
 
 
@@ -178,13 +169,12 @@ operator fun Double.times(matrix: Matrix3x2d): Matrix3x2d = Matrix3x2d(matrix).s
 operator fun Number.times(matrix: Matrix3x2d): Matrix3x2d = Matrix3x2d(matrix).scale(this.toDouble())
 
 operator fun Matrix3x2d.times(vec: Vector3d): Vector3d = Matrix3x2d(this).transform(vec)
-
 operator fun Matrix3x2d.times(matrix: Matrix3x2d): Matrix3x2d = Matrix3x2d(this).mul(matrix)
 
 
 // Matrix4f operations
 
-operator fun Matrix4f.unaryMinus(): Matrix4f = Matrix4f(this).times(-1)
+operator fun Matrix4f.unaryMinus(): Matrix4f = Matrix4f().zero().sub(this)
 
 operator fun Matrix4f.not(): Matrix4f = Matrix4f(this).invert()
 
@@ -192,28 +182,14 @@ operator fun Matrix4f.plus(matrix: Matrix4f): Matrix4f = Matrix4f(this).add(matr
 
 operator fun Matrix4f.minus(matrix: Matrix4f): Matrix4f = Matrix4f(this).sub(matrix)
 
-operator fun Matrix4f.times(n: Int): Matrix4f = Matrix4f(this).scale(n.toFloat())
-operator fun Matrix4f.times(n: Long): Matrix4f = Matrix4f(this).scale(n.toFloat())
-operator fun Matrix4f.times(n: Float): Matrix4f = Matrix4f(this).scale(n)
-operator fun Matrix4f.times(n: Double): Matrix4f = Matrix4f(this).scale(n.toFloat())
-operator fun Matrix4f.times(n: Number): Matrix4f = Matrix4f(this).scale(n.toFloat())
-
-operator fun Int.times(matrix: Matrix4f): Matrix4f = Matrix4f(matrix).scale(this.toFloat())
-operator fun Long.times(matrix: Matrix4f): Matrix4f = Matrix4f(matrix).scale(this.toFloat())
-operator fun Float.times(matrix: Matrix4f): Matrix4f = Matrix4f(matrix).scale(this)
-operator fun Double.times(matrix: Matrix4f): Matrix4f = Matrix4f(matrix).scale(this.toFloat())
-operator fun Number.times(matrix: Matrix4f): Matrix4f = Matrix4f(matrix).scale(this.toFloat())
-
 operator fun Matrix4f.times(vec: Vector4f): Vector4f = Matrix4f(this).transform(vec)
-
 operator fun Vector4f.times(matrix: Matrix4f): Vector4f = Matrix4f(matrix).transpose().transform(this)
-
 operator fun Matrix4f.times(matrix: Matrix4f): Matrix4f = Matrix4f(this).mul(matrix)
 
 
 // Matrix4d operations
 
-operator fun Matrix4d.unaryMinus(): Matrix4d = Matrix4d(this).times(-1)
+operator fun Matrix4d.unaryMinus(): Matrix4d = Matrix4d().zero().sub(this)
 
 operator fun Matrix4d.not(): Matrix4d = Matrix4d(this).invert()
 
@@ -221,28 +197,14 @@ operator fun Matrix4d.plus(matrix: Matrix4d): Matrix4d = Matrix4d(this).add(matr
 
 operator fun Matrix4d.minus(matrix: Matrix4d): Matrix4d = Matrix4d(this).sub(matrix)
 
-operator fun Matrix4d.times(n: Int): Matrix4d = Matrix4d(this).scale(n.toDouble())
-operator fun Matrix4d.times(n: Long): Matrix4d = Matrix4d(this).scale(n.toDouble())
-operator fun Matrix4d.times(n: Float): Matrix4d = Matrix4d(this).scale(n.toDouble())
-operator fun Matrix4d.times(n: Double): Matrix4d = Matrix4d(this).scale(n)
-operator fun Matrix4d.times(n: Number): Matrix4d = Matrix4d(this).scale(n.toDouble())
-
-operator fun Int.times(matrix: Matrix4d): Matrix4d = Matrix4d(matrix).scale(this.toDouble())
-operator fun Long.times(matrix: Matrix4d): Matrix4d = Matrix4d(matrix).scale(this.toDouble())
-operator fun Float.times(matrix: Matrix4d): Matrix4d = Matrix4d(matrix).scale(this.toDouble())
-operator fun Double.times(matrix: Matrix4d): Matrix4d = Matrix4d(matrix).scale(this)
-operator fun Number.times(matrix: Matrix4d): Matrix4d = Matrix4d(matrix).scale(this.toDouble())
-
 operator fun Matrix4d.times(vec: Vector4d): Vector4d = Matrix4d(this).transform(vec)
-
 operator fun Vector4d.times(matrix: Matrix4d): Vector4d = Matrix4d(matrix).transpose().transform(this)
-
 operator fun Matrix4d.times(matrix: Matrix4d): Matrix4d = Matrix4d(this).mul(matrix)
 
 
 // Matrix4x3f operations
 
-operator fun Matrix4x3f.unaryMinus(): Matrix4x3f = Matrix4x3f(this).times(-1)
+operator fun Matrix4x3f.unaryMinus(): Matrix4x3f = Matrix4x3f().zero().sub(this)
 
 operator fun Matrix4x3f.not(): Matrix4x3f = Matrix4x3f(this).invert()
 
@@ -250,26 +212,13 @@ operator fun Matrix4x3f.plus(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(this).
 
 operator fun Matrix4x3f.minus(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(this).sub(matrix)
 
-operator fun Matrix4x3f.times(n: Int): Matrix4x3f = Matrix4x3f(this).scale(n.toFloat())
-operator fun Matrix4x3f.times(n: Long): Matrix4x3f = Matrix4x3f(this).scale(n.toFloat())
-operator fun Matrix4x3f.times(n: Float): Matrix4x3f = Matrix4x3f(this).scale(n)
-operator fun Matrix4x3f.times(n: Double): Matrix4x3f = Matrix4x3f(this).scale(n.toFloat())
-operator fun Matrix4x3f.times(n: Number): Matrix4x3f = Matrix4x3f(this).scale(n.toFloat())
-
-operator fun Int.times(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(matrix).scale(this.toFloat())
-operator fun Long.times(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(matrix).scale(this.toFloat())
-operator fun Float.times(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(matrix).scale(this)
-operator fun Double.times(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(matrix).scale(this.toFloat())
-operator fun Number.times(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(matrix).scale(this.toFloat())
-
 operator fun Matrix4x3f.times(vec: Vector4f): Vector4f = Matrix4x3f(this).transform(vec)
-
 operator fun Matrix4x3f.times(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(this).mul(matrix)
 
 
 // Matrix4x3d operations
 
-operator fun Matrix4x3d.unaryMinus(): Matrix4x3d = Matrix4x3d(this).times(-1)
+operator fun Matrix4x3d.unaryMinus(): Matrix4x3d = Matrix4x3d().zero().sub(this)
 
 operator fun Matrix4x3d.not(): Matrix4x3d = Matrix4x3d(this).invert()
 
@@ -277,18 +226,5 @@ operator fun Matrix4x3d.plus(matrix: Matrix4x3d): Matrix4x3d = Matrix4x3d(this).
 
 operator fun Matrix4x3d.minus(matrix: Matrix4x3d): Matrix4x3d = Matrix4x3d(this).sub(matrix)
 
-operator fun Matrix4x3d.times(n: Int): Matrix4x3d = Matrix4x3d(this).scale(n.toDouble())
-operator fun Matrix4x3d.times(n: Long): Matrix4x3d = Matrix4x3d(this).scale(n.toDouble())
-operator fun Matrix4x3d.times(n: Float): Matrix4x3d = Matrix4x3d(this).scale(n.toDouble())
-operator fun Matrix4x3d.times(n: Double): Matrix4x3d = Matrix4x3d(this).scale(n)
-operator fun Matrix4x3d.times(n: Number): Matrix4x3d = Matrix4x3d(this).scale(n.toDouble())
-
-operator fun Int.times(matrix: Matrix4x3d): Matrix4x3d = Matrix4x3d(matrix).scale(this.toDouble())
-operator fun Long.times(matrix: Matrix4x3d): Matrix4x3d = Matrix4x3d(matrix).scale(this.toDouble())
-operator fun Float.times(matrix: Matrix4x3d): Matrix4x3d = Matrix4x3d(matrix).scale(this.toDouble())
-operator fun Double.times(matrix: Matrix4x3d): Matrix4x3d = Matrix4x3d(matrix).scale(this)
-operator fun Number.times(matrix: Matrix4x3d): Matrix4x3d = Matrix4x3d(matrix).scale(this.toDouble())
-
 operator fun Matrix4x3d.times(vec: Vector4d): Vector4d = Matrix4x3d(this).transform(vec)
-
 operator fun Matrix4x3d.times(matrix: Matrix4x3d): Matrix4x3d = Matrix4x3d(this).mul(matrix)
