@@ -22,7 +22,7 @@ import org.joml.Vector4f
 
 // Matrix2f operations
 
-operator fun Matrix2f.unaryMinus(): Matrix2f = Matrix2f(this).invert()
+operator fun Matrix2f.unaryMinus(): Matrix2f = Matrix2f(this).times(-1)
 
 operator fun Matrix2f.not(): Matrix2f = Matrix2f(this).invert()
 
@@ -51,7 +51,7 @@ operator fun Matrix2f.times(matrix: Matrix2f): Matrix2f = Matrix2f(this).mul(mat
 
 // Matrix2d operations
 
-operator fun Matrix2d.unaryMinus(): Matrix2d = Matrix2d(this).invert()
+operator fun Matrix2d.unaryMinus(): Matrix2d = Matrix2d(this).times(-1)
 
 operator fun Matrix2d.not(): Matrix2d = Matrix2d(this).invert()
 
@@ -80,7 +80,7 @@ operator fun Matrix2d.times(matrix: Matrix2d): Matrix2d = Matrix2d(this).mul(mat
 
 // Matrix3f operations
 
-operator fun Matrix3f.unaryMinus(): Matrix3f = Matrix3f(this).invert()
+operator fun Matrix3f.unaryMinus(): Matrix3f = Matrix3f(this).times(-1)
 
 operator fun Matrix3f.not(): Matrix3f = Matrix3f(this).invert()
 
@@ -109,7 +109,7 @@ operator fun Matrix3f.times(matrix: Matrix3f): Matrix3f = Matrix3f(this).mul(mat
 
 // Matrix3d operations
 
-operator fun Matrix3d.unaryMinus(): Matrix3d = Matrix3d(this).invert()
+operator fun Matrix3d.unaryMinus(): Matrix3d = Matrix3d(this).times(-1)
 
 operator fun Matrix3d.not(): Matrix3d = Matrix3d(this).invert()
 
@@ -138,7 +138,7 @@ operator fun Matrix3d.times(matrix: Matrix3d): Matrix3d = Matrix3d(this).mul(mat
 
 // Matrix3x2f operations
 
-operator fun Matrix3x2f.unaryMinus(): Matrix3x2f = Matrix3x2f(this).invert()
+operator fun Matrix3x2f.unaryMinus(): Matrix3x2f = Matrix3x2f(this).times(-1)
 
 operator fun Matrix3x2f.not(): Matrix3x2f = Matrix3x2f(this).invert()
 
@@ -161,7 +161,7 @@ operator fun Matrix3x2f.times(matrix: Matrix3x2f): Matrix3x2f = Matrix3x2f(this)
 
 // Matrix3x2d operations
 
-operator fun Matrix3x2d.unaryMinus(): Matrix3x2d = Matrix3x2d(this).invert()
+operator fun Matrix3x2d.unaryMinus(): Matrix3x2d = Matrix3x2d(this).times(-1)
 
 operator fun Matrix3x2d.not(): Matrix3x2d = Matrix3x2d(this).invert()
 
@@ -184,7 +184,7 @@ operator fun Matrix3x2d.times(matrix: Matrix3x2d): Matrix3x2d = Matrix3x2d(this)
 
 // Matrix4f operations
 
-operator fun Matrix4f.unaryMinus(): Matrix4f = Matrix4f(this).invert()
+operator fun Matrix4f.unaryMinus(): Matrix4f = Matrix4f(this).times(-1)
 
 operator fun Matrix4f.not(): Matrix4f = Matrix4f(this).invert()
 
@@ -213,7 +213,7 @@ operator fun Matrix4f.times(matrix: Matrix4f): Matrix4f = Matrix4f(this).mul(mat
 
 // Matrix4d operations
 
-operator fun Matrix4d.unaryMinus(): Matrix4d = Matrix4d(this).invert()
+operator fun Matrix4d.unaryMinus(): Matrix4d = Matrix4d(this).times(-1)
 
 operator fun Matrix4d.not(): Matrix4d = Matrix4d(this).invert()
 
@@ -242,7 +242,7 @@ operator fun Matrix4d.times(matrix: Matrix4d): Matrix4d = Matrix4d(this).mul(mat
 
 // Matrix4x3f operations
 
-operator fun Matrix4x3f.unaryMinus(): Matrix4x3f = Matrix4x3f(this).invert()
+operator fun Matrix4x3f.unaryMinus(): Matrix4x3f = Matrix4x3f(this).times(-1)
 
 operator fun Matrix4x3f.not(): Matrix4x3f = Matrix4x3f(this).invert()
 
@@ -269,7 +269,7 @@ operator fun Matrix4x3f.times(matrix: Matrix4x3f): Matrix4x3f = Matrix4x3f(this)
 
 // Matrix4x3d operations
 
-operator fun Matrix4x3d.unaryMinus(): Matrix4x3d = Matrix4x3d(this).invert()
+operator fun Matrix4x3d.unaryMinus(): Matrix4x3d = Matrix4x3d(this).times(-1)
 
 operator fun Matrix4x3d.not(): Matrix4x3d = Matrix4x3d(this).invert()
 
