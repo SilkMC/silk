@@ -1,3 +1,5 @@
+@file:Suppress("unused", "EXTENSION_SHADOWED_BY_MEMBER")
+
 package net.silkmc.silk.core.math.vector
 
 import net.minecraft.core.BlockPos
@@ -10,25 +12,73 @@ import org.joml.Vector2i
 import org.joml.Vector3d
 import org.joml.Vector3f
 import org.joml.Vector3i
+import kotlin.math.roundToInt
 
 
 // Vector initialization
 
 fun vec3iOf(x: Int, y: Int, z: Int): Vec3i = Vec3i(x, y, z)
+fun vec3iOf(vec: Vec3): Vec3i = Vec3i(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+fun vec3iOf(vec: Vector3i): Vec3i = Vec3i(vec.x, vec.y, vec.z)
+fun vec3iOf(vec: Vector3f): Vec3i = Vec3i(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+fun vec3iOf(vec: Vector3d): Vec3i = Vec3i(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+
 fun vec3Of(x: Double, y: Double, z: Double): Vec3 = Vec3(x, y, z)
-fun vec3dOf(x: Double, y: Double, z: Double): Vec3 = vec3Of(x, y, z) // for yarn mappings (Vec3 is Vec3d in yarn)
+fun vec3Of(vec: Vec3i): Vec3 = Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+fun vec3Of(vec: Vector3i): Vec3 = Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+fun vec3Of(vec: Vector3f): Vec3 = Vec3(vec)
+fun vec3Of(vec: Vector3d): Vec3 = Vec3(vec.x, vec.y, vec.z)
+
+// for yarn mappings (Vec3 is Vec3d in yarn)
+fun vec3dOf(x: Double, y: Double, z: Double): Vec3 = vec3Of(x, y, z)
+fun vec3dOf(vec: Vec3i): Vec3 = Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+fun vec3dOf(vec: Vector3i): Vec3 = Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+fun vec3dOf(vec: Vector3f): Vec3 = Vec3(vec)
+fun vec3dOf(vec: Vector3d): Vec3 = Vec3(vec.x, vec.y, vec.z)
 
 fun vector3iOf(x: Int, y: Int, z: Int): Vector3i = Vector3i(x, y, z)
+fun vector3iOf(vec: Vec3i): Vector3i = Vector3i(vec.x, vec.y, vec.z)
+fun vector3iOf(vec: Vec3): Vector3i = Vector3i(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+fun vector3iOf(vec: Vector3i): Vector3i = Vector3i(vec) // copy constructor
+fun vector3iOf(vec: Vector3f): Vector3i = Vector3i(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+fun vector3iOf(vec: Vector3d): Vector3i = Vector3i(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+
 fun vector3fOf(x: Float, y: Float, z: Float): Vector3f = Vector3f(x, y, z)
+fun vector3fOf(vec: Vec3i): Vector3f = Vector3f(vec.x.toFloat(), vec.y.toFloat(), vec.z.toFloat())
+fun vector3fOf(vec: Vec3): Vector3f = Vector3f(vec.x.toFloat(), vec.y.toFloat(), vec.z.toFloat())
+fun vector3fOf(vec: Vector3i): Vector3f = Vector3f(vec)
+fun vector3fOf(vec: Vector3f): Vector3f = Vector3f(vec) // copy constructor
+fun vector3fOf(vec: Vector3d): Vector3f = Vector3f().set(vec)
+
 fun vector3dOf(x: Double, y: Double, z: Double): Vector3d = Vector3d(x, y, z)
+fun vector3dOf(vec: Vec3i): Vector3d = Vector3d(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+fun vector3dOf(vec: Vec3): Vector3d = Vector3d(vec.x, vec.y, vec.z)
+fun vector3dOf(vec: Vector3i): Vector3d = Vector3d(vec)
+fun vector3dOf(vec: Vector3f): Vector3d = Vector3d(vec)
+fun vector3dOf(vec: Vector3d): Vector3d = Vector3d(vec) // copy constructor
 
 
 fun vec2Of(x: Float, y: Float): Vec2 = Vec2(x, y)
 fun vec2dOf(x: Float, y: Float): Vec2 = vec2Of(x, y) // for yarn mappings (Vec2 is Vec2d in yarn)
 
 fun vector2iOf(x: Int, y: Int): Vector2i = Vector2i(x, y)
+fun vector2iOf(vec: Vec2): Vector2i = Vector2i(vec.x.roundToInt(), vec.y.roundToInt())
+fun vector2iOf(vec: Vector2i): Vector2i = Vector2i(vec) // copy constructor
+fun vector2iOf(vec: Vector2f): Vector2i = Vector2i(vec.x.roundToInt(), vec.y.roundToInt())
+fun vector2iOf(vec: Vector2d): Vector2i = Vector2i(vec.x.roundToInt(), vec.y.roundToInt())
+
 fun vector2fOf(x: Float, y: Float): Vector2f = Vector2f(x, y)
+fun vector2fOf(vec: Vec2): Vector2f = Vector2f(vec.x, vec.y)
+fun vector2fOf(vec: Vector2i): Vector2f = Vector2f(vec)
+fun vector2fOf(vec: Vector2f): Vector2f = Vector2f(vec) // copy constructor
+fun vector2fOf(vec: Vector2d): Vector2f = Vector2f().set(vec)
+
+
 fun vector2dOf(x: Double, y: Double): Vector2d = Vector2d(x, y)
+fun vector2dOf(vec: Vec2): Vector2d = Vector2d(vec.x.toDouble(), vec.y.toDouble())
+fun vector2dOf(vec: Vector2i): Vector2d = Vector2d(vec)
+fun vector2dOf(vec: Vector2f): Vector2d = Vector2d(vec)
+fun vector2dOf(vec: Vector2d): Vector2d = Vector2d(vec) // copy constructor
 
 
 // Vec3 operations
@@ -61,9 +111,9 @@ operator fun Vec3.div(n: Float): Vec3 = scale(1.0 / n.toDouble())
 operator fun Vec3.div(n: Double): Vec3 = scale(1.0 / n)
 operator fun Vec3.div(n: Number): Vec3 = scale(1.0 / n.toDouble())
 
-operator fun Vec3.compareTo(n: Int) = length().compareTo(n.toDouble())
-operator fun Vec3.compareTo(n: Long) = length().compareTo(n.toDouble())
-operator fun Vec3.compareTo(n: Float) = length().compareTo(n.toDouble())
+operator fun Vec3.compareTo(n: Int) = length().compareTo(n)
+operator fun Vec3.compareTo(n: Long) = length().compareTo(n)
+operator fun Vec3.compareTo(n: Float) = length().compareTo(n)
 operator fun Vec3.compareTo(n: Double) = length().compareTo(n)
 operator fun Vec3.compareTo(n: Number) = length().compareTo(n.toDouble())
 
@@ -130,11 +180,11 @@ operator fun BlockPos.div(n: Float): BlockPos = times(1.0 / n.toDouble())
 operator fun BlockPos.div(n: Double): BlockPos = times(1.0 / n)
 operator fun BlockPos.div(n: Number): BlockPos = times(1.0 / n.toDouble())
 
-operator fun Vec3i.compareTo(n: Int) = Vec3(x.toDouble(), y.toDouble(), z.toDouble()).length().compareTo(n.toDouble())
-operator fun Vec3i.compareTo(n: Long) = Vec3(x.toDouble(), y.toDouble(), z.toDouble()).length().compareTo(n.toDouble())
-operator fun Vec3i.compareTo(n: Float) = Vec3(x.toDouble(), y.toDouble(), z.toDouble()).length().compareTo(n.toDouble())
-operator fun Vec3i.compareTo(n: Double) = Vec3(x.toDouble(), y.toDouble(), z.toDouble()).length().compareTo(n)
-operator fun Vec3i.compareTo(n: Number) = Vec3(x.toDouble(), y.toDouble(), z.toDouble()).length().compareTo(n.toDouble())
+operator fun Vec3i.compareTo(n: Int) = vec3Of(this).length().compareTo(n)
+operator fun Vec3i.compareTo(n: Long) = vec3Of(this).length().compareTo(n)
+operator fun Vec3i.compareTo(n: Float) = vec3Of(this).length().compareTo(n)
+operator fun Vec3i.compareTo(n: Double) = vec3Of(this).length().compareTo(n)
+operator fun Vec3i.compareTo(n: Number) = vec3Of(this).length().compareTo(n.toDouble())
 
 inline operator fun <reified T : Vec3i> T.plus(vec: Vec3i): T = offset(vec) as T
 
@@ -189,9 +239,9 @@ operator fun Vector3i.div(n: Float): Vector3i = Vector3i(this).div(n)
 operator fun Vector3i.div(n: Double): Vector3i = Vector3i(this).div(n.toFloat())
 operator fun Vector3i.div(n: Number): Vector3i = Vector3i(this).div(n.toFloat())
 
-operator fun Vector3i.compareTo(n: Int) = length().compareTo(n.toDouble())
-operator fun Vector3i.compareTo(n: Long) = length().compareTo(n.toDouble())
-operator fun Vector3i.compareTo(n: Float) = length().compareTo(n.toDouble())
+operator fun Vector3i.compareTo(n: Int) = length().compareTo(n)
+operator fun Vector3i.compareTo(n: Long) = length().compareTo(n)
+operator fun Vector3i.compareTo(n: Float) = length().compareTo(n)
 operator fun Vector3i.compareTo(n: Double) = length().compareTo(n)
 operator fun Vector3i.compareTo(n: Number) = length().compareTo(n.toDouble())
 
@@ -242,11 +292,11 @@ operator fun Vector3f.div(n: Float): Vector3f = Vector3f(this).div(n)
 operator fun Vector3f.div(n: Double): Vector3f = Vector3f(this).div(n.toFloat())
 operator fun Vector3f.div(n: Number): Vector3f = Vector3f(this).div(n.toFloat())
 
-operator fun Vector3f.compareTo(n: Int) = length().compareTo(n.toFloat())
-operator fun Vector3f.compareTo(n: Long) = length().compareTo(n.toFloat())
+operator fun Vector3f.compareTo(n: Int) = length().compareTo(n)
+operator fun Vector3f.compareTo(n: Long) = length().compareTo(n)
 operator fun Vector3f.compareTo(n: Float) = length().compareTo(n)
-operator fun Vector3f.compareTo(n: Double) = length().compareTo(n.toFloat())
-operator fun Vector3f.compareTo(n: Number) = length().compareTo(n.toFloat())
+operator fun Vector3f.compareTo(n: Double) = length().compareTo(n)
+operator fun Vector3f.compareTo(n: Number) = length().compareTo(n.toDouble())
 
 operator fun Vector3f.plus(vec: Vector3f): Vector3f = Vector3f(this).add(vec)
 
@@ -295,9 +345,9 @@ operator fun Vector3d.div(n: Float): Vector3d = Vector3d(this).div(n.toDouble())
 operator fun Vector3d.div(n: Double): Vector3d = Vector3d(this).div(n)
 operator fun Vector3d.div(n: Number): Vector3d = Vector3d(this).div(n.toDouble())
 
-operator fun Vector3d.compareTo(n: Int) = length().compareTo(n.toDouble())
-operator fun Vector3d.compareTo(n: Long) = length().compareTo(n.toDouble())
-operator fun Vector3d.compareTo(n: Float) = length().compareTo(n.toDouble())
+operator fun Vector3d.compareTo(n: Int) = length().compareTo(n)
+operator fun Vector3d.compareTo(n: Long) = length().compareTo(n)
+operator fun Vector3d.compareTo(n: Float) = length().compareTo(n)
 operator fun Vector3d.compareTo(n: Double) = length().compareTo(n)
 operator fun Vector3d.compareTo(n: Number) = length().compareTo(n.toDouble())
 
@@ -348,11 +398,11 @@ operator fun Vec2.div(n: Float): Vec2 = scale(1.0f / n)
 operator fun Vec2.div(n: Double): Vec2 = scale(1.0f / n.toFloat())
 operator fun Vec2.div(n: Number): Vec2 = scale(1.0f / n.toFloat())
 
-operator fun Vec2.compareTo(n: Int) = length().compareTo(n.toFloat())
-operator fun Vec2.compareTo(n: Long) = length().compareTo(n.toFloat())
-operator fun Vec2.compareTo(n: Float) = length().compareTo(n.toFloat())
+operator fun Vec2.compareTo(n: Int) = length().compareTo(n)
+operator fun Vec2.compareTo(n: Long) = length().compareTo(n)
+operator fun Vec2.compareTo(n: Float) = length().compareTo(n)
 operator fun Vec2.compareTo(n: Double) = length().compareTo(n)
-operator fun Vec2.compareTo(n: Number) = length().compareTo(n.toFloat())
+operator fun Vec2.compareTo(n: Number) = length().compareTo(n.toDouble())
 
 operator fun Vec2.plus(vec: Vec2): Vec2 = add(vec)
 
@@ -398,9 +448,9 @@ operator fun Vector2i.div(n: Float): Vector2i = Vector2i(this).div(n)
 operator fun Vector2i.div(n: Double): Vector2i = Vector2i(this).div(n.toFloat())
 operator fun Vector2i.div(n: Number): Vector2i = Vector2i(this).div(n.toFloat())
 
-operator fun Vector2i.compareTo(n: Int) = length().compareTo(n.toDouble())
-operator fun Vector2i.compareTo(n: Long) = length().compareTo(n.toDouble())
-operator fun Vector2i.compareTo(n: Float) = length().compareTo(n.toDouble())
+operator fun Vector2i.compareTo(n: Int) = length().compareTo(n)
+operator fun Vector2i.compareTo(n: Long) = length().compareTo(n)
+operator fun Vector2i.compareTo(n: Float) = length().compareTo(n)
 operator fun Vector2i.compareTo(n: Double) = length().compareTo(n)
 operator fun Vector2i.compareTo(n: Number) = length().compareTo(n.toDouble())
 
@@ -448,11 +498,11 @@ operator fun Vector2f.div(n: Float): Vector2f = Vector2f(this).div(n)
 operator fun Vector2f.div(n: Double): Vector2f = Vector2f(this).div(n.toFloat())
 operator fun Vector2f.div(n: Number): Vector2f = Vector2f(this).div(n.toFloat())
 
-operator fun Vector2f.compareTo(n: Int) = length().compareTo(n.toFloat())
-operator fun Vector2f.compareTo(n: Long) = length().compareTo(n.toFloat())
+operator fun Vector2f.compareTo(n: Int) = length().compareTo(n)
+operator fun Vector2f.compareTo(n: Long) = length().compareTo(n)
 operator fun Vector2f.compareTo(n: Float) = length().compareTo(n)
-operator fun Vector2f.compareTo(n: Double) = length().compareTo(n.toFloat())
-operator fun Vector2f.compareTo(n: Number) = length().compareTo(n.toFloat())
+operator fun Vector2f.compareTo(n: Double) = length().compareTo(n)
+operator fun Vector2f.compareTo(n: Number) = length().compareTo(n.toDouble())
 
 operator fun Vector2f.plus(vec: Vector2f): Vector2f = Vector2f(this).add(vec)
 
@@ -498,9 +548,9 @@ operator fun Vector2d.div(n: Float): Vector2d = Vector2d(this).div(n.toDouble())
 operator fun Vector2d.div(n: Double): Vector2d = Vector2d(this).div(n)
 operator fun Vector2d.div(n: Number): Vector2d = Vector2d(this).div(n.toDouble())
 
-operator fun Vector2d.compareTo(n: Int) = length().compareTo(n.toDouble())
-operator fun Vector2d.compareTo(n: Long) = length().compareTo(n.toDouble())
-operator fun Vector2d.compareTo(n: Float) = length().compareTo(n.toDouble())
+operator fun Vector2d.compareTo(n: Int) = length().compareTo(n)
+operator fun Vector2d.compareTo(n: Long) = length().compareTo(n)
+operator fun Vector2d.compareTo(n: Float) = length().compareTo(n)
 operator fun Vector2d.compareTo(n: Double) = length().compareTo(n)
 operator fun Vector2d.compareTo(n: Number) = length().compareTo(n.toDouble())
 

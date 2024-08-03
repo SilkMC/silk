@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package net.silkmc.silk.core.math.matrix
 
 import org.joml.Matrix2d
