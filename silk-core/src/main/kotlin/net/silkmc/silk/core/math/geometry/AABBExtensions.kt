@@ -1,3 +1,5 @@
+@file:Suppress("unused", "EXTENSION_SHADOWED_BY_MEMBER")
+
 package net.silkmc.silk.core.math.geometry
 
 import net.minecraft.core.BlockPos
