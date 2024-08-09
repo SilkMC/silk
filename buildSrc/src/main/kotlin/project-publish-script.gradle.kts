@@ -25,7 +25,17 @@ publishing {
 
     publications {
         register<MavenPublication>(project.name) {
+            // publish main jars
             from(components["java"])
+            // also publish dev jar
+            artifact(tasks.jar.map { t -> t.outputs.files
+                .single { it.name
+                    .removeSuffix(".jar")
+                    .endsWith("-dev")
+                }
+            }) {
+                classifier = "dev"
+            }
 
             this.groupId = project.group.toString()
             this.artifactId = project.name
