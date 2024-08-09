@@ -21,7 +21,7 @@ dependencies {
     compileOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
     runtimeOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
 
-    implementation(pluginDep("fabric-loom", "1.6-SNAPSHOT"))
+    implementation(pluginDep("fabric-loom", "1.7-SNAPSHOT"))
     implementation(pluginDep("com.modrinth.minotaur", "2.8.7"))
 
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.7.1"))

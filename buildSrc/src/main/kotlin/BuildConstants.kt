@@ -20,7 +20,7 @@ object BuildConstants {
     const val fabricLanguageKotlinVersion = "1.11.0+kotlin.2.0.0"
 
     const val kotestVersion = "5.9.1"
-    const val mockkVersion = "1.13.11"
+    const val mockkVersion = "1.13.12"
 
     val uploadModules = listOf(
         "commands",
