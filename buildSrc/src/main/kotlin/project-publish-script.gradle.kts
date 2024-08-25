@@ -28,14 +28,7 @@ publishing {
             // publish main jars
             from(components["java"])
             // also publish dev jar
-            artifact(tasks.jar.map { t -> t.outputs.files
-                .single { it.name
-                    .removeSuffix(".jar")
-                    .endsWith("-dev")
-                }
-            }) {
-                classifier = "dev"
-            }
+            artifact(tasks.jar)
 
             this.groupId = project.group.toString()
             this.artifactId = project.name

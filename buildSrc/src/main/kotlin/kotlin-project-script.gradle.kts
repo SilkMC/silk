@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    idea
 }
 
 repositories {
@@ -28,7 +29,8 @@ kotlin {
 
     sourceSets.all {
         languageSettings {
-            if (project.name.removePrefix(rootProject.name + "-") in BuildConstants.uploadModules) {
+            val whitelistModules = BuildConstants.uploadModules.plus("paper")
+            if (project.name.removePrefix(rootProject.name + "-") in whitelistModules) {
                 listOf("InternalSilkApi", "DelicateSilkApi", "ExperimentalSilkApi").forEach {
                     optIn("net.silkmc.silk.core.annotations.${it}")
                 }
@@ -40,4 +42,11 @@ kotlin {
 java {
     withSourcesJar()
     withJavadocJar()
+}
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
 }
