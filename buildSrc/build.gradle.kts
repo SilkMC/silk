@@ -14,7 +14,7 @@ repositories {
 dependencies {
     fun pluginDep(id: String, version: String) = "${id}:${id}.gradle.plugin:${version}"
 
-    val kotlinVersion = "2.0.0"
+    val kotlinVersion = "2.0.20"
 
     compileOnly(kotlin("gradle-plugin", embeddedKotlinVersion))
     runtimeOnly(kotlin("gradle-plugin", kotlinVersion))
@@ -24,7 +24,7 @@ dependencies {
     implementation(pluginDep("fabric-loom", "1.7-SNAPSHOT"))
     implementation(pluginDep("com.modrinth.minotaur", "2.8.7"))
 
-    implementation(pluginDep("io.papermc.paperweight.userdev", "1.7.1"))
+    implementation(pluginDep("io.papermc.paperweight.userdev", "1.7.2"))
     implementation(pluginDep("xyz.jpenilla.run-paper", "2.3.0"))
 
     val compileDokkaVersion = "1.9.20"

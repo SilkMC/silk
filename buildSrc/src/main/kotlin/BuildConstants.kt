@@ -1,3 +1,5 @@
+@file:Suppress("RemoveSingleExpressionStringTemplate", "ConstPropertyName")
+
 import org.gradle.api.Project
 
 object BuildConstants {
@@ -12,12 +14,12 @@ object BuildConstants {
 
     val authors = listOf("jakobkmar", "_F0X")
 
-    const val majorMinecraftVersion = "1.21"
-
     // check these values here: https://jakobk.net/mcdev
-    const val minecraftVersion = "1.21"
-    const val fabricLoaderVersion = "0.15.11"
-    const val fabricLanguageKotlinVersion = "1.11.0+kotlin.2.0.0"
+    const val majorMinecraftVersion = "1.21"
+    const val minecraftVersion = "$majorMinecraftVersion.1"
+    const val paperMinecraftVersion = "1.21.1"
+    const val fabricLoaderVersion = "0.16.2"
+    const val fabricLanguageKotlinVersion = "1.12.1+kotlin.2.0.20"
 
     const val kotestVersion = "5.9.1"
     const val mockkVersion = "1.13.12"
