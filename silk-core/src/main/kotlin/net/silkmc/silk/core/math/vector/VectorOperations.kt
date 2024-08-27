@@ -17,6 +17,12 @@ import kotlin.math.roundToInt
 
 // Vector initialization
 
+fun blockPosOf(x: Int, y: Int, z: Int): BlockPos = BlockPos(x, y, z)
+fun blockPosOf(vec: Vec3): BlockPos = BlockPos(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+fun blockPosOf(vec: Vector3i): BlockPos = BlockPos(vec.x, vec.y, vec.z)
+fun blockPosOf(vec: Vector3f): BlockPos = BlockPos(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+fun blockPosOf(vec: Vector3d): BlockPos = BlockPos(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
+
 fun vec3iOf(x: Int, y: Int, z: Int): Vec3i = Vec3i(x, y, z)
 fun vec3iOf(vec: Vec3): Vec3i = Vec3i(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
 fun vec3iOf(vec: Vector3i): Vec3i = Vec3i(vec.x, vec.y, vec.z)
@@ -52,6 +58,9 @@ fun vector3dOf(vec: Vector3d): Vector3d = Vector3d(vec) // copy constructor
 
 
 fun vec2Of(x: Float, y: Float): Vec2 = Vec2(x, y)
+fun vec2Of(vec: Vector2i): Vec2 = Vec2(vec.x.toFloat(), vec.y.toFloat())
+fun vec2Of(vec: Vector2f): Vec2 = Vec2(vec.x, vec.y)
+fun vec2Of(vec: Vector2d): Vec2 = Vec2(vec.x.toFloat(), vec.y.toFloat())
 
 fun vector2iOf(x: Int, y: Int): Vector2i = Vector2i(x, y)
 fun vector2iOf(vec: Vec2): Vector2i = Vector2i(vec.x.roundToInt(), vec.y.roundToInt())
