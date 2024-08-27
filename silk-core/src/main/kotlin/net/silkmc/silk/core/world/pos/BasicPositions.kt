@@ -23,6 +23,10 @@ fun pos2iOf(x: Int, y: Int) = Pos2i(x, y)
 fun pos2fOf(x: Float, y: Float) = Pos2f(x, y)
 fun pos2dOf(x: Double, y: Double) = Pos2d(x, y)
 
+fun BlockPos.toPos3i(): Pos3i = Pos3i(x, y, z)
+fun BlockPos.toPos3f(): Pos3f = Pos3f(x.toFloat(), y.toFloat(), z.toFloat())
+fun BlockPos.toPos3d(): Pos3d = Pos3d(x.toDouble(), y.toDouble(), z.toDouble())
+
 fun Vec3i.toPos3i(): Pos3i = Pos3i(x, y, z)
 fun Vec3i.toPos3f(): Pos3f = Pos3f(x.toFloat(), y.toFloat(), z.toFloat())
 fun Vec3i.toPos3d(): Pos3d = Pos3d(x.toDouble(), y.toDouble(), z.toDouble())
