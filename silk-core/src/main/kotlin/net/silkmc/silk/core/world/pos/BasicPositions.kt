@@ -92,7 +92,6 @@ sealed interface IPos<N : Number> {
 sealed interface Pos2Dimensional<N : Number> : IPos<N> {
 
     fun toMcVec2() = Vec2(x.toFloat(), z.toFloat())
-    fun toMcVec2d() = toMcVec2() // for yarn mappings (Vec2 is Vec2d in yarn)
 
     operator fun component1() = x
     operator fun component2() = z
@@ -128,7 +127,6 @@ sealed interface Pos3Dimensional<N : Number> : IPos<N> {
     fun toMcVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
     fun toMcVec3() = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
-    fun toMcVec3d() = toMcVec3() // for yarn mappings (Vec3 is Vec3d in yarn)
     fun toMcVector3d() = Vector3d(x.toDouble(), y.toDouble(), z.toDouble())
 
     operator fun component1() = x

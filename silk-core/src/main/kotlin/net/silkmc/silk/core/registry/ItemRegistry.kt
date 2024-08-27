@@ -11,11 +11,6 @@ inline fun itemProperties(
     builder: Item.Properties.() -> Unit,
 ): Item.Properties = Item.Properties().apply(builder)
 
-// alias for yarn
-inline fun itemSettings(
-    builder: Item.Properties.() -> Unit,
-): Item.Properties = itemProperties(builder)
-
 fun <T : Item> T.register(id: ResourceLocation): T {
     return BuiltInRegistries.ITEM.register(id, this)
 }

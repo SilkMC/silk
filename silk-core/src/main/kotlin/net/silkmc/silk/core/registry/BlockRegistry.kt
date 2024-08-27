@@ -13,20 +13,9 @@ inline fun blockProperties(
     builder: BlockBehaviour.Properties.() -> Unit,
 ): BlockBehaviour.Properties = BlockBehaviour.Properties.ofFullCopy(copiedBlock).apply(builder)
 
-// alias for yarn
-inline fun blockSettings(
-    copiedBlock: BlockBehaviour,
-    builder: BlockBehaviour.Properties.() -> Unit,
-): BlockBehaviour.Properties = blockProperties(copiedBlock, builder)
-
 inline fun blockProperties(
     builder: BlockBehaviour.Properties.() -> Unit,
 ): BlockBehaviour.Properties = BlockBehaviour.Properties.of().apply(builder)
-
-// alias for yarn
-inline fun blockSettings(
-    builder: BlockBehaviour.Properties.() -> Unit,
-): BlockBehaviour.Properties = blockProperties(builder)
 
 fun <T : Block> T.register(id: ResourceLocation): T {
     for (blockState in stateDefinition.possibleStates) {
