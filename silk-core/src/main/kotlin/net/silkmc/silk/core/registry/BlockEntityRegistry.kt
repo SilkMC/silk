@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 
-fun <T : BlockEntity> blockEntityType(
+fun <T : BlockEntity> blockEntityTypeOf(
     vararg blocks: Block,
     factory: BlockEntityType.BlockEntitySupplier<out T>,
 ): BlockEntityType<T> {
@@ -20,6 +20,6 @@ fun <T : BlockEntityType<V>, V> T.register(id: ResourceLocation): T {
 }
 
 fun <T : BlockEntityType<V>, V> T.register(id: String): T {
-    return register(ResourceLocation.parse(id))
+    return BuiltInRegistries.BLOCK_ENTITY_TYPE.register(id, this)
 }
 
