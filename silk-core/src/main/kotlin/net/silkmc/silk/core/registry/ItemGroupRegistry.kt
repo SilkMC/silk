@@ -16,9 +16,6 @@ fun creativeModeTab(displayName: Component? = null, builder: CreativeModeTab.Bui
     return itemGroupBuilder.apply(builder).build()
 }
 
-// alias for yarn
-fun itemGroup(displayName: Component? = null, builder: CreativeModeTab.Builder.() -> Unit) = creativeModeTab(displayName, builder)
-
 fun <T : CreativeModeTab> T.register(id: ResourceLocation): T {
     return BuiltInRegistries.CREATIVE_MODE_TAB.register(id, this)
 }

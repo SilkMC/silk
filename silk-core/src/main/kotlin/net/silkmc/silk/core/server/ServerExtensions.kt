@@ -55,15 +55,6 @@ val MinecraftServer.serverPath: Path
  */
 fun MinecraftServer.getLevel(id: ResourceLocation): ServerLevel? = getLevel(ResourceKey.create(Registries.DIMENSION, id))
 
-// alias for yarn
-/**
- * Retrieves the world for an associated with an id is present
- *
- * @param id The id of the world to check
- * @return The world
- */
-fun MinecraftServer.getWorld(id: ResourceLocation): ServerLevel? = getLevel(id)
-
 /**
  * Checks if the level associated with an id is present
  *
@@ -71,12 +62,3 @@ fun MinecraftServer.getWorld(id: ResourceLocation): ServerLevel? = getLevel(id)
  * @return If the level is present
  */
 fun MinecraftServer.hasLevel(id: ResourceLocation): Boolean = getLevel(id) != null
-
-// alias for yarn
-/**
- * Checks if the world associated with an id is present
- *
- * @param id The id of the world to check
- * @return If the world is present
- */
-fun MinecraftServer.hasWorld(id: ResourceLocation): Boolean = hasLevel(id)

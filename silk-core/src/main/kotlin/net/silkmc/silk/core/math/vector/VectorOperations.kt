@@ -29,13 +29,6 @@ fun vec3Of(vec: Vector3i): Vec3 = Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z
 fun vec3Of(vec: Vector3f): Vec3 = Vec3(vec)
 fun vec3Of(vec: Vector3d): Vec3 = Vec3(vec.x, vec.y, vec.z)
 
-// for yarn mappings (Vec3 is Vec3d in yarn)
-fun vec3dOf(x: Double, y: Double, z: Double): Vec3 = vec3Of(x, y, z)
-fun vec3dOf(vec: Vec3i): Vec3 = Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
-fun vec3dOf(vec: Vector3i): Vec3 = Vec3(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
-fun vec3dOf(vec: Vector3f): Vec3 = Vec3(vec)
-fun vec3dOf(vec: Vector3d): Vec3 = Vec3(vec.x, vec.y, vec.z)
-
 fun vector3iOf(x: Int, y: Int, z: Int): Vector3i = Vector3i(x, y, z)
 fun vector3iOf(vec: Vec3i): Vector3i = Vector3i(vec.x, vec.y, vec.z)
 fun vector3iOf(vec: Vec3): Vector3i = Vector3i(vec.x.roundToInt(), vec.y.roundToInt(), vec.z.roundToInt())
@@ -59,7 +52,6 @@ fun vector3dOf(vec: Vector3d): Vector3d = Vector3d(vec) // copy constructor
 
 
 fun vec2Of(x: Float, y: Float): Vec2 = Vec2(x, y)
-fun vec2dOf(x: Float, y: Float): Vec2 = vec2Of(x, y) // for yarn mappings (Vec2 is Vec2d in yarn)
 
 fun vector2iOf(x: Int, y: Int): Vector2i = Vector2i(x, y)
 fun vector2iOf(vec: Vec2): Vector2i = Vector2i(vec.x.roundToInt(), vec.y.roundToInt())
