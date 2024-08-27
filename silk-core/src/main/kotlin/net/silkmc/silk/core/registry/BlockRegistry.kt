@@ -8,14 +8,15 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 
 
-inline fun blockProperties(
-    copiedBlock: BlockBehaviour,
+inline fun blockPropertiesOf(
+    copiedBlock: BlockBehaviour? = null,
     builder: BlockBehaviour.Properties.() -> Unit,
-): BlockBehaviour.Properties = BlockBehaviour.Properties.ofFullCopy(copiedBlock).apply(builder)
-
-inline fun blockProperties(
-    builder: BlockBehaviour.Properties.() -> Unit,
-): BlockBehaviour.Properties = BlockBehaviour.Properties.of().apply(builder)
+): BlockBehaviour.Properties {
+    return if (copiedBlock != null )
+        BlockBehaviour.Properties.ofFullCopy(copiedBlock).apply(builder)
+    else
+        BlockBehaviour.Properties.of().apply(builder)
+}
 
 fun <T : Block> T.register(id: ResourceLocation): T {
     for (blockState in stateDefinition.possibleStates) {
@@ -27,5 +28,5 @@ fun <T : Block> T.register(id: ResourceLocation): T {
 }
 
 fun <T : Block> T.register(id: String): T {
-    return register(ResourceLocation.parse(id))
+    return BuiltInRegistries.BLOCK.register(id, this)
 }
