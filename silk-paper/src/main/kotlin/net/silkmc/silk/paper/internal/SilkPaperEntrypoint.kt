@@ -1,6 +1,7 @@
 package net.silkmc.silk.paper.internal
 
 import net.silkmc.silk.core.annotations.InternalSilkApi
+import net.silkmc.silk.core.event.Entity
 import net.silkmc.silk.core.event.Events
 import net.silkmc.silk.core.event.Player
 import net.silkmc.silk.core.event.Server
@@ -21,6 +22,7 @@ class SilkPaperEntrypoint : JavaPlugin(), Listener {
 
         Events.Server.setupPaper()
         Events.Player.setupPaper()
+        Events.Entity.setupPaper()
     }
 
     override fun onEnable() {
