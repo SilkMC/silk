@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 
 @ExperimentalSilkApi
@@ -60,4 +61,14 @@ object PlayerEvents {
      * @see preQuit
      */
     val quitDuringConfiguration = Event.syncAsync<PlayerQuitDuringLoginEvent>()
+
+    open class PlayerDeathMessageEvent(
+        player: ServerPlayer,
+        val deathMessage: EventScopeProperty<Component>,
+    ): PlayerEvent<ServerPlayer>(player)
+
+    /**
+     * Called when a player dies and sends a death message. This event will not trigger if death messages are disabled.
+     */
+    val deathMessage = Event.syncAsync<PlayerDeathMessageEvent>()
 }
