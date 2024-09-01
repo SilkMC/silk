@@ -5,3 +5,4 @@ description: ${description}
 api-version: '${mcVersion}'
 # bootstrapper: io.papermc.testplugin.TestPluginBootstrap
 loader: net.silkmc.silk.paper.internal.SilkPaperLoader
+load: STARTUP

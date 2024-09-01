@@ -1,7 +1,5 @@
 package net.silkmc.silk.core.internal
 
-import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.api.ModInitializer
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.event.EventPriority
@@ -12,8 +10,9 @@ import net.silkmc.silk.core.task.LifecycleTasksManager
 import net.silkmc.silk.core.task.McCoroutineManager
 
 @InternalSilkApi
-class SilkEntrypoint : ModInitializer, ClientModInitializer {
-    override fun onInitialize() {
+object SilkEntrypoint {
+
+    fun onInit() {
         logInfo("Initializing Silk")
 
         Events.Server.preStart.listen(EventPriority.FIRST) {
@@ -24,7 +23,7 @@ class SilkEntrypoint : ModInitializer, ClientModInitializer {
         LifecycleTasksManager.init()
     }
 
-    override fun onInitializeClient() {
+    fun onInitClient() {
         McCoroutineManager.initClient()
     }
 }
