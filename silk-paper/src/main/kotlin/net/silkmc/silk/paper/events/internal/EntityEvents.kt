@@ -12,27 +12,25 @@ import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.EntityDropItemEvent
 
 fun EntityEvents.setupPaper() {
-    listenSilk<EntityDamageEvent> {
-        val mcEntity = it.entity.mcEntity
+    listenSilk<EntityDamageEvent> { paperEvent ->
+        val mcEntity = paperEvent.entity.mcEntity
+        @Suppress("UnstableApiUsage")
+        val mcDamageSource = (paperEvent.damageSource as CraftDamageSource).handle
 
-        // Check invulnerability event - start
-        val checkInvulnerabilityEvent = EntityEvents.EntityCheckInvulnerabilityEvent(
-            mcEntity,
-            (it.damageSource as CraftDamageSource).handle,
-            EventScopeProperty(false)
-        )
-
-        checkInvulnerability.invoke(checkInvulnerabilityEvent)
-
-        if (checkInvulnerabilityEvent.isInvulnerable.get()) {
-            it.isCancelled = true
-            return@listenSilk
+        val checkEvent = EntityEvents.EntityCheckInvulnerabilityEvent(
+            entity = mcEntity,
+            source = mcDamageSource,
+            isInvulnerable = EventScopeProperty(paperEvent.isCancelled))
+        checkInvulnerability.invoke(checkEvent)
+        if (checkEvent.isInvulnerable.get() != paperEvent.isCancelled) {
+            paperEvent.isCancelled = true
         }
-        // Check invulnerability event - end
 
-        // Damage event - start
         if (mcEntity is LivingEntity) {
-            damageLivingEntity.invoke(EntityEvents.EntityDamageEvent(mcEntity, it.finalDamage.toFloat(), (it.damageSource as CraftDamageSource).handle))
+            damageLivingEntity.invoke(EntityEvents.EntityDamageEvent(
+                entity = mcEntity,
+                amount = paperEvent.finalDamage.toFloat(),
+                source = mcDamageSource))
         }
         // Damage event - end
     }
