@@ -14,5 +14,9 @@ object PlayerEventTest {
             logInfo("received Player.deathMessage event")
             event.deathMessage.set(literalText("This is a test death message"))
         }
+
+        Events.Player.blockBreak.listen { event ->
+            logInfo("received Player.blockBreak event (Pos: ${event.blockPos}, State: ${event.blockState}, Entity: ${event.blockEntity})")
+        }
     }
 }
