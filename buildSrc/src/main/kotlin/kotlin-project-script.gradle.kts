@@ -29,7 +29,7 @@ kotlin {
 
     sourceSets.all {
         languageSettings {
-            val whitelistModules = BuildConstants.uploadModules.plus("paper")
+            val whitelistModules = BuildConstants.uploadModules
             if (project.name.removePrefix(rootProject.name + "-") in whitelistModules) {
                 listOf("InternalSilkApi", "DelicateSilkApi", "ExperimentalSilkApi").forEach {
                     optIn("net.silkmc.silk.core.annotations.${it}")

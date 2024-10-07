@@ -27,7 +27,7 @@ dependencies {
     paperweight.paperDevBundle("${paperMinecraftVersion}-R0.1-SNAPSHOT")
 
     // include all regular silk modules in their dev jar form
-    for (module in BuildConstants.uploadModules) {
+    for (module in BuildConstants.commonModules) {
         if (project.version != rootProject.version) {
             val moduleDep = implementation("net.silkmc:silk-${module}:${project.version}:dev") {
                 artifacts.removeIf { it.classifier != "dev" }
