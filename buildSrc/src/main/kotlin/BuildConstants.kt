@@ -20,12 +20,11 @@ object BuildConstants {
     const val paperMinecraftVersion = "1.21.1"
     const val fabricLoaderVersion = "0.16.10"
     const val fabricLanguageKotlinVersion = "1.12.3+kotlin.2.0.21"
-    const val fabricApiVersion = "0.100.8+1.21"
 
     const val kotestVersion = "5.9.1"
     const val mockkVersion = "1.13.12"
 
-    val commonModules = listOf(
+    val uploadModules = listOf(
         "commands",
         "core",
         "game",
@@ -33,9 +32,5 @@ object BuildConstants {
         "nbt",
         "network",
         "persistence",
-    )
-    val uploadModules = commonModules + listOf(
-        "paper",
-        "fabric"
     )
 }

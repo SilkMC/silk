@@ -11,5 +11,5 @@
         "server.MixinServerConfigurationPacketListenerImpl",
         "server.MixinServerGamePacketListenerImpl",
         "server.MixinServerLoginPacketListenerImpl"
-    ], "client":          [ "client.AbstractContainerScreenAccessor" ]
+    ]
 }
