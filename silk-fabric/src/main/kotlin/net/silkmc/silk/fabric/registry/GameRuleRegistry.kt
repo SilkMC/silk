@@ -1,4 +1,6 @@
-package net.silkmc.silk.core.registry
+@file:Suppress("unused")
+
+package net.silkmc.silk.fabric.registry
 
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory

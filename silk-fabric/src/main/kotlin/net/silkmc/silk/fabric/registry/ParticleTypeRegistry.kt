@@ -1,4 +1,6 @@
-package net.silkmc.silk.core.registry
+@file:Suppress("unused")
+
+package net.silkmc.silk.fabric.registry
 
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.core.registries.BuiltInRegistries

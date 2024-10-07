@@ -1,4 +1,6 @@
-package net.silkmc.silk.core.registry
+@file:Suppress("unused")
+
+package net.silkmc.silk.fabric.registry
 
 import net.minecraft.advancements.critereon.ItemSubPredicate
 import net.minecraft.core.registries.BuiltInRegistries

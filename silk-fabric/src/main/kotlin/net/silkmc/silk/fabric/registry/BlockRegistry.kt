@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package net.silkmc.silk.core.registry
+package net.silkmc.silk.fabric.registry
 
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
@@ -12,7 +12,7 @@ inline fun blockPropertiesOf(
     copiedBlock: BlockBehaviour? = null,
     builder: BlockBehaviour.Properties.() -> Unit,
 ): BlockBehaviour.Properties {
-    return if (copiedBlock != null )
+    return if (copiedBlock != null)
         BlockBehaviour.Properties.ofFullCopy(copiedBlock).apply(builder)
     else
         BlockBehaviour.Properties.of().apply(builder)

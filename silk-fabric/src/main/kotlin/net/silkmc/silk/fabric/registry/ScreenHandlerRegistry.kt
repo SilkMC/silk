@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package net.silkmc.silk.core.registry
+package net.silkmc.silk.fabric.registry
 
 import net.minecraft.client.gui.screens.MenuScreens
 import net.minecraft.client.gui.screens.Screen

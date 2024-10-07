@@ -25,7 +25,7 @@ object BuildConstants {
     const val kotestVersion = "5.9.1"
     const val mockkVersion = "1.13.12"
 
-    val uploadModules = listOf(
+    val commonModules = listOf(
         "commands",
         "core",
         "game",
@@ -33,5 +33,9 @@ object BuildConstants {
         "nbt",
         "network",
         "persistence",
+    )
+    val uploadModules = commonModules + listOf(
+        "paper",
+        "fabric"
     )
 }
