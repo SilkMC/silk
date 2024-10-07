@@ -1,11 +1,7 @@
 package net.silkmc.silk.core.server
 
 import net.minecraft.commands.CommandSourceStack
-import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import java.nio.file.Path
 import kotlin.io.path.absolute
@@ -46,19 +42,3 @@ val MinecraftServer.players: List<ServerPlayer>
 )
 val MinecraftServer.serverPath: Path
     get() = serverDirectory.absolute()
-
-/**
- * Retrieves the level for an associated with an id is present
- *
- * @param id The id of the level to check
- * @return The level
- */
-fun MinecraftServer.getLevel(id: ResourceLocation): ServerLevel? = getLevel(ResourceKey.create(Registries.DIMENSION, id))
-
-/**
- * Checks if the level associated with an id is present
- *
- * @param id The id of the level to check
- * @return If the level is present
- */
-fun MinecraftServer.hasLevel(id: ResourceLocation): Boolean = getLevel(id) != null

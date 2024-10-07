@@ -20,6 +20,5 @@ include("$projectName-network")
 include("$projectName-persistence")
 
 include("$projectName-paper")
-include("$projectName-fabric")
 
 include("$projectName-testmod")
