@@ -1,4 +1,6 @@
-package net.silkmc.silk.core.registry
+@file:Suppress("unused")
+
+package net.silkmc.silk.fabric.registry
 
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.BuiltInRegistries
@@ -19,7 +21,7 @@ fun armorMaterialOf(
     layerId: String,
     dyeable: Boolean = false,
     layerSuffix: String = "",
-): Holder<ArmorMaterial>? {
+): Holder<ArmorMaterial> {
     // Get the supported layers for the armor material
     val layers = listOf(
         ArmorMaterial.Layer(ResourceLocation.parse(layerId), layerSuffix, dyeable)
@@ -35,7 +37,7 @@ fun armorMaterialOf(
     toughness: Float,
     knockbackResistance: Float,
     layers: List<ArmorMaterial.Layer>,
-): Holder<ArmorMaterial>? {
+): Holder<ArmorMaterial> {
     return Holder.direct(
         ArmorMaterial(
             defensePoints,

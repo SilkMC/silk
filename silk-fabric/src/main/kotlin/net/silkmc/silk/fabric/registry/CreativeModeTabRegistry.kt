@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package net.silkmc.silk.core.registry
+package net.silkmc.silk.fabric.registry
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.minecraft.core.registries.BuiltInRegistries

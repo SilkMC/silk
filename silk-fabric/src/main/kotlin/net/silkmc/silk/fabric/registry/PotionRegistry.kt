@@ -1,11 +1,12 @@
-package net.silkmc.silk.core.registry
+@file:Suppress("unused")
+
+package net.silkmc.silk.fabric.registry
 
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.effect.MobEffect
 import net.minecraft.world.effect.MobEffectInstance
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.alchemy.Potion
 
 fun potionOf(
