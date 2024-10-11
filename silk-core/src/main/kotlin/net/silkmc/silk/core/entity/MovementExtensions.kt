@@ -4,7 +4,8 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.level.portal.DimensionTransition
+import net.minecraft.world.entity.Relative
+import net.minecraft.world.level.portal.TeleportTransition
 import net.minecraft.world.phys.Vec3
 
 /**
@@ -25,14 +26,14 @@ fun Entity.changePos(
     val zD = z.toDouble()
 
     if (world != null && this is ServerPlayer) {
-        teleportTo(world, xD, yD, zD, yaw ?: this.yRot, pitch ?: this.xRot)
+        teleportTo(world, xD, yD, zD, Relative.ALL, yaw ?: this.yRot, pitch ?: this.xRot, true)
         return
     }
 
     if (world != null && world != this.level()) {
-        changeDimension(DimensionTransition(
+        teleport(TeleportTransition(
             world, Vec3(xD, yD, zD), Vec3.ZERO, yaw ?: this.yRot,
-            pitch ?: this.xRot, false, DimensionTransition.DO_NOTHING
+            pitch ?: this.xRot, Relative.ALL, TeleportTransition.DO_NOTHING
         ))
         return
     }

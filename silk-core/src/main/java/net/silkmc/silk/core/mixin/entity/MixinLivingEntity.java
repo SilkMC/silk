@@ -1,5 +1,6 @@
 package net.silkmc.silk.core.mixin.entity;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.silkmc.silk.core.event.EntityEvents;
@@ -15,7 +16,8 @@ public class MixinLivingEntity {
         method = "actuallyHurt",
         at = @At("HEAD")
     )
-    private void onActuallyHurt(DamageSource damageSource,
+    private void onActuallyHurt(ServerLevel serverLevel,
+                                DamageSource damageSource,
                                 float amount,
                                 CallbackInfo ci) {
         EntityEvents.INSTANCE.getDamageLivingEntity()

@@ -21,4 +21,9 @@ public class ImposterProtoChunkMixin implements CompoundProvider {
     public PersistentCompound getCompound() {
         return ((CompoundProvider) wrapped).getCompound();
     }
+
+    @Override
+    public void setCompound(@NotNull PersistentCompound compound) {
+        ((CompoundProvider) wrapped).setCompound(compound);
+    }
 }

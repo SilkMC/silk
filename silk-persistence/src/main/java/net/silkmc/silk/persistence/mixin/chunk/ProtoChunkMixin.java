@@ -12,12 +12,17 @@ import org.spongepowered.asm.mixin.Unique;
 public class ProtoChunkMixin implements CompoundProvider {
 
     @Unique
-    private final PersistentCompound compound = new PersistentCompoundImpl();
+    private PersistentCompound compound = new PersistentCompoundImpl();
 
     @Unique
     @NotNull
     @Override
     public PersistentCompound getCompound() {
         return compound;
+    }
+
+    @Override
+    public void setCompound(@NotNull PersistentCompound compound) {
+        this.compound = compound;
     }
 }

@@ -3,6 +3,7 @@ package net.silkmc.silk.test.commands
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.HoverEvent
 import net.silkmc.silk.core.annotations.DelicateSilkApi
+import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import net.silkmc.silk.core.logging.logInfo
 import net.silkmc.silk.core.text.literalText
 import net.silkmc.silk.core.text.sendText
@@ -85,6 +86,7 @@ private val textExamples get() = mapOf(
     }
 )
 
+@OptIn(ExperimentalSilkApi::class)
 val textTestCommand = testCommand("text") {
     argument<String>("textexample") { example ->
         suggestList { textExamples.keys }

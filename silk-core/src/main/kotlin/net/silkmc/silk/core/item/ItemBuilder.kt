@@ -86,9 +86,9 @@ fun ItemStack.setPotion(potionHolder: Holder<Potion>) {
 
 @Deprecated(message = "Use the setPotion function with a holder instead. This function searches for the holder in the potion registry for compatibility only!")
 fun ItemStack.setPotion(potion: Potion) {
-    val potionRegistry = Silk.server?.registryAccess()?.registry(Registries.POTION)?.getOrNull() ?: return
+    val potionRegistry = Silk.server?.registryAccess()?.lookup(Registries.POTION)?.getOrNull() ?: return
     val id = potionRegistry.getKey(potion) ?: return
-    val holder = potionRegistry.getHolder(id).getOrNull() ?: return
+    val holder = potionRegistry.get(id).getOrNull() ?: return
     setPotion(holder)
 }
 

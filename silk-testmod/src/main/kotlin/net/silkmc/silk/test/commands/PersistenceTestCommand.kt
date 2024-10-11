@@ -3,6 +3,7 @@ package net.silkmc.silk.test.commands
 import kotlinx.serialization.Serializable
 import net.minecraft.commands.CommandSource
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.world.level.chunk.ChunkAccess
 import net.silkmc.silk.commands.LiteralCommandBuilder
 import net.silkmc.silk.core.entity.blockPos
 import net.silkmc.silk.core.text.sendText
@@ -25,17 +26,21 @@ val persistenceTestCommand = testCommand("persistence") {
         applyTestSubCommands { it.level.persistentCompound }
     }
     literal("chunk") {
-        applyTestSubCommands { it.level.getChunk(it.playerOrException.blockPos).persistentCompound }
+        applyTestSubCommands(afterSetCallback = { it.chunk.markUnsaved() }) {
+            it.chunk.persistentCompound
+        }
     }
 }
 
 fun LiteralCommandBuilder<CommandSourceStack>.applyTestSubCommands(
+    afterSetCallback: (CommandSourceStack) -> Unit = {},
     compoundGetter: (CommandSourceStack) -> PersistentCompound) {
     literal("set") runs {
         compoundGetter(source).testSet()
+        afterSetCallback(source)
     }
     literal("get") runs {
-        compoundGetter(source).testGet(source.playerOrException)
+        compoundGetter(source).testGet(source.playerOrException.commandSource())
     }
     literal("remove") runs {
         compoundGetter(source).testRemove()
@@ -72,3 +77,6 @@ private fun PersistentCompound.testRemove() {
     this -= simpleIntKey
     this -= personKey
 }
+
+private val CommandSourceStack.chunk: ChunkAccess
+    get() = level.getChunk(playerOrException.blockPos)

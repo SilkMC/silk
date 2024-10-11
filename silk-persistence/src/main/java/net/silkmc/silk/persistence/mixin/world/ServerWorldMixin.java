@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ServerWorldMixin implements CompoundProvider {
 
     @Unique
-    private final PersistentCompound compound = new PersistentCompoundImpl();
+    private PersistentCompound compound = new PersistentCompoundImpl();
 
     @SuppressWarnings("UnreachableCode")
     @Inject(method = "<init>", at = @At("RETURN"))
@@ -47,5 +47,10 @@ public abstract class ServerWorldMixin implements CompoundProvider {
     @Override
     public PersistentCompound getCompound() {
         return compound;
+    }
+
+    @Override
+    public void setCompound(@NotNull PersistentCompound compound) {
+        this.compound = compound;
     }
 }
