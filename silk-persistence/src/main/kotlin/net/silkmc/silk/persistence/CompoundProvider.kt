@@ -16,5 +16,5 @@ interface CompoundProvider {
      * Even though this compound is persistent, accessing data from it and
      * writing data to it is fast, as this happens in memory.
      */
-    var compound: PersistentCompound
+    val compound: PersistentCompound
 }

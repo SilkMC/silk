@@ -37,9 +37,4 @@ public class LevelChunkMixin implements CompoundProvider {
     public PersistentCompound getCompound() {
         return compound;
     }
-
-    @Override
-    public void setCompound(@NotNull PersistentCompound compound) {
-        this.compound = compound;
-    }
 }

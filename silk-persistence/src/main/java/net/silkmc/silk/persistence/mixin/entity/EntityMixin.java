@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class EntityMixin implements CompoundProvider {
 
     @Unique
-    private PersistentCompound compound = new PersistentCompoundImpl();
+    private final PersistentCompound compound = new PersistentCompoundImpl();
 
     @Inject(method = "saveWithoutId", at = @At("RETURN"))
     private void onWriteNbt(CompoundTag nbt, CallbackInfoReturnable<CompoundTag> cir) {
@@ -41,10 +41,5 @@ public class EntityMixin implements CompoundProvider {
     @Override
     public PersistentCompound getCompound() {
         return compound;
-    }
-
-    @Override
-    public void setCompound(@NotNull PersistentCompound compound) {
-        this.compound = compound;
     }
 }

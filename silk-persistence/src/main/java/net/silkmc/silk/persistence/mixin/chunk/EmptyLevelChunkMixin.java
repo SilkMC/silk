@@ -17,9 +17,4 @@ public class EmptyLevelChunkMixin implements CompoundProvider {
     public PersistentCompound getCompound() {
         return EmptyPersistentCompound.INSTANCE;
     }
-
-    @Override
-    public void setCompound(@NotNull PersistentCompound persistentCompound) {
-
-    }
 }

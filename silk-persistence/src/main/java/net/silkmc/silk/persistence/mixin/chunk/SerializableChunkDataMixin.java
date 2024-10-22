@@ -24,12 +24,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SerializableChunkDataMixin implements CompoundProvider {
 
     @Unique
-    private PersistentCompound compound = new PersistentCompoundImpl();
+    private final PersistentCompound compound = new PersistentCompoundImpl();
 
     @Inject(method = "write", at = @At("RETURN"))
     private void onSerialize(CallbackInfoReturnable<CompoundTag> cir) {
-        this.getCompound()
-                .putInCompound(cir.getReturnValue());
+        compound.putInCompound(cir.getReturnValue());
     }
 
     @Inject(method = "parse", at = @At("RETURN"))
@@ -46,8 +45,12 @@ public class SerializableChunkDataMixin implements CompoundProvider {
                                               ChunkAccess chunkAccess,
                                               CallbackInfoReturnable<SerializableChunkData> cir) {
         if (chunkAccess instanceof CompoundProvider chunkComponentProvider) {
-            ((CompoundProvider) (Object) cir.getReturnValue())
-                    .setCompound(chunkComponentProvider.getCompound());
+            PersistentCompound chunkPersistentCompound = chunkComponentProvider.getCompound();
+            CompoundTag serializableData = ((CompoundProvider) (Object) cir.getReturnValue()).getCompound().getData();
+            if (serializableData == null) {
+                return;
+            }
+            chunkPersistentCompound.putInCompound(serializableData, true);
         }
     }
     
@@ -57,16 +60,12 @@ public class SerializableChunkDataMixin implements CompoundProvider {
                                     RegionStorageInfo regionStorageInfo,
                                     ChunkPos chunkPos,
                                     CallbackInfoReturnable<ProtoChunk> cir) {
-        ((CompoundProvider) cir.getReturnValue()).setCompound(this.compound);
+        ((CompoundProvider) cir.getReturnValue()).getCompound()
+                .loadFromCompound(this.compound.getData(), true);
     }
 
     @Override
     public @NotNull PersistentCompound getCompound() {
         return compound;
-    }
-
-    @Override
-    public void setCompound(@NotNull PersistentCompound compound) {
-        this.compound = compound;
     }
 }

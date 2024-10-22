@@ -44,6 +44,7 @@ fun LiteralCommandBuilder<CommandSourceStack>.applyTestSubCommands(
     }
     literal("remove") runs {
         compoundGetter(source).testRemove()
+        afterSetCallback(source)
     }
 }
 
