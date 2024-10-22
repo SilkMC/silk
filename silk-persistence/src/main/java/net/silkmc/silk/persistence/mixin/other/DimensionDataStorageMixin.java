@@ -2,6 +2,7 @@ package net.silkmc.silk.persistence.mixin.other;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.silkmc.silk.persistence.internal.EmptySilkPersistenceCompoundTag;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,7 +22,9 @@ public class DimensionDataStorageMixin {
             )
     )
     private <K, V> V dontSaveEmptyCompounds(Map<K, V> instance, K key, V value, Operation<V> original) {
-        if (key instanceof Path path && Files.notExists(path) && value instanceof EmptySilkPersistenceCompoundTag) {
+        if (key instanceof Path path && Files.notExists(path)
+                && value instanceof CompoundTag compoundTag
+                && compoundTag.getCompound("data") instanceof EmptySilkPersistenceCompoundTag) {
             return null;
         }
 
