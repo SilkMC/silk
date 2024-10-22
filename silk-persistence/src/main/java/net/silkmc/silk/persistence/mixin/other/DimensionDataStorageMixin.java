@@ -16,10 +16,11 @@ import java.util.Map;
 public class DimensionDataStorageMixin {
 
     @WrapOperation(
-            method = "method_61878",
-            at = @At(
-                    value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"
-            )
+        method = "method_61878",
+        at = @At(
+            value = "INVOKE",
+            target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"
+        )
     )
     private <K, V> V dontSaveEmptyCompounds(Map<K, V> instance, K key, V value, Operation<V> original) {
         if (key instanceof Path path && Files.notExists(path)
