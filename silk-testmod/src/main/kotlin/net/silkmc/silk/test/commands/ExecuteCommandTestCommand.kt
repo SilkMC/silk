@@ -7,7 +7,7 @@ val executeCommandTestCommand = testCommand("execute_command") {
     literal("server") {
         runs {
             val server = this.source.server
-            server?.executeCommand("time set day")
+            server.executeCommand("time set day")
         }
     }
     literal("player") {

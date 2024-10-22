@@ -9,8 +9,8 @@ import net.silkmc.silk.core.item.*
 
 private fun createItems(player: ServerPlayer) = listOf(
     itemStack(Items.NETHERITE_SWORD) {
-        val enchantmentRegistry = player.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT)
-        enchant(enchantmentRegistry.getHolderOrThrow(Enchantments.SHARPNESS), 2)
+        val enchantmentRegistry = player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+        enchant(enchantmentRegistry.getOrThrow(Enchantments.SHARPNESS), 2)
     },
     itemStack(Items.POTION) {
         setPotion(Potions.LEAPING)

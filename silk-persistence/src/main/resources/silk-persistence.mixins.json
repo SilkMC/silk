@@ -3,14 +3,14 @@
   "required": true,
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "chunk.ChunkSerializerMixin",
     "chunk.EmptyLevelChunkMixin",
     "chunk.ImposterProtoChunkMixin",
     "chunk.LevelChunkMixin",
     "chunk.ProtoChunkMixin",
+    "chunk.SerializableChunkDataMixin",
     "entity.EntityMixin",
     "other.MixinDataFixTypes",
-    "other.MixinSavedData",
+    "other.DimensionDataStorageMixin",
     "world.ServerWorldMixin"
   ]
 }

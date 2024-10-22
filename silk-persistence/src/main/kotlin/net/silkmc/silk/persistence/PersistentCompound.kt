@@ -131,8 +131,10 @@ abstract class PersistentCompound {
     @PublishedApi
     internal fun putInCompound(nbtCompound: CompoundTag) = putInCompound(nbtCompound, false)
 
+    @PublishedApi
     internal abstract fun loadFromCompound(nbtCompound: CompoundTag, loadRaw: Boolean)
-    
+
+    @PublishedApi
     internal abstract fun putInCompound(nbtCompound: CompoundTag, writeRaw: Boolean)
 }
 

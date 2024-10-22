@@ -8,6 +8,7 @@ import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.annotations.DelicateSilkApi
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import org.apache.commons.lang3.text.WordUtils
@@ -56,6 +57,28 @@ inline fun CommandSource.sendText(baseText: String? = null, builder: LiteralText
 }
 
 /**
+ * Sends the given [Component] to the player.
+ *
+ * This function currently simply calls the [CommandSource.sendSystemMessage] function.
+ * It exists to provide a more consistent API with the more complex [sendText] builder
+ * function.
+ * Additionally, it will remain stable in case Minecraft changes the API in the future.
+ */
+fun ServerPlayer.sendText(text: Component) {
+    sendSystemMessage(text)
+}
+
+/**
+ * Opens a [LiteralTextBuilder] and sends the resulting [MutableComponent]
+ * to the player.
+ *
+ * @see [literalText]
+ */
+inline fun ServerPlayer.sendText(baseText: String? = null, builder: LiteralTextBuilder.() -> Unit = { }) {
+    sendSystemMessage(literalText(baseText, builder))
+}
+
+/**
  * Opens a [LiteralTextBuilder] and sends the resulting [Component]
  * to each player on the server.
  *
@@ -80,6 +103,8 @@ fun MinecraftServer.sendText(text: Component) {
     broadcastText(text)
 }
 
+private val prettyPrintJson = Json { prettyPrint = true }
+
 /**
  * Returns a pretty printed JSON string of this [Component]
  * in its serialized form.
@@ -90,5 +115,5 @@ fun Component.serializeToPrettyJson(): String {
     val jsonString = Component.Serializer.toJson(this, RegistryAccess.EMPTY)
     val jsonElement = Json.decodeFromString<JsonElement>(jsonString)
     @Suppress("JSON_FORMAT_REDUNDANT")
-    return Json { prettyPrint = true }.encodeToString(jsonElement)
+    return prettyPrintJson.encodeToString(jsonElement)
 }
