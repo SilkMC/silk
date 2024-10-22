@@ -16,7 +16,7 @@ object BuildConstants {
 
     // check these values here: https://jakobk.net/mcdev
     const val majorMinecraftVersion = "1.21"
-    const val minecraftVersion = "$majorMinecraftVersion.2-pre3"
+    const val minecraftVersion = "$majorMinecraftVersion.2"
     const val paperMinecraftVersion = "1.21.1"
     const val fabricLoaderVersion = "0.16.7"
     const val fabricLanguageKotlinVersion = "1.12.3+kotlin.2.0.21"
