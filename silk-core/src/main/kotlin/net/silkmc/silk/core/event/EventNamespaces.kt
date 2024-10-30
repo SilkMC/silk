@@ -26,3 +26,8 @@ val Events.Player get() = PlayerEvents
  * Events for [net.minecraft.world.entity.Entity]. This includes players.
  */
 val Events.Entity get() = EntityEvents
+
+/**
+ * Events for [net.minecraft.world.level.block.Block].
+ */
+val Events.Block get() = BlockEvents
