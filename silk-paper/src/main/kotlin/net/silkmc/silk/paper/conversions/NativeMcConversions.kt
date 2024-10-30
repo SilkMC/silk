@@ -5,7 +5,9 @@ import net.minecraft.server.dedicated.DedicatedServer
 import net.minecraft.server.level.ServerEntity
 import net.minecraft.server.level.ServerPlayer
 import org.bukkit.Server
+import org.bukkit.block.Block
 import org.bukkit.craftbukkit.CraftServer
+import org.bukkit.craftbukkit.block.CraftBlock
 import org.bukkit.craftbukkit.entity.CraftEntity
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Entity
@@ -29,3 +31,10 @@ val Player.mcPlayer: ServerPlayer
  */
 val Entity.mcEntity: net.minecraft.world.entity.Entity
     get() = (this as CraftEntity).handle
+
+/**
+ * Converts a Paper [Block] to a native [net.minecraft.world.level.block.Block].
+ * The converted block could be null if it is not loaded.
+ */
+val Block.mcBlock: net.minecraft.world.level.block.Block?
+    get() = (this as CraftBlock).handle.getBlockIfLoaded(this.position)

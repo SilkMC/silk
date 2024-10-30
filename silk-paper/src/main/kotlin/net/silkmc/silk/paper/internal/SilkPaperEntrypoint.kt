@@ -27,5 +27,6 @@ class SilkPaperEntrypoint : JavaPlugin() {
         Events.Server.setupPaper()
         Events.Player.setupPaper()
         Events.Entity.setupPaper()
+        Events.Block.setupPaper()
     }
 }
