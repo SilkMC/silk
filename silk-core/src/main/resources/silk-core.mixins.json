@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "block.AbstractBlockAccessor",
+    "block.MixinBlock",
     "entity.MixinEntity",
     "entity.MixinLivingEntity",
     "server.MixinMinecraftServer",
