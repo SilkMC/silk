@@ -20,7 +20,7 @@ jobs:
         run: ./gradlew build
 
       - name: Publish to Ossrh
-        run: ./gradlew publishAllPublicationsToOssrhRepository
+        run: ./gradlew publishAllPublicationsToOssrhRepository -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
 
       - name: Publish to Modrinth
-        run: ./gradlew :silk-all:modrinth
+        run: ./gradlew :silk-all:modrinth -Pmodrinth.token=${{ secrets.MODRINTH_TOKEN }}
