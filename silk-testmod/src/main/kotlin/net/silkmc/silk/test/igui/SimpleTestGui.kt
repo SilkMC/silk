@@ -61,7 +61,7 @@ object SimpleTestGui {
             val compound = compound(
                 (1 sl 2) rectTo (6 sl 8),
                 Silk.server?.registryAccess()
-                    ?.registryOrThrow(Registries.ITEM)
+                    ?.lookupOrThrow(Registries.ITEM)
                     ?.filter { it != Items.AIR }
                     .orEmpty().toGuiList(),
                 iconGenerator = { it.defaultInstance }

@@ -11,14 +11,17 @@ import net.silkmc.silk.persistence.PersistentCompound
 class CompoundSavedData(val compound: PersistentCompound) : SavedData() {
 
     // a compound does not track whether it is dirty, however custom
-    // logic is implemented via a mixin to prevent file creation for
-    // empty compounds
+    // logic is implemented via a mixin and EmptySilkPersistenceCompoundTag
+    // to prevent file creation for empty compounds
     override fun isDirty(): Boolean {
         return true
     }
 
-    override fun save(nbt: CompoundTag, provider: HolderLookup.Provider) =
-        nbt.also { compound.putInCompound(it, writeRaw = true) }
+    override fun save(nbt: CompoundTag, provider: HolderLookup.Provider): CompoundTag {
+        compound.putInCompound(nbt, writeRaw = true)
+        return if (nbt.isEmpty) EmptySilkPersistenceCompoundTag else nbt
+    }
+
 
     companion object {
 

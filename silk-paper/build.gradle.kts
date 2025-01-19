@@ -18,7 +18,6 @@ allprojects {
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 val extractTransitive by configurations.registering { isTransitive = true }
@@ -29,12 +28,18 @@ dependencies {
 
     // include all regular silk modules in their dev jar form
     for (module in BuildConstants.uploadModules) {
-        @Suppress("UnstableApiUsage")
-        extractTransitive(includeInJar(implementation("net.silkmc:silk-${module}:${project.version}:dev") {
-            artifacts.removeIf { it.classifier != "dev" }
-            assert(artifacts.isNotEmpty())
-            exclude("net.silkmc") // exclude applies to transitive dependencies
-        })!!)
+        if (project.version != rootProject.version) {
+            val moduleDep = implementation("net.silkmc:silk-${module}:${project.version}:dev") {
+                artifacts.removeIf { it.classifier != "dev" }
+                assert(artifacts.isNotEmpty())
+                exclude("net.silkmc") // exclude applies to transitive dependencies
+            }
+            includeInJar(moduleDep)
+            extractTransitive(moduleDep)
+        } else {
+            includeInJar(implementation(project(":silk-${module}", configuration = "namedElements"))!!)
+            extractTransitive(project(":silk-${module}"))
+        }
     }
 }
 

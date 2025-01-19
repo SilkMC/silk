@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinEntity {
 
     @Inject(
-        method = "isInvulnerableTo",
+        method = "isInvulnerableToBase",
         at = @At("RETURN"),
         cancellable = true
     )

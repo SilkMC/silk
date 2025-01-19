@@ -24,13 +24,13 @@ val ClientCommandSourceStack.level: ClientLevel
     get() = player.clientLevel
 
 fun ClientCommandSourceStack.sendSuccess(message: Component) {
-    if (player.acceptsSuccess()) {
-        player.sendSystemMessage(message)
-    }
+    sendMessage(message)
 }
 
 fun ClientCommandSourceStack.sendFailure(message: Component) {
-    if (player.acceptsFailure()) {
-        player.sendSystemMessage(Component.empty().append(message).withStyle(ChatFormatting.RED))
-    }
+    sendMessage(Component.empty().append(message).withStyle(ChatFormatting.RED))
+}
+
+private fun ClientCommandSourceStack.sendMessage(message: Component) {
+    minecraft.gui.chat.addMessage(message)
 }

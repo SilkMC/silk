@@ -1,5 +1,6 @@
 package net.silkmc.silk.core.entity
 
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.silkmc.silk.core.server.executeCommand
 
@@ -9,5 +10,6 @@ import net.silkmc.silk.core.server.executeCommand
  * Note that the [command] must not contain the slash prefix.
  */
 fun Player.executeCommand(command: String) {
-    server?.executeCommand(command, this.createCommandSourceStack())
+    val serverPlayer = this as? ServerPlayer
+    serverPlayer?.server?.executeCommand(command, serverPlayer.createCommandSourceStack())
 }
