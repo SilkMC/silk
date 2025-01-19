@@ -3,6 +3,7 @@ package net.silkmc.silk.core.event
 import com.mojang.authlib.GameProfile
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.player.Player
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 
@@ -60,4 +61,12 @@ object PlayerEvents {
      * @see preQuit
      */
     val quitDuringConfiguration = Event.syncAsync<PlayerQuitDuringLoginEvent>()
+
+    open class PlayerDeathEvent(
+        val player: Player,
+        val source: DamageSource,
+        var deathMessage: EventScopeProperty<Component>,
+    )
+
+    val onDeath = Event.syncAsync<PlayerDeathEvent>()
 }
