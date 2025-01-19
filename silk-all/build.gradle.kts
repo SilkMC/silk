@@ -8,7 +8,7 @@ plugins {
 
 dependencies {
     BuildConstants.uploadModules.forEach {
-        implementation(include(modProject(":${rootProject.name}-${it}"))!!)
+        implementation(include(project(":${rootProject.name}-${it}"))!!)
     }
 }
 
