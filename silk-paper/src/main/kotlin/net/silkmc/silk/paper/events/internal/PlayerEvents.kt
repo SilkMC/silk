@@ -6,6 +6,7 @@ import net.minecraft.world.damagesource.DamageEffects
 import net.minecraft.world.damagesource.DamageScaling
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.damagesource.DamageType
+import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.event.EventScopeProperty
 import net.silkmc.silk.core.event.PlayerEvents
 import net.silkmc.silk.paper.conversions.mcEntity
@@ -28,6 +29,7 @@ fun PlayerEvents.setupPaper() {
     }
 
     listenSilk<PlayerDeathEvent> {
+        val pos = it.player.location.toVector()
         onDeath.invoke(
             PlayerEvents.PlayerDeathEvent(
                 it.player.mcPlayer, DamageSource(
@@ -40,7 +42,8 @@ fun PlayerEvents.setupPaper() {
                         )
                     ),
                     it.entity.mcEntity,
-                    null
+                    it.entity.mcEntity,
+                    Vec3(pos.x, pos.y, pos.z),
                 ), EventScopeProperty(AdventureComponent(it.deathMessage()))
             )
         )
