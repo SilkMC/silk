@@ -66,10 +66,10 @@ object PlayerEvents {
      * Called when a player dies.
      */
     open class PlayerDeathEvent(
-        val player: ServerPlayer,
+        player: ServerPlayer,
         val source: DamageSource,
         var deathMessage: EventScopeProperty<Component>,
-    )
+    ) : PlayerEvent<ServerPlayer>(player)
 
     val onDeath = Event.syncAsync<PlayerDeathEvent>()
 }
