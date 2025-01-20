@@ -42,4 +42,14 @@ object EntityEvents {
      * event, since Minecraft performs its checks more than one time
      */
     val checkInvulnerability = Event.onlySync<EntityCheckInvulnerabilityEvent>()
+
+    /**
+     * Called when a [LivingEntity] dies.
+     */
+    open class EntityDeathEvent(
+        entity: LivingEntity,
+        val damageSource: DamageSource
+    ) : EntityEvent<LivingEntity>(entity)
+
+    val onDeath = Event.syncAsync<EntityDeathEvent>()
 }
