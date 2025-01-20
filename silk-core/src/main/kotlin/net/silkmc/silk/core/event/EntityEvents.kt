@@ -43,13 +43,13 @@ object EntityEvents {
      */
     val checkInvulnerability = Event.onlySync<EntityCheckInvulnerabilityEvent>()
 
+    open class EntityDeathEvent(
+        entity: LivingEntity,
+        val damageSource: DamageSource,
+    ) : EntityEvent<LivingEntity>(entity)
+
     /**
      * Called when a [LivingEntity] dies.
      */
-    open class EntityDeathEvent(
-        entity: LivingEntity,
-        val damageSource: DamageSource
-    ) : EntityEvent<LivingEntity>(entity)
-
     val onDeath = Event.syncAsync<EntityDeathEvent>()
 }
