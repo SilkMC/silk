@@ -63,7 +63,7 @@ object PlayerEvents {
     val quitDuringConfiguration = Event.syncAsync<PlayerQuitDuringLoginEvent>()
 
     /**
-     * Called when a player dies.
+     * Called when a [ServerPlayer] dies.
      */
     open class PlayerDeathEvent(
         player: ServerPlayer,

@@ -30,7 +30,7 @@ fun PlayerEvents.setupPaper() {
     }
 
     listenSilk<PlayerDeathEvent> {
-        val pos = it.player.location.toVector()
+        val pos = it.player.location
         val event = PlayerEvents.PlayerDeathEvent(
             it.player.mcPlayer, DamageSource(
                 Holder.direct(
