@@ -2,15 +2,9 @@ package net.silkmc.silk.paper.events.internal
 
 import io.papermc.paper.adventure.AdventureComponent
 import net.kyori.adventure.text.Component
-import net.minecraft.core.Holder
-import net.minecraft.world.damagesource.DamageEffects
-import net.minecraft.world.damagesource.DamageScaling
-import net.minecraft.world.damagesource.DamageSource
-import net.minecraft.world.damagesource.DamageType
-import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.event.EventScopeProperty
 import net.silkmc.silk.core.event.PlayerEvents
-import net.silkmc.silk.paper.conversions.mcEntity
+import net.silkmc.silk.paper.conversions.mcDamageSource
 import net.silkmc.silk.paper.conversions.mcPlayer
 import net.silkmc.silk.paper.events.listenSilk
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -32,19 +26,10 @@ fun PlayerEvents.setupPaper() {
     listenSilk<PlayerDeathEvent> {
         val pos = it.player.location
         val event = PlayerEvents.PlayerDeathEvent(
-            it.player.mcPlayer, DamageSource(
-                Holder.direct(
-                    DamageType(
-                        it.damageSource.damageType.key.key,
-                        DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, //TODO: Use DamageTypeRegistryEntry in 1.21.4
-                        it.damageSource.foodExhaustion,
-                        DamageEffects.valueOf(it.damageSource.damageType.damageEffect.toString())
-                    )
-                ),
-                it.entity.mcEntity,
-                it.entity.mcEntity,
-                Vec3(pos.x, pos.y, pos.z),
-            ), EventScopeProperty(AdventureComponent(it.deathMessage()))
+            it.player.mcPlayer,
+            @Suppress("UnstableApiUsage")
+            it.damageSource.mcDamageSource,
+            EventScopeProperty(AdventureComponent(it.deathMessage()))
         )
         onDeath.invoke(event)
         it.deathMessage(Component.text(event.deathMessage.get().string))
