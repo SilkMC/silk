@@ -2,6 +2,7 @@ package net.silkmc.silk.core.event
 
 import com.mojang.authlib.GameProfile
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.player.Player
@@ -17,10 +18,15 @@ object PlayerEvents {
      */
     val preLogin = Event.syncAsync<PlayerEvent<ServerPlayer>>()
 
+    open class PostLoginEvent(
+        player: ServerPlayer,
+        val joinMessage: EventScopeProperty<Component>
+    ) : PlayerEvent<ServerPlayer>(player)
+
     /**
      * Called after a player has received all login information from the server.
      */
-    val postLogin = Event.syncAsync<PlayerEvent<ServerPlayer>>()
+    val postLogin = Event.syncAsync<PostLoginEvent>()
 
     open class PlayerQuitEvent(
         player: ServerPlayer,

@@ -1,7 +1,10 @@
 package net.silkmc.silk.paper.events.internal
 
 import io.papermc.paper.adventure.AdventureComponent
+import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.minecraft.network.chat.MutableComponent
 import net.silkmc.silk.core.event.EventScopeProperty
 import net.silkmc.silk.core.event.PlayerEvents
 import net.silkmc.silk.paper.conversions.mcDamageSource
@@ -17,7 +20,13 @@ fun PlayerEvents.setupPaper() {
         preLogin.invoke(PlayerEvents.PlayerEvent(it.player.mcPlayer))
     }
     listenSilk<PlayerJoinEvent> {
-        postLogin.invoke(PlayerEvents.PlayerEvent(it.player.mcPlayer))
+        val event = PlayerEvents.PostLoginEvent(
+            it.player.mcPlayer, EventScopeProperty(
+                AdventureComponent(it.joinMessage()).deepConverted()
+            )
+        )
+        postLogin.invoke(event)
+        it.joinMessage(PaperAdventure.asAdventure(event.joinMessage.get()))
     }
     listenSilk<PlayerQuitEvent> {
         preQuit.invoke(PlayerEvents.PlayerQuitEvent(it.player.mcPlayer, AdventureComponent(it.quitMessage())))
@@ -32,6 +41,6 @@ fun PlayerEvents.setupPaper() {
             EventScopeProperty(AdventureComponent(it.deathMessage()))
         )
         onDeath.invoke(event)
-        it.deathMessage(Component.text(event.deathMessage.get().string))
+        it.deathMessage(PaperAdventure.asAdventure(event.deathMessage.get()))
     }
 }
