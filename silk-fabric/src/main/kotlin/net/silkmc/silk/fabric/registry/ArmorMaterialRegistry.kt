@@ -3,66 +3,42 @@
 package net.silkmc.silk.fabric.registry
 
 import net.minecraft.core.Holder
-import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvent
-import net.minecraft.world.item.ArmorItem
-import net.minecraft.world.item.ArmorMaterial
-import net.minecraft.world.item.crafting.Ingredient
-
-
-fun armorMaterialOf(
-    defensePoints: Map<ArmorItem.Type, Int>,
-    enchantability: Int,
-    equipSound: Holder<SoundEvent>,
-    repairIngredientSupplier: () -> Ingredient,
-    toughness: Float,
-    knockbackResistance: Float,
-    layerId: String,
-    dyeable: Boolean = false,
-    layerSuffix: String = "",
-): Holder<ArmorMaterial> {
-    // Get the supported layers for the armor material
-    val layers = listOf(
-        ArmorMaterial.Layer(ResourceLocation.parse(layerId), layerSuffix, dyeable)
-    )
-    return armorMaterialOf(defensePoints, enchantability, equipSound, repairIngredientSupplier, toughness, knockbackResistance, layers)
-}
+import net.minecraft.tags.TagKey
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.equipment.ArmorMaterial
+import net.minecraft.world.item.equipment.ArmorType
+import net.minecraft.world.item.equipment.EquipmentAsset
+import net.minecraft.world.item.equipment.EquipmentAssets
 
 fun armorMaterialOf(
-    defensePoints: Map<ArmorItem.Type, Int>,
+    baseDurability: Int,
+    defensePoints: Map<ArmorType, Int>,
     enchantability: Int,
     equipSound: Holder<SoundEvent>,
-    repairIngredientSupplier: () -> Ingredient,
     toughness: Float,
     knockbackResistance: Float,
-    layers: List<ArmorMaterial.Layer>,
-): Holder<ArmorMaterial> {
-    return Holder.direct(
-        ArmorMaterial(
-            defensePoints,
-            enchantability,
-            equipSound,
-            repairIngredientSupplier,
-            layers,
-            toughness,
-            knockbackResistance,
-        )
+    repairIngredient: TagKey<Item>,
+    layers: ResourceKey<EquipmentAsset>,
+): ArmorMaterial {
+    return ArmorMaterial(
+        baseDurability,
+        defensePoints,
+        enchantability,
+        equipSound,
+        toughness,
+        knockbackResistance,
+        repairIngredient,
+        layers,
     )
 }
 
-fun ArmorMaterial.register(id: ResourceLocation): Holder.Reference<ArmorMaterial> {
-    return BuiltInRegistries.ARMOR_MATERIAL.registerForHolder(id, this)
-}
+fun armorMaterialKeyOf(id: ResourceLocation): ResourceKey<EquipmentAsset> = resourceKeyOf(EquipmentAssets.ROOT_ID, id)
 
-fun ArmorMaterial.register(id: String): Holder.Reference<ArmorMaterial> {
-    return BuiltInRegistries.ARMOR_MATERIAL.registerForHolder(id, this)
-}
+fun armorMaterialKeyOf(id: String): ResourceKey<EquipmentAsset> = armorMaterialKeyOf(ResourceLocation.parse(id))
 
-fun Holder<ArmorMaterial>.register(id: ResourceLocation): Holder<ArmorMaterial> {
-    return BuiltInRegistries.ARMOR_MATERIAL.registerForHolder(id, this.value)
-}
-
-fun Holder<ArmorMaterial>.register(id: String): Holder<ArmorMaterial> {
-    return BuiltInRegistries.ARMOR_MATERIAL.registerForHolder(id, this.value)
+fun armorMaterialKeyOf(namespace: String, path: String): ResourceKey<EquipmentAsset> {
+    return armorMaterialKeyOf(ResourceLocation.fromNamespaceAndPath(namespace, path))
 }

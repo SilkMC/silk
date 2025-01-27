@@ -33,7 +33,6 @@ inline fun foodPropertiesOf(
     nutrition: Int? = null,
     saturation: Float? = null,
     alwaysEdible: Boolean = false,
-    snack: Boolean = false,
     builder: FoodProperties.Builder.() -> Unit = {},
 ): FoodProperties {
     val foodPropertiesBuilder = FoodProperties.Builder()
@@ -46,9 +45,6 @@ inline fun foodPropertiesOf(
 
     if (alwaysEdible)
         foodPropertiesBuilder.alwaysEdible()
-
-    if (snack)
-        foodPropertiesBuilder.fast()
 
     return foodPropertiesBuilder.apply(builder).build()
 }

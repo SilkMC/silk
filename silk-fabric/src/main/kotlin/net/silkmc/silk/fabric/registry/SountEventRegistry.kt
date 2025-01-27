@@ -5,7 +5,6 @@ package net.silkmc.silk.fabric.registry
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvent
 
 fun soundEventOf(
@@ -22,7 +21,6 @@ fun soundEventOf(
     id: String,
     range: Float? = null,
 ): SoundEvent {
-    val entity: ServerPlayer
     return soundEventOf(ResourceLocation.parse(id), range)
 }
 

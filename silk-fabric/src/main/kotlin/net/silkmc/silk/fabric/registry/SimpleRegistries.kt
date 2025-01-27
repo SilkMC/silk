@@ -22,7 +22,6 @@ import net.minecraft.world.entity.npc.VillagerProfession
 import net.minecraft.world.entity.npc.VillagerType
 import net.minecraft.world.entity.schedule.Activity
 import net.minecraft.world.entity.schedule.Schedule
-import net.minecraft.world.item.Instrument
 import net.minecraft.world.level.block.entity.DecoratedPotPattern
 import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
@@ -303,11 +302,6 @@ fun CatVariant.register(id: String): CatVariant = BuiltInRegistries.CAT_VARIANT.
 
 fun FrogVariant.register(id: ResourceLocation): FrogVariant = BuiltInRegistries.FROG_VARIANT.register(id, this)
 fun FrogVariant.register(id: String): FrogVariant = BuiltInRegistries.FROG_VARIANT.register(id, this)
-
-
-fun Instrument.register(id: ResourceLocation): Instrument = BuiltInRegistries.INSTRUMENT.register(id, this)
-fun Instrument.register(id: String): Instrument = BuiltInRegistries.INSTRUMENT.register(id, this)
-
 
 fun DecoratedPotPattern.register(id: ResourceLocation): DecoratedPotPattern = BuiltInRegistries.DECORATED_POT_PATTERN.register(id, this)
 fun DecoratedPotPattern.register(id: String): DecoratedPotPattern = BuiltInRegistries.DECORATED_POT_PATTERN.register(id, this)
