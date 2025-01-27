@@ -7,9 +7,10 @@ plugins {
 }
 
 dependencies {
-    BuildConstants.uploadModules.forEach {
+    BuildConstants.commonModules.forEach {
         implementation(include(project(":${rootProject.name}-${it}"))!!)
     }
+    implementation(include(modProject(":${rootProject.name}-fabric"))!!)
 }
 
 val modName by extra("$projectTitle (All modules)")
