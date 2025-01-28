@@ -2,9 +2,6 @@ package net.silkmc.silk.paper.events.internal
 
 import io.papermc.paper.adventure.AdventureComponent
 import io.papermc.paper.adventure.PaperAdventure
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
-import net.minecraft.network.chat.MutableComponent
 import net.silkmc.silk.core.event.EventScopeProperty
 import net.silkmc.silk.core.event.PlayerEvents
 import net.silkmc.silk.paper.conversions.mcDamageSource
