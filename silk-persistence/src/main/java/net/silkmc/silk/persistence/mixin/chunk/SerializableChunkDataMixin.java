@@ -60,8 +60,10 @@ public class SerializableChunkDataMixin implements CompoundProvider {
                                     RegionStorageInfo regionStorageInfo,
                                     ChunkPos chunkPos,
                                     CallbackInfoReturnable<ProtoChunk> cir) {
+        CompoundTag compoundData = this.compound.getData();
+        if (compoundData == null) return;
         ((CompoundProvider) cir.getReturnValue()).getCompound()
-                .loadFromCompound(this.compound.getData(), true);
+                .loadFromCompound(compoundData, true);
     }
 
     @Override
