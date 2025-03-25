@@ -78,20 +78,20 @@ abstract class NbtTagDecoder(protected val nbt: Nbt) : AbstractDecoder() {
     }
 
     override fun decodeBoolean(): Boolean =
-        when ((nextMaybeNullable() as ByteTag).asByte) {
+        when ((nextMaybeNullable() as ByteTag).value) {
             0.toByte() -> false
             1.toByte() -> true
             else -> throw SerializationException("Byte is not a valid boolean")
         }
 
-    override fun decodeByte(): Byte = (nextMaybeNullable() as ByteTag).asByte
-    override fun decodeShort(): Short = (nextMaybeNullable() as ShortTag).asShort
-    override fun decodeChar(): Char = (nextMaybeNullable() as IntTag).asInt.toChar()
-    override fun decodeInt(): Int = (nextMaybeNullable() as IntTag).asInt
-    override fun decodeLong(): Long = (nextMaybeNullable() as LongTag).asLong
-    override fun decodeFloat(): Float = (nextMaybeNullable() as FloatTag).asFloat
-    override fun decodeDouble(): Double = (nextMaybeNullable() as DoubleTag).asDouble
-    override fun decodeString(): String = (nextMaybeNullable() as StringTag).asString
+    override fun decodeByte(): Byte = (nextMaybeNullable() as ByteTag).value
+    override fun decodeShort(): Short = (nextMaybeNullable() as ShortTag).value
+    override fun decodeChar(): Char = (nextMaybeNullable() as IntTag).value.toChar()
+    override fun decodeInt(): Int = (nextMaybeNullable() as IntTag).value
+    override fun decodeLong(): Long = (nextMaybeNullable() as LongTag).value
+    override fun decodeFloat(): Float = (nextMaybeNullable() as FloatTag).value
+    override fun decodeDouble(): Double = (nextMaybeNullable() as DoubleTag).value
+    override fun decodeString(): String = (nextMaybeNullable() as StringTag).value
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int =
         enumDescriptor.getElementIndex(decodeString())
 
@@ -137,7 +137,7 @@ class NbtCompoundDecoder(
         if (nbt.config.ignoreUnknownKeys || descriptor.kind is PolymorphicKind) return
 
         val names = (0 until descriptor.elementsCount).mapTo(HashSet()) { descriptor.getElementName(it) }
-        for (key in compound.allKeys) {
+        for (key in compound.keySet()) {
             if (!names.contains(key)) {
                 throw UnknownKeyException(key)
             }

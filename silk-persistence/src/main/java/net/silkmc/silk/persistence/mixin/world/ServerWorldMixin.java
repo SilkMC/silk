@@ -26,17 +26,18 @@ public abstract class ServerWorldMixin implements CompoundProvider {
         try {
             CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().set(true);
 
-            final var factory = CompoundSavedData.createFactory(compound);
             final var dataStorage = serverLevel.getDataStorage();
+            final var legacyDataType = CompoundSavedData.Companion.createType(PersistentCompoundImpl.LEGACY_CUSTOM_DATA_KEY, compound);
+            final var dataType = CompoundSavedData.Companion.createType(PersistentCompoundImpl.CUSTOM_DATA_KEY, compound);
 
             // move legacy data
-            final var legacyData = dataStorage.get(factory, PersistentCompoundImpl.LEGACY_CUSTOM_DATA_KEY);
+            final var legacyData = dataStorage.get(legacyDataType);
             if (legacyData != null) {
-                dataStorage.set(PersistentCompoundImpl.CUSTOM_DATA_KEY, legacyData);
+                dataStorage.set(dataType, legacyData);
                 // note: we do not delete the legacy data, as there is no official way to do so
             }
 
-            dataStorage.computeIfAbsent(factory, PersistentCompoundImpl.CUSTOM_DATA_KEY);
+            dataStorage.computeIfAbsent(dataType);
         } finally {
             CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().set(false);
         }

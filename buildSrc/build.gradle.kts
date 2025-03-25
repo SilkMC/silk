@@ -14,14 +14,14 @@ repositories {
 dependencies {
     fun pluginDep(id: String, version: String) = "${id}:${id}.gradle.plugin:${version}"
 
-    val kotlinVersion = "2.0.21"
+    val kotlinVersion = "2.1.10"
 
     compileOnly(kotlin("gradle-plugin", embeddedKotlinVersion))
     runtimeOnly(kotlin("gradle-plugin", kotlinVersion))
     compileOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
     runtimeOnly(pluginDep("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
 
-    implementation(pluginDep("fabric-loom", "1.9-SNAPSHOT"))
+    implementation(pluginDep("fabric-loom", "1.10-SNAPSHOT"))
     implementation(pluginDep("com.modrinth.minotaur", "2.8.7"))
 
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.7.2"))
