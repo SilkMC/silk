@@ -18,8 +18,8 @@ jobs:
 
       - name: Execute Gradle build
         env:
-          GRADLE_OPTS: -Xmx4g
-        run: ./gradlew build --stacktrace
+          JAVA_TOOL_OPTIONS: -Xmx4g
+        run: ./gradlew build --stacktrace --no-daemon
 
       - name: Publish to Ossrh
         run: ./gradlew publishAllPublicationsToOssrhRepository -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
