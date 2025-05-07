@@ -19,23 +19,8 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew build
 
-      - name: Publish commands to Ossrh
-        run: ./gradlew :silk-commands:publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
-
-      - name: Publish core to Ossrh
-        run: ./gradlew :silk-core:publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
-
-      - name: Publish game to Ossrh
-        run: ./gradlew :silk-game:publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
-
-      - name: Publish igui to Ossrh
-        run: ./gradlew :silk-game:publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
-
-      - name: Publish network to Ossrh
-        run: ./gradlew :silk-game:publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
-
-      - name: Publish paper to Ossrh
-        run: ./gradlew :silk-paper:publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
+      - name: Publish to Ossrh
+        run: ./gradlew publishAllPublicationsToOssrhRepository -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
 
       - name: Publish to Modrinth
         run: ./gradlew :silk-all:modrinth -Pmodrinth.token=${{ secrets.MODRINTH_TOKEN }}
