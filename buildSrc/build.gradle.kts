@@ -11,12 +11,6 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
 dependencies {
     fun pluginDep(id: String, version: String) = "${id}:${id}.gradle.plugin:${version}"
 
