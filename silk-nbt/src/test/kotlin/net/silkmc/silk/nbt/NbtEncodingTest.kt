@@ -31,9 +31,9 @@ class NbtEncodingTest : StringSpec({
         element.getInt("x") shouldBe value.x
         element.getLong("y") shouldBe value.y
         element.getString("name") shouldBe value.name
-        element.getList("stringList", Tag.TAG_STRING.toInt()).map { it.asString } shouldBe value.stringList
+        element.getList("stringList").map { it.asString() } shouldBe value.stringList
         element.getLongArray("longSet") shouldBe value.longSet.toLongArray()
-        with(element.getCompound("inner")) {
+        with(element.getCompound("inner").get()) {
             size() shouldBe 1
             getBoolean("test") shouldBe value.inner.test
         }
@@ -109,7 +109,8 @@ class NbtEncodingTest : StringSpec({
         checkAll(Exhaustive.enum<TestEnum>()) {
             val element = Nbt.encodeToNbtElement(it)
             element.shouldBeInstanceOf<StringTag>()
-            element.asString shouldBe it.name
+
+            element.asString() shouldBe it.name
         }
     }
 
@@ -118,7 +119,7 @@ class NbtEncodingTest : StringSpec({
         val element = Nbt.encodeToNbtElement<SealedBase>(value)
         element.shouldBeInstanceOf<CompoundTag>()
         element.getString("type") shouldBe "child1"
-        with(element.getCompound("value")) {
+        with(element.getCompound("value").get()) {
             getFloat("baseVal") shouldBe value.baseVal
             getDouble("childProp") shouldBe value.childProp
         }
