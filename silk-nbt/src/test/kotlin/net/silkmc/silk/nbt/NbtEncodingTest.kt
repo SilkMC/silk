@@ -28,14 +28,14 @@ class NbtEncodingTest : StringSpec({
         val element = Nbt.encodeToNbtElement(value)
         element.shouldBeInstanceOf<CompoundTag>()
         element.size() shouldBe 7
-        element.getInt("x") shouldBe value.x
-        element.getLong("y") shouldBe value.y
-        element.getString("name") shouldBe value.name
-        element.getList("stringList", Tag.TAG_STRING.toInt()).map { it.asString } shouldBe value.stringList
-        element.getLongArray("longSet") shouldBe value.longSet.toLongArray()
-        with(element.getCompound("inner")) {
+        element.getInt("x").get() shouldBe value.x
+        element.getLong("y").get() shouldBe value.y
+        element.getString("name").get() shouldBe value.name
+        element.getList("stringList").get().map { it.asString().get() } shouldBe value.stringList
+        element.getLongArray("longSet").get() shouldBe value.longSet.toLongArray()
+        with(element.getCompound("inner").get()) {
             size() shouldBe 1
-            getBoolean("test") shouldBe value.inner.test
+            getBoolean("test").get() shouldBe value.inner.test
         }
         with(element.get("nullable")) {
             shouldBeInstanceOf<ListTag>()
@@ -109,7 +109,7 @@ class NbtEncodingTest : StringSpec({
         checkAll(Exhaustive.enum<TestEnum>()) {
             val element = Nbt.encodeToNbtElement(it)
             element.shouldBeInstanceOf<StringTag>()
-            element.asString shouldBe it.name
+            element.asString().get() shouldBe it.name
         }
     }
 
@@ -117,10 +117,10 @@ class NbtEncodingTest : StringSpec({
         val value = SealedChild1(1f, 2.5)
         val element = Nbt.encodeToNbtElement<SealedBase>(value)
         element.shouldBeInstanceOf<CompoundTag>()
-        element.getString("type") shouldBe "child1"
-        with(element.getCompound("value")) {
-            getFloat("baseVal") shouldBe value.baseVal
-            getDouble("childProp") shouldBe value.childProp
+        element.getString("type").get() shouldBe "child1"
+        with(element.getCompound("value").get()) {
+            getFloat("baseVal").get() shouldBe value.baseVal
+            getDouble("childProp").get() shouldBe value.childProp
         }
     }
 
@@ -134,8 +134,8 @@ class NbtEncodingTest : StringSpec({
         with(Nbt { encodeDefaults = true }.encodeToNbtElement(value)) {
             shouldBeInstanceOf<CompoundTag>()
             size() shouldBe 2
-            getInt("one") shouldBe value.one
-            getBoolean("tru") shouldBe value.tru
+            getInt("one").get() shouldBe value.one
+            getBoolean("tru").get() shouldBe value.tru
         }
     }
 })
