@@ -1,12 +1,16 @@
 package net.silkmc.silk.core.event
 
 import com.mojang.authlib.GameProfile
+import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.MutableComponent
+import net.minecraft.network.chat.PlayerChatMessage
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.player.Player
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
+import net.silkmc.silk.core.event.PlayerEvents.preQuit
+import net.silkmc.silk.core.event.PlayerEvents.quitDuringConfiguration
+import net.silkmc.silk.core.event.PlayerEvents.quitDuringLogin
 
 @ExperimentalSilkApi
 object PlayerEvents {
@@ -79,5 +83,18 @@ object PlayerEvents {
      */
     val onDeath = Event.syncAsync<PlayerDeathEvent>()
 
+    /**
+     * Called before a message from a player is broadcasted.
+     */
+    open class PlayerChatEvent(
+        player: ServerPlayer,
+        val message: PlayerChatMessage,
+        val bound: ChatType.Bound,
+    ) : PlayerEvent<ServerPlayer>(player), Cancellable {
+
+        override val isCancelled: EventScopeProperty<Boolean> = EventScopeProperty(false)
+    }
+
+    val onChat = Event.syncAsync<PlayerChatEvent>()
 
 }
