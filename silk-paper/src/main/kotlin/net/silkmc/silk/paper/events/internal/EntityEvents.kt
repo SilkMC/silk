@@ -1,20 +1,13 @@
 package net.silkmc.silk.paper.events.internal
 
-import net.minecraft.core.Holder
-import net.minecraft.world.damagesource.DamageEffects
-import net.minecraft.world.damagesource.DamageScaling
-import net.minecraft.world.damagesource.DamageSource
-import net.minecraft.world.damagesource.DamageType
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.event.EntityEvents
 import net.silkmc.silk.core.event.EventScopeProperty
 import net.silkmc.silk.paper.conversions.mcDamageSource
 import net.silkmc.silk.paper.conversions.mcEntity
 import net.silkmc.silk.paper.events.listenSilk
-import org.bukkit.craftbukkit.damage.CraftDamageSource
 import org.bukkit.event.entity.EntityDamageEvent
-import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.entity.EntityDeathEvent
 
 fun EntityEvents.setupPaper() {
     listenSilk<EntityDamageEvent> { paperEvent ->
@@ -39,8 +32,7 @@ fun EntityEvents.setupPaper() {
         }
     }
 
-    listenSilk<PlayerDeathEvent> {
-        val pos = it.entity.location
+    listenSilk<EntityDeathEvent> {
         val event = EntityEvents.EntityDeathEvent(
             it.entity.mcEntity as LivingEntity,
             @Suppress("UnstableApiUsage")
