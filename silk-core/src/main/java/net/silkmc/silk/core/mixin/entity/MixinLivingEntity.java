@@ -23,4 +23,21 @@ public class MixinLivingEntity {
         EntityEvents.INSTANCE.getDamageLivingEntity()
             .invoke(new EntityEvents.EntityDamageEvent((LivingEntity) (Object) this, amount, damageSource));
     }
+
+    @Inject(
+        method = "die",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/damagesource/DamageSource;getEntity()Lnet/minecraft/world/entity/Entity;",
+            shift = At.Shift.BEFORE
+        )
+    )
+    private void die(DamageSource damageSource, CallbackInfo ci) {
+        var event = new EntityEvents.EntityDeathEvent(
+            (LivingEntity) (Object) this,
+            damageSource
+        );
+
+        EntityEvents.INSTANCE.getOnDeath().invoke(event);
+    }
 }

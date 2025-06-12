@@ -6,6 +6,7 @@
     "block.AbstractBlockAccessor",
     "entity.MixinEntity",
     "entity.MixinLivingEntity",
+    "player.MixinServerPlayer",
     "server.MixinMinecraftServer",
     "server.MixinPlayerList",
     "server.MixinServerConfigurationPacketListenerImpl",
