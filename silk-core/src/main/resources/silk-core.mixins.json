@@ -1,15 +1,15 @@
 {
-  "package": "net.silkmc.silk.core.mixin",
-  "required": true,
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "block.AbstractBlockAccessor",
-    "entity.MixinEntity",
-    "entity.MixinLivingEntity",
-    "server.MixinMinecraftServer",
-    "server.MixinPlayerList",
-    "server.MixinServerConfigurationPacketListenerImpl",
-    "server.MixinServerGamePacketListenerImpl",
-    "server.MixinServerLoginPacketListenerImpl"
-  ]
+    "package":            "net.silkmc.silk.core.mixin",
+    "required":           true,
+    "compatibilityLevel": "JAVA_21",
+    "mixins":             [
+        "block.AbstractBlockAccessor",
+        "entity.MixinEntity",
+        "entity.MixinLivingEntity",
+        "server.MixinMinecraftServer",
+        "server.MixinPlayerList",
+        "server.MixinServerConfigurationPacketListenerImpl",
+        "server.MixinServerGamePacketListenerImpl",
+        "server.MixinServerLoginPacketListenerImpl"
+    ]
 }
