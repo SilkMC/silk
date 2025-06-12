@@ -47,9 +47,9 @@ fun PlayerEvents.setupPaper() {
     listenSilk<AsyncChatEvent> { event ->
         val message = event.player.mcPlayer.chatSession?.let { session ->
             val link = SignedMessageLink.root(event.player.uniqueId, session.sessionId)
-            val signature = MessageSignature(
-                event.signedMessage().signature()?.bytes() ?: byteArrayOf()
-            )
+            val signature = event.signedMessage().signature()?.let { signature ->
+                MessageSignature(signature.bytes())
+            }
             val body = SignedMessageBody(
                 event.signedMessage().message(),
                 event.signedMessage().timestamp(),
