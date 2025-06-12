@@ -4,8 +4,7 @@ import io.papermc.paper.adventure.AdventureComponent
 import io.papermc.paper.adventure.PaperAdventure
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import net.minecraft.network.chat.ChatType
-import net.minecraft.network.chat.PlayerChatMessage
+import net.minecraft.network.chat.*
 import net.silkmc.silk.core.event.EventScopeProperty
 import net.silkmc.silk.core.event.PlayerEvents
 import net.silkmc.silk.paper.conversions.mcDamageSource
@@ -45,20 +44,41 @@ fun PlayerEvents.setupPaper() {
         it.deathMessage(PaperAdventure.asAdventure(event.deathMessage.get()))
     }
 
-    listenSilk<AsyncChatEvent> {
-        val message: PlayerChatMessage = PlayerChatMessage.unsigned(
-            it.player.uniqueId,
-            PlainTextComponentSerializer.plainText().serialize(it.message())
+    listenSilk<AsyncChatEvent> { event ->
+        val message = event.player.mcPlayer.chatSession?.let { session ->
+            val link = SignedMessageLink.root(event.player.uniqueId, session.sessionId)
+            val signature = MessageSignature(
+                event.signedMessage().signature()?.bytes() ?: byteArrayOf()
+            )
+            val body = SignedMessageBody(
+                event.signedMessage().message(),
+                event.signedMessage().timestamp(),
+                event.signedMessage().salt(),
+                LastSeenMessages.EMPTY
+            )
+            val unsigned: Component = AdventureComponent(event.signedMessage().unsignedContent())
+            val filter: FilterMask = FilterMask.PASS_THROUGH
+            PlayerChatMessage(
+                link,
+                signature,
+                body,
+                unsigned,
+                filter
+            )
+        } ?: PlayerChatMessage.unsigned(
+            event.player.uniqueId,
+            PlainTextComponentSerializer.plainText().serialize(event.message())
         )
-        val bound: ChatType.Bound = ChatType.bind(ChatType.CHAT, it.player.mcEntity)
-        val event = PlayerEvents.PlayerChatEvent(
-            it.player.mcPlayer,
+
+        val bound: ChatType.Bound = ChatType.bind(ChatType.CHAT, event.player.mcEntity)
+        val chatEvent = PlayerEvents.PlayerChatEvent(
+            event.player.mcPlayer,
             message,
             bound
         )
 
-        PlayerEvents.onChat.invoke(event)
-        it.isCancelled = event.isCancelled.get()
-        it.message(PaperAdventure.asAdventure(event.message.decoratedContent()))
+        PlayerEvents.onChat.invoke(chatEvent)
+        event.isCancelled = chatEvent.isCancelled.get()
+        event.message(PaperAdventure.asAdventure(chatEvent.message.decoratedContent()))
     }
 }
