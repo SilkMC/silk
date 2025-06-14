@@ -29,9 +29,9 @@ val Entity.blockPos: BlockPos get() = blockPosition()
 val Entity.world: Level get() = level()
 
 /**
- * Shortcut property accessor for [ServerPlayer.serverLevel].
+ * Shortcut property accessor for [ServerPlayer.level].
  */
-val ServerPlayer.serverWorld: ServerLevel get() = serverLevel()
+val ServerPlayer.serverWorld: ServerLevel get() = level()
 
 /**
  * Returns the pos under the entities "feet".
