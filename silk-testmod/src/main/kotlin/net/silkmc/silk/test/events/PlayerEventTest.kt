@@ -15,5 +15,17 @@ object PlayerEventTest {
         Events.Player.onChat.listen {
             logInfo("received Player.onChat event")
         }
+
+        Events.Player.preLogin.listen {
+            logInfo("received Player.preLogin event")
+        }
+
+        Events.Player.preQuit.listen {
+            logInfo("received Player.preQuit event")
+        }
+
+        Events.Player.postLogin.listen {
+            logInfo("received Player.postLogin event")
+        }
     }
 }
