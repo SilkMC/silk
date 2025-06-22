@@ -11,5 +11,9 @@ object PlayerEventTest {
         Events.Player.onDeath.listen {
             logInfo("received Player.onDeath event")
         }
+
+        Events.Player.onChat.listen {
+            logInfo("received Player.onChat event")
+        }
     }
 }

@@ -88,7 +88,8 @@ object PlayerEvents {
      */
     open class PlayerChatEvent(
         player: ServerPlayer,
-        val message: PlayerChatMessage,
+        val chatMessage: PlayerChatMessage,
+        var message: EventScopeProperty<Component>,
         val bound: ChatType.Bound,
     ) : PlayerEvent<ServerPlayer>(player), Cancellable {
 

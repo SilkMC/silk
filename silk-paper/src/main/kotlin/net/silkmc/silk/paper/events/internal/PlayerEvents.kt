@@ -74,11 +74,12 @@ fun PlayerEvents.setupPaper() {
         val chatEvent = PlayerEvents.PlayerChatEvent(
             event.player.mcPlayer,
             message,
+            EventScopeProperty(message.decoratedContent()),
             bound
         )
 
         PlayerEvents.onChat.invoke(chatEvent)
         event.isCancelled = chatEvent.isCancelled.get()
-        event.message(PaperAdventure.asAdventure(chatEvent.message.decoratedContent()))
+        event.message(PaperAdventure.asAdventure(chatEvent.message.get()))
     }
 }

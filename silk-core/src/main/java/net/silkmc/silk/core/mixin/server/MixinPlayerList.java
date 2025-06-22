@@ -3,9 +3,7 @@ package net.silkmc.silk.core.mixin.server;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.PlayerChatMessage;
+import net.minecraft.network.chat.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
@@ -19,12 +17,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 @Mixin(PlayerList.class)
 public class MixinPlayerList {
 
   @Shadow
   @Final
   private MinecraftServer server;
+
+  @Shadow
+  @Final
+  public List<ServerPlayer> players;
 
   @Inject(
       method = "placeNewPlayer",
@@ -43,7 +48,8 @@ public class MixinPlayerList {
       at = @At(
           value = "INVOKE",
           target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V",
-          shift = At.Shift.BEFORE)
+          shift = At.Shift.BEFORE
+      )
   )
   private void onPostLogin(Connection connection, ServerPlayer player, CommonListenerCookie commonListenerCookie, CallbackInfo ci, @Local LocalRef<MutableComponent> mutableComponent) {
     var event = new PlayerEvents.PostLoginEvent(player, new EventScopeProperty<>(mutableComponent.get()));
@@ -52,17 +58,37 @@ public class MixinPlayerList {
   }
 
   @Inject(
-      method = "broadcastChatMessage(Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/network/chat/ChatType$Bound;)V",
+      method = "broadcastChatMessage(Lnet/minecraft/network/chat/PlayerChatMessage;Ljava/util/function/Predicate;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/network/chat/ChatType$Bound;)V",
       at = @At(
-          "HEAD"
+          value = "INVOKE",
+          target = "Ljava/util/List;iterator()Ljava/util/Iterator;"
       ),
       cancellable = true
   )
-  private void broadcastChatMessage(PlayerChatMessage playerChatMessage, ServerPlayer serverPlayer, ChatType.Bound bound, CallbackInfo ci) {
-    var event = new PlayerEvents.PlayerChatEvent(serverPlayer, playerChatMessage, bound);
+  private void broadcastChatMessage(PlayerChatMessage playerChatMessage, Predicate<ServerPlayer> predicate, ServerPlayer serverPlayer, ChatType.Bound bound, CallbackInfo ci, @Local LocalRef<OutgoingChatMessage> outgoingChatMessage) {
+    var event = new PlayerEvents.PlayerChatEvent(serverPlayer, playerChatMessage, new EventScopeProperty<>(outgoingChatMessage.get().content()), bound);
     PlayerEvents.INSTANCE.getOnChat().invoke(event);
     if (event.isCancelled().get()) {
       ci.cancel();
     }
+
+    var message = new PlayerChatMessage(
+        playerChatMessage.link(),
+        playerChatMessage.signature(),
+        new SignedMessageBody(
+            event.getMessage().get().getString(),
+            playerChatMessage.signedBody().timeStamp(),
+            playerChatMessage.salt(),
+            LastSeenMessages.EMPTY
+        ),
+        event.getChatMessage().unsignedContent(),
+        playerChatMessage.filterMask()
+    );
+
+    serverPlayer.sendSystemMessage(Component.literal("| ---- |"));
+    serverPlayer.sendSystemMessage(event.getMessage().get());
+    serverPlayer.sendSystemMessage(message.decoratedContent());
+    serverPlayer.sendSystemMessage(Component.literal("| ---- |"));
+    outgoingChatMessage.set(OutgoingChatMessage.create(message));
   }
 }
