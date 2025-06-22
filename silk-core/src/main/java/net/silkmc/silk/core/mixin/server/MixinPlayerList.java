@@ -85,10 +85,6 @@ public class MixinPlayerList {
         playerChatMessage.filterMask()
     );
 
-    serverPlayer.sendSystemMessage(Component.literal("| ---- |"));
-    serverPlayer.sendSystemMessage(event.getMessage().get());
-    serverPlayer.sendSystemMessage(message.decoratedContent());
-    serverPlayer.sendSystemMessage(Component.literal("| ---- |"));
     outgoingChatMessage.set(OutgoingChatMessage.create(message));
   }
 }
