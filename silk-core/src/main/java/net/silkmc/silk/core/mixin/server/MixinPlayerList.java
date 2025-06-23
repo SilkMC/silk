@@ -4,32 +4,20 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.*;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
 import net.silkmc.silk.core.event.EventScopeProperty;
 import net.silkmc.silk.core.event.PlayerEvents;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 @Mixin(PlayerList.class)
 public class MixinPlayerList {
-
-  @Shadow
-  @Final
-  private MinecraftServer server;
-
-  @Shadow
-  @Final
-  public List<ServerPlayer> players;
 
   @Inject(
       method = "placeNewPlayer",
