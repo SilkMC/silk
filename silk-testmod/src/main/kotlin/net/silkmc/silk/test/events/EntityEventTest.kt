@@ -11,5 +11,9 @@ object EntityEventTest {
         Events.Entity.onDeath.listen {
             logInfo("received Entity.onDeath event")
         }
+
+        Events.Entity.onSpawn.listen {
+            logInfo("received Entity.onSpawn event")
+        }
     }
 }

@@ -8,6 +8,7 @@ import net.silkmc.silk.paper.conversions.mcEntity
 import net.silkmc.silk.paper.events.listenSilk
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
+import org.bukkit.event.entity.EntitySpawnEvent
 
 fun EntityEvents.setupPaper() {
     listenSilk<EntityDamageEvent> { paperEvent ->
@@ -39,5 +40,15 @@ fun EntityEvents.setupPaper() {
             it.damageSource.mcDamageSource
         )
         onDeath.invoke(event)
+    }
+
+    listenSilk<EntitySpawnEvent> {
+        val event = EntityEvents.EntitySpawnEvent(
+            it.entity.mcEntity
+        )
+
+        onSpawn.invoke(event)
+
+        it.isCancelled = event.isCancelled.get()
     }
 }
