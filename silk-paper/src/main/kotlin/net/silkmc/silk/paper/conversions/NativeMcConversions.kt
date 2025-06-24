@@ -5,7 +5,9 @@ import net.minecraft.server.dedicated.DedicatedServer
 import net.minecraft.server.level.ServerEntity
 import net.minecraft.server.level.ServerPlayer
 import org.bukkit.Server
+import org.bukkit.block.Block
 import org.bukkit.craftbukkit.CraftServer
+import org.bukkit.craftbukkit.block.CraftBlock
 import org.bukkit.craftbukkit.damage.CraftDamageSource
 import org.bukkit.craftbukkit.entity.CraftEntity
 import org.bukkit.craftbukkit.entity.CraftPlayer
@@ -38,3 +40,6 @@ val Entity.mcEntity: net.minecraft.world.entity.Entity
      */
 val DamageSource.mcDamageSource: net.minecraft.world.damagesource.DamageSource
     get() = (this as CraftDamageSource).handle
+
+val Block.mcBlock: net.minecraft.world.level.block.Block?
+    get() = (this as CraftBlock).handle.getBlockIfLoaded(this.position)
