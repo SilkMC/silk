@@ -41,5 +41,8 @@ val Entity.mcEntity: net.minecraft.world.entity.Entity
 val DamageSource.mcDamageSource: net.minecraft.world.damagesource.DamageSource
     get() = (this as CraftDamageSource).handle
 
+/**
+ * Converts a Paper [Block] to a native [net.minecraft.world.level.block.Block].
+ */
 val Block.mcBlock: net.minecraft.world.level.block.Block?
     get() = (this as CraftBlock).handle.getBlockIfLoaded(this.position)
