@@ -5,16 +5,17 @@ import io.papermc.paper.adventure.PaperAdventure
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.minecraft.network.chat.*
+import net.minecraft.world.InteractionHand
 import net.silkmc.silk.core.event.EventScopeProperty
 import net.silkmc.silk.core.event.PlayerEvents
+import net.silkmc.silk.paper.conversions.mcBlock
 import net.silkmc.silk.paper.conversions.mcDamageSource
 import net.silkmc.silk.paper.conversions.mcEntity
 import net.silkmc.silk.paper.conversions.mcPlayer
 import net.silkmc.silk.paper.events.listenSilk
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerLoginEvent
-import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.*
+import org.bukkit.inventory.EquipmentSlot
 
 fun PlayerEvents.setupPaper() {
     listenSilk<PlayerLoginEvent> {
@@ -81,5 +82,29 @@ fun PlayerEvents.setupPaper() {
         PlayerEvents.onChat.invoke(chatEvent)
         event.isCancelled = chatEvent.isCancelled.get()
         event.message(PaperAdventure.asAdventure(chatEvent.message.get()))
+    }
+
+    listenSilk<PlayerInteractEvent> { event ->
+        val interactEvent = PlayerEvents.PlayerInteractEvent(
+            event.player.mcPlayer,
+            if (event.hand == EquipmentSlot.HAND) InteractionHand.MAIN_HAND else InteractionHand.OFF_HAND,
+            event.clickedBlock?.mcBlock,
+            null,
+        )
+
+        PlayerEvents.onInteract.invoke(interactEvent)
+        event.isCancelled = interactEvent.isCancelled.get()
+    }
+
+    listenSilk<PlayerInteractEntityEvent> { event ->
+        val interactEvent = PlayerEvents.PlayerInteractEvent(
+            event.player.mcPlayer,
+            if (event.hand == EquipmentSlot.HAND) InteractionHand.MAIN_HAND else InteractionHand.OFF_HAND,
+            null,
+            event.rightClicked.mcEntity
+        )
+
+        PlayerEvents.onInteract.invoke(interactEvent)
+        event.isCancelled = interactEvent.isCancelled.get()
     }
 }

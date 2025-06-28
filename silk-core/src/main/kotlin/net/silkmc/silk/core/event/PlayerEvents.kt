@@ -5,8 +5,11 @@ import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.PlayerChatMessage
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.damagesource.DamageSource
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.block.Block
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
 import net.silkmc.silk.core.event.PlayerEvents.preQuit
 import net.silkmc.silk.core.event.PlayerEvents.quitDuringConfiguration
@@ -97,5 +100,17 @@ object PlayerEvents {
     }
 
     val onChat = Event.syncAsync<PlayerChatEvent>()
+
+    open class PlayerInteractEvent(
+        player: Player,
+        val hand: InteractionHand,
+        val block: Block?,
+        val entity: Entity?,
+    ) : PlayerEvent<Player>(player), Cancellable {
+
+        override val isCancelled: EventScopeProperty<Boolean> = EventScopeProperty(false)
+    }
+
+    val onInteract = Event.syncAsync<PlayerInteractEvent>()
 
 }
