@@ -24,7 +24,7 @@ jobs:
           echo "signingPassword=${{ secrets.SIGNING_PASSWORD }}" >> gradle.properties
 
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: ./gradlew build --no-daemon --stacktrace
 
       - name: Publish to Ossrh
         run: ./gradlew publishAllPublicationsToOssrhRepository -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
