@@ -1,6 +1,7 @@
 import BuildConstants.authors
 import BuildConstants.githubRepo
 import BuildConstants.isSnapshot
+import java.util.Base64
 
 plugins {
     kotlin("jvm")
@@ -65,5 +66,12 @@ publishing {
 }
 
 signing {
+    if (System.getenv()["CI"].toBoolean()) {
+        val keyId = findProperty("signingKeyId")?.toString()
+        val key = findProperty("signingKey")?.toString()
+        val password = findProperty("signingPassword")?.toString()
+        useInMemoryPgpKeys(keyId, String(Base64.getDecoder().decode(key)), password)
+    }
+
     sign(publishing.publications)
 }

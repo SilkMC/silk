@@ -17,7 +17,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Setup Gradle Properties
-        run: echo "org.gradle.jvmargs=-Xmx2g" >> gradle.properties
+        run: |
+          echo "org.gradle.jvmargs=-Xmx2g" >> gradle.properties
+          echo "signingKeyId=${{ secrets.SIGNING_KEY_ID }}" >> gradle.properties
+          echo "signingKey=${{ secrets.SIGNING_KEY }}" >> gradle.properties
+          echo "signingPassword=${{ secrets.SIGNING_PASSWORD }}" >> gradle.properties
 
       - name: Execute Gradle build
         run: ./gradlew build
