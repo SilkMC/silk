@@ -1,11 +1,11 @@
 package net.silkmc.silk.core.text
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
+import com.google.gson.GsonBuilder
+import com.mojang.serialization.JsonOps
 import net.minecraft.commands.CommandSource
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -103,7 +103,8 @@ fun MinecraftServer.sendText(text: Component) {
     broadcastText(text)
 }
 
-private val prettyPrintJson = Json { prettyPrint = true }
+private val prettyPrintGson = GsonBuilder().setPrettyPrinting().create()
+private val emptyRegistryOps = RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE)
 
 /**
  * Returns a pretty printed JSON string of this [Component]
@@ -112,8 +113,6 @@ private val prettyPrintJson = Json { prettyPrint = true }
 @DelicateSilkApi
 @ExperimentalSilkApi
 fun Component.serializeToPrettyJson(): String {
-    val jsonString = Component.Serializer.toJson(this, RegistryAccess.EMPTY)
-    val jsonElement = Json.decodeFromString<JsonElement>(jsonString)
-    @Suppress("JSON_FORMAT_REDUNDANT")
-    return prettyPrintJson.encodeToString(jsonElement)
+    val json = ComponentSerialization.CODEC.encodeStart(emptyRegistryOps, this).getOrThrow()
+    return prettyPrintGson.toJson(json)
 }

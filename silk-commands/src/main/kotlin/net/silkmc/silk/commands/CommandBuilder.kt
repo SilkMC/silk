@@ -20,6 +20,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.PermissionSource
 import net.minecraft.commands.SharedSuggestionProvider
 import net.silkmc.silk.commands.DslAnnotations.NodeLevel.RunsDsl
 import net.silkmc.silk.commands.DslAnnotations.NodeLevel.SuggestsDsl
@@ -48,6 +49,7 @@ typealias BrigadierBuilder<Builder> = Builder.(context: CommandBuildContext) -> 
 @NodeDsl
 abstract class CommandBuilder<Source, Builder, Node>
     where Source : SharedSuggestionProvider,
+          Source : PermissionSource,
           Builder : ArgumentBuilder<Source, Builder>,
           Node : CommandNode<Source> {
 
@@ -268,9 +270,11 @@ abstract class CommandBuilder<Source, Builder, Node>
     }
 }
 
-class LiteralCommandBuilder<Source : SharedSuggestionProvider>(
+class LiteralCommandBuilder<Source>(
     private val name: String,
-) : CommandBuilder<Source, LiteralArgumentBuilder<Source>, LiteralCommandNode<Source>>() {
+) : CommandBuilder<Source, LiteralArgumentBuilder<Source>, LiteralCommandNode<Source>>()
+        where Source : SharedSuggestionProvider,
+              Source : PermissionSource {
 
     override fun createBuilder(context: CommandBuildContext): LiteralArgumentBuilder<Source> =
         LiteralArgumentBuilder.literal(name)
@@ -313,10 +317,12 @@ class LiteralCommandBuilder<Source : SharedSuggestionProvider>(
     }
 }
 
-class ArgumentCommandBuilder<Source : SharedSuggestionProvider, T>(
+class ArgumentCommandBuilder<Source, T>(
     private val name: String,
     private val typeProvider: (CommandBuildContext) -> ArgumentType<T>,
-) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>, ArgumentCommandNode<Source, T>>() {
+) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>, ArgumentCommandNode<Source, T>>()
+        where Source : SharedSuggestionProvider,
+              Source : PermissionSource {
 
     override fun createBuilder(context: CommandBuildContext): RequiredArgumentBuilder<Source, T> =
         RequiredArgumentBuilder.argument(name, typeProvider(context))
@@ -502,10 +508,11 @@ class ArgumentCommandBuilder<Source : SharedSuggestionProvider, T>(
  * A wrapper around mutable command builders, which makes sure they don't get mutated anymore
  * and can be registered.
  */
-class RegistrableCommand<Source : SharedSuggestionProvider>(
+class RegistrableCommand<Source>(
     @property:InternalSilkApi
     val commandBuilder: LiteralCommandBuilder<Source>,
-)
+) where Source : SharedSuggestionProvider,
+        Source : PermissionSource
 
 /**
  * Creates a new command. Opens a [LiteralCommandBuilder].
