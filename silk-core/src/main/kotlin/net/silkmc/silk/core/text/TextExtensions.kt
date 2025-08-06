@@ -1,11 +1,15 @@
 package net.silkmc.silk.core.text
 
-import kotlinx.serialization.encodeToString
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParseException
+import com.mojang.serialization.JsonOps
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import net.minecraft.commands.CommandSource
+import net.minecraft.core.HolderLookup
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -30,7 +34,7 @@ val String.literal: MutableComponent get() = Component.literal(this)
 inline fun String.literalLines(
     width: Int = 40,
     cutLongWords: Boolean = true,
-    lineBuilder: (line: String) -> Component = { it.literal }
+    lineBuilder: (line: String) -> Component = { it.literal },
 ): List<Component> = WordUtils.wrap(this, width, System.lineSeparator(), cutLongWords).split(System.lineSeparator())
     .map(lineBuilder)
 
@@ -112,7 +116,20 @@ private val prettyPrintJson = Json { prettyPrint = true }
 @DelicateSilkApi
 @ExperimentalSilkApi
 fun Component.serializeToPrettyJson(): String {
-    val jsonString = Component.Serializer.toJson(this, RegistryAccess.EMPTY)
+    val gson = GsonBuilder().disableHtmlEscaping().create()
+
+    fun serialize(component: Component?, provider: HolderLookup.Provider): com.google.gson.JsonElement? {
+        return ComponentSerialization.CODEC.encodeStart(
+            provider.createSerializationContext(JsonOps.INSTANCE),
+            component
+        ).getOrThrow(::JsonParseException)
+    }
+
+    fun toJson(component: Component?, provider: HolderLookup.Provider): String {
+        return gson.toJson(serialize(component, provider))
+    }
+
+    val jsonString = toJson(this, RegistryAccess.EMPTY)
     val jsonElement = Json.decodeFromString<JsonElement>(jsonString)
     @Suppress("JSON_FORMAT_REDUNDANT")
     return prettyPrintJson.encodeToString(jsonElement)

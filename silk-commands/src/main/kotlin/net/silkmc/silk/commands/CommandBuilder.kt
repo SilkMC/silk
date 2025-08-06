@@ -20,6 +20,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.PermissionSource
 import net.minecraft.commands.SharedSuggestionProvider
 import net.silkmc.silk.commands.DslAnnotations.NodeLevel.RunsDsl
 import net.silkmc.silk.commands.DslAnnotations.NodeLevel.SuggestsDsl
@@ -227,7 +228,7 @@ abstract class CommandBuilder<Source, Builder, Node>
      */
     @RunsDsl
     fun requiresPermissionLevel(level: Int) =
-        requires { it.hasPermission(level) }
+        requires { (it as PermissionSource).hasPermission(level) }
 
     /**
      * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree.
@@ -235,7 +236,7 @@ abstract class CommandBuilder<Source, Builder, Node>
      */
     @RunsDsl
     fun requiresPermissionLevel(level: PermissionLevel) =
-        requires { it.hasPermission(level.level) }
+        requires { (it as PermissionSource).hasPermission(level.level) }
 
     /**
      * This function allows you to access the regular Brigadier builder. The type of

@@ -31,7 +31,7 @@ val Entity.world: Level get() = level()
 /**
  * Shortcut property accessor for [ServerPlayer.serverLevel].
  */
-val ServerPlayer.serverWorld: ServerLevel get() = serverLevel()
+val ServerPlayer.serverWorld: ServerLevel get() = level()
 
 /**
  * Returns the pos under the entities "feet".
