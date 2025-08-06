@@ -30,14 +30,14 @@ private val textExamples get() = mapOf(
         text(" ")
         text {
             color = 0xFDFF80
-            hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, literalText("nice, you did it") {
+            hoverEvent = HoverEvent.ShowText(literalText("nice, you did it") {
                 bold = true
                 color = 0x39CEFF
             })
             text("[")
             text("hover and click here") {
                 color = 0xFFE12C
-                clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "me hey :)")
+                clickEvent = ClickEvent.RunCommand("/tellraw @s \"hey :)\"")
             }
             text("]")
         }

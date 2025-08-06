@@ -26,7 +26,7 @@ abstract class PersistentCompound {
      * [kotlinx.serialization.Serializable] to enable support for fast
      * serialization.
      *
-     * An exception to the above are values of the type [NbtElement].
+     * An exception to the above are values of the type [net.minecraft.nbt.Tag].
      * You can use these to skip serialization and deserialization. It is not
      * as convenient to work with them, but they are faster.
      */
@@ -75,7 +75,7 @@ abstract class PersistentCompound {
      * Otherwise, the return value will be null.
      *
      * Note: Calling this function may result in deserialization of the value which
-     * was deleted from the internal [NbtCompound], if the removed value was not
+     * was deleted from the internal [CompoundTag], if the removed value was not
      * loaded into memory.
      */
     inline fun <reified T : Any> getAndRemove(key: CompoundKey<T>): T? {
@@ -140,7 +140,7 @@ abstract class PersistentCompound {
 
 /**
  * A [PersistentCompound] which does nothing.
- * Needed for empty holders such as [net.minecraft.world.chunk.EmptyChunk] for example.
+ * Needed for empty holders such as [net.minecraft.world.level.chunk.EmptyLevelChunk] for example.
  */
 object EmptyPersistentCompound : PersistentCompound() {
     override var data: CompoundTag? = null
@@ -163,13 +163,12 @@ internal class PersistentCompoundImpl : PersistentCompound() {
 
     override fun loadFromCompound(nbtCompound: CompoundTag, loadRaw: Boolean) {
         // move legacy tag
-        if (nbtCompound.contains(LEGACY_CUSTOM_DATA_KEY)) {
-            val legacyData = nbtCompound.getCompound(LEGACY_CUSTOM_DATA_KEY)
+        nbtCompound.getCompound(LEGACY_CUSTOM_DATA_KEY).ifPresent { legacyData ->
             nbtCompound.put(CUSTOM_DATA_KEY, legacyData.copy())
             nbtCompound.remove(LEGACY_CUSTOM_DATA_KEY)
         }
 
-        data = if (loadRaw) nbtCompound else nbtCompound.getCompound(CUSTOM_DATA_KEY)
+        data = if (loadRaw) nbtCompound else nbtCompound.getCompound(CUSTOM_DATA_KEY).orElse(null)
     }
 
     override fun putInCompound(nbtCompound: CompoundTag, writeRaw: Boolean) {
