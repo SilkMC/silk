@@ -18,8 +18,8 @@ object BuildConstants {
     const val majorMinecraftVersion = "1.21"
     const val minecraftVersion = "$majorMinecraftVersion.8"
     const val paperMinecraftVersion = "1.21.1"
-    const val fabricLoaderVersion = "0.16.14"
-    const val fabricLanguageKotlinVersion = "1.13.4+kotlin.2.2.0"
+    const val fabricLoaderVersion = "0.17.2"
+    const val fabricLanguageKotlinVersion = "1.13.5+kotlin.2.2.10"
 
     const val kotestVersion = "5.9.1"
     const val mockkVersion = "1.13.12"
