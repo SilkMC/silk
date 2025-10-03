@@ -11,6 +11,13 @@ plugins {
 
 publishing {
     repositories {
+        maven("https://repo.pauli.fyi/releases") {
+            name = "pauli"
+            credentials {
+                username = "paul"
+                password = "UJ77TTjLOfcBqk+K+QVdEJkEdi5L0rlQMek8Oo9udJEPy+l06fSVMv+LDa+Sck3Q"
+            }
+        }
         maven {
             name = "ossrh"
             credentials(PasswordCredentials::class)
@@ -64,6 +71,6 @@ publishing {
     }
 }
 
-signing {
-    sign(publishing.publications)
-}
+//signing {
+//    sign(publishing.publications)
+//}
