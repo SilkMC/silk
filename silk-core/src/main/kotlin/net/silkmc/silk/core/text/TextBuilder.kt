@@ -3,7 +3,7 @@
 package net.silkmc.silk.core.text
 
 import net.minecraft.network.chat.*
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.network.chat.FontDescription
 
 /**
  * Opens a [LiteralTextBuilder].
@@ -51,7 +51,7 @@ class LiteralTextBuilder(
      * resource pack or mod resources within `assets/<namespace>/font`.
      * Defaults to `minecraft:default`.
      */
-    var font: ResourceLocation? = withDefault(Style.DEFAULT_FONT)
+    var font: FontDescription? = withDefault(FontDescription.DEFAULT)
 
     /**
      * When the text is shift-clicked by a player, this string is inserted in their chat input.
