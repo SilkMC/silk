@@ -229,7 +229,7 @@ abstract class CommandBuilder<Source, Builder, Node>
      */
     @RunsDsl
     fun requiresPermissionLevel(level: Int) =
-        requires { it.hasPermission(level) }
+        requires { (it as PermissionSource).hasPermission(level) }
 
     /**
      * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree.
@@ -237,7 +237,7 @@ abstract class CommandBuilder<Source, Builder, Node>
      */
     @RunsDsl
     fun requiresPermissionLevel(level: PermissionLevel) =
-        requires { it.hasPermission(level.level) }
+        requires { (it as PermissionSource).hasPermission(level.level) }
 
     /**
      * This function allows you to access the regular Brigadier builder. The type of
