@@ -131,9 +131,9 @@ fun ItemStack.setSkullTexture(
 
 /**
  * Configures the `minecraft:profile` item component to represent the given player
- * (specified via [G] in its game profile).
+ * (specified via [GameProfile.id] in its game profile).
  *
- * The internal [name] can be anything, but it *should* match
+ * The internal [GameProfile.name] can be anything, but it *should* match
  * the actual player name.
  *
  * ```kotlin
