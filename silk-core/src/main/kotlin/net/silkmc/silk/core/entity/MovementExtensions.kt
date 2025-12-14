@@ -48,8 +48,10 @@ fun Entity.changePos(
  * Schedules all necessary updates. Packets will be sent to the players to inform
  * them about the new velocity.
  */
+@Deprecated("Not safe to use until hasImpulse has been replaced.")
 fun Entity.markVelocityDirty() {
-    hasImpulse = true
+    //TODO: find correct new naming
+    // hasImpulse = true
     hurtMarked = true
 }
 
