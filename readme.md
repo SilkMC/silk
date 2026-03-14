@@ -25,7 +25,7 @@ Features of the API:
 
 ## Docs
 
-The docs are located at [**silkmc.net/silk/docs**](https://silkmc.net/silk/docs/).
+The docs are located at [Docs](https://static.pauli.fyi/silk/docs/) (temporarily).
 
 Read them to get started with each module and see how to add it to your Gradle project.
 
