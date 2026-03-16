@@ -12,8 +12,8 @@ repositories {
 
 tasks {
     withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs += "-Xcontext-receivers"
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-receivers")
         }
     }
     javadoc {

@@ -7,20 +7,29 @@ jobs:
   gradle:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-java@v4.6.0
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "21"
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@4.2.2
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Gradle Properties
+        run: echo "org.gradle.jvmargs=-Xmx2g" >> gradle.properties
 
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: ./gradlew build --no-daemon --stacktrace
 
       - name: Publish to Ossrh
-        run: ./gradlew publishAllPublicationsToOssrhRepository -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
+        run: ./gradlew publishToMavenCentral
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY_CONTENTS }}
 
       - name: Publish to Modrinth
         run: ./gradlew :silk-all:modrinth -Pmodrinth.token=${{ secrets.MODRINTH_TOKEN }}
