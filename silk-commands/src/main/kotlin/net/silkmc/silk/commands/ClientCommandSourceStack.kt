@@ -32,5 +32,5 @@ fun ClientCommandSourceStack.sendFailure(message: Component) {
 }
 
 private fun ClientCommandSourceStack.sendMessage(message: Component) {
-    minecraft.gui.chat.addMessage(message)
+    minecraft.gui.chat.addClientSystemMessage(message)
 }
