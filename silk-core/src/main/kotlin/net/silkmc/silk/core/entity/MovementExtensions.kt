@@ -49,7 +49,7 @@ fun Entity.changePos(
  * them about the new velocity.
  */
 fun Entity.markVelocityDirty() {
-    hasImpulse = true
+    needsSync = true
     hurtMarked = true
 }
 

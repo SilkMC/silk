@@ -1,7 +1,7 @@
 package net.silkmc.silk.persistence
 
 import net.minecraft.nbt.Tag
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.silkmc.silk.core.logging.logWarning
 import net.silkmc.silk.nbt.serialization.Nbt
 import net.silkmc.silk.nbt.serialization.decodeFromNbtElement
@@ -14,7 +14,7 @@ import kotlin.reflect.full.isSubclassOf
  *
  * @param id the unique identifier for this key, this should contain your mod id
  */
-inline fun <reified T : Any> compoundKey(id: ResourceLocation) =
+inline fun <reified T : Any> compoundKey(id: Identifier) =
     object : CompoundKey<T>(id) {
         init {
             if (T::class.isSubclassOf(Tag::class))
@@ -38,7 +38,7 @@ inline fun <reified T : Any> compoundKey(id: ResourceLocation) =
  *
  * @param id the unique identifier for this key, this should contain your mod id
  */
-inline fun <reified T : Tag> nbtElementCompoundKey(id: ResourceLocation) =
+inline fun <reified T : Tag> nbtElementCompoundKey(id: Identifier) =
     object : CompoundKey<T>(id) {
         override fun convertValueToNbtElement(value: T) = value
 
@@ -55,7 +55,7 @@ inline fun <reified T : Tag> nbtElementCompoundKey(id: ResourceLocation) =
  * @param id the unique identifier for this key, this should contain your mod id
  */
 inline fun <reified T : Any, reified NbtType : Tag> customCompoundKey(
-    id: ResourceLocation,
+    id: Identifier,
     crossinline valueToNbt: (value: T) -> NbtType,
     crossinline nbtToValue: (nbtElement: NbtType) -> T
 ) = object : CompoundKey<T>(id) {
@@ -75,13 +75,13 @@ inline fun <reified T : Any, reified NbtType : Tag> customCompoundKey(
  */
 @JvmName("customCompoundKeyNbtElement")
 inline fun <reified T : Any> customCompoundKey(
-    id: ResourceLocation,
+    id: Identifier,
     crossinline convertValueToNbtElement: (value: T) -> Tag,
     crossinline convertNbtElementToValue: (nbtElement: Tag) -> T
 ) = customCompoundKey<T, Tag>(id, convertValueToNbtElement, convertNbtElementToValue)
 
 abstract class CompoundKey<T : Any>(val name: String) {
-    constructor(id: ResourceLocation) : this(id.toString())
+    constructor(id: Identifier) : this(id.toString())
 
     internal abstract fun convertValueToNbtElement(value: T): Tag
 
