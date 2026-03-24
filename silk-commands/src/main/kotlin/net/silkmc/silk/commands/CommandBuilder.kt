@@ -20,8 +20,9 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
-import net.minecraft.commands.PermissionSource
 import net.minecraft.commands.SharedSuggestionProvider
+import net.minecraft.server.permissions.Permission
+import net.minecraft.server.permissions.PermissionLevel
 import net.silkmc.silk.commands.DslAnnotations.NodeLevel.RunsDsl
 import net.silkmc.silk.commands.DslAnnotations.NodeLevel.SuggestsDsl
 import net.silkmc.silk.commands.DslAnnotations.TopLevel.NodeDsl
@@ -48,10 +49,9 @@ typealias BrigadierBuilder<Builder> = Builder.(context: CommandBuildContext) -> 
 
 @NodeDsl
 abstract class CommandBuilder<Source, Builder, Node>
-    where Source : SharedSuggestionProvider,
-          Source : PermissionSource,
-          Builder : ArgumentBuilder<Source, Builder>,
-          Node : CommandNode<Source> {
+        where Source : SharedSuggestionProvider,
+              Builder : ArgumentBuilder<Source, Builder>,
+              Node : CommandNode<Source> {
 
     @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *, *>>()
@@ -229,7 +229,9 @@ abstract class CommandBuilder<Source, Builder, Node>
      */
     @RunsDsl
     fun requiresPermissionLevel(level: Int) =
-        requires { it.hasPermission(level) }
+        requires {
+            it.permissions().hasPermission(Permission.HasCommandLevel(PermissionLevel.byId(level)))
+        }
 
     /**
      * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree.
@@ -237,7 +239,7 @@ abstract class CommandBuilder<Source, Builder, Node>
      */
     @RunsDsl
     fun requiresPermissionLevel(level: PermissionLevel) =
-        requires { it.hasPermission(level.level) }
+        requires { it.permissions().hasPermission(Permission.HasCommandLevel(level)) }
 
     /**
      * This function allows you to access the regular Brigadier builder. The type of
@@ -273,8 +275,7 @@ abstract class CommandBuilder<Source, Builder, Node>
 class LiteralCommandBuilder<Source>(
     private val name: String,
 ) : CommandBuilder<Source, LiteralArgumentBuilder<Source>, LiteralCommandNode<Source>>()
-        where Source : SharedSuggestionProvider,
-              Source : PermissionSource {
+        where Source : SharedSuggestionProvider {
 
     override fun createBuilder(context: CommandBuildContext): LiteralArgumentBuilder<Source> =
         LiteralArgumentBuilder.literal(name)
@@ -304,7 +305,14 @@ class LiteralCommandBuilder<Source>(
                         // we cannot use redirect here because of
                         // https://github.com/Mojang/brigadier/issues/46
                         // fix: create a new node here instead
-                        LiteralCommandNode(alias, mainNode.command, mainNode.requirement, mainNode.redirect, mainNode.redirectModifier, mainNode.isFork)
+                        LiteralCommandNode(
+                            alias,
+                            mainNode.command,
+                            mainNode.requirement,
+                            mainNode.redirect,
+                            mainNode.redirectModifier,
+                            mainNode.isFork
+                        )
                             .apply {
                                 for (child in mainNode.children) {
                                     addChild(child)
@@ -321,8 +329,7 @@ class ArgumentCommandBuilder<Source, T>(
     private val name: String,
     private val typeProvider: (CommandBuildContext) -> ArgumentType<T>,
 ) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>, ArgumentCommandNode<Source, T>>()
-        where Source : SharedSuggestionProvider,
-              Source : PermissionSource {
+        where Source : SharedSuggestionProvider {
 
     override fun createBuilder(context: CommandBuildContext): RequiredArgumentBuilder<Source, T> =
         RequiredArgumentBuilder.argument(name, typeProvider(context))
@@ -511,8 +518,7 @@ class ArgumentCommandBuilder<Source, T>(
 class RegistrableCommand<Source>(
     @property:InternalSilkApi
     val commandBuilder: LiteralCommandBuilder<Source>,
-) where Source : SharedSuggestionProvider,
-        Source : PermissionSource
+) where Source : SharedSuggestionProvider
 
 /**
  * Creates a new command. Opens a [LiteralCommandBuilder].
