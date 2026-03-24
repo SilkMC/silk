@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.MenuProvider
 import net.minecraft.world.SimpleContainer
+import net.minecraft.world.entity.ContainerUser
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -119,12 +120,19 @@ class Gui(
 
     override fun getDisplayName() = title
 
-    override fun stopOpen(player: Player) {
-        super.stopOpen(player)
+    override fun stopOpen(containerUser: ContainerUser) {
+        super.stopOpen(containerUser)
 
-        views -= player
-        if (views.isEmpty())
+        // safely cast to Player and remove only if present
+        val player = containerUser.livingEntity as? Player
+        if (player != null) {
+            views.remove(player)
+        }
+
+        // stop using only if views is not null and empty
+        if (views.isEmpty()) {
             currentPage.stopUsing(this)
+        }
     }
 
     /**
