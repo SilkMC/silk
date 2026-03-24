@@ -62,7 +62,7 @@ enum class GuiActionType {
             ContainerInput.QUICK_MOVE -> SHIFT_CLICK
             ContainerInput.SWAP -> HOTKEY_SWAP
             ContainerInput.CLONE -> MIDDLE_CLICK
-            ContainerInput.THROW -> if (button == 1) THROW_ALL else THROW_ONE,
+            ContainerInput.THROW -> if (button == 1) THROW_ALL else THROW_ONE
             ContainerInput.QUICK_CRAFT -> when (button) {
                 0 -> DRAG_START
                 2 -> DRAG_END
