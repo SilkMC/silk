@@ -1,7 +1,7 @@
 {
   "package": "net.silkmc.silk.network.mixin",
   "required": true,
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
     "MixinClientboundCustomPayloadPacket",
     "MixinServerboundCustomPayloadPacket",
