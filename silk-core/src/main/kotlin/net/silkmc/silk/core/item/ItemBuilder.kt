@@ -1,5 +1,7 @@
 package net.silkmc.silk.core.item
 
+import com.google.common.collect.ImmutableMultimap
+import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.authlib.properties.PropertyMap
 import net.minecraft.core.Holder
@@ -7,6 +9,7 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.util.Util
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.alchemy.Potion
 import net.minecraft.world.item.alchemy.PotionContents
@@ -115,17 +118,20 @@ fun ItemStack.setPotion(potion: Potion) {
  */
 fun ItemStack.setSkullTexture(
     texture: String? = null,
-    uuid: UUID? = null,
-    name: String? = null,
+    uuid: UUID = Util.NIL_UUID,
+    name: String = "",
 ) {
-    val profile = ResolvableProfile(
-        Optional.ofNullable(name),
-        Optional.ofNullable(uuid),
-        PropertyMap().apply {
-            if (texture != null) {
-                put("textures", Property("textures", texture))
-            }
-        }
+    // this is adapted from https://github.com/SkinsRestorer/SkinsRestorer/blob/55b9678ff4cc91447da25e6c94ab864364118cf6/mod/common/src/main/java/net/skinsrestorer/mod/SRModAdapter.java#L154
+    val builder: ImmutableMultimap.Builder<String, Property> = ImmutableMultimap.builder()
+
+    if (texture != null) {
+        builder.put("textures", Property("textures", texture))
+    }
+
+    val gameProfile = GameProfile(uuid, name, PropertyMap(builder.build()))
+
+    val profile = ResolvableProfile.createResolved(
+        gameProfile,
     )
     set(DataComponents.PROFILE, profile)
 }
@@ -142,5 +148,5 @@ fun ItemStack.setSkullTexture(
  * ```
  */
 fun ItemStack.setSkullPlayer(player: ServerPlayer) {
-    set(DataComponents.PROFILE, ResolvableProfile(player.gameProfile))
+    set(DataComponents.PROFILE, ResolvableProfile.createResolved(player.gameProfile))
 }
