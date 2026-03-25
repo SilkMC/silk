@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.MenuProvider
 import net.minecraft.world.SimpleContainer
+import net.minecraft.world.entity.ContainerUser
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -37,7 +38,7 @@ class Gui(
     val defaultPageKey: String,
     val eventHandler: GuiEventHandler,
 ) : SimpleContainer(guiType.dimensions.slotAmount), MenuProvider {
-    val views = HashMap<Player, GuiScreenHandler>()
+    val views = HashMap<ContainerUser, GuiScreenHandler>()
 
     var isOffset = false
         private set
@@ -119,10 +120,10 @@ class Gui(
 
     override fun getDisplayName() = title
 
-    override fun stopOpen(player: Player) {
-        super.stopOpen(player)
+    override fun stopOpen(containerUser: ContainerUser) {
+        super.stopOpen(containerUser)
 
-        views -= player
+        views -= containerUser
         if (views.isEmpty())
             currentPage.stopUsing(this)
     }

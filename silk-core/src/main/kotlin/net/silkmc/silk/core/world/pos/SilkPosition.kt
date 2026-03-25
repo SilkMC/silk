@@ -5,8 +5,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.SectionPos
 import net.minecraft.core.Vec3i
 import net.minecraft.core.registries.Registries
+import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.Level
@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.entity.pos
 import net.silkmc.silk.core.entity.world
-import net.silkmc.silk.core.serialization.serializers.ResourceLocationSerializer
+import net.silkmc.silk.core.serialization.serializers.IdentifierSerializer
 import org.joml.Vector3f
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -35,31 +35,36 @@ typealias FabrikPosition = SilkPosition
 @Serializable
 data class SilkPosition(
     val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0,
-    @Serializable(with = ResourceLocationSerializer::class) val worldIdentifier: ResourceLocation? = null,
+    @Serializable(with = IdentifierSerializer::class) val worldIdentifier: Identifier? = null,
     val pitch: Float = 0f, val yaw: Float = 0f,
 ) {
-    constructor(blockPos: BlockPos, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f)
+    constructor(blockPos: BlockPos, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
         : this(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble(), worldIdentifier, pitch, yaw)
 
-    constructor(vec3i: Vec3i, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f)
+    constructor(vec3i: Vec3i, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
         : this(vec3i.x.toDouble(), vec3i.y.toDouble(), vec3i.z.toDouble(), worldIdentifier, pitch, yaw)
 
-    constructor(vec3f: Vector3f, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f)
+    constructor(vec3f: Vector3f, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
         : this(vec3f.x().toDouble(), vec3f.y().toDouble(), vec3f.z().toDouble(), worldIdentifier, pitch, yaw)
 
-    constructor(vec3d: Vec3, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f)
+    constructor(vec3d: Vec3, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
         : this(vec3d.x, vec3d.y, vec3d.z, worldIdentifier, pitch, yaw)
 
     constructor(entity: Entity)
-        : this(entity.pos, entity.world.dimension().location(), entity.xRot, entity.yRot)
+        : this(entity.pos, entity.world.dimension().identifier(), entity.xRot, entity.yRot)
 
-    constructor(chunkPos: ChunkPos, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
+    constructor(chunkPos: ChunkPos, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
         chunkPos.minBlockX.toDouble(), 0.0, chunkPos.minBlockZ.toDouble(),
         worldIdentifier,
         pitch, yaw
     )
 
-    constructor(chunkSectionPos: SectionPos, worldIdentifier: ResourceLocation? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
+    constructor(
+        chunkSectionPos: SectionPos,
+        worldIdentifier: Identifier? = null,
+        pitch: Float = 0f,
+        yaw: Float = 0f,
+    ) : this(
         chunkSectionPos.minBlockX().toDouble(), chunkSectionPos.minBlockY().toDouble(), chunkSectionPos.minBlockZ().toDouble(),
         worldIdentifier,
         pitch, yaw

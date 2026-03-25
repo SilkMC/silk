@@ -1,5 +1,6 @@
 package net.silkmc.silk.core.item
 
+import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.authlib.properties.PropertyMap
 import net.minecraft.core.Holder
@@ -118,23 +119,21 @@ fun ItemStack.setSkullTexture(
     uuid: UUID? = null,
     name: String? = null,
 ) {
-    val profile = ResolvableProfile(
-        Optional.ofNullable(name),
-        Optional.ofNullable(uuid),
-        PropertyMap().apply {
-            if (texture != null) {
-                put("textures", Property("textures", texture))
-            }
+
+    val profile = ResolvableProfile.createResolved(GameProfile(uuid, name, PropertyMap.EMPTY.apply {
+        if (texture != null) {
+            put("textures", Property("textures", texture))
         }
-    )
+    }))
+
     set(DataComponents.PROFILE, profile)
 }
 
 /**
  * Configures the `minecraft:profile` item component to represent the given player
- * (specified via [uuid] in its game profile).
+ * (specified via [GameProfile.id] in its game profile).
  *
- * The internal [name] can be anything, but it *should* match
+ * The internal [GameProfile.name] can be anything, but it *should* match
  * the actual player name.
  *
  * ```kotlin
@@ -142,5 +141,5 @@ fun ItemStack.setSkullTexture(
  * ```
  */
 fun ItemStack.setSkullPlayer(player: ServerPlayer) {
-    set(DataComponents.PROFILE, ResolvableProfile(player.gameProfile))
+    set(DataComponents.PROFILE, ResolvableProfile.createResolved(player.gameProfile))
 }

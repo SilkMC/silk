@@ -14,7 +14,7 @@ import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import java.util.*
 
 object ArgumentTypeUtils {
@@ -40,7 +40,7 @@ object ArgumentTypeUtils {
             Coordinates::class -> BlockPosArgument.blockPos()
             BlockInput::class -> BlockStateArgument.block(context)
             ChatFormatting::class -> ColorArgument.color()
-            ResourceLocation::class -> ResourceLocationArgument.id()
+            Identifier::class -> IdentifierArgument.id()
             ItemInput::class -> ItemArgument.item(context)
             CompoundTag::class -> CompoundTagArgument.compoundTag()
             Tag::class -> NbtTagArgument.nbtTag()
