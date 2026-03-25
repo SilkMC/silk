@@ -4,15 +4,13 @@ import com.google.common.collect.ImmutableMultimap
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.authlib.properties.PropertyMap
-import net.minecraft.commands.arguments.GameProfileArgument.gameProfile
+import net.minecraft.client.Minecraft
 import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.server.players.ProfileResolver
 import net.minecraft.util.Util
-import net.minecraft.world.entity.player.PlayerSkin
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.alchemy.Potion
 import net.minecraft.world.item.alchemy.PotionContents
@@ -20,7 +18,6 @@ import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.item.component.ResolvableProfile
 import net.minecraft.world.level.ItemLike
 import net.silkmc.silk.core.Silk
-import net.silkmc.silk.core.logging.logger
 import net.silkmc.silk.core.text.LiteralTextBuilder
 import net.silkmc.silk.core.text.literalText
 import java.util.*
@@ -149,7 +146,11 @@ fun ItemStack.setSkullTexture(
     }
 
     profile?.let {
-        set(DataComponents.PROFILE, it)
+        val resolvedFuture = profile.resolveProfile(Minecraft.getInstance().services().profileResolver)
+
+        val gameProfile = resolvedFuture.get()
+
+        set(DataComponents.PROFILE, ResolvableProfile.createResolved(gameProfile))
     }
 }
 
