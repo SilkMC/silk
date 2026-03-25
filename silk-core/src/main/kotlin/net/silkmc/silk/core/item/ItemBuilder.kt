@@ -4,12 +4,15 @@ import com.google.common.collect.ImmutableMultimap
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.authlib.properties.PropertyMap
+import net.minecraft.commands.arguments.GameProfileArgument.gameProfile
 import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.players.ProfileResolver
 import net.minecraft.util.Util
+import net.minecraft.world.entity.player.PlayerSkin
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.alchemy.Potion
 import net.minecraft.world.item.alchemy.PotionContents
@@ -17,6 +20,7 @@ import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.item.component.ResolvableProfile
 import net.minecraft.world.level.ItemLike
 import net.silkmc.silk.core.Silk
+import net.silkmc.silk.core.logging.logger
 import net.silkmc.silk.core.text.LiteralTextBuilder
 import net.silkmc.silk.core.text.literalText
 import java.util.*
@@ -95,6 +99,22 @@ fun ItemStack.setPotion(potion: Potion) {
     setPotion(holder)
 }
 
+fun createProfileWithTexture(texture: String? = null, uuid: UUID?, name: String?): ResolvableProfile {
+    // this is adapted from https://github.com/SkinsRestorer/SkinsRestorer/blob/55b9678ff4cc91447da25e6c94ab864364118cf6/mod/common/src/main/java/net/skinsrestorer/mod/SRModAdapter.java#L154
+    val builder: ImmutableMultimap.Builder<String, Property> = ImmutableMultimap.builder()
+
+    if (texture != null) {
+        builder.put("textures", Property("textures", texture))
+    }
+
+    val gameProfile = GameProfile(uuid ?: Util.NIL_UUID, name ?: "", PropertyMap(builder.build()))
+
+    val profile = ResolvableProfile.createResolved(
+        gameProfile,
+    )
+    return profile
+}
+
 /**
  * Configures the `minecraft:profile` item component to have the given texture.
  * It can be provided via [texture], [uuid] or [name].
@@ -118,22 +138,19 @@ fun ItemStack.setPotion(potion: Potion) {
  */
 fun ItemStack.setSkullTexture(
     texture: String? = null,
-    uuid: UUID = Util.NIL_UUID,
-    name: String = "",
+    uuid: UUID? = null,
+    name: String? = null,
 ) {
-    // this is adapted from https://github.com/SkinsRestorer/SkinsRestorer/blob/55b9678ff4cc91447da25e6c94ab864364118cf6/mod/common/src/main/java/net/skinsrestorer/mod/SRModAdapter.java#L154
-    val builder: ImmutableMultimap.Builder<String, Property> = ImmutableMultimap.builder()
-
-    if (texture != null) {
-        builder.put("textures", Property("textures", texture))
+    val profile: ResolvableProfile? = when {
+        texture != null -> createProfileWithTexture(texture, uuid, name)
+        uuid != null -> ResolvableProfile.createUnresolved(uuid)
+        name != null -> ResolvableProfile.createUnresolved(name)
+        else -> null
     }
 
-    val gameProfile = GameProfile(uuid, name, PropertyMap(builder.build()))
-
-    val profile = ResolvableProfile.createResolved(
-        gameProfile,
-    )
-    set(DataComponents.PROFILE, profile)
+    profile?.let {
+        set(DataComponents.PROFILE, it)
+    }
 }
 
 /**
