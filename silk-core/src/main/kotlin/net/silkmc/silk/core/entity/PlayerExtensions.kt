@@ -11,5 +11,5 @@ import net.silkmc.silk.core.server.executeCommand
  */
 fun Player.executeCommand(command: String) {
     val serverPlayer = this as? ServerPlayer
-    serverPlayer?.server?.executeCommand(command, serverPlayer.createCommandSourceStack())
+    serverPlayer?.serverWorld?.server?.executeCommand(command, serverPlayer.createCommandSourceStack())
 }
