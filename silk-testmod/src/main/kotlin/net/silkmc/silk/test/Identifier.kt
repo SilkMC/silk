@@ -1,6 +1,6 @@
 package net.silkmc.silk.test
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 val String.testmodId
-    get() = ResourceLocation.fromNamespaceAndPath("silk-testmod", this)
+    get() = Identifier.fromNamespaceAndPath("silk-testmod", this)
