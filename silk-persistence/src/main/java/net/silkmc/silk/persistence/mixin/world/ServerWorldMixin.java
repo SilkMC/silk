@@ -1,5 +1,6 @@
 package net.silkmc.silk.persistence.mixin.world;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.silkmc.silk.persistence.CompoundProvider;
 import net.silkmc.silk.persistence.PersistentCompound;
@@ -27,15 +28,18 @@ public abstract class ServerWorldMixin implements CompoundProvider {
             CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().set(true);
 
             final var dataStorage = serverLevel.getDataStorage();
-            final var legacyDataType = CompoundSavedData.Companion.createType(PersistentCompoundImpl.LEGACY_CUSTOM_DATA_KEY, compound);
+
+            // TODO: we can't use legacyDataType, since fabrikmcData isn't valid in identifiers
+
+            // final var legacyDataType = CompoundSavedData.Companion.createType(PersistentCompoundImpl.LEGACY_CUSTOM_DATA_KEY, compound);
             final var dataType = CompoundSavedData.Companion.createType(PersistentCompoundImpl.CUSTOM_DATA_KEY, compound);
 
             // move legacy data
-            final var legacyData = dataStorage.get(legacyDataType);
-            if (legacyData != null) {
-                dataStorage.set(dataType, legacyData);
-                // note: we do not delete the legacy data, as there is no official way to do so
-            }
+//            final var legacyData = dataStorage.get(legacyDataType);
+//            if (legacyData != null) {
+//                dataStorage.set(dataType, legacyData);
+//                // note: we do not delete the legacy data, as there is no official way to do so
+//            }
 
             dataStorage.computeIfAbsent(dataType);
         } finally {

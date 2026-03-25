@@ -32,8 +32,8 @@ class CompoundSavedData(val compound: PersistentCompound) : SavedData() {
             })
         }
 
-        fun createType(id: Identifier, levelCompound: PersistentCompound): SavedDataType<CompoundSavedData> {
-            return SavedDataType(id, { CompoundSavedData(levelCompound) }, createCodec(levelCompound),
+        fun createType(id: String, levelCompound: PersistentCompound): SavedDataType<CompoundSavedData> {
+            return SavedDataType(Identifier.fromNamespaceAndPath("silk-persistence", id), { CompoundSavedData(levelCompound) }, createCodec(levelCompound),
                 /* dataFixType will be ignored on reading, but it cannot be null */ DataFixTypes.LEVEL)
         }
 
