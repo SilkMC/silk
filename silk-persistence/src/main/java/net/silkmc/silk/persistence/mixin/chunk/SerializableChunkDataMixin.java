@@ -1,12 +1,12 @@
 package net.silkmc.silk.persistence.mixin.chunk;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.PalettedContainerFactory;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 import net.minecraft.world.level.chunk.storage.SerializableChunkData;
@@ -32,10 +32,7 @@ public class SerializableChunkDataMixin implements CompoundProvider {
     }
 
     @Inject(method = "parse", at = @At("RETURN"))
-    private static void onDeserialize(LevelHeightAccessor levelHeightAccessor,
-                                      RegistryAccess registryAccess,
-                                      CompoundTag nbt,
-                                      CallbackInfoReturnable<SerializableChunkData> cir) {
+    private static void onDeserialize(LevelHeightAccessor levelHeight, PalettedContainerFactory containerFactory, CompoundTag nbt, CallbackInfoReturnable<SerializableChunkData> cir) {
         ((CompoundProvider) (Object) cir.getReturnValue()).getCompound()
                 .loadFromCompound(nbt);
     }
