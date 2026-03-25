@@ -49,9 +49,9 @@ typealias BrigadierBuilder<Builder> = Builder.(context: CommandBuildContext) -> 
 
 @NodeDsl
 abstract class CommandBuilder<Source, Builder, Node>
-        where Source : SharedSuggestionProvider,
-              Builder : ArgumentBuilder<Source, Builder>,
-              Node : CommandNode<Source> {
+    where Source : SharedSuggestionProvider,
+          Builder : ArgumentBuilder<Source, Builder>,
+          Node : CommandNode<Source> {
 
     @PublishedApi
     internal val children = ArrayList<CommandBuilder<Source, *, *>>()
@@ -275,7 +275,7 @@ abstract class CommandBuilder<Source, Builder, Node>
 class LiteralCommandBuilder<Source>(
     private val name: String,
 ) : CommandBuilder<Source, LiteralArgumentBuilder<Source>, LiteralCommandNode<Source>>()
-        where Source : SharedSuggestionProvider {
+    where Source : SharedSuggestionProvider {
 
     override fun createBuilder(context: CommandBuildContext): LiteralArgumentBuilder<Source> =
         LiteralArgumentBuilder.literal(name)
@@ -329,7 +329,7 @@ class ArgumentCommandBuilder<Source, T>(
     private val name: String,
     private val typeProvider: (CommandBuildContext) -> ArgumentType<T>,
 ) : CommandBuilder<Source, RequiredArgumentBuilder<Source, T>, ArgumentCommandNode<Source, T>>()
-        where Source : SharedSuggestionProvider {
+    where Source : SharedSuggestionProvider {
 
     override fun createBuilder(context: CommandBuildContext): RequiredArgumentBuilder<Source, T> =
         RequiredArgumentBuilder.argument(name, typeProvider(context))

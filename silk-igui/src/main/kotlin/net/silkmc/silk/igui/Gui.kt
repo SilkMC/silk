@@ -38,7 +38,7 @@ class Gui(
     val defaultPageKey: String,
     val eventHandler: GuiEventHandler,
 ) : SimpleContainer(guiType.dimensions.slotAmount), MenuProvider {
-    val views = HashMap<Player, GuiScreenHandler>()
+    val views = HashMap<ContainerUser, GuiScreenHandler>()
 
     var isOffset = false
         private set

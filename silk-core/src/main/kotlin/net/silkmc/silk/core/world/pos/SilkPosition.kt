@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.entity.pos
 import net.silkmc.silk.core.entity.world
-import net.silkmc.silk.core.serialization.serializers.ResourceLocationSerializer
+import net.silkmc.silk.core.serialization.serializers.IdentifierSerializer
 import org.joml.Vector3f
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -35,7 +35,7 @@ typealias FabrikPosition = SilkPosition
 @Serializable
 data class SilkPosition(
     val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0,
-    @Serializable(with = ResourceLocationSerializer::class) val worldIdentifier: Identifier? = null,
+    @Serializable(with = IdentifierSerializer::class) val worldIdentifier: Identifier? = null,
     val pitch: Float = 0f, val yaw: Float = 0f,
 ) {
     constructor(blockPos: BlockPos, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f)
@@ -59,7 +59,12 @@ data class SilkPosition(
         pitch, yaw
     )
 
-    constructor(chunkSectionPos: SectionPos, worldIdentifier: Identifier? = null, pitch: Float = 0f, yaw: Float = 0f) : this(
+    constructor(
+        chunkSectionPos: SectionPos,
+        worldIdentifier: Identifier? = null,
+        pitch: Float = 0f,
+        yaw: Float = 0f,
+    ) : this(
         chunkSectionPos.minBlockX().toDouble(), chunkSectionPos.minBlockY().toDouble(), chunkSectionPos.minBlockZ().toDouble(),
         worldIdentifier,
         pitch, yaw

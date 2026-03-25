@@ -1,8 +1,6 @@
 package net.silkmc.silk.core.event
 
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 /**
  * A marker which can be passed to event handlers to make the event
@@ -45,7 +43,7 @@ class EventScopeProperty<V>(private var value: V)/* : ReadWriteProperty<Any, V>*
      * Mutates this property. This functions **must** be called in a
      * [MutableEventScope], therefore in a normal synchronous listener.
      */
-    context(MutableEventScope)
+    context(_: MutableEventScope)
     fun set(value: V) {
         this.value = value
     }

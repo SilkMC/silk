@@ -32,7 +32,10 @@ public class SerializableChunkDataMixin implements CompoundProvider {
     }
 
     @Inject(method = "parse", at = @At("RETURN"))
-    private static void onDeserialize(LevelHeightAccessor levelHeight, PalettedContainerFactory containerFactory, CompoundTag nbt, CallbackInfoReturnable<SerializableChunkData> cir) {
+    private static void onDeserialize(LevelHeightAccessor levelHeightAccessor,
+                                      PalettedContainerFactory palettedContainerFactory,
+                                      CompoundTag nbt,
+                                      CallbackInfoReturnable<SerializableChunkData> cir) {
         ((CompoundProvider) (Object) cir.getReturnValue()).getCompound()
                 .loadFromCompound(nbt);
     }

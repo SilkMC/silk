@@ -153,9 +153,9 @@ open class AsyncEvent<T>(val clientSide: Boolean) : Event<T>() {
      * [CoroutineScope] (taken from context), using the dispatcher from the
      * current scope.
      */
-    context(CoroutineScope)
+    context(scope: CoroutineScope)
     fun collectInScope(collector: FlowCollector<T>): Job =
-        launch { flow.collect(collector) }
+        scope.launch { flow.collect(collector) }
 
     /**
      * Listens to this event, and `emit`s to the [collector] if
@@ -164,9 +164,9 @@ open class AsyncEvent<T>(val clientSide: Boolean) : Event<T>() {
      * [CoroutineScope] (taken from context), using the fitting synchronous
      * Minecraft main thread dispatcher ([syncDispatcher]).
      */
-    context(CoroutineScope)
+    context(scope: CoroutineScope)
     fun collectInScopeSync(collector: FlowCollector<T>): Job =
-        launch(syncDispatcher) { flow.collect(collector) }
+        scope.launch(syncDispatcher) { flow.collect(collector) }
 
     /**
      * Calls [SharedFlow.collect] on the underlying [flow].

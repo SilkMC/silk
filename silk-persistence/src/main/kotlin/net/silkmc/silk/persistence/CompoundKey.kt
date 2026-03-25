@@ -57,7 +57,7 @@ inline fun <reified T : Tag> nbtElementCompoundKey(id: Identifier) =
 inline fun <reified T : Any, reified NbtType : Tag> customCompoundKey(
     id: Identifier,
     crossinline valueToNbt: (value: T) -> NbtType,
-    crossinline nbtToValue: (nbtElement: NbtType) -> T
+    crossinline nbtToValue: (nbtElement: NbtType) -> T,
 ) = object : CompoundKey<T>(id) {
     override fun convertValueToNbtElement(value: T) = valueToNbt(value)
     override fun convertNbtElementToValue(nbtElement: Tag) = nbtToValue(nbtElement as NbtType)
@@ -77,7 +77,7 @@ inline fun <reified T : Any, reified NbtType : Tag> customCompoundKey(
 inline fun <reified T : Any> customCompoundKey(
     id: Identifier,
     crossinline convertValueToNbtElement: (value: T) -> Tag,
-    crossinline convertNbtElementToValue: (nbtElement: Tag) -> T
+    crossinline convertNbtElementToValue: (nbtElement: Tag) -> T,
 ) = customCompoundKey<T, Tag>(id, convertValueToNbtElement, convertNbtElementToValue)
 
 abstract class CompoundKey<T : Any>(val name: String) {
