@@ -21,7 +21,7 @@ val ClientCommandSourceStack.player: LocalPlayer
     get() = minecraft.player ?: error("Tried to access player while not in game")
 
 val ClientCommandSourceStack.level: ClientLevel
-    get() = player.level() as ClientLevel
+    get() = Minecraft.getInstance().level ?: throw IllegalStateException("No client level loaded")
 
 fun ClientCommandSourceStack.sendSuccess(message: Component) {
     sendMessage(message)
@@ -32,5 +32,5 @@ fun ClientCommandSourceStack.sendFailure(message: Component) {
 }
 
 private fun ClientCommandSourceStack.sendMessage(message: Component) {
-    minecraft.gui.chat.addMessage(message)
+    minecraft.gui.chat.addClientSystemMessage(message)
 }

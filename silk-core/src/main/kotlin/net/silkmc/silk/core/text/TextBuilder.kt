@@ -3,7 +3,6 @@
 package net.silkmc.silk.core.text
 
 import net.minecraft.network.chat.*
-import net.minecraft.network.chat.FontDescription
 
 /**
  * Opens a [LiteralTextBuilder].

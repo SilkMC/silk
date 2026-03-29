@@ -1,6 +1,6 @@
 package net.silkmc.silk.igui
 
-import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.inventory.ContainerInput
 
 enum class GuiActionType {
     /**
@@ -54,16 +54,16 @@ enum class GuiActionType {
 
     companion object {
         fun fromSlotActionType(
-            slotActionType: ClickType,
+            slotActionType: ContainerInput,
             button: Int
         ) = when (slotActionType) {
-            ClickType.PICKUP -> PICKUP
-            ClickType.PICKUP_ALL -> PICKUP_ALL
-            ClickType.QUICK_MOVE -> SHIFT_CLICK
-            ClickType.SWAP -> HOTKEY_SWAP
-            ClickType.CLONE -> MIDDLE_CLICK
-            ClickType.THROW -> if (button == 1) THROW_ALL else THROW_ONE
-            ClickType.QUICK_CRAFT -> when (button) {
+            ContainerInput.PICKUP -> PICKUP
+            ContainerInput.PICKUP_ALL -> PICKUP_ALL
+            ContainerInput.QUICK_MOVE -> SHIFT_CLICK
+            ContainerInput.SWAP -> HOTKEY_SWAP
+            ContainerInput.CLONE -> MIDDLE_CLICK
+            ContainerInput.THROW -> if (button == 1) THROW_ALL else THROW_ONE
+            ContainerInput.QUICK_CRAFT -> when (button) {
                 0 -> DRAG_START
                 2 -> DRAG_END
                 else -> DRAG

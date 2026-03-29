@@ -7,7 +7,7 @@ import com.modrinth.minotaur.dependencies.ModDependency
 plugins {
     kotlin("jvm")
 
-    id("fabric-loom")
+    id("net.fabricmc.fabric-loom")
     id("com.modrinth.minotaur")
 }
 
@@ -20,7 +20,7 @@ modrinth {
     gameVersions.set(listOf(minecraftVersion))
     loaders.set(listOf("fabric"))
 
-    uploadFile.set(tasks.remapJar.get())
+    uploadFile.set(tasks.jar.get())
 
     dependencies.set(
         listOf(

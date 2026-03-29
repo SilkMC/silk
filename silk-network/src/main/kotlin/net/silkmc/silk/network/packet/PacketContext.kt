@@ -11,7 +11,7 @@ class ServerPacketContext(
     val handler: ServerGamePacketListenerImpl,
 ) {
     constructor(handler: ServerGamePacketListenerImpl) : this(
-        handler.getPlayer().level().server,
+        handler.getPlayer().level().server ?: throw IllegalStateException("Server is null"),
         handler.getPlayer(),
         handler,
     )

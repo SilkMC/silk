@@ -123,9 +123,16 @@ class Gui(
     override fun stopOpen(containerUser: ContainerUser) {
         super.stopOpen(containerUser)
 
-        views -= containerUser
-        if (views.isEmpty())
+        // safely cast to Player and remove only if present
+        val player = containerUser.livingEntity as? Player
+        if (player != null) {
+            views.remove(player)
+        }
+
+        // stop using only if views is not null and empty
+        if (views.isEmpty()) {
             currentPage.stopUsing(this)
+        }
     }
 
     /**
