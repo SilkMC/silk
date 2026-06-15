@@ -7,6 +7,8 @@ enum class GuiActionType {
      * A normal slot click.
      */
     PICKUP,
+    PICKUP_LEFT,
+    PICKUP_RIGHT,
     /**
      * A double slot click (to pick up all items of a stack).
      */
@@ -20,6 +22,8 @@ enum class GuiActionType {
      * using shift.
      */
     SHIFT_CLICK,
+    SHIFT_CLICK_LEFT,
+    SHIFT_CLICK_RIGHT,
     /**
      * Moving items from one inventory to another
      * using a hotkey (e.g. 0 - 9).
@@ -57,9 +61,17 @@ enum class GuiActionType {
             slotActionType: ContainerInput,
             button: Int
         ) = when (slotActionType) {
-            ContainerInput.PICKUP -> PICKUP
+            ContainerInput.PICKUP -> when (button) {
+                0 -> PICKUP_LEFT
+                1 -> PICKUP_RIGHT
+                else -> PICKUP
+            }
             ContainerInput.PICKUP_ALL -> PICKUP_ALL
-            ContainerInput.QUICK_MOVE -> SHIFT_CLICK
+            ContainerInput.QUICK_MOVE -> when (button) {
+                0 -> SHIFT_CLICK_LEFT
+                1 -> SHIFT_CLICK_RIGHT
+                else -> SHIFT_CLICK
+            }
             ContainerInput.SWAP -> HOTKEY_SWAP
             ContainerInput.CLONE -> MIDDLE_CLICK
             ContainerInput.THROW -> if (button == 1) THROW_ALL else THROW_ONE
@@ -70,4 +82,10 @@ enum class GuiActionType {
             }
         }
     }
+
+    val isLeftClick: Boolean
+        get() = this == SHIFT_CLICK_LEFT || this == PICKUP_LEFT
+
+    val isRightClick: Boolean
+        get() = this == SHIFT_CLICK_RIGHT || this == PICKUP_RIGHT
 }
