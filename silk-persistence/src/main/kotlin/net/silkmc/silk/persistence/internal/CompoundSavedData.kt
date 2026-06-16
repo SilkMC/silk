@@ -2,6 +2,7 @@ package net.silkmc.silk.persistence.internal
 
 import com.mojang.serialization.Codec
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.resources.Identifier
 import net.minecraft.util.datafix.DataFixTypes
 import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
@@ -32,7 +33,7 @@ class CompoundSavedData(val compound: PersistentCompound) : SavedData() {
         }
 
         fun createType(id: String, levelCompound: PersistentCompound): SavedDataType<CompoundSavedData> {
-            return SavedDataType(id, { CompoundSavedData(levelCompound) }, createCodec(levelCompound),
+            return SavedDataType(Identifier.fromNamespaceAndPath("silk-persistence", id), { CompoundSavedData(levelCompound) }, createCodec(levelCompound),
                 /* dataFixType will be ignored on reading, but it cannot be null */ DataFixTypes.LEVEL)
         }
 

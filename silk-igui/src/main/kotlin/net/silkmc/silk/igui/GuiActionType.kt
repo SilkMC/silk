@@ -1,12 +1,14 @@
 package net.silkmc.silk.igui
 
-import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.inventory.ContainerInput
 
 enum class GuiActionType {
     /**
      * A normal slot click.
      */
     PICKUP,
+    PICKUP_LEFT,
+    PICKUP_RIGHT,
     /**
      * A double slot click (to pick up all items of a stack).
      */
@@ -20,6 +22,8 @@ enum class GuiActionType {
      * using shift.
      */
     SHIFT_CLICK,
+    SHIFT_CLICK_LEFT,
+    SHIFT_CLICK_RIGHT,
     /**
      * Moving items from one inventory to another
      * using a hotkey (e.g. 0 - 9).
@@ -54,20 +58,34 @@ enum class GuiActionType {
 
     companion object {
         fun fromSlotActionType(
-            slotActionType: ClickType,
+            slotActionType: ContainerInput,
             button: Int
         ) = when (slotActionType) {
-            ClickType.PICKUP -> PICKUP
-            ClickType.PICKUP_ALL -> PICKUP_ALL
-            ClickType.QUICK_MOVE -> SHIFT_CLICK
-            ClickType.SWAP -> HOTKEY_SWAP
-            ClickType.CLONE -> MIDDLE_CLICK
-            ClickType.THROW -> if (button == 1) THROW_ALL else THROW_ONE
-            ClickType.QUICK_CRAFT -> when (button) {
+            ContainerInput.PICKUP -> when (button) {
+                0 -> PICKUP_LEFT
+                1 -> PICKUP_RIGHT
+                else -> PICKUP
+            }
+            ContainerInput.PICKUP_ALL -> PICKUP_ALL
+            ContainerInput.QUICK_MOVE -> when (button) {
+                0 -> SHIFT_CLICK_LEFT
+                1 -> SHIFT_CLICK_RIGHT
+                else -> SHIFT_CLICK
+            }
+            ContainerInput.SWAP -> HOTKEY_SWAP
+            ContainerInput.CLONE -> MIDDLE_CLICK
+            ContainerInput.THROW -> if (button == 1) THROW_ALL else THROW_ONE
+            ContainerInput.QUICK_CRAFT -> when (button) {
                 0 -> DRAG_START
                 2 -> DRAG_END
                 else -> DRAG
             }
         }
     }
+
+    val isLeftClick: Boolean
+        get() = this == SHIFT_CLICK_LEFT || this == PICKUP_LEFT
+
+    val isRightClick: Boolean
+        get() = this == SHIFT_CLICK_RIGHT || this == PICKUP_RIGHT
 }

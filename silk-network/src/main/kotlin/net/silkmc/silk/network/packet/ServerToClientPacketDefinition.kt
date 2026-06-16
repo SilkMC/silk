@@ -3,7 +3,7 @@ package net.silkmc.silk.network.packet
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.Silk
 import net.silkmc.silk.network.packet.internal.SilkPacketPayload
@@ -12,7 +12,7 @@ import net.silkmc.silk.network.packet.internal.SilkPacketPayload
  * See [s2cPacket] function, which constructs this packet definition class.
  */
 class ServerToClientPacketDefinition<T : Any>(
-    id: ResourceLocation,
+    id: Identifier,
     binaryFormat: BinaryFormat,
     deserializer: KSerializer<T>,
 ) : AbstractPacketDefinition<T, ClientPacketContext>(id, binaryFormat, deserializer) {

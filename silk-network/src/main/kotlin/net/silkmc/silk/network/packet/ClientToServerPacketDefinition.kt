@@ -4,14 +4,14 @@ import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
 import net.minecraft.client.Minecraft
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.silkmc.silk.network.packet.internal.SilkPacketPayload
 
 /**
  * See [c2sPacket] function, which constructs this packet definition class.
  */
 class ClientToServerPacketDefinition<T : Any>(
-    id: ResourceLocation,
+    id: Identifier,
     binaryFormat: BinaryFormat,
     deserializer: KSerializer<T>,
 ) : AbstractPacketDefinition<T, ServerPacketContext>(id, binaryFormat, deserializer) {

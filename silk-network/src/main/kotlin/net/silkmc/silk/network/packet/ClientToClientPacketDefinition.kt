@@ -8,7 +8,7 @@ import kotlinx.serialization.KSerializer
 import net.minecraft.client.Minecraft
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.network.packet.internal.SilkPacketPayload
 
@@ -24,7 +24,7 @@ typealias ServerPacketForwarder<T> = suspend ClientToClientPacketDefinition<T>.(
  * See [c2cPacket] function, which constructs this packet definition class.
  */
 class ClientToClientPacketDefinition<T : Any>(
-    id: ResourceLocation,
+    id: Identifier,
     binaryFormat: BinaryFormat,
     deserializer: KSerializer<T>,
 ) : AbstractPacketDefinition<T, ClientPacketContext>(id, binaryFormat, deserializer) {

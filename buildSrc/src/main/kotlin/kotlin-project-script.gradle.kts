@@ -13,7 +13,7 @@ repositories {
 tasks {
     withType<KotlinCompile> {
         compilerOptions {
-            freeCompilerArgs.add("-Xcontext-receivers")
+            freeCompilerArgs.add("-Xcontext-parameters")
         }
     }
     javadoc {
@@ -25,7 +25,7 @@ tasks {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 
     sourceSets.all {
         languageSettings {

@@ -18,6 +18,8 @@ enum class GuiType(
     NINE_BY_SIX(MenuType.GENERIC_9x6, GuiDimensions(9, 6)),
 
     THREE_BY_THREE(MenuType.GENERIC_3x3, GuiDimensions(3, 3)),
+
+    FIVE_BY_ONE(MenuType.HOPPER, GuiDimensions(5, 1)),
     ;
 
     fun createScreenHandler(gui: Gui, syncId: Int, inventory: Inventory, container: Container) =

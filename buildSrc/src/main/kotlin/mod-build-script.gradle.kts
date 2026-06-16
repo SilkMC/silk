@@ -10,7 +10,7 @@ import kotlinx.serialization.json.Json
 
 plugins {
     kotlin("jvm")
-    id("fabric-loom")
+    id("net.fabricmc.fabric-loom")
 }
 
 repositories {
@@ -20,11 +20,8 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings(loom.layered {
-        officialMojangMappings()
-    })
-    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
+    implementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+    implementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 }
 
 @Serializable

@@ -11,7 +11,7 @@ import kotlinx.serialization.KSerializer
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.network.packet.internal.SilkPacketPayload
 import java.util.concurrent.ConcurrentHashMap
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap
  * [ClientToClientPacketDefinition].
  */
 sealed class AbstractPacketDefinition<T : Any, C>(
-    val id: ResourceLocation,
+    val id: Identifier,
     val binaryFormat: BinaryFormat,
     private val serializer: KSerializer<T>,
 ) {
@@ -70,13 +70,13 @@ sealed class AbstractPacketDefinition<T : Any, C>(
     }
 
     internal open class DefinitionRegistry<C> {
-        protected val registeredDefinitions = ConcurrentHashMap<ResourceLocation, AbstractPacketDefinition<*, C>>()
+        protected val registeredDefinitions = ConcurrentHashMap<Identifier, AbstractPacketDefinition<*, C>>()
 
         fun register(definition: AbstractPacketDefinition<*, C>) {
             registeredDefinitions[definition.id] = definition
         }
 
-        fun lookupDefinition(channel: ResourceLocation): AbstractPacketDefinition<*, C>? {
+        fun lookupDefinition(channel: Identifier): AbstractPacketDefinition<*, C>? {
             return registeredDefinitions[channel]
         }
     }
