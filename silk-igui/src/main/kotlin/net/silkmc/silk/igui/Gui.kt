@@ -23,9 +23,8 @@ import net.silkmc.silk.igui.mixin.SimpleContainerAccessor
  */
 fun ServerPlayer.openGui(gui: Gui, pageKey: Any? = null): Job {
     return mcCoroutineScope.launch {
-        if (pageKey != null)
-            gui.pagesByKey[pageKey.toString()]?.let { gui.loadPage(it) }
-
+        val page = pageKey?.let { gui.pagesByKey[it.toString()] } ?: gui.currentPage
+        gui.loadPage(page)
         openMenu(gui)
     }
 }
