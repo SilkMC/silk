@@ -9,7 +9,7 @@ repositories {
 
 allprojects {
     group = "net.silkmc"
-    version = "1.11.9"
+    version = "1.11.10"
     if (this.name.startsWith("silk")) {
         description = "Silk is a Minecraft API for Kotlin"
     }
