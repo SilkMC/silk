@@ -2,10 +2,12 @@ package net.silkmc.silk.test.commands
 
 import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.igui.openGui
+import net.silkmc.silk.test.igui.OtherTestGui
 import net.silkmc.silk.test.igui.SimpleTestGui
 
 private val guis = mapOf(
-    "simpletestgui" to SimpleTestGui::create
+    "simpletestgui" to SimpleTestGui::create,
+    "othertestgui" to OtherTestGui::create
 )
 
 val guiCommand = testCommand("gui") {
