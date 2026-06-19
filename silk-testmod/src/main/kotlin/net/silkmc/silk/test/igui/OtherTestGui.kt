@@ -5,18 +5,18 @@ import net.silkmc.silk.core.text.literal
 import net.silkmc.silk.igui.*
 
 object OtherTestGui {
-    fun create() = igui(GuiType.THREE_BY_THREE, "Byecraft".literal, 1) {
+    fun create(type: GuiType = GuiType.THREE_BY_THREE) = igui(type, "Byecraft".literal, 1) {
         page(1) {
             effectFrom = GuiPage.ChangeEffect.SLIDE_HORIZONTALLY
             effectTo = GuiPage.ChangeEffect.SLIDE_HORIZONTALLY
 
             placeholder(Slots.All, Items.DIAMOND.guiIcon)
-            nextPage(2 sl 2, Items.EMERALD.guiIcon)
+            nextPage(1 sl 1, Items.EMERALD.guiIcon)
         }
 
         page {
             placeholder(Slots.All, Items.EMERALD.guiIcon)
-            previousPage(2 sl 2, Items.DIAMOND.guiIcon)
+            previousPage(1 sl 1, Items.DIAMOND.guiIcon)
         }
     }
 }
