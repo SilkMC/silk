@@ -22,7 +22,7 @@ public class MixinDataFixTypes {
                               int oldVersion, int newVersion,
                               CallbackInfoReturnable<Dynamic<T>> cir) {
         // has this been called during a persistent data read operation?
-        if (CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().get()) {
+        if (CompoundSavedData.Companion.getShouldBlockDataFixer$net_silkmc_silk_persistence().get()) {
             // just return the input
             cir.setReturnValue(input);
         }

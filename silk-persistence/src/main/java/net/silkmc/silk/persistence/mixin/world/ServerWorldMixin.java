@@ -25,7 +25,7 @@ public abstract class ServerWorldMixin implements CompoundProvider {
         final var serverLevel = (ServerLevel) (Object) this;
 
         try {
-            CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().set(true);
+            CompoundSavedData.Companion.getShouldBlockDataFixer$net_silkmc_silk_persistence().set(true);
 
             final var dataStorage = serverLevel.getDataStorage();
 
@@ -43,7 +43,7 @@ public abstract class ServerWorldMixin implements CompoundProvider {
 
             dataStorage.computeIfAbsent(dataType);
         } finally {
-            CompoundSavedData.Companion.getShouldBlockDataFixer$silk_persistence().set(false);
+            CompoundSavedData.Companion.getShouldBlockDataFixer$net_silkmc_silk_persistence().set(false);
         }
     }
 
