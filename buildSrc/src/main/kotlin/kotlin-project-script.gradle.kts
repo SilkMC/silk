@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm")
     idea
@@ -11,11 +9,6 @@ repositories {
 }
 
 tasks {
-    withType<KotlinCompile> {
-        compilerOptions {
-            freeCompilerArgs.add("-Xcontext-parameters")
-        }
-    }
     javadoc {
         options {
             this as CoreJavadocOptions

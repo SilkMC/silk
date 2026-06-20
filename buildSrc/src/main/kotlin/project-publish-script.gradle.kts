@@ -21,14 +21,21 @@ publishing {
                     "https://s01.oss.sonatype.org/content/repositories/snapshots"
             )
         }
+
+        maven {
+            name = "pauli"
+            setUrl("https://repo.pauli.fyi/releases")
+            credentials {
+                username = "paul"
+                password = "TzTMqSWOv55ut+YvmVKoG9wrt/D8uDitVzzbn156jJSKr2uK2/+h4m1WQ/y0NKlb"
+            }
+        }
     }
 
     publications {
         register<MavenPublication>(project.name) {
             // publish main jars
             from(components["java"])
-            // also publish dev jar
-            artifact(tasks.jar)
 
             this.groupId = project.group.toString()
             this.artifactId = project.name
@@ -63,7 +70,7 @@ publishing {
         }
     }
 }
-
-signing {
-    sign(publishing.publications)
-}
+//
+//signing {
+//    sign(publishing.publications)
+//}
