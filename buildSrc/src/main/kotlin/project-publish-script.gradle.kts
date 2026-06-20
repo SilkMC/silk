@@ -21,15 +21,6 @@ publishing {
                     "https://s01.oss.sonatype.org/content/repositories/snapshots"
             )
         }
-
-        maven {
-            name = "pauli"
-            setUrl("https://repo.pauli.fyi/releases")
-            credentials {
-                username = "paul"
-                password = "TzTMqSWOv55ut+YvmVKoG9wrt/D8uDitVzzbn156jJSKr2uK2/+h4m1WQ/y0NKlb"
-            }
-        }
     }
 
     publications {
