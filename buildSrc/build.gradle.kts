@@ -27,6 +27,8 @@ dependencies {
     implementation(pluginDep("io.papermc.paperweight.userdev", "1.7.2"))
     implementation(pluginDep("xyz.jpenilla.run-paper", "2.3.0"))
 
+    implementation(pluginDep("com.vanniktech.maven.publish", "0.34.0"))
+
     val compileDokkaVersion = "1.9.20"
     val dokkaVersion = "1.9.20"
 
