@@ -39,7 +39,7 @@ object ArgumentTypeUtils {
 
             Coordinates::class -> BlockPosArgument.blockPos()
             BlockInput::class -> BlockStateArgument.block(context)
-            ChatFormatting::class -> ColorArgument.color()
+            ChatFormatting::class -> TeamColorArgument.teamColor()
             Identifier::class -> IdentifierArgument.id()
             ItemInput::class -> ItemArgument.item(context)
             CompoundTag::class -> CompoundTagArgument.compoundTag()

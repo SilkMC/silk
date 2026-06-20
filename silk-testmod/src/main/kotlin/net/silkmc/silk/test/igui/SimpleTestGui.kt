@@ -17,7 +17,7 @@ object SimpleTestGui {
             effectFrom = GuiPage.ChangeEffect.SLIDE_HORIZONTALLY
             effectTo = GuiPage.ChangeEffect.SLIDE_HORIZONTALLY
 
-            placeholder(Slots.All, Items.WHITE_STAINED_GLASS_PANE.guiIcon)
+            placeholder(Slots.All, Items.STAINED_GLASS_PANE.white.guiIcon)
 
             val changingName = GuiProperty("Ausgangsstring")
 
@@ -40,7 +40,7 @@ object SimpleTestGui {
         page {
             effectFrom = GuiPage.ChangeEffect.SLIDE_VERTICALLY
 
-            placeholder(Slots.All, Items.BLACK_STAINED_GLASS_PANE.guiIcon)
+            placeholder(Slots.All, Items.STAINED_GLASS_PANE.black.guiIcon)
 
             previousPage(2 sl 1, Items.PAPER.guiIcon)
 
