@@ -15,11 +15,11 @@ object BuildConstants {
     val authors = listOf("jakobkmar", "_F0X")
 
     // check these values here: https://jakobk.net/mcdev
-    const val majorMinecraftVersion = "26.2"
+    const val majorMinecraftVersion = "26.3"
     const val minecraftVersion = "$majorMinecraftVersion"
     const val paperMinecraftVersion = "1.21.1"
-    const val fabricLoaderVersion = "0.18.4"
-    const val fabricLanguageKotlinVersion = "1.13.12+kotlin.2.4.0"
+    const val fabricLoaderVersion = "0.19.5"
+    const val fabricLanguageKotlinVersion = "1.14.1+kotlin.2.4.20"
 
     const val kotestVersion = "5.9.1"
     const val mockkVersion = "1.13.12"
