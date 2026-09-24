@@ -1,5 +1,6 @@
 package net.silkmc.silk.paper.internal
 
+import net.silkmc.silk.commands.event.Command
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.event.*
 import net.silkmc.silk.core.internal.SilkEntrypoint
@@ -27,5 +28,6 @@ class SilkPaperEntrypoint : JavaPlugin() {
         Events.Server.setupPaper()
         Events.Player.setupPaper()
         Events.Entity.setupPaper()
+        Events.Command.setupPaper()
     }
 }
