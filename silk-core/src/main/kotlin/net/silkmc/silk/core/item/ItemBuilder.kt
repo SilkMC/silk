@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMultimap
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.authlib.properties.PropertyMap
-import net.minecraft.client.Minecraft
 import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
@@ -131,7 +130,7 @@ fun createProfileWithTexture(texture: String? = null, uuid: UUID?, name: String?
  * skullStack.setSkullTexture(name = "Notch")
  * ```
  *
- * Beware that not setting the texture directly will result in an API call to Mojang.
+ * Beware that not setting the texture directly will result in the client calling the Mojang API.
  */
 fun ItemStack.setSkullTexture(
     texture: String? = null,
@@ -145,13 +144,7 @@ fun ItemStack.setSkullTexture(
         else -> null
     }
 
-    profile?.let {
-        val resolvedFuture = profile.resolveProfile(Minecraft.getInstance().services().profileResolver)
-
-        val gameProfile = resolvedFuture.get()
-
-        set(DataComponents.PROFILE, ResolvableProfile.createResolved(gameProfile))
-    }
+    profile?.let { set(DataComponents.PROFILE, it) }
 }
 
 /**
