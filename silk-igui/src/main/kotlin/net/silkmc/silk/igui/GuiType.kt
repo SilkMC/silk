@@ -25,5 +25,5 @@ enum class GuiType(
     ;
 
     fun createScreenHandler(gui: Gui, syncId: Int, inventory: Inventory, container: Container) =
-        GuiScreenHandler(gui, syncId, inventory, container)
+        GuiScreenHandler.factory(gui, syncId, inventory, container)
 }
