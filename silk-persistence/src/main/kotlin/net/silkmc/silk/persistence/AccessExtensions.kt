@@ -3,6 +3,7 @@ package net.silkmc.silk.persistence
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.chunk.ChunkAccess
+import net.silkmc.silk.core.annotations.InternalSilkApi
 
 /**
  * Returns a persistent [PersistentCompound].
@@ -10,7 +11,7 @@ import net.minecraft.world.level.chunk.ChunkAccess
  * @see CompoundProvider.compound
  * @see CompoundProvider
  */
-val ChunkAccess.persistentCompound get() = (this as CompoundProvider).compound
+val ChunkAccess.persistentCompound get() = compoundOrFallback()
 
 /**
  * Returns a persistent [PersistentCompound].
@@ -18,7 +19,7 @@ val ChunkAccess.persistentCompound get() = (this as CompoundProvider).compound
  * @see CompoundProvider.compound
  * @see CompoundProvider
  */
-val Entity.persistentCompound get() = (this as CompoundProvider).compound
+val Entity.persistentCompound get() = compoundOrFallback()
 
 /**
  * Returns a persistent [PersistentCompound].
@@ -26,4 +27,13 @@ val Entity.persistentCompound get() = (this as CompoundProvider).compound
  * @see CompoundProvider.compound
  * @see CompoundProvider
  */
-val ServerLevel.persistentCompound get() = (this as CompoundProvider).compound
+val ServerLevel.persistentCompound get() = compoundOrFallback()
+
+@InternalSilkApi
+object PersistentCompoundFallback {
+    var provider: ((Any) -> PersistentCompound)? = null
+}
+
+private fun Any.compoundOrFallback() = (this as? CompoundProvider)?.compound
+    ?: PersistentCompoundFallback.provider?.invoke(this)
+    ?: error("${this::class} has no persistent compound")

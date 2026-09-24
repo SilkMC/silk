@@ -34,6 +34,7 @@ abstract class PersistentCompound {
         if (data == null) return
 
         values[key] = value
+        onChanged(key, value)
     }
 
     /**
@@ -67,6 +68,7 @@ abstract class PersistentCompound {
 
         data!!.remove(key.name)
         values -= key
+        onChanged(key, null)
     }
 
     /**
@@ -82,7 +84,7 @@ abstract class PersistentCompound {
         if (data == null) return null
 
         return ((values.remove(key) as T?) ?: data!!.get(key.name)?.let { key.convertNbtElementToValue(it) })
-            .also { data!!.remove(key.name) }
+            .also { data!!.remove(key.name); onChanged(key, null) }
     }
 
     /**
@@ -95,6 +97,7 @@ abstract class PersistentCompound {
 
         values.clear()
         data = CompoundTag()
+        onChanged(null, null)
     }
 
     /**
@@ -128,6 +131,7 @@ abstract class PersistentCompound {
     // the following to functions are there for calling from java
     @PublishedApi
     internal fun loadFromCompound(nbtCompound: CompoundTag) = loadFromCompound(nbtCompound, false)
+
     @PublishedApi
     internal fun putInCompound(nbtCompound: CompoundTag) = putInCompound(nbtCompound, false)
 
@@ -136,6 +140,9 @@ abstract class PersistentCompound {
 
     @PublishedApi
     internal abstract fun putInCompound(nbtCompound: CompoundTag, writeRaw: Boolean)
+
+    @PublishedApi
+    internal open fun onChanged(key: CompoundKey<*>?, value: Any?) = Unit
 }
 
 /**
