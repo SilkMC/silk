@@ -3,9 +3,6 @@ package net.silkmc.silk.igui
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import net.silkmc.silk.core.kotlin.ticks
-import net.silkmc.silk.igui.DslAnnotations.EventLevel.GuiEventDsl
-import net.silkmc.silk.igui.DslAnnotations.PageLevel.GuiCompoundDsl
-import net.silkmc.silk.igui.DslAnnotations.PageLevel.GuiPageDsl
 import net.silkmc.silk.igui.DslAnnotations.TopLevel.GuiDsl
 import net.silkmc.silk.igui.elements.*
 import net.silkmc.silk.igui.events.GuiClickEvent
@@ -19,19 +16,6 @@ private class DslAnnotations {
     class TopLevel {
         @DslMarker
         annotation class GuiDsl
-    }
-
-    class PageLevel {
-        @DslMarker
-        annotation class GuiPageDsl
-
-        @DslMarker
-        annotation class GuiCompoundDsl
-    }
-
-    class EventLevel {
-        @DslMarker
-        annotation class GuiEventDsl
     }
 }
 
@@ -81,7 +65,6 @@ class GuiBuilder(
          * If this is not null, it will always be used even
          * if `effectFrom` is not null aswell.
          */
-        @GuiPageDsl
         var effectTo: GuiPage.ChangeEffect? = null
 
         /**
@@ -89,13 +72,11 @@ class GuiBuilder(
          * is not null and `effectTo` is null, this will be used
          * as a fallback.
          */
-        @GuiPageDsl
         var effectFrom: GuiPage.ChangeEffect? = null
 
         /**
          * Sets both [effectTo] and [effectFrom] at the same time.
          */
-        @GuiPageDsl
         fun setEffect(effect: GuiPage.ChangeEffect?) {
             effectTo = effect
             effectFrom = effect
@@ -104,7 +85,6 @@ class GuiBuilder(
         /**
          * Adds the given element for each given slot to the gui.
          */
-        @GuiPageDsl
         fun element(guiSlotCompound: GuiSlotCompound, element: GuiElement) {
             guiSlotCompound.withDimensions(this@GuiBuilder.type.dimensions).mapNotNull { it.slotIndexIn(this@GuiBuilder.type.dimensions) }
                 .forEach { content[it] = element }
@@ -113,28 +93,24 @@ class GuiBuilder(
         /**
          * Adds a button. A button has custom onClick logic.
          */
-        @GuiPageDsl
         fun button(slots: GuiSlotCompound, icon: GuiIcon, onClick: suspend (GuiClickEvent) -> Unit) =
             element(slots, GuiButton(icon, onClick))
 
         /**
          * Adds a placeholder. A placeholder ignores any click actions.
          */
-        @GuiPageDsl
         fun placeholder(slots: GuiSlotCompound, icon: GuiIcon) =
             element(slots, GuiPlaceholder(icon))
 
         /**
          * Adds a free slot. A free slot allows player interaction.
          */
-        @GuiPageDsl
         fun freeSlot(slots: GuiSlotCompound, onClick: (suspend (GuiClickEvent) -> Unit)? = null) =
             element(slots, GuiFreeSlot(onClick))
 
         /**
          * Adds a page change button, which will open the previous page when clicked.
          */
-        @GuiPageDsl
         fun previousPage(
             slots: GuiSlotCompound,
             icon: GuiIcon,
@@ -149,7 +125,6 @@ class GuiBuilder(
         /**
          * Adds a page change button, which will open the next page when clicked.
          */
-        @GuiPageDsl
         fun nextPage(
             slots: GuiSlotCompound,
             icon: GuiIcon,
@@ -164,7 +139,6 @@ class GuiBuilder(
         /**
          * Adds a page change button, which will open the specified page when clicked.
          */
-        @GuiPageDsl
         fun changePageByNumber(
             slots: GuiSlotCompound,
             icon: GuiIcon,
@@ -180,7 +154,6 @@ class GuiBuilder(
         /**
          * Adds a page change button, which will open the specified page when clicked.
          */
-        @GuiPageDsl
         fun changePageByKey(
             slots: GuiSlotCompound,
             icon: GuiIcon,
@@ -200,7 +173,6 @@ class GuiBuilder(
          * @return the compound, which is needed for other elements, like
          * a compound scroll button
          */
-        @GuiCompoundDsl
         fun <E> compound(
             slots: GuiSlotCompound.SlotRange.Rectangle,
             content: AbstractGuiList<E, List<E>>,
@@ -218,7 +190,6 @@ class GuiBuilder(
          * Used by both [compoundScrollForwards] and [compoundScrollBackwards],
          * which are easier to use than this function.
          */
-        @GuiCompoundDsl
         fun compoundScroll(
             slots: GuiSlotCompound,
             icon: GuiIcon,
@@ -238,7 +209,6 @@ class GuiBuilder(
          *
          * This one scrolls forwards, line by line.
          */
-        @GuiCompoundDsl
         fun compoundScrollForwards(
             slots: GuiSlotCompound,
             icon: GuiIcon,
@@ -256,7 +226,6 @@ class GuiBuilder(
          *
          * This one scrolls backwards, line by line.
          */
-        @GuiCompoundDsl
         fun compoundScrollBackwards(
             slots: GuiSlotCompound,
             icon: GuiIcon,
@@ -278,7 +247,6 @@ class GuiBuilder(
      *
      * @param key the unique key of the page
      */
-    @GuiDsl
     inline fun page(
         key: Any = UUID.randomUUID(),
         number: Int = pagesByNumber.keys.maxOrNull()?.plus(1) ?: 0,
@@ -303,7 +271,6 @@ class GuiBuilder(
          * And event callback which will be invoked if a player
          * interacts with the inventory.
          */
-        @GuiEventDsl
         fun onClick(onClick: suspend (GuiClickEvent) -> Unit) {
             this.onClick = onClick
         }
@@ -312,7 +279,6 @@ class GuiBuilder(
          * An event callback which will be invoked if the gui
          * inventory gets closed.
          */
-        @GuiEventDsl
         fun onClose(onClose: suspend (GuiCloseEvent) -> Unit) {
             this.onClose = onClose
         }
@@ -325,7 +291,6 @@ class GuiBuilder(
      * Opens a new [EventHandlerBuilder] to build and set a new
      * [GuiEventHandler] for the gui.
      */
-    @GuiDsl
     inline fun events(builder: EventHandlerBuilder.() -> Unit) {
         eventHandler = EventHandlerBuilder().apply(builder).build()
     }
