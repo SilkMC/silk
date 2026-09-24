@@ -8,11 +8,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ContainerInput
 import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.ItemStack
+import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.task.mcCoroutineScope
 import net.silkmc.silk.igui.events.GuiClickEvent
 import net.silkmc.silk.igui.events.GuiCloseEvent
 
-class GuiScreenHandler(
+open class GuiScreenHandler(
     val gui: Gui,
     syncId: Int,
     private val inventory: Inventory,
@@ -21,6 +22,11 @@ class GuiScreenHandler(
     gui.guiType.screenHandlerType,
     syncId
 ) {
+    companion object {
+        @InternalSilkApi
+        var factory: (Gui, Int, Inventory, Container) -> GuiScreenHandler = ::GuiScreenHandler
+    }
+
     init {
         container.startOpen(inventory.player)
 
