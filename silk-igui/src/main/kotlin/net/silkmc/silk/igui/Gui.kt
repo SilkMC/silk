@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.silkmc.silk.core.task.mcCoroutineScope
-import net.silkmc.silk.igui.mixin.SimpleContainerAccessor
 
 /**
  * Opens the given gui.
@@ -48,9 +47,6 @@ class Gui(
         //loadPage(currentPage)
     }
 
-    @Suppress("CAST_NEVER_SUCCEEDS")
-    val accessor = this as SimpleContainerAccessor
-
     /**
      * Loads the specified page with the specified offset.
      */
@@ -80,8 +76,8 @@ class Gui(
                     GuiSlot(it.row + offsetVertically, it.slotInRow + offsetHorizontally)
                         .slotIndexIn(guiType.dimensions)
                 }
-                .forEach { accessor.items[it] = ItemStack.EMPTY }
-        } else accessor.items.clear()
+                .forEach { items[it] = ItemStack.EMPTY }
+        } else items.clear()
 
         page.content.forEach { (slotIndex, element) ->
             if (isOffset) {
@@ -91,9 +87,9 @@ class Gui(
                         GuiSlot(guiSlot.row + offsetVertically, guiSlot.slotInRow + offsetHorizontally)
                             .slotIndexIn(guiType.dimensions)
                     if (offsetIndex != null)
-                        accessor.items[offsetIndex] = element.getItemStack(offsetIndex)
+                        items[offsetIndex] = element.getItemStack(offsetIndex)
                 }
-            } else accessor.items[slotIndex] = element.getItemStack(slotIndex)
+            } else items[slotIndex] = element.getItemStack(slotIndex)
         }
 
         setChanged()
