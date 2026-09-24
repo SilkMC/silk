@@ -11,7 +11,6 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.silkmc.silk.core.annotations.DelicateSilkApi
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
-import org.apache.commons.lang3.text.WordUtils
 
 /**
  * Converts this string to a [LiteralText] instance.
@@ -30,9 +29,33 @@ val String.literal: MutableComponent get() = Component.literal(this)
 inline fun String.literalLines(
     width: Int = 40,
     cutLongWords: Boolean = true,
-    lineBuilder: (line: String) -> Component = { it.literal }
-): List<Component> = WordUtils.wrap(this, width, System.lineSeparator(), cutLongWords).split(System.lineSeparator())
-    .map(lineBuilder)
+    lineBuilder: (line: String) -> Component = { it.literal },
+): List<Component> = wrapWords(width, cutLongWords).map(lineBuilder)
+
+/**
+ * Greedily wraps this string at spaces into lines not longer than [width].
+ * Words longer than [width] are cut if [cutLongWords] is true.
+ */
+@PublishedApi
+internal fun String.wrapWords(width: Int, cutLongWords: Boolean): List<String> {
+    val lines = mutableListOf<String>()
+    var line = ""
+    for (word in split(' ').filter { it.isNotEmpty() }) {
+        if (line.isNotEmpty() && line.length + 1 + word.length <= width) {
+            line += " $word"
+            continue
+        }
+        if (line.isNotEmpty()) lines += line
+        var rest = word
+        if (cutLongWords) while (rest.length > width) {
+            lines += rest.take(width)
+            rest = rest.drop(width)
+        }
+        line = rest
+    }
+    if (line.isNotEmpty() || lines.isEmpty()) lines += line
+    return lines
+}
 
 /**
  * Sends the given [Component] to the player.
