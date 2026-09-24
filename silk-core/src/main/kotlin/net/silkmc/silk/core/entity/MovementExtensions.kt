@@ -50,7 +50,7 @@ fun Entity.changePos(
  */
 fun Entity.markVelocityDirty() {
     needsSync = true
-    hurtMarked = true
+    syncVelocity = true
 }
 
 /**
