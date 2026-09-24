@@ -24,8 +24,8 @@ dependencies {
     implementation(pluginDep("net.fabricmc.fabric-loom", "1.15-SNAPSHOT"))
     implementation(pluginDep("com.modrinth.minotaur", "2.8.7"))
 
-    implementation(pluginDep("io.papermc.paperweight.userdev", "1.7.2"))
-    implementation(pluginDep("xyz.jpenilla.run-paper", "2.3.0"))
+    implementation(pluginDep("io.papermc.paperweight.userdev", "2.0.0-beta.23"))
+    implementation(pluginDep("xyz.jpenilla.run-paper", "3.1.0"))
 
     val compileDokkaVersion = "1.9.20"
     val dokkaVersion = "1.9.20"
