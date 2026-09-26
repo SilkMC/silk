@@ -5,6 +5,8 @@ import net.minecraft.nbt.CompoundTag
 /**
  * Holds data which can be accessed fast because it is stored in memory. Additionally, the data
  * will be stored persistently to the disk, if the game decides to do so.
+ *
+ * This class is not thread-safe, only access it from the server thread.
  */
 abstract class PersistentCompound {
     @PublishedApi
