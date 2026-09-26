@@ -19,9 +19,10 @@ class ExternalPersistentCompound(
 
     override fun onChanged(key: CompoundKey<*>?, value: Any?) {
         val current = data!!
-        if (key != null && value != null) {
+        if (key != null) {
             @Suppress("UNCHECKED_CAST")
-            current.put(key.name, (key as CompoundKey<Any>).convertValueToNbtElement(value))
+            if (value != null) current.put(key.name, (key as CompoundKey<Any>).convertValueToNbtElement(value))
+            else current.remove(key.name)
         }
 
         write(current)

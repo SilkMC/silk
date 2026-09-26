@@ -4,11 +4,16 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.chunk.ChunkAccess
+import net.silkmc.silk.persistence.PersistentCompound
 import net.silkmc.silk.persistence.PersistentCompoundFallback
 import net.silkmc.silk.persistence.internal.ExternalPersistentCompound
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
+import java.util.*
 
 private const val KEY = "silkmc:persistent_data"
+
+// one compound per holder, otherwise the deserialized values cache is useless
+private val compounds = WeakHashMap<Any, PersistentCompound>()
 
 /**
  * Replaces the persistence mixins: Silk data is stored in Paper's
@@ -16,13 +21,15 @@ private const val KEY = "silkmc:persistent_data"
  */
 fun setupPaperPersistence() {
     PersistentCompoundFallback.provider = { holder ->
-        val pdc = when (holder) {
-            is Entity -> holder.bukkitEntity.persistentDataContainer
-            is ChunkAccess -> holder.persistentDataContainer
-            is ServerLevel -> holder.world.persistentDataContainer
-            else -> error("Unsupported persistent compound holder ${holder::class}")
-        } as CraftPersistentDataContainer
+        compounds.getOrPut(holder) {
+            val pdc = when (holder) {
+                is Entity -> holder.bukkitEntity.persistentDataContainer
+                is ChunkAccess -> holder.persistentDataContainer
+                is ServerLevel -> holder.world.persistentDataContainer
+                else -> error("Unsupported persistent compound holder ${holder::class}")
+            } as CraftPersistentDataContainer
 
-        ExternalPersistentCompound({ pdc.getTag(KEY) as? CompoundTag }, { pdc.put(KEY, it) })
+            ExternalPersistentCompound({ pdc.getTag(KEY) as? CompoundTag }, { pdc.put(KEY, it) })
+        }
     }
 }
