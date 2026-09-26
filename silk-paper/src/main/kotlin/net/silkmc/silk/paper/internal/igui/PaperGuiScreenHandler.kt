@@ -1,4 +1,4 @@
-package net.silkmc.silk.paper.igui.internal
+package net.silkmc.silk.paper.internal.igui
 
 import net.minecraft.world.Container
 import net.minecraft.world.entity.player.Inventory
