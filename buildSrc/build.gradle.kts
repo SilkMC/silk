@@ -36,4 +36,5 @@ dependencies {
     runtimeOnly("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.ow2.asm:asm:9.10.1")
 }
