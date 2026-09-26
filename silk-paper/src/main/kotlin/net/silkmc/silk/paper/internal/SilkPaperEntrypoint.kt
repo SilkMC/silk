@@ -7,7 +7,7 @@ import net.silkmc.silk.core.internal.SilkEntrypoint
 import net.silkmc.silk.igui.GuiScreenHandler
 import net.silkmc.silk.paper.conversions.mcServer
 import net.silkmc.silk.paper.events.internal.setupPaper
-import net.silkmc.silk.paper.igui.internal.PaperGuiScreenHandler
+import net.silkmc.silk.paper.internal.igui.PaperGuiScreenHandler
 import net.silkmc.silk.paper.internal.persistence.setupPaperPersistence
 import org.bukkit.plugin.java.JavaPlugin
 
