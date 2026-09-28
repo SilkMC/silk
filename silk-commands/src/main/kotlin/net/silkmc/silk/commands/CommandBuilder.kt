@@ -23,8 +23,6 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.server.permissions.Permission
 import net.minecraft.server.permissions.PermissionLevel
-import net.silkmc.silk.commands.DslAnnotations.NodeLevel.RunsDsl
-import net.silkmc.silk.commands.DslAnnotations.NodeLevel.SuggestsDsl
 import net.silkmc.silk.commands.DslAnnotations.TopLevel.NodeDsl
 import net.silkmc.silk.commands.internal.ArgumentTypeUtils
 import net.silkmc.silk.commands.registration.setupRegistrationCallback
@@ -79,7 +77,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      *
      * @see com.mojang.brigadier.builder.ArgumentBuilder.executes
      */
-    @RunsDsl
     inline infix fun runs(crossinline block: CommandContext<Source>.() -> Unit) = this.also {
         brigadierBuilders += {
             val previousCommand = this.command
@@ -102,7 +99,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      *
      * @see runs
      */
-    @RunsDsl
     inline infix fun runsAsync(crossinline block: suspend CommandContext<Source>.() -> Unit) =
         runs {
             silkCoroutineScope.launch {
@@ -136,7 +132,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      *
      * @param name the name of the subcommand
      */
-    @NodeDsl
     inline fun literal(name: String, builder: LiteralCommandBuilder<Source>.() -> Unit = {}) =
         LiteralCommandBuilder<Source>(name).apply(builder).also { children += it }
 
@@ -150,7 +145,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      * `IdentifierArgumentType.identifier()`. You can also pass a lambda, as [ArgumentType] is a functional
      * interface. For simple types, consider using the `inline reified` version of this function instead.
      */
-    @NodeDsl
     inline fun <reified T> argument(
         name: String,
         type: ArgumentType<T>,
@@ -169,7 +163,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      * `BlockStateArgument.block(context)` and `ItemArgument.item(context)` or you can pass your own
      */
     @JvmName("argumentWithContextualType")
-    @NodeDsl
     inline fun <reified T> argument(
         name: String,
         noinline typeProvider: (CommandBuildContext) -> ArgumentType<T>,
@@ -188,7 +181,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      * value of the given type [T], which will be the argument value
      */
     @JvmName("argumentWithCustomParser")
-    @NodeDsl
     inline fun <reified T> argument(
         name: String,
         crossinline parser: (StringReader) -> T,
@@ -205,7 +197,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      * @param name the name of the argument - This will be displayed to the player, if there is enough room for the
      * tooltip.
      */
-    @NodeDsl
     inline fun <reified T> argument(name: String, builder: SimpleArgumentBuilder<Source, T> = {}) =
         ArgumentCommandBuilder<Source, T>(name) { ArgumentTypeUtils.fromReifiedType(it) }
             .apply { builder { getArgument(name, T::class.java) } }
@@ -216,7 +207,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      * in order for it to be able to execute this part of the command tree. Use
      * this function on the root command node to secure the whole command.
      */
-    @RunsDsl
     fun requires(predicate: (source: Source) -> Boolean) = this.also {
         brigadierBuilders += {
             this.requires(this.requirement.and(predicate))
@@ -227,7 +217,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      * Specifies that the given permission [level] is required to execute this part of the command tree.
      * A shortcut delegating to [requires].
      */
-    @RunsDsl
     fun requiresPermissionLevel(level: Int) =
         requires {
             it.permissions().hasPermission(Permission.HasCommandLevel(PermissionLevel.byId(level)))
@@ -237,7 +226,6 @@ abstract class CommandBuilder<Source, Builder, Node>
      * Specifies that the [PermissionLevel] given as [level] is required to execute this part of the command tree.
      * A shortcut delegating to [requires].
      */
-    @RunsDsl
     fun requiresPermissionLevel(level: PermissionLevel) =
         requires { it.permissions().hasPermission(Permission.HasCommandLevel(level)) }
 
@@ -262,8 +250,7 @@ abstract class CommandBuilder<Source, Builder, Node>
 
         children.forEach { child ->
             child.toBrigadier(context).forEach {
-                @Suppress("UNCHECKED_CAST")
-                builder.then(it as CommandNode<Source>)
+                builder.then(it)
             }
         }
 
@@ -286,7 +273,6 @@ class LiteralCommandBuilder<Source>(
      * Adds an alias for this literal command node, which can be used
      * instead of the main [LiteralCommandBuilder.name].
      */
-    @NodeDsl
     fun alias(vararg name: String) {
         aliases += name
     }
@@ -349,7 +335,6 @@ class ArgumentCommandBuilder<Source, T>(
     /**
      * Suggest the value which is the result of the [suggestionBuilder].
      */
-    @SuggestsDsl
     inline fun suggestSingle(crossinline suggestionBuilder: (CommandContext<Source>) -> Any?) =
         suggests { context, builder ->
             builder.applyAny(suggestionBuilder(context))
@@ -361,7 +346,6 @@ class ArgumentCommandBuilder<Source, T>(
      * Additionaly, a separate tooltip associated with the suggestion
      * will be shown as well.
      */
-    @SuggestsDsl
     inline fun suggestSingleWithTooltip(crossinline suggestionBuilder: (CommandContext<Source>) -> Pair<Any, Message>?) =
         suggests { context, builder ->
             builder.applyAnyWithTooltip(suggestionBuilder(context))
@@ -374,7 +358,6 @@ class ArgumentCommandBuilder<Source, T>(
      * @param coroutineScope the [CoroutineScope] where the suggestion should be built in - an async scope by default,
      * but you can change this to a synchronous scope using [net.silkmc.silk.core.task.mcCoroutineScope]
      */
-    @SuggestsDsl
     inline fun suggestSingleSuspending(
         coroutineScope: CoroutineScope = silkCoroutineScope,
         crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Any?,
@@ -393,7 +376,6 @@ class ArgumentCommandBuilder<Source, T>(
      * @param coroutineScope the [CoroutineScope] where the suggestion should be built in - an async scope by default,
      * but you can change this to a synchronous scope using [net.silkmc.silk.core.task.mcCoroutineScope]
      */
-    @SuggestsDsl
     inline fun suggestSingleWithTooltipSuspending(
         coroutineScope: CoroutineScope = silkCoroutineScope,
         crossinline suggestionBuilder: suspend (CommandContext<Source>) -> Pair<Any?, Message>?,
@@ -408,7 +390,6 @@ class ArgumentCommandBuilder<Source, T>(
      * Suggest the entries of the iterable which is the result of the
      * [suggestionsBuilder].
      */
-    @SuggestsDsl
     inline fun suggestList(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Any?>?) =
         suggests { context, builder ->
             builder.applyIterable(suggestionsBuilder(context))
@@ -421,7 +402,6 @@ class ArgumentCommandBuilder<Source, T>(
      * Additionaly, a separate tooltip associated with each suggestion
      * will be shown as well.
      */
-    @SuggestsDsl
     inline fun suggestListWithTooltips(crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?) =
         suggests { context, builder ->
             builder.applyIterableWithTooltips(suggestionsBuilder(context))
@@ -435,7 +415,6 @@ class ArgumentCommandBuilder<Source, T>(
      * @param coroutineScope the [CoroutineScope] where the suggestions should be built in - an async scope by default,
      * but you can change this to a synchronous scope using [net.silkmc.silk.core.task.mcCoroutineScope]
      */
-    @SuggestsDsl
     inline fun suggestListSuspending(
         coroutineScope: CoroutineScope = silkCoroutineScope,
         crossinline suggestionsBuilder: suspend (CommandContext<Source>) -> Iterable<Any?>?,
@@ -455,7 +434,6 @@ class ArgumentCommandBuilder<Source, T>(
      * @param coroutineScope the [CoroutineScope] where the suggestions should be built in - an async scope by default,
      * but you can change this to a synchronous scope using [net.silkmc.silk.core.task.mcCoroutineScope]
      */
-    @SuggestsDsl
     inline fun suggestListWithTooltipsSuspending(
         coroutineScope: CoroutineScope = silkCoroutineScope,
         crossinline suggestionsBuilder: (CommandContext<Source>) -> Iterable<Pair<Any?, Message>?>?,
@@ -557,16 +535,8 @@ inline fun clientCommand(
 
 private class DslAnnotations {
     class TopLevel {
-        @Target(AnnotationTarget.FUNCTION, AnnotationTarget.TYPE, AnnotationTarget.CLASS)
+        @Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
         @DslMarker
         annotation class NodeDsl
-    }
-
-    class NodeLevel {
-        @DslMarker
-        annotation class RunsDsl
-
-        @DslMarker
-        annotation class SuggestsDsl
     }
 }
