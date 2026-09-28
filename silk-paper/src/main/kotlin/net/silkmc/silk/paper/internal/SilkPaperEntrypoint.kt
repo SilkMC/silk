@@ -1,10 +1,14 @@
 package net.silkmc.silk.paper.internal
 
+import net.silkmc.silk.commands.event.Command
 import net.silkmc.silk.core.annotations.InternalSilkApi
 import net.silkmc.silk.core.event.*
 import net.silkmc.silk.core.internal.SilkEntrypoint
+import net.silkmc.silk.igui.GuiScreenHandler
 import net.silkmc.silk.paper.conversions.mcServer
 import net.silkmc.silk.paper.events.internal.setupPaper
+import net.silkmc.silk.paper.internal.igui.PaperGuiScreenHandler
+import net.silkmc.silk.paper.internal.persistence.setupPaperPersistence
 import org.bukkit.plugin.java.JavaPlugin
 
 class SilkPaperEntrypoint : JavaPlugin() {
@@ -27,5 +31,9 @@ class SilkPaperEntrypoint : JavaPlugin() {
         Events.Server.setupPaper()
         Events.Player.setupPaper()
         Events.Entity.setupPaper()
+        Events.Command.setupPaper()
+
+        GuiScreenHandler.factory = ::PaperGuiScreenHandler
+        setupPaperPersistence()
     }
 }

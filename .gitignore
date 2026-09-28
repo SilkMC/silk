@@ -10,3 +10,6 @@ build/
 # Fabric
 run/
 logs/
+
+# Paper
+run-paper/

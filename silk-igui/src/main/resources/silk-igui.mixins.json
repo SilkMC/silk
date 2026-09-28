@@ -1,8 +1,0 @@
-{
-  "package": "net.silkmc.silk.igui.mixin",
-  "required": true,
-  "compatibilityLevel": "JAVA_25",
-  "mixins": [
-    "SimpleContainerAccessor"
-  ]
-}

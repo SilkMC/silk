@@ -1,0 +1,11 @@
+name: silk-testmod
+version: ${version}
+main: net.silkmc.silk.test.PaperTestPlugin
+description: ${description}
+api-version: '${mcVersion}'
+dependencies:
+  server:
+    silk-paper:
+      load: BEFORE
+      required: true
+      join-classpath: true
