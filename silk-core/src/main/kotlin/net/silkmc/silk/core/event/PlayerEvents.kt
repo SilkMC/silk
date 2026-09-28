@@ -1,10 +1,19 @@
 package net.silkmc.silk.core.event
 
 import com.mojang.authlib.GameProfile
+import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.PlayerChatMessage
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.damagesource.DamageSource
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.block.Block
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
+import net.silkmc.silk.core.event.PlayerEvents.preQuit
+import net.silkmc.silk.core.event.PlayerEvents.quitDuringConfiguration
+import net.silkmc.silk.core.event.PlayerEvents.quitDuringLogin
 
 @ExperimentalSilkApi
 object PlayerEvents {
@@ -16,10 +25,15 @@ object PlayerEvents {
      */
     val preLogin = Event.syncAsync<PlayerEvent<ServerPlayer>>()
 
+    open class PostLoginEvent(
+        player: ServerPlayer,
+        val joinMessage: EventScopeProperty<Component>
+    ) : PlayerEvent<ServerPlayer>(player)
+
     /**
      * Called after a player has received all login information from the server.
      */
-    val postLogin = Event.syncAsync<PlayerEvent<ServerPlayer>>()
+    val postLogin = Event.syncAsync<PostLoginEvent>()
 
     open class PlayerQuitEvent(
         player: ServerPlayer,
@@ -60,4 +74,43 @@ object PlayerEvents {
      * @see preQuit
      */
     val quitDuringConfiguration = Event.syncAsync<PlayerQuitDuringLoginEvent>()
+
+    open class PlayerDeathEvent(
+        player: ServerPlayer,
+        val source: DamageSource,
+        var deathMessage: EventScopeProperty<Component>,
+    ) : PlayerEvent<ServerPlayer>(player)
+
+    /**
+     * Called when a [ServerPlayer] dies.
+     */
+    val onDeath = Event.syncAsync<PlayerDeathEvent>()
+
+    /**
+     * Called before a message from a player is broadcasted.
+     */
+    open class PlayerChatEvent(
+        player: ServerPlayer,
+        val chatMessage: PlayerChatMessage,
+        var message: EventScopeProperty<Component>,
+        val bound: ChatType.Bound,
+    ) : PlayerEvent<ServerPlayer>(player), Cancellable {
+
+        override val isCancelled: EventScopeProperty<Boolean> = EventScopeProperty(false)
+    }
+
+    val onChat = Event.syncAsync<PlayerChatEvent>()
+
+    open class PlayerInteractEvent(
+        player: Player,
+        val hand: InteractionHand,
+        val block: Block?,
+        val entity: Entity?,
+    ) : PlayerEvent<Player>(player), Cancellable {
+
+        override val isCancelled: EventScopeProperty<Boolean> = EventScopeProperty(false)
+    }
+
+    val onInteract = Event.syncAsync<PlayerInteractEvent>()
+
 }

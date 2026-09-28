@@ -5,9 +5,13 @@ import net.minecraft.server.dedicated.DedicatedServer
 import net.minecraft.server.level.ServerEntity
 import net.minecraft.server.level.ServerPlayer
 import org.bukkit.Server
+import org.bukkit.block.Block
 import org.bukkit.craftbukkit.CraftServer
+import org.bukkit.craftbukkit.block.CraftBlock
+import org.bukkit.craftbukkit.damage.CraftDamageSource
 import org.bukkit.craftbukkit.entity.CraftEntity
 import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.damage.DamageSource
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
@@ -29,3 +33,16 @@ val Player.mcPlayer: ServerPlayer
  */
 val Entity.mcEntity: net.minecraft.world.entity.Entity
     get() = (this as CraftEntity).handle
+
+@Suppress("UnstableApiUsage")
+    /**
+     * Converts a Paper [DamageSource] to a native [net.minecraft.world.damagesource.DamageSource].
+     */
+val DamageSource.mcDamageSource: net.minecraft.world.damagesource.DamageSource
+    get() = (this as CraftDamageSource).handle
+
+/**
+ * Converts a Paper [Block] to a native [net.minecraft.world.level.block.Block].
+ */
+val Block.mcBlock: net.minecraft.world.level.block.Block?
+    get() = (this as CraftBlock).handle.getBlockIfLoaded(this.position)

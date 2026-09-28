@@ -1,9 +1,14 @@
 package net.silkmc.silk.test.events
 
+import net.silkmc.silk.core.Silk
 import net.silkmc.silk.core.annotations.ExperimentalSilkApi
+import net.silkmc.silk.core.event.Entity
 import net.silkmc.silk.core.event.Events
+import net.silkmc.silk.core.event.Player
 import net.silkmc.silk.core.event.Server
 import net.silkmc.silk.core.logging.logInfo
+import net.silkmc.silk.core.text.broadcastText
+import java.awt.Color
 
 @OptIn(ExperimentalSilkApi::class)
 object ServerEventTest {

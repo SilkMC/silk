@@ -7,7 +7,10 @@ import net.silkmc.silk.commands.ClientCommandSourceStack
 import net.silkmc.silk.commands.LiteralCommandBuilder
 import net.silkmc.silk.commands.clientCommand
 import net.silkmc.silk.commands.command
+import net.silkmc.silk.core.event.PlayerEvents
 import net.silkmc.silk.test.commands.*
+import net.silkmc.silk.test.events.EntityEventTest
+import net.silkmc.silk.test.events.PlayerEventTest
 import net.silkmc.silk.test.events.ServerEventTest
 import net.silkmc.silk.test.network.NetworkTest
 
@@ -27,6 +30,8 @@ object Manager : ModInitializer, ClientModInitializer {
         executeCommandTestCommand
 
         ServerEventTest.init()
+        PlayerEventTest.init()
+        EntityEventTest.init()
         NetworkTest.initServer()
 
         command("testmod") {
